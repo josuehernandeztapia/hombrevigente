@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hombre Vigente - Encuesta</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts: Montserrat -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
+
+    <!-- Custom Styles -->
+    <style>
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: #0D0D0D;
+            color: #E0E0E0;
+        }
+        .hero-bg {
+            background-color: #0D0D0D;
+            background-image: url('https://placehold.co/1920x1080/0D0D0D/1c1c1c?text=HOMBRE+VIGENTE&font=montserrat');
+            background-size: 200px;
+            background-repeat: no-repeat;
+            background-position: center;
+        }
+        .section-title {
+            @apply text-4xl md:text-6xl font-black tracking-tighter text-white uppercase mb-12;
+        }
+        .section-subtitle {
+            @apply text-center text-lg text-gray-400 max-w-3xl mx-auto mb-4;
+        }
+        .btn-primary {
+            @apply bg-white text-black font-bold py-3 px-10 rounded-full hover:bg-gray-300 transition-colors duration-300;
+        }
+        .form-question {
+            @apply mb-6;
+        }
+        .form-label {
+            @apply text-lg font-bold text-white mb-2;
+        }
+        .form-select, .form-input {
+            @apply w-full p-3 rounded-md bg-gray-800/50 border border-gray-700 focus:outline-none focus:border-white text-white placeholder-gray-500;
+        }
+        .form-error {
+            @apply border-red-500;
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <!-- Header -->
+    <header id="inicio" class="bg-black/50 backdrop-blur-sm fixed top-0 left-0 right-0 z-50">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="#inicio" class="text-2xl font-black tracking-tighter text-white uppercase">Hombre Vigente</a>
+            <button id="mobile-menu-button" class="md:hidden focus:outline-none">
+                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+            </button>
+        </div>
+        <div id="mobile-menu" class="hidden md:hidden px-6 pt-2 pb-4 bg-black/80">
+            <a href="#encuesta" class="block py-2 text-gray-300 hover:text-white">Encuesta</a>
+        </div>
+    </script>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero-bg min-h-screen flex items-center justify-center text-center">
+        <div class="container mx-auto px-6">
+            <h1 class="text-5xl md:text-8xl font-black text-white uppercase tracking-tighter leading-none">
+                Encuesta Hombre Vigente
+            </h1>
+            <p class="text-lg md:text-xl text-gray-300 max-w-2xl mx-auto my-8">
+                Ayúdanos a entender tus necesidades en 5-6 minutos. Tus respuestas moldearán el futuro del cuidado masculino.
+            </p>
+            <a href="#encuesta" class="btn-primary inline-block mt-4">Comenzar</a>
+        </div>
+    </section>
+
+    <!-- Encuesta Section -->
+    <section id="encuesta" class="py-24">
+        <div class="container mx-auto px-6">
+            <h2 class="section-title text-center">Tu Opinión Cuenta</h2>
+            <p class="section-subtitle">
+                Responde sobre tus preferencias de cuidado personal. Toma 5-6 minutos.
+            </p>
+            <form id="encuestaForm" class="max-w-2xl mx-auto space-y-6 mt-8">
+                <!-- Demografía -->
+                <div class="form-question">
+                    <label class="form-label">1. ¿Cuál es tu rango de edad?</label>
+                    <select name="edad" class="form-select" required>
+                        <option value="">Selecciona</option>
+                        <option value="30-40">30-40</option>
+                        <option value="41-50">41-50</option>
+                        <option value="51-60">51-60</option>
+                    </select>
+                </div>
+                <div class="form-question">
+                    <label class="form-label">2. ¿Cuál es tu ingreso anual aproximado?</label>
+                    <select name="ingreso" class="form-select" required>
+                        <option value="">Selecciona</option>
+                        <option value="<500k"><$500,000 MXN</option>
+                        <option value="500k-1M">$500,000-$1M MXN</option>
+                        <option value=">1M">>$1M MXN</option>
+                    </select>
+                </div>
+
+                <!-- Servicios y Pricing -->
+                <div class="form-question">
+                    <label class="form-label">3. Cara - Botox: Inyecciones que reducen arrugas, con 95% de mejora (JAMA Dermatology, 2016) en 2 semanas.</label>
+                    <div><label>¿Interés? </label><select name="interesBotox" class="form-select" required><option value="">Selecciona</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option></select></div>
+                    <div><label>¿Cuánto pagarías? </label><select name="precioBotox" class="form-select" required><option value="">Selecciona</option><option value="2125">$2,125</option><option value="2400">$2,400</option><option value="2750">$2,750</option><option value="3400">$3,400</option></select></div>
+                </div>
+                <div class="form-question">
+                    <label class="form-label">4. Grooming - Corte de Pelo: Estilizado profesional, con 95% de satisfacción (encuestas 2019), simple y efectivo.</label>
+                    <div><label>¿Interés? </label><select name="interesCorte" class="form-select" required><option value="">Selecciona</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option></select></div>
+                    <div><label>¿Cuánto pagarías? </label><select name="precioCorte" class="form-select" required><option value="">Selecciona</option><option value="255">$255</option><option value="290">$290</option><option value="340">$340</option><option value="380">$380</option><option value="425">$425</option></select></div>
+                </div>
+                <div class="form-question">
+                    <label class="form-label">5. Dientes - Blanqueamiento LED: Luz LED para blanquear dientes, con 88% de satisfacción (Journal of Dentistry, 2017) en 1 sesión.</label>
+                    <div><label>¿Interés? </label><select name="interesBlanqueamiento" class="form-select" required><option value="">Selecciona</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option></select></div>
+                    <div><label>¿Cuánto pagarías? </label><select name="precioBlanqueamiento" class="form-select" required><option value="">Selecciona</option><option value="2125">$2,125</option><option value="2300">$2,300</option><option value="2550">$2,550</option><option value="2725">$2,725</option><option value="2975">$2,975</option></select></div>
+                </div>
+                <div class="form-question">
+                    <label class="form-label">6. Cuerpo - Depilación Láser (hombros y espalda): Elimina vello en hombros y espalda, con 85% de reducción (Revista Dermatología, 2019) en 4-6 sesiones.</label>
+                    <div><label>¿Interés? </label><select name="interesDepilacion" class="form-select" required><option value="">Selecciona</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option></select></div>
+                    <div><label>¿Cuánto pagarías? </label><select name="precioDepilacion" class="form-select" required><option value="">Selecciona</option><option value="1700">$1,700</option><option value="1875">$1,875</option><option value="2125">$2,125</option><option value="2375">$2,375</option><option value="2550">$2,550</option></select></div>
+                </div>
+                <div class="form-question">
+                    <label class="form-label">7. Cirugía ambulatoria - Blefaroplastía: Cirugía para rejuvenecer párpados, con 92% de mejora (Aesthetic Surgery Journal, 2019) en 1-2 semanas.</label>
+                    <div><label>¿Interés? </label><select name="interesBlefaroplastia" class="form-select" required><option value="">Selecciona</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option></select></div>
+                    <div><label>¿Cuánto pagarías? </label><select name="precioBlefaroplastia" class="form-select" required><option value="">Selecciona</option><option value="17000">$17,000</option><option value="19125">$19,125</option><option value="21375">$21,375</option><option value="23375">$23,375</option><option value="25500">$25,500</option></select></div>
+                </div>
+                <div class="form-question">
+                    <label class="form-label">8. Cara - HIFU: Rejuvenecimiento facial sin cirugía en una sesión de 60-90 minutos, con 90% de satisfacción (Dermatologic Surgery, 2014) en 3-6 meses, simple y sin cremas costosas.</label>
+                    <div><label>¿Interés? </label><select name="interesHIFU" class="form-select" required><option value="">Selecciona</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option></select></div>
+                    <div><label>¿Cuánto pagarías? </label><select name="precioHIFU" class="form-select" required><option value="">Selecciona</option><option value="2550">$2,550</option><option value="2900">$2,900</option><option value="3400">$3,400</option><option value="3750">$3,750</option><option value="4250">$4,250</option></select></div>
+                </div>
+                <div class="form-question">
+                    <label class="form-label">9. Grooming - Manicure y Pedicure: Cuidado natural de uñas (manicure, 85% satisfacción, Journal of Aesthetic Nursing, 2018) y pies (pedicure, 87% mejora, Journal of Foot and Ankle Research, 2019), diseñado para hombres en un espacio cómodo.</label>
+                    <div><label>¿Interés en manicure? </label><select name="interesManicure" class="form-select" required><option value="">Selecciona</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option></select></div>
+                    <div><label>¿Interés en pedicure? </label><select name="interesPedicure" class="form-select" required><option value="">Selecciona</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option></select></div>
+                    <div><label>¿Cuánto pagarías por manicure? </label><select name="precioManicure" class="form-select" required><option value="">Selecciona</option><option value="255">$255</option><option value="290">$290</option><option value="340">$340</option><option value="380">$380</option><option value="425">$425</option></select></div>
+                    <div><label>¿Cuánto pagarías por pedicure? </label><select name="precioPedicure" class="form-select" required><option value="">Selecciona</option><option value="340">$340</option><option value="385">$385</option><option value="425">$425</option><option value="470">$470</option><option value="510">$510</option></select></div>
+                </div>
+
+                <!-- Ubicación -->
+                <div class="form-question">
+                    <label class="form-label">10. ¿Prefieres Centro cerca de Bernardo Quintana?</label>
+                    <select name="ubicacionPref" class="form-select" required>
+                        <option value="">Selecciona</option>
+                        <option value="Sí">Sí</option>
+                        <option value="No">No</option>
+                        <option value="Tal vez">Tal vez</option>
+                    </select>
+                </div>
+                <div class="form-question">
+                    <label class="form-label">11. ¿Accesibilidad preferida?</label>
+                    <select name="accesibilidad" class="form-select" required>
+                        <option value="">Selecciona</option>
+                        <option value="Oficinas">Cerca oficinas</option>
+                        <option value="Casa">Cerca casa</option>
+                        <option value="Gimnasio">Cerca gimnasio</option>
+                    </select>
+                </div>
+
+                <!-- Cultura -->
+                <div class="form-question">
+                    <label class="form-label">12. ¿Cuidar tu imagen te empodera?</label>
+                    <select name="empoderamiento" class="form-select" required>
+                        <option value="">Selecciona</option>
+                        <option value="1">1 = Para nada</option>
+                        <option value="2">2 = Poco</option>
+                        <option value="3">3 = Neutral</option>
+                        <option value="4">4 = Sí</option>
+                        <option value="5">5 = Mucho</option>
+                    </select>
+                </div>
+                <div class="form-question">
+                    <label class="form-label">13. ¿Te gustaría compartir experiencias y consejos de cuidado personal con otros hombres en un grupo?</label>
+                    <select name="comunidad" class="form-select" required>
+                        <option value="">Selecciona</option>
+                        <option value="1">1 = Para nada, no me interesa</option>
+                        <option value="2">2 = Poco, prefiero hacerlo solo</option>
+                        <option value="3">3 = Neutral, depende del grupo</option>
+                        <option value="4">4 = Sí, me parece útil</option>
+                        <option value="5">5 = Mucho, lo valoro mucho</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="btn-primary w-full mt-6">Enviar Encuesta</button>
+            </form>
+        </div>
+    </section>
+</main>
+
+<!-- JavaScript -->
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const encuestaForm = document.getElementById('encuestaForm');
+
+        // Mobile Menu Toggle
+        mobileMenuButton.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+        mobileMenu.querySelector('a').addEventListener('click', () => {
+            mobileMenu.classList.add('hidden');
+        });
+
+        // Form Submission to Google Sheets
+        encuestaForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const formData = new FormData(encuestaForm);
+            const data = {};
+            for (let [key, value] of formData.entries()) {
+                data[key] = value;
+            }
+            fetch('https://script.google.com/macros/s/TU_ID_WEB_APP/exec', { // Reemplaza con tu URL
+                method: 'POST',
+                body: JSON.stringify(data),
+                headers: { 'Content-Type': 'application/json' }
+            })
+            .then(response => {
+                if (response.ok) {
+                    alert('¡Encuesta enviada con éxito! Gracias por tu tiempo.');
+                    encuestaForm.reset();
+                } else {
+                    alert('Error al enviar la encuesta. Intenta de nuevo.');
+                }
+            })
+            .catch(error => alert('Error: ' + error.message));
+        });
+    });
+</script>
+
+</body>
+</html>
