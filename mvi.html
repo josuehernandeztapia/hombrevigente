@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manual de Vuelo Interactivo: Hombre Vigente</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Dark Minimalist (from Landing Page) -->
+    <!-- Application Structure Plan: A single-page dashboard designed for layered exploration. It starts with a high-level "North Star" executive summary (KPIs, Risk Status). The user can then scroll down into thematic sections: Strategic Foundation, an Interactive AI Ecosystem Explorer, and a Financial/Operational Performance dashboard. This structure allows different audiences (investors, managers, engineers) to engage with the content at their desired depth. The key interaction is moving from high-level summaries to detailed, filterable views (like the Tech Stack explorer) and interactive diagrams (like the Data Flywheel and process blueprints), making the complex information digestible and engaging without leaving the page. This is more effective than a linear document as it mirrors how one might explore a business intelligence tool. -->
+    <!-- Visualization & Content Choices: 
+        - North Star KPIs: Goal=Inform. Method=Large stat cards (HTML/CSS) for immediate impact. Interaction=None, pure display. Justification=Serves executive audience first with at-a-glance health metrics.
+        - RiskGuard Status: Goal=Inform/Alert. Method=CSS-driven "traffic light" for quick visual assessment. Interaction=Color changes based on data. Justification=Translates a complex risk score into a simple, universally understood visual.
+        - Data Flywheel: Goal=Organize/Show Relationships. Method=Interactive diagram using HTML/CSS Grid. No SVG. Interaction=Clicking on a node highlights it and its connections, showing a description. Justification=Makes the abstract "flywheel" concept tangible and explorable.
+        - Orchestration Blueprints: Goal=Explain Process. Method=Click-to-expand vertical flow diagrams (HTML/CSS). No SVG. Interaction=Accordion-style reveal. Justification=Clearly illustrates the sequence and hybrid (Internal/External) nature of automated workflows.
+        - Financial Charts: Goal=Compare. Method=Bar and Bubble charts via Chart.js on Canvas. Interaction=Hover tooltips for detailed data. Justification=Visual comparison is more effective than tables for spotting trends in performance across branches or services.
+        - Tech Stack: Goal=Organize/Inform. Method=Filterable grid of cards (HTML/CSS/JS). Interaction=Text search and category filters. Justification=Transforms a long, static list into a usable, interactive inventory.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: #0D0D0D;
+            color: #E0E0E0;
+        }
+        .nav-link {
+            position: relative;
+            transition: color 0.3s ease;
+            padding-bottom: 4px;
+        }
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background-color: #FFFFFF;
+            transition: width 0.3s ease;
+        }
+        .nav-link.active, .nav-link:hover {
+            color: #FFFFFF;
+        }
+        .nav-link.active::after, .nav-link:hover::after {
+            width: 100%;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            height: 320px;
+            max-height: 400px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 400px;
+            }
+        }
+        .dark-glass {
+            background: rgba(20, 20, 20, 0.5);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .flywheel-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            grid-template-rows: repeat(4, auto);
+            gap: 1rem;
+            align-items: center;
+            justify-items: center;
+        }
+        .flywheel-item {
+            transition: all 0.3s ease-in-out;
+            cursor: pointer;
+        }
+        .flywheel-item.active {
+            transform: scale(1.1);
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+        }
+        .flywheel-center {
+            grid-column: 2 / 5;
+            grid-row: 2 / 4;
+        }
+        .section-title {
+            @apply text-3xl md:text-4xl font-black tracking-tighter text-white uppercase mb-2;
+        }
+        .section-subtitle {
+             @apply text-lg text-gray-400 mb-8;
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <header class="sticky top-0 z-50 w-full dark-glass">
+        <nav class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center">
+                    <a href="#" class="text-2xl font-black tracking-tighter text-white uppercase">Hombre Vigente</a>
+                    <span class="ml-3 text-sm font-medium text-gray-400">Manual de Vuelo</span>
+                </div>
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-6">
+                        <a href="#north-star" class="nav-link text-gray-300 font-bold">Dashboard</a>
+                        <a href="#strategy" class="nav-link text-gray-300 font-bold">Estrategia</a>
+                        <a href="#ecosystem" class="nav-link text-gray-300 font-bold">Ecosistema IA</a>
+                        <a href="#operations" class="nav-link text-gray-300 font-bold">Operaciones</a>
+                        <a href="#financials" class="nav-link text-gray-300 font-bold">Finanzas</a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
+
+        <section id="north-star" class="mb-16 scroll-mt-24">
+            <h1 class="section-title">Dashboard "North Star"</h1>
+            <p class="section-subtitle">Una visión instantánea del estado del negocio, respondiendo a la pregunta: "¿Cómo vamos hoy?".</p>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
+                <div class="lg:col-span-1 md:col-span-2 p-6 bg-[#141414] rounded-2xl border border-gray-800 flex flex-col items-center justify-center text-center">
+                    <h3 class="text-lg font-bold text-gray-300 mb-2">Estado de Riesgo</h3>
+                    <div id="risk-light" class="w-24 h-24 rounded-full flex items-center justify-center transition-colors duration-500">
+                        <span id="risk-text" class="text-xl font-bold text-white uppercase tracking-tighter"></span>
+                    </div>
+                    <p class="text-sm text-gray-500 mt-3">Alimentado por <strong class="text-gray-300">RiskGuard AI</strong></p>
+                </div>
+
+                <div class="lg:col-span-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <div class="p-6 bg-[#141414] rounded-2xl border border-gray-800">
+                        <h3 class="font-bold text-gray-300">Ventas</h3>
+                        <p class="text-4xl font-black text-white mt-2">$4.1M</p>
+                        <p class="text-sm text-gray-500">Mes Actual (MXN)</p>
+                    </div>
+                    <div class="p-6 bg-[#141414] rounded-2xl border border-gray-800">
+                        <h3 class="font-bold text-gray-300">Visitas</h3>
+                        <p class="text-4xl font-black text-white mt-2">425</p>
+                        <p class="text-sm text-gray-500">Clientes/mes (CDMX)</p>
+                    </div>
+                    <div class="p-6 bg-[#141414] rounded-2xl border border-gray-800">
+                        <h3 class="font-bold text-gray-300">Valor Cliente (LTV)</h3>
+                        <p class="text-4xl font-black text-white mt-2">$71.5k</p>
+                        <p class="text-sm text-gray-500">Arquetipo "Pedro"</p>
+                    </div>
+                    <div class="p-6 bg-[#141414] rounded-2xl border border-gray-800">
+                        <h3 class="font-bold text-gray-300">Vitalidad Financiera</h3>
+                        <p class="text-4xl font-black text-white mt-2">49%</p>
+                        <p class="text-sm text-gray-500">EBITDA % (CDMX)</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="strategy" class="mb-16 scroll-mt-24">
+            <h2 class="section-title">Fundamento Estratégico</h2>
+            <p class="section-subtitle">El "porqué" que guía nuestra inversión tecnológica y operativa.</p>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
+                <div class="bg-[#141414] rounded-2xl border border-gray-800 p-6">
+                    <h3 class="font-bold text-white text-lg mb-2">Tecnología Clínica</h3>
+                    <p class="text-gray-400">Resultados predecibles y superiores mediante diagnóstico y tratamiento de vanguardia como HIFU y escaneos 3D.</p>
+                </div>
+                <div class="bg-[#141414] rounded-2xl border border-gray-800 p-6">
+                    <h3 class="font-bold text-white text-lg mb-2">Disciplina Minimalista</h3>
+                    <p class="text-gray-400">Nos enfocamos en lo esencial y efectivo. Simplicidad, eficiencia y autodisciplina como camino al bienestar.</p>
+                </div>
+                <div class="bg-[#141414] rounded-2xl border border-gray-800 p-6">
+                    <h3 class="font-bold text-white text-lg mb-2">Comunidad Educativa</h3>
+                    <p class="text-gray-400">Trascendemos la clínica para empoderar con conocimiento, fomentando la conexión y lealtad a largo plazo.</p>
+                </div>
+            </div>
+
+            <div class="bg-[#141414] rounded-2xl border border-gray-800 p-6">
+                 <h3 class="text-xl font-bold text-white mb-4">Arquetipos de Cliente por PersonaVigente AI</h3>
+                 <div class="overflow-x-auto">
+                    <table class="w-full text-left">
+                        <thead>
+                            <tr class="border-b border-gray-800">
+                                <th class="p-3 font-bold">Arquetipo</th>
+                                <th class="p-3 font-bold">Ticket Inicial</th>
+                                <th class="p-3 font-bold">LTV</th>
+                                <th class="p-3 font-bold">LTV/CAC</th>
+                            </tr>
+                        </thead>
+                        <tbody id="customer-archetypes">
+                        </tbody>
+                    </table>
+                 </div>
+            </div>
+        </section>
+
+        <section id="ecosystem" class="mb-16 scroll-mt-24">
+            <h2 class="section-title">Explorador del Ecosistema IA</h2>
+            <p class="section-subtitle">El "cómo" tecnológico. Interactúa con los componentes para entender el flujo de datos y la orquestación de nuestros agentes de IA.</p>
+
+            <div class="bg-[#141414] rounded-2xl border border-gray-800 p-6 md:p-8 mb-12">
+                <h3 class="text-xl font-bold text-white mb-4">Diagrama Interactivo del "Data Flywheel"</h3>
+                <p class="text-gray-400 mb-6">Haz clic en un componente para ver su rol en nuestro ecosistema y cómo se conecta con los demás.</p>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 items-start">
+                    <div class="md:col-span-2">
+                        <div class="flywheel-grid p-4 border border-gray-800 rounded-lg bg-black/50">
+                            <div id="flywheel-booksy" class="flywheel-item p-2 rounded-lg border-2 border-blue-500 bg-[#141414] text-center text-xs font-bold" style="grid-column: 1 / 2; grid-row: 1 / 2;">Booksy</div>
+                            <div id="flywheel-quickbooks" class="flywheel-item p-2 rounded-lg border-2 border-blue-500 bg-[#141414] text-center text-xs font-bold" style="grid-column: 2 / 3; grid-row: 1 / 2;">QuickBooks</div>
+                            <div id="flywheel-stripe" class="flywheel-item p-2 rounded-lg border-2 border-blue-500 bg-[#141414] text-center text-xs font-bold" style="grid-column: 3 / 4; grid-row: 1 / 2;">Stripe</div>
+                            <div id="flywheel-fotofinder" class="flywheel-item p-2 rounded-lg border-2 border-blue-500 bg-[#141414] text-center text-xs font-bold" style="grid-column: 4 / 5; grid-row: 1 / 2;">FotoFinder</div>
+                            <div id="flywheel-bus" class="flywheel-item p-2 rounded-lg border-2 border-gray-500 bg-[#141414] text-center text-xs font-bold" style="grid-column: 5 / 6; grid-row: 1 / 5;">Event Bus</div>
+                            <div id="flywheel-ssot" class="flywheel-item flywheel-center p-4 rounded-full border-4 border-white bg-gray-900 flex flex-col items-center justify-center text-center">
+                                <span class="font-black text-white text-lg">SSOT</span>
+                                <span class="text-xs text-gray-400">BigQuery</span>
+                            </div>
+                            <div id="flywheel-optivigente" class="flywheel-item p-2 rounded-lg border-2 border-green-500 bg-[#141414] text-center text-xs font-bold" style="grid-column: 1 / 2; grid-row: 2 / 3;">OptiVigente</div>
+                            <div id="flywheel-riskguard" class="flywheel-item p-2 rounded-lg border-2 border-green-500 bg-[#141414] text-center text-xs font-bold" style="grid-column: 1 / 2; grid-row: 3 / 4;">RiskGuard</div>
+                            <div id="flywheel-personavigente" class="flywheel-item p-2 rounded-lg border-2 border-green-500 bg-[#141414] text-center text-xs font-bold" style="grid-column: 5 / 6; grid-row: 2 / 3;">PersonaVigente</div>
+                            <div id="flywheel-chatvigente" class="flywheel-item p-2 rounded-lg border-2 border-green-500 bg-[#141414] text-center text-xs font-bold" style="grid-column: 5 / 6; grid-row: 3 / 4;">ChatVigente</div>
+                            <div id="flywheel-bi" class="flywheel-item p-2 rounded-lg border-2 border-purple-500 bg-[#141414] text-center text-xs font-bold" style="grid-column: 2 / 3; grid-row: 4 / 5;">BI / Dashboards</div>
+                            <div id="flywheel-app" class="flywheel-item p-2 rounded-lg border-2 border-purple-500 bg-[#141414] text-center text-xs font-bold" style="grid-column: 3 / 4; grid-row: 4 / 5;">App Cliente</div>
+                        </div>
+                    </div>
+                    <div id="flywheel-description-panel" class="md:col-span-1 p-4 bg-black/50 rounded-lg border border-gray-800 h-full">
+                        <h4 class="font-bold text-white mb-2">Descripción del Componente</h4>
+                        <p id="flywheel-description" class="text-gray-400 text-sm">Selecciona un componente del diagrama para ver su descripción aquí.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-[#141414] rounded-2xl border border-gray-800 p-6 md:p-8 mb-12">
+                <h3 class="text-xl font-bold text-white mb-4">Blueprints de Orquestación (Playbooks)</h3>
+                <p class="text-gray-400 mb-6">Explora cómo nuestros agentes de IA internos y herramientas externas colaboran para automatizar flujos de negocio clave. Haz clic en un playbook para ver los pasos.</p>
+                <div id="playbooks-container" class="space-y-4"></div>
+            </div>
+            
+            <div class="bg-[#141414] rounded-2xl border border-gray-800 p-6 md:p-8">
+                <h3 class="text-xl font-bold text-white mb-4">Inventario del Stack Tecnológico</h3>
+                <p class="text-gray-400 mb-6">Filtra y busca en nuestro catálogo completo de herramientas y agentes de IA.</p>
+                <div class="flex flex-wrap gap-4 mb-6">
+                    <input type="text" id="tech-search" placeholder="Buscar herramienta..." class="flex-grow p-3 rounded-md bg-gray-800/50 border border-gray-700 focus:outline-none focus:border-white transition-colors text-white placeholder-gray-500">
+                    <div class="flex items-center space-x-4">
+                        <button data-filter="all" class="tech-filter-btn px-4 py-2 rounded-full bg-white text-black font-bold">Todos</button>
+                        <button data-filter="Interna" class="tech-filter-btn px-4 py-2 rounded-full border-2 border-gray-600 text-gray-300 font-bold">Internos</button>
+                        <button data-filter="Externa" class="tech-filter-btn px-4 py-2 rounded-full border-2 border-gray-600 text-gray-300 font-bold">Externos</button>
+                    </div>
+                </div>
+                <div id="tech-stack-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+            </div>
+        </section>
+
+        <section id="operations" class="mb-16 scroll-mt-24">
+            <h2 class="section-title">Blueprint Operativo</h2>
+            <p class="section-subtitle">El modelo "Clinic-in-a-Box" que garantiza una experiencia consistente y de alta calidad.</p>
+            <div class="bg-[#141414] rounded-2xl border border-gray-800 p-6 md:p-8">
+                <h3 class="text-xl font-bold text-white mb-6">El Journey del Cliente en 6 Etapas</h3>
+                <div class="relative">
+                    <div class="absolute left-4 md:left-1/2 top-0 h-full w-0.5 bg-gray-800" aria-hidden="true"></div>
+                    <div id="journey-container" class="space-y-8"></div>
+                </div>
+            </div>
+        </section>
+        
+        <section id="financials" class="scroll-mt-24">
+            <h2 class="section-title">Análisis Financiero y de Rendimiento</h2>
+            <p class="section-subtitle">Visualización de los resultados generados por nuestro modelo operativo optimizado por IA.</p>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <div class="bg-[#141414] rounded-2xl border border-gray-800 p-6">
+                    <h3 class="text-xl font-bold text-white mb-4">P&L Comparativo por Sucursal (EBITDA)</h3>
+                    <div class="chart-container">
+                        <canvas id="branchChart"></canvas>
+                    </div>
+                </div>
+                <div class="bg-[#141414] rounded-2xl border border-gray-800 p-6">
+                    <h3 class="text-xl font-bold text-white mb-4">Análisis de Margen y Precio por Servicio</h3>
+                    <div class="chart-container">
+                        <canvas id="serviceChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+    
+    <footer class="mt-16 py-8 border-t border-gray-900">
+        <div class="container mx-auto px-4 text-center text-gray-500">
+            <p>&copy; 2025 Hombre Vigente. Manual de Vuelo del Negocio v1.1.</p>
+        </div>
+    </footer>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    
+    const data = {
+        riskStatus: { status: 'Verde', score: 2.9, probability: 0.05 },
+        customerArchetypes: [
+            { tipo: 'Carlos (Rejuvenecedor)', ticket: 23400, ltv: 43000, ltv_cac: 17.2 },
+            { tipo: 'Pedro (Definido)', ticket: 59100, ltv: 71500, ltv_cac: 23.8 },
+            { tipo: 'Luis (Renovado)', ticket: 12400, ltv: 21800, ltv_cac: 12.1 }
+        ],
+        flywheelComponents: {
+            'flywheel-booksy': { name: 'Booksy (Externo)', description: 'Sistema de reservas que genera eventos de citas, cancelaciones y no-shows. Es una fuente primaria de datos de demanda del cliente.' },
+            'flywheel-quickbooks': { name: 'QuickBooks (Externo)', description: 'Plataforma contable que emite webhooks de transacciones financieras, alimentando a RiskGuard AI para el análisis de salud financiera en tiempo real.' },
+            'flywheel-stripe': { name: 'Stripe (Externo)', description: 'Pasarela de pagos que procesa transacciones y genera eventos de pago, esenciales para el seguimiento de ingresos y la gestión de suscripciones.' },
+            'flywheel-fotofinder': { name: 'FotoFinder (Externo)', description: 'Dispositivo de diagnóstico 3D y térmico. Provee los datos crudos para que DiagnósticoVigente AI genere el Índice de Vigencia.' },
+            'flywheel-bus': { name: 'Event Bus (Externo)', description: 'Bus de mensajería (Kafka/Pub-Sub) que recibe todos los eventos de las fuentes externas y los distribuye a los consumidores internos de forma desacoplada y escalable.' },
+            'flywheel-ssot': { name: 'SSOT (Interno)', description: 'Nuestra Única Fuente de Verdad (Single Source of Truth) en BigQuery. Centraliza todos los datos procesados y enriquecidos, sirviendo como el núcleo para todos los agentes de IA.' },
+            'flywheel-optivigente': { name: 'OptiVigente AI (Interno)', description: 'Agente de optimización. Consume datos de demanda para ajustar precios dinámicamente, optimizar la agenda y gestionar la utilización de recursos.' },
+            'flywheel-riskguard': { name: 'RiskGuard AI (Interno)', description: 'Agente de supervisión financiera. Analiza datos de QuickBooks y Stripe para simular riesgos, calcular el Z-Score y emitir alertas, protegiendo la rentabilidad.' },
+            'flywheel-personavigente': { name: 'PersonaVigente AI (Interno)', description: 'Agente de hiperpersonalización. Utiliza datos de diagnóstico y comportamiento para segmentar clientes, calcular propensión al churn y personalizar ofertas.' },
+            'flywheel-chatvigente': { name: 'ChatVigente AI (Interno)', description: 'Agente conversacional que interactúa con los clientes para reservas, soporte y campañas de retención, utilizando la inteligencia de otros agentes.' },
+            'flywheel-bi': { name: 'BI / Dashboards (Externo)', description: 'Herramientas como Looker o Tableau que se conectan a la SSOT para generar visualizaciones y reportes para la toma de decisiones humana.' },
+            'flywheel-app': { name: 'App Cliente', description: 'La aplicación móvil o web para el cliente, que presenta ofertas personalizadas, permite agendar y muestra resultados, cerrando el ciclo del flywheel.' },
+        },
+        playbooks: [
+            {
+                title: "Gestión de Baja Ocupación (<80%)",
+                steps: [
+                    { name: "Detectar Caída", actor: "OptiVigente AI", type: "Interna" },
+                    { name: "Calcular Descuento Dinámico", actor: "OptiVigente AI", type: "Interna" },
+                    { name: "Enviar Oferta Flash", actor: "ChatVigente AI", type: "Interna" },
+                    { name: "Cliente Reserva", actor: "Booksy", type: "Externa" },
+                    { name: "Ocupación Recuperada", actor: "Resultado", type: "Outcome" }
+                ]
+            },
+            {
+                title: "Gestión de Riesgo de Churn (>0.6 CPS)",
+                steps: [
+                    { name: "Calcular CPS", actor: "PersonaVigente AI", type: "Interna" },
+                    { name: "Enviar Oferta Retención", actor: "ChatVigente GPT", type: "Interna" },
+                    { name: "Ajustar Plan", actor: "OptiVigente AI", type: "Interna" },
+                    { name: "Actualizar Proyecciones", actor: "RiskGuard AI", type: "Interna" },
+                    { name: "Riesgo Mitigado", actor: "Resultado", type: "Outcome" }
+                ]
+            },
+            {
+                title: "Integración Financiera en Tiempo Real",
+                steps: [
+                    { name: "Factura Creada", actor: "QuickBooks", type: "Externa" },
+                    { name: "Webhook a Event Bus", actor: "Pub/Sub", type: "Externa" },
+                    { name: "Procesar y Cargar a SSOT", actor: "Dataflow -> BigQuery", type: "Externa" },
+                    { name: "Recalcular Z-Score", actor: "RiskGuard AI", type: "Interna" },
+                    { name: "Actualizar Dashboard", actor: "Looker", type: "Externa" }
+                ]
+            }
+        ],
+        techStack: [
+            { name: 'DiagnósticoVigente AI', type: 'Interna', domain: 'Diagnóstico & Personalización', description: 'Análisis 3D+térmico, cálculo del Índice de Vigencia, propuesta de plan.' },
+            { name: 'PersonaVigente AI', type: 'Interna', domain: 'Diagnóstico & Personalización', description: 'Recomendaciones hiperpersonalizadas, motor de perfiles y propensión a comprar.' },
+            { name: 'OptiVigente AI', type: 'Interna', domain: 'Operaciones & Scheduling', description: 'Predicción de demanda, optimización de turnos y pricing dinámico.' },
+            { name: 'RiskGuard AI', type: 'Interna', domain: 'Finanzas & Riesgo', description: 'Simulaciones Monte Carlo, Altman Z-Score, alertas de desviación y quiebra.' },
+            { name: 'ChatVigente AI (LLM)', type: 'Interna', domain: 'Atención al Cliente', description: 'Chatbot multicanal (WhatsApp, web), reservas, FAQs y soporte automatizado.'},
+            { name: 'Kafka / Pub-Sub', type: 'Externa', domain: 'Operaciones & Scheduling', description: 'Bus de eventos para trigger de recalculos en tiempo real.' },
+            { name: 'Google Dataflow / Flink', type: 'Externa', domain: 'Operaciones & Scheduling', description: 'Procesamiento streaming de eventos de reservas y transacciones.' },
+            { name: 'QuickBooks AI', type: 'Externa', domain: 'Finanzas & Riesgo', description: 'Reportes automáticos P&L y flujo de caja.' },
+            { name: 'Dialogflow CX / ManyChat', type: 'Externa', domain: 'Atención al Cliente', description: 'Framework de chatbots para WhatsApp, Instagram, Facebook.'},
+            { name: 'MLflow', type: 'Externa', domain: 'MLOps & Gobernanza', description: 'Tracking, versionado y despliegue de modelos.' },
+            { name: 'BigQuery / Snowflake', type: 'Externa', domain: 'Almacenamiento & BI', description: 'Data lakehouse único (SSOT) financiero y operativo.' },
+            { name: 'Looker / Tableau', type: 'Externa', domain: 'Almacenamiento & BI', description: 'Dashboards interactivos y reportes analíticos.' },
+            { name: 'Stripe México', type: 'Externa', domain: 'Pasarelas de Pago', description: 'Cobros locales e internacionales y gestión de suscripciones.' }
+        ],
+        customerJourney: [
+            { stage: 1, title: "Descubrimiento Digital", description: "El primer contacto ocurre a través de contenido en redes sociales con un CTA para agendar un diagnóstico 3D gratuito.", icon: "🔍" },
+            { stage: 2, title: "Check-in & Escaneo 3D", description: "A su llegada, el cliente realiza un check-in rápido y se somete a un escaneo. Input para DiagnósticoVigente AI.", icon: "📱" },
+            { stage: 3, title: "Plan PersonaVigente", description: "Inmediatamente, PersonaVigente AI genera un plan hiperpersonalizado que es presentado al cliente.", icon: "✨" },
+            { stage: 4, title: "Ejecución Tratamiento", description: "El cliente procede al tratamiento en una cabina asignada dinámicamente por OptiVigente AI.", icon: "💉" },
+            { stage: 5, title: "Seguimiento", description: "Se guía al cliente en su recuperación y se agenda la siguiente cita, a menudo de forma automática vía ChatVigente AI.", icon: "📅" },
+            { stage: 6, title: "Comunidad", description: "Se invita al cliente a eventos educativos exclusivos para fomentar la lealtad y el engagement.", icon: "🤝" }
+        ],
+        branchData: {
+            labels: ['CDMX Centro', 'Guadalajara', 'Querétaro'],
+            ebitda: [2.03, 0.84, 0.74] 
+        },
+        serviceData: [
+            { x: 4000, y: 86, r: 18, label: 'HIFU' },
+            { x: 3000, y: 75, r: 12, label: 'Botox' },
+            { x: 2500, y: 67, r: 24, label: 'Depilación Láser' }
+        ]
+    };
+    
+    function init() {
+        setupRiskLight();
+        populateArchetypes();
+        setupFlywheel();
+        renderPlaybooks();
+        renderTechStack();
+        setupTechStackFilters();
+        renderCustomerJourney();
+        renderCharts();
+        setupNavScroll();
+    }
+
+    function setupRiskLight() {
+        const light = document.getElementById('risk-light');
+        const text = document.getElementById('risk-text');
+        const status = data.riskStatus.status;
+        
+        light.classList.remove('bg-green-500', 'bg-yellow-500', 'bg-red-500');
+        
+        if (status === 'Verde') {
+            light.classList.add('bg-green-500');
+            text.textContent = 'Normal';
+        } else if (status === 'Amarillo') {
+            light.classList.add('bg-yellow-500');
+            text.textContent = 'Alerta';
+        } else {
+            light.classList.add('bg-red-500');
+            text.textContent = 'Crítico';
+        }
+    }
+
+    function populateArchetypes() {
+        const container = document.getElementById('customer-archetypes');
+        container.innerHTML = '';
+        const formatter = new Intl.NumberFormat('es-MX', { style: 'currency', currency: 'MXN' });
+        
+        data.customerArchetypes.forEach(archetype => {
+            const row = `
+                <tr class="border-b border-gray-800 last:border-b-0 hover:bg-gray-900">
+                    <td class="p-3 font-bold text-white">${archetype.tipo}</td>
+                    <td class="p-3 text-gray-400">${formatter.format(archetype.ticket)}</td>
+                    <td class="p-3 text-gray-400">${formatter.format(archetype.ltv)}</td>
+                    <td class="p-3 text-gray-400 font-bold">${archetype.ltv_cac}</td>
+                </tr>
+            `;
+            container.innerHTML += row;
+        });
+    }
+    
+    function setupFlywheel() {
+        const components = document.querySelectorAll('.flywheel-item');
+        const descriptionEl = document.getElementById('flywheel-description');
+
+        components.forEach(component => {
+            component.addEventListener('click', () => {
+                components.forEach(c => c.classList.remove('active'));
+                component.classList.add('active');
+                
+                const componentData = data.flywheelComponents[component.id];
+                if (componentData) {
+                    descriptionEl.innerHTML = `<h4 class="font-bold text-white mb-2">${componentData.name}</h4><p class="text-gray-400 text-sm">${componentData.description}</p>`;
+                }
+            });
+        });
+    }
+
+    function renderPlaybooks() {
+        const container = document.getElementById('playbooks-container');
+        container.innerHTML = '';
+        data.playbooks.forEach((playbook) => {
+            const playbookEl = document.createElement('div');
+            playbookEl.className = 'border border-gray-800 rounded-lg';
+            playbookEl.innerHTML = `
+                <button class="w-full text-left p-4 flex justify-between items-center hover:bg-gray-900 focus:outline-none">
+                    <span class="font-bold text-white">${playbook.title}</span>
+                    <span class="transform transition-transform duration-300 text-gray-400">▼</span>
+                </button>
+                <div class="playbook-content hidden p-4 border-t border-gray-800">
+                    <div class="flex flex-col space-y-2">
+                        ${playbook.steps.map(step => `
+                            <div class="flex items-center">
+                                <div class="w-1/3 text-sm font-bold ${step.type === 'Interna' ? 'text-green-400' : (step.type === 'Externa' ? 'text-blue-400' : 'text-yellow-400')}">${step.actor}</div>
+                                <div class="w-8 h-8 rounded-full ${step.type === 'Interna' ? 'bg-green-900/50' : (step.type === 'Externa' ? 'bg-blue-900/50' : 'bg-yellow-900/50')} flex items-center justify-center mx-4 z-10 border-2 ${step.type === 'Interna' ? 'border-green-500' : (step.type === 'Externa' ? 'border-blue-500' : 'border-yellow-500')}">
+                                    <span class="text-xs font-bold">${playbook.steps.indexOf(step) + 1}</span>
+                                </div>
+                                <div class="w-2/3 text-sm text-gray-300">${step.name}</div>
+                            </div>
+                        `).join('<div class="h-4 border-l-2 border-dashed border-gray-700 ml-4"></div>')}
+                    </div>
+                </div>
+            `;
+            container.appendChild(playbookEl);
+        });
+
+        container.querySelectorAll('button').forEach(button => {
+            button.addEventListener('click', () => {
+                const content = button.nextElementSibling;
+                const icon = button.querySelector('span:last-child');
+                content.classList.toggle('hidden');
+                icon.classList.toggle('rotate-180');
+            });
+        });
+    }
+
+    function renderTechStack(filter = 'all', searchTerm = '') {
+        const grid = document.getElementById('tech-stack-grid');
+        grid.innerHTML = '';
+        const filteredStack = data.techStack
+            .filter(item => filter === 'all' || item.type === filter)
+            .filter(item => item.name.toLowerCase().includes(searchTerm.toLowerCase()));
+
+        filteredStack.forEach(item => {
+            const card = document.createElement('div');
+            card.className = 'p-4 bg-[#0D0D0D] border border-gray-800 rounded-lg transition-shadow hover:border-white/50';
+            const typeClass = item.type === 'Interna' ? 'bg-green-500/20 text-green-300' : 'bg-blue-500/20 text-blue-300';
+            card.innerHTML = `
+                <div class="flex justify-between items-start">
+                    <h4 class="font-bold text-white">${item.name}</h4>
+                    <span class="text-xs font-semibold px-2 py-1 rounded-full ${typeClass}">${item.type}</span>
+                </div>
+                <p class="text-sm text-gray-500 mt-1 mb-2">${item.domain}</p>
+                <p class="text-sm text-gray-400">${item.description}</p>
+            `;
+            grid.appendChild(card);
+        });
+    }
+    
+    function setupTechStackFilters() {
+        const searchInput = document.getElementById('tech-search');
+        const filterBtns = document.querySelectorAll('.tech-filter-btn');
+        let currentFilter = 'all';
+
+        searchInput.addEventListener('input', (e) => {
+            renderTechStack(currentFilter, e.target.value);
+        });
+
+        filterBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                filterBtns.forEach(b => {
+                    b.classList.remove('bg-white', 'text-black');
+                    b.classList.add('border-2', 'border-gray-600', 'text-gray-300');
+                });
+                btn.classList.add('bg-white', 'text-black');
+                btn.classList.remove('border-2', 'border-gray-600', 'text-gray-300');
+                
+                currentFilter = btn.dataset.filter;
+                renderTechStack(currentFilter, searchInput.value);
+            });
+        });
+    }
+
+    function renderCustomerJourney() {
+        const container = document.getElementById('journey-container');
+        container.innerHTML = '';
+        data.customerJourney.forEach(item => {
+            const journeyItem = `
+                <div class="relative flex items-center md:justify-start">
+                    <div class="absolute left-4 md:left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-white text-black flex items-center justify-center font-black">${item.stage}</div>
+                    <div class="w-full bg-[#141414] p-4 rounded-lg shadow-md border border-gray-800 ml-10">
+                        <div class="flex items-center mb-2">
+                             <span class="text-2xl mr-3">${item.icon}</span>
+                             <h4 class="font-bold text-white">${item.title}</h4>
+                        </div>
+                        <p class="text-sm text-gray-400">${item.description}</p>
+                    </div>
+                </div>
+            `;
+             container.innerHTML += journeyItem;
+        });
+    }
+
+    function renderCharts() {
+        const chartTextColor = '#E0E0E0';
+        const chartGridColor = 'rgba(224, 224, 224, 0.1)';
+
+        const branchCtx = document.getElementById('branchChart').getContext('2d');
+        new Chart(branchCtx, {
+            type: 'bar',
+            data: {
+                labels: data.branchData.labels,
+                datasets: [{
+                    label: 'EBITDA (Millones MXN)',
+                    data: data.branchData.ebitda,
+                    backgroundColor: 'rgba(255, 255, 255, 0.8)',
+                    borderColor: '#FFFFFF',
+                    borderWidth: 1,
+                    borderRadius: 5,
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: { display: true, text: 'EBITDA (Millones MXN)', color: chartTextColor },
+                        ticks: { color: chartTextColor },
+                        grid: { color: chartGridColor }
+                    },
+                    x: {
+                        ticks: { color: chartTextColor },
+                        grid: { color: chartGridColor }
+                    }
+                },
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        backgroundColor: '#0D0D0D',
+                        titleColor: '#FFFFFF',
+                        bodyColor: '#E0E0E0',
+                        borderColor: '#FFFFFF',
+                        borderWidth: 1,
+                        callbacks: {
+                            label: function(context) {
+                                return `EBITDA: ${context.raw}M MXN`;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        const serviceCtx = document.getElementById('serviceChart').getContext('2d');
+        new Chart(serviceCtx, {
+            type: 'bubble',
+            data: {
+                datasets: [{
+                    label: 'Servicios',
+                    data: data.serviceData,
+                    backgroundColor: 'rgba(255, 255, 255, 0.6)',
+                    borderColor: '#FFFFFF',
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: {
+                        title: { display: true, text: 'Precio Medio (MXN)', color: chartTextColor },
+                        ticks: { 
+                            color: chartTextColor,
+                            callback: value => new Intl.NumberFormat('es-MX', { style: 'currency', currency: 'MXN', maximumFractionDigits: 0 }).format(value)
+                        },
+                        grid: { color: chartGridColor }
+                    },
+                    y: {
+                        title: { display: true, text: 'Margen (%)', color: chartTextColor },
+                        ticks: { color: chartTextColor },
+                        grid: { color: chartGridColor }
+                    }
+                },
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        backgroundColor: '#0D0D0D',
+                        titleColor: '#FFFFFF',
+                        bodyColor: '#E0E0E0',
+                        borderColor: '#FFFFFF',
+                        borderWidth: 1,
+                        callbacks: {
+                            label: function(context) {
+                                const item = context.raw;
+                                return `${item.label}: Margen ${item.y}%, Precio ${new Intl.NumberFormat('es-MX', { style: 'currency', currency: 'MXN' }).format(item.x)}`;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    function setupNavScroll() {
+        const navLinks = document.querySelectorAll('header nav a');
+        const sections = document.querySelectorAll('main section');
+
+        const observerOptions = {
+            root: null,
+            rootMargin: '0px',
+            threshold: 0.3
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    navLinks.forEach(link => {
+                        link.classList.remove('active');
+                        if (link.getAttribute('href').substring(1) === entry.target.id) {
+                            link.classList.add('active');
+                        }
+                    });
+                }
+            });
+        }, observerOptions);
+
+        sections.forEach(section => {
+            observer.observe(section);
+        });
+    }
+
+    init();
+});
+</script>
+</body>
+</html>
