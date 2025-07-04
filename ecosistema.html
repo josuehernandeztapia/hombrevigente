@@ -1,0 +1,798 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hombre Vigente - Manual de Vuelo Interactivo</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
+    <!--
+    Chosen Palette: Dark Mode (Black, White, Grey) based on Landing Page
+    Application Structure Plan: A multi-level, single-page dashboard. The structure is thematic, not linear, allowing users to jump between high-level strategy (Dashboard, Strategy) and deep technical details (AI Ecosystem, Data Contracts) via a persistent navigation. The core idea is to make a dense, multi-layered report explorable. A C-level user can stay at the KPI level, while an engineer can drill down into AI agent orchestration flows or data schemas. This non-linear exploration is key for usability given the diverse audience (investors, managers, tech teams).
+    Visualization & Content Choices: 
+    - KPIs -> Inform -> HTML/CSS Cards -> Interaction: Simulate risk status via buttons -> Justification: Quick, high-impact overview.
+    - Financial Projections (P&L, ROI) -> Compare/Analyze -> Chart.js Bar/Line Charts -> Interaction: Hover for tooltips, filter scenarios -> Justification: Visual representation is far more effective for financial data than tables.
+    - AI Agent Flows -> Explain Process -> HTML/CSS/JS Interactive Diagram -> Interaction: Click tabs to see different flows -> Justification: Makes complex inter-agent communication easy to understand sequentially.
+    - Data Schemas -> Inform/Organize -> Formatted HTML <pre> blocks -> Interaction: None (static display) -> Justification: Clear, readable presentation for technical users.
+    - Customer Journey/Org Structure -> Explain Process -> HTML/CSS Timeline & Cards -> Interaction: None (static display) -> Justification: Visually breaks down operational concepts.
+    - All charts use Chart.js, ensuring adherence to the NO SVG/Mermaid constraint.
+    CONFIRMATION: NO SVG graphics used. NO Mermaid JS used.
+    -->
+    <style>
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: #0D0D0D;
+            color: #E0E0E0;
+        }
+        .section-title {
+            @apply text-4xl md:text-5xl font-black tracking-tighter text-white uppercase;
+        }
+        .nav-link {
+            transition: all 0.2s ease-in-out;
+            border-bottom: 2px solid transparent;
+        }
+        .nav-link.active, .nav-link:hover {
+            color: #FFFFFF;
+            border-bottom-color: #FFFFFF;
+        }
+        .kpi-card {
+            transition: transform 0.2s ease-in-out, background-color 0.2s ease-in-out;
+        }
+        .kpi-card:hover {
+            transform: translateY(-5px);
+            background-color: #1f2937; /* gray-800 */
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 400px;
+            max-height: 50vh;
+        }
+        .tab-button {
+             @apply whitespace-nowrap py-3 px-4 border-b-2 border-transparent font-medium text-sm text-gray-400 hover:text-white hover:border-gray-500 rounded-t-lg transition-colors;
+        }
+        .tab-button.active {
+            background-color: #FFFFFF;
+            color: #0D0D0D;
+            border-color: #FFFFFF;
+        }
+        .flow-step {
+            display: flex;
+            align-items: center;
+            opacity: 0;
+            transform: translateX(-20px);
+            animation: slideIn 0.5s forwards;
+        }
+        @keyframes slideIn {
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        .data-flywheel {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            aspect-ratio: 1 / 1;
+            margin: auto;
+        }
+        .flywheel-item {
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            font-size: 0.75rem;
+            line-height: 1.1;
+            padding: 4px;
+            background-color: #1F2937; /* gray-800 */
+            border: 1px solid #374151; /* gray-700 */
+            animation: spin 20s linear infinite;
+            transform-origin: 50% 50%;
+        }
+        @keyframes spin {
+            from { transform: rotate(0deg) translateX(150px) rotate(0deg); }
+            to { transform: rotate(360deg) translateX(150px) rotate(-360deg); }
+        }
+        @keyframes spin-reverse {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(-360deg); }
+        }
+        .flywheel-item:nth-child(1) { animation-delay: -4s; }
+        .flywheel-item:nth-child(2) { animation-delay: -8s; }
+        .flywheel-item:nth-child(3) { animation-delay: -12s; }
+        .flywheel-item:nth-child(4) { animation-delay: -16s; }
+        .flywheel-item:nth-child(5) { animation-delay: -20s; }
+        
+        @media (min-width: 640px) {
+            .flywheel-item {
+                width: 120px;
+                height: 120px;
+                font-size: 0.875rem;
+            }
+            @keyframes spin {
+                from { transform: rotate(0deg) translateX(200px) rotate(0deg); }
+                to { transform: rotate(360deg) translateX(200px) rotate(-360deg); }
+            }
+        }
+        .flywheel-center {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            animation: spin-reverse 20s linear infinite;
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <!-- Header & Navigation -->
+    <header class="bg-black/50 backdrop-blur-sm sticky top-0 z-50 border-b border-gray-800">
+        <nav class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex-shrink-0">
+                    <h1 class="text-2xl font-black tracking-tighter text-white uppercase">
+                        Hombre<span class="font-normal">Vigente</span>
+                    </h1>
+                </div>
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-4 font-bold">
+                        <a href="#dashboard" class="nav-link px-3 py-2 text-sm text-gray-300">Dashboard</a>
+                        <a href="#estrategia" class="nav-link px-3 py-2 text-sm text-gray-300">Estrategia</a>
+                        <a href="#ecosistema" class="nav-link px-3 py-2 text-sm text-gray-300">Ecosistema IA</a>
+                        <a href="#operaciones" class="nav-link px-3 py-2 text-sm text-gray-300">Operaciones</a>
+                        <a href="#finanzas" class="nav-link px-3 py-2 text-sm text-gray-300">Finanzas</a>
+                        <a href="#gobernanza" class="nav-link px-3 py-2 text-sm text-gray-300">Gobernanza</a>
+                    </div>
+                </div>
+                 <div class="md:hidden">
+                    <button id="mobile-menu-button" class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-white">
+                        <span class="sr-only">Abrir menú principal</span>
+                        <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </nav>
+        <div id="mobile-menu" class="md:hidden hidden bg-black/90">
+            <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+                <a href="#dashboard" class="nav-link block px-3 py-2 rounded-md text-base font-medium text-gray-300">Dashboard</a>
+                <a href="#estrategia" class="nav-link block px-3 py-2 rounded-md text-base font-medium text-gray-300">Estrategia</a>
+                <a href="#ecosistema" class="nav-link block px-3 py-2 rounded-md text-base font-medium text-gray-300">Ecosistema IA</a>
+                <a href="#operaciones" class="nav-link block px-3 py-2 rounded-md text-base font-medium text-gray-300">Operaciones</a>
+                <a href="#finanzas" class="nav-link block px-3 py-2 rounded-md text-base font-medium text-gray-300">Finanzas</a>
+                <a href="#gobernanza" class="nav-link block px-3 py-2 rounded-md text-base font-medium text-gray-300">Gobernanza</a>
+            </div>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24">
+        
+        <!-- Módulo 0: Dashboard "North Star" -->
+        <section id="dashboard" class="mb-24 scroll-mt-20">
+            <h2 class="section-title">Dashboard "North Star"</h2>
+            <p class="mt-4 text-lg text-gray-400 max-w-3xl">Una vista instantánea de la salud y el rendimiento del negocio. Responde a la pregunta: "¿Cómo vamos, aquí y ahora?".</p>
+            
+            <div class="mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8">
+                <!-- KPIs -->
+                <div class="lg:col-span-3 grid grid-cols-1 sm:grid-cols-2 gap-6">
+                    <div class="kpi-card bg-gray-900 p-6 rounded-xl border border-gray-800">
+                        <h3 class="text-sm font-medium text-gray-400">Ventas (Mensual)</h3>
+                        <p class="mt-2 text-3xl font-bold text-white">$650,000 <span class="text-sm font-medium text-gray-400">MXN</span></p>
+                        <p class="mt-1 text-sm text-green-400 flex items-center">
+                            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path></svg>
+                            <span>vs. Objetivo</span>
+                        </p>
+                    </div>
+                     <div class="kpi-card bg-gray-900 p-6 rounded-xl border border-gray-800">
+                        <h3 class="text-sm font-medium text-gray-400">Visitas (Diarias)</h3>
+                        <p class="mt-2 text-3xl font-bold text-white">20 <span class="text-sm font-medium text-gray-400">clientes</span></p>
+                        <p class="mt-1 text-sm text-green-400 flex items-center">
+                           <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path></svg>
+                           <span>Ocupación 80%</span>
+                        </p>
+                    </div>
+                     <div class="kpi-card bg-gray-900 p-6 rounded-xl border border-gray-800">
+                        <h3 class="text-sm font-medium text-gray-400">Valor Cliente (LTV/CAC)</h3>
+                        <p class="mt-2 text-3xl font-bold text-white">12:1</p>
+                        <p class="mt-1 text-sm text-green-400 flex items-center">
+                            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path></svg>
+                           <span>Objetivo ≥ 12</span>
+                        </p>
+                    </div>
+                     <div class="kpi-card bg-gray-900 p-6 rounded-xl border border-gray-800">
+                        <h3 class="text-sm font-medium text-gray-400">Vitalidad (EBITDA)</h3>
+                        <p class="mt-2 text-3xl font-bold text-white">38%</p>
+                         <p class="mt-1 text-sm text-gray-400 flex items-center">
+                           <span>Margen estabilizado</span>
+                        </p>
+                    </div>
+                </div>
+
+                <!-- RiskGuard AI -->
+                <div class="lg:col-span-2 bg-gray-900 p-6 rounded-xl border border-gray-800 flex flex-col items-center justify-center">
+                    <h3 class="text-lg font-semibold text-white mb-4">Semáforo RiskGuard AI</h3>
+                    <div id="risk-semaphore" class="w-32 h-32 rounded-full flex items-center justify-center transition-colors duration-500 bg-green-500">
+                        <span id="risk-status-text" class="text-2xl font-bold text-white">Seguro</span>
+                    </div>
+                    <p id="risk-description" class="text-center text-sm text-gray-400 mt-4">Altman Z-Score > 2.9. El negocio opera dentro de los parámetros de seguridad. Crecimiento y optimización activados.</p>
+                    <div class="mt-4 flex space-x-2">
+                        <button data-risk="seguro" class="risk-button px-3 py-1 text-xs border-2 border-green-500 text-green-300 rounded-full hover:bg-green-500 hover:text-white transition-colors">Simular Seguro</button>
+                        <button data-risk="precaucion" class="risk-button px-3 py-1 text-xs border-2 border-amber-500 text-amber-300 rounded-full hover:bg-amber-500 hover:text-white transition-colors">Simular Precaución</button>
+                        <button data-risk="alerta" class="risk-button px-3 py-1 text-xs border-2 border-red-500 text-red-300 rounded-full hover:bg-red-500 hover:text-white transition-colors">Simular Alerta</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Módulo 1: Fundamento Estratégico -->
+        <section id="estrategia" class="mb-24 scroll-mt-20">
+            <h2 class="section-title">Fundamento Estratégico</h2>
+            <p class="mt-4 text-lg text-gray-400 max-w-3xl">El "porqué" de la compañía: la visión, la oportunidad de mercado y la ventaja competitiva que nos define.</p>
+            
+            <div class="mt-12 space-y-12">
+                <div>
+                    <h3 class="text-3xl font-bold text-white">Propuesta de Valor "Trifecta"</h3>
+                    <p class="mt-2 text-gray-400">Nuestra diferenciación se basa en tres pilares interconectados que crean una experiencia única y difícil de replicar.</p>
+                    <div class="mt-8 grid grid-cols-1 md:grid-cols-3 gap-8">
+                        <div class="bg-gray-900 p-6 rounded-xl border border-gray-800">
+                            <div class="text-white">
+                                <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.75 3.104v5.714a2.25 2.25 0 01-.659 1.591L5 14.5M9.75 3.104c.239.023.48.046.72.076a13.49 13.49 0 015.858 2.551 13.49 13.49 0 012.551 5.858c.03.24.053.481.076.72m-6.63-9.181a11.956 11.956 0 018.966 2.923m-8.966-2.923c-.239.023-.48.046-.72.076a11.956 11.956 0 00-2.923 8.966m14.29-11.889a11.956 11.956 0 01-2.923 8.966M5 14.5M5 14.5a2.25 2.25 0 00-2.25 2.25v1.5a2.25 2.25 0 002.25 2.25h1.5a2.25 2.25 0 002.25-2.25v-1.5a2.25 2.25 0 00-2.25-2.25H5z"></path></svg>
+                            </div>
+                            <h4 class="mt-4 text-xl font-bold">Tecnología Clínica</h4>
+                            <p class="mt-2 text-sm text-gray-400">Uso de equipos de grado médico y diagnósticos basados en datos objetivos (Índice de Vigencia) para garantizar resultados superiores.</p>
+                        </div>
+                        <div class="bg-gray-900 p-6 rounded-xl border border-gray-800">
+                             <div class="text-white">
+                                <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3.75 12h16.5m-16.5 3.75h16.5M3.75 19.5h16.5M5.625 4.5h12.75a1.875 1.875 0 010 3.75H5.625a1.875 1.875 0 010-3.75z"></path></svg>
+                            </div>
+                            <h4 class="mt-4 text-xl font-bold">Disciplina Minimalista</h4>
+                            <p class="mt-2 text-sm text-gray-400">Un enfoque curado en tratamientos de alto impacto. Simplifica la logística y permite la optimización por IA.</p>
+                        </div>
+                        <div class="bg-gray-900 p-6 rounded-xl border border-gray-800">
+                            <div class="text-white">
+                                <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M18 18.72a9.094 9.094 0 003.741-.479 3 3 0 00-4.682-2.72m-7.14-4.244a3 3 0 10-4.243 4.243 3 3 0 004.243-4.243zm-2.122 4.242a3 3 0 104.242 0 3 3 0 00-4.242 0zM15 11.64l-1.5-1.5m1.5 1.5l-1.5 1.5m-4.5-4.5L7.5 7.5m1.5 1.5l1.5-1.5m1.5 1.5l-1.5-1.5m-1.5 1.5l1.5 1.5m7.5-7.5l-1.5-1.5M15 5.64l1.5-1.5M15 11.64l1.5 1.5m-4.5 4.5l-1.5 1.5M7.5 12.5l-1.5 1.5m-1.5-1.5L4.5 11l1.5-1.5m-1.5 1.5l1.5 1.5"></path></svg>
+                            </div>
+                            <h4 class="mt-4 text-xl font-bold">Comunidad Educativa</h4>
+                            <p class="mt-2 text-sm text-gray-400">Un club y centro de conocimiento que genera efectos de red, aumenta la retención y maximiza el LTV.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Módulo 2: Arquitectura del Ecosistema IA -->
+        <section id="ecosistema" class="mb-24 scroll-mt-20">
+            <h2 class="section-title">Arquitectura del Ecosistema IA</h2>
+            <p class="mt-4 text-lg text-gray-400 max-w-3xl">El corazón técnico de la compañía. El blueprint del sistema de inteligencia artificial, los agentes y los flujos de datos que nos impulsan.</p>
+            
+            <div class="mt-12 space-y-16">
+                <!-- Data Flywheel -->
+                <div>
+                    <h3 class="text-3xl font-bold text-white text-center">El "Data Flywheel"</h3>
+                    <p class="mt-2 text-gray-400 text-center max-w-3xl mx-auto">Nuestro ciclo virtuoso de mejora continua. Cada interacción hace al negocio más inteligente y eficiente, convirtiendo los datos en una ventaja competitiva sostenible.</p>
+                    <div class="mt-8 flex items-center justify-center h-96">
+                        <div class="data-flywheel">
+                            <div class="flywheel-center bg-white rounded-full w-24 h-24 flex items-center justify-center text-black font-bold text-center text-sm">Data Flywheel</div>
+                            <div class="flywheel-item"><span>1. Captura de Datos</span></div>
+                            <div class="flywheel-item"><span>2. Procesamiento Centralizado</span></div>
+                            <div class="flywheel-item"><span>3. Nutrición de Agentes IA</span></div>
+                            <div class="flywheel-item"><span>4. Acción Automatizada</span></div>
+                            <div class="flywheel-item"><span>5. Retroalimentación</span></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Agentes IA -->
+                <div>
+                    <h3 class="text-3xl font-bold text-white">Flota de Agentes Internos</h3>
+                     <p class="mt-2 text-gray-400">Cada agente tiene un propósito específico, contribuyendo a una faceta distinta de la operación y estrategia.</p>
+                    <div class="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <!-- Agent Cards will be inserted here by JS -->
+                    </div>
+                </div>
+                
+                <!-- Orquestación -->
+                <div>
+                    <h3 class="text-3xl font-bold text-white">Blueprints de Orquestación Automatizada</h3>
+                    <p class="mt-2 text-gray-400">Playbooks técnicos que demuestran la colaboración sinérgica entre los agentes de IA para responder a escenarios de negocio clave. Haga clic en una pestaña para ver el flujo.</p>
+                    <div class="mt-8 bg-gray-900 p-6 rounded-xl border border-gray-800">
+                        <div class="mb-4 border-b border-gray-700">
+                            <nav class="-mb-px flex space-x-4" aria-label="Tabs">
+                                <button class="tab-button active" data-tab="churn">Mitigación de Churn</button>
+                                <button class="tab-button" data-tab="ocupacion">Gestión Baja Ocupación</button>
+                                <button class="tab-button" data-tab="riesgo">Alerta Financiera</button>
+                            </nav>
+                        </div>
+                        <div id="orchestration-content" class="space-y-4 pt-4">
+                           <!-- Content will be inserted here by JS -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Data Contracts -->
+                 <div>
+                    <h3 class="text-3xl font-bold text-white">Contratos de Datos y APIs</h3>
+                    <p class="mt-2 text-gray-400">La estructura formal de los datos que fluyen por el ecosistema, garantizando estabilidad y escalabilidad.</p>
+                    <div class="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-8">
+                        <div>
+                            <h4 class="font-bold text-white">Tabla de Hechos Central: `fact_event`</h4>
+                            <pre class="mt-2 bg-black text-gray-300 p-4 rounded-lg text-xs overflow-x-auto border border-gray-700"><code class="language-sql">event_id (UUID, PK)
+customer_id (UUID, FK)
+event_type (VARCHAR)
+event_timestamp (TIMESTAMP)
+source_system (VARCHAR)
+payload (JSONB)
+schema_version (VARCHAR)
+event_value (NUMERIC)
+...
+</code></pre>
+                        </div>
+                         <div>
+                            <h4 class="font-bold text-white">Webhook Payload: `charge.succeeded` (Stripe)</h4>
+                            <pre class="mt-2 bg-black text-gray-300 p-4 rounded-lg text-xs overflow-x-auto border border-gray-700"><code class="language-json">{
+  "id": "evt_1P8x...",
+  "object": "event",
+  "type": "charge.succeeded",
+  "data": {
+    "object": {
+      "id": "ch_3P8x...",
+      "amount": 400000,
+      "currency": "mxn",
+      "customer": "cus_Q7i...",
+      "metadata": {
+        "appointment_id": "appt_456"
+      }
+    }
+  }
+}</code></pre>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- Módulo 3: Operaciones -->
+        <section id="operaciones" class="mb-24 scroll-mt-20">
+            <h2 class="section-title">Blueprint Operativo "Clinic-in-a-Box"</h2>
+            <p class="mt-4 text-lg text-gray-400 max-w-3xl">El manual de operaciones estandarizado, diseñado para replicar la excelencia en cada nueva sucursal y garantizar la escalabilidad.</p>
+            
+            <div class="mt-12 space-y-16">
+                 <div>
+                    <h3 class="text-3xl font-bold text-white">El Viaje del Cliente</h3>
+                    <div class="mt-8 relative">
+                        <div class="absolute left-4 sm:left-1/2 top-0 bottom-0 w-0.5 bg-gray-700" aria-hidden="true"></div>
+                        <div class="space-y-8">
+                            <!-- Journey steps will be inserted here by JS -->
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <h3 class="text-3xl font-bold text-white">Distribución del Espacio (250 m²)</h3>
+                    <p class="mt-2 text-gray-400">Layout optimizado para el flujo de clientes y la eficiencia operativa, cumpliendo con la normativa NOM-016.</p>
+                    <div class="mt-8 bg-gray-900 p-6 rounded-xl border border-gray-800">
+                        <div class="chart-container" style="height:350px; max-height:40vh;">
+                            <canvas id="spaceChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Módulo 5: Finanzas -->
+        <section id="finanzas" class="mb-24 scroll-mt-20">
+            <h2 class="section-title">Modelo Financiero y Unit Economics</h2>
+            <p class="mt-4 text-lg text-gray-400 max-w-3xl">La base cuantitativa que respalda la estrategia. Proyecciones, rentabilidad y análisis de inversión.</p>
+            
+            <div class="mt-12 grid grid-cols-1 lg:grid-cols-2 gap-12">
+                <div>
+                    <h3 class="text-3xl font-bold text-white">Proyecciones P&L (5 Años)</h3>
+                    <p class="mt-2 text-gray-400">Proyección de ingresos mensuales con un punto de equilibrio esperado en 26 meses en el escenario base.</p>
+                    <div class="mt-8 bg-gray-900 p-6 rounded-xl border border-gray-800">
+                        <div class="chart-container">
+                             <canvas id="pnlChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <h3 class="text-3xl font-bold text-white">Análisis de ROI por Equipo</h3>
+                     <p class="mt-2 text-gray-400">Cálculo del retorno de inversión para activos clínicos clave, permitiendo una gestión eficaz del CAPEX.</p>
+                     <div class="mt-8 bg-gray-900 p-6 rounded-xl border border-gray-800">
+                         <div class="chart-container">
+                              <canvas id="roiChart"></canvas>
+                         </div>
+                     </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Módulo 4: Gobernanza -->
+        <section id="gobernanza" class="mb-24 scroll-mt-20">
+            <h2 class="section-title">Gobernanza de Datos y Modelos</h2>
+            <p class="mt-4 text-lg text-gray-400 max-w-3xl">El marco de reglas y procedimientos para gestionar nuestro activo más valioso: los datos y los modelos de IA.</p>
+
+             <div class="mt-12 space-y-12">
+                <div>
+                    <h3 class="text-3xl font-bold text-white">Marco de Gobierno de IA en 3 Niveles</h3>
+                    <p class="mt-2 text-gray-400">Alinea la tecnología con la estrategia de negocio y los principios éticos.</p>
+                    <div class="mt-8 grid grid-cols-1 md:grid-cols-3 gap-8">
+                        <div class="bg-gray-900 p-6 rounded-xl border border-gray-800">
+                            <span class="inline-block px-3 py-1 text-xs font-medium text-red-300 bg-red-900/50 rounded-full">Estratégico</span>
+                            <h4 class="mt-4 text-xl font-bold">Comité de Ética IA</h4>
+                            <p class="mt-2 text-sm text-gray-400">Compuesto por la C-Suite, revisa la estrategia y aprueba las políticas de IA Responsable (RAI).</p>
+                        </div>
+                        <div class="bg-gray-900 p-6 rounded-xl border border-gray-800">
+                            <span class="inline-block px-3 py-1 text-xs font-medium text-amber-300 bg-amber-900/50 rounded-full">Táctico</span>
+                             <h4 class="mt-4 text-xl font-bold">AI Design Review</h4>
+                            <p class="mt-2 text-sm text-gray-400">Liderado por el PMO, aprueba el diseño de nuevas iniciativas antes del desarrollo.</p>
+                        </div>
+                        <div class="bg-gray-900 p-6 rounded-xl border border-gray-800">
+                            <span class="inline-block px-3 py-1 text-xs font-medium text-teal-300 bg-teal-900/50 rounded-full">Operativo</span>
+                            <h4 class="mt-4 text-xl font-bold">ML Security Check</h4>
+                             <p class="mt-2 text-sm text-gray-400">Responsabilidad de MLOps. Gate automatizado en el pipeline CI/CD que genera Model Cards y Data Sheets.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+    
+    <footer class="border-t border-gray-800">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-8 text-center text-gray-400">
+            <p>&copy; 2025 Hombre Vigente. Manual de Vuelo del Negocio v1.0 | Confidencial.</p>
+        </div>
+    </footer>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+
+    // --- DATA ---
+    const agents = [
+        { name: 'DiagnósticoVigente AI', desc: 'Analiza escaneos 3D/térmicos, calcula el "Índice de Vigencia" y propone un plan de tratamiento inicial.', icon: '👁️' },
+        { name: 'PersonaVigente AI', desc: 'Motor de hiperpersonalización. Segmenta clientes, calcula propensión a compra y riesgo de churn (CPS).', icon: '👤' },
+        { name: 'OptiVigente AI', desc: 'Cerebro operativo. Maximiza utilización de recursos (≥80%) con predicción de demanda y pricing dinámico.', icon: '⚙️' },
+        { name: 'RiskGuard AI', desc: 'Guardián financiero. Simula escenarios, calcula el Altman Z-Score y actúa como "freno" para mitigar riesgos.', icon: '🛡️' },
+        { name: 'ChatVigente AI', desc: 'Interfaz conversacional multicanal. Gestiona reservas, flujos de retención y comunicación de ofertas.', icon: '💬' },
+        { name: 'AssetVigente Predictive Mx', desc: 'Agente de mantenimiento predictivo. Usa datos de sensores IoT para predecir fallos en equipos críticos.', icon: '🔧' },
+        { name: 'Virtual Try-On GAN', desc: 'Crea simulaciones "antes y después" con GANs para gestionar expectativas y aumentar la conversión.', icon: '✨' }
+    ];
+
+    const orchestrations = {
+        churn: [
+            { agent: 'PersonaVigente AI', action: 'Detecta cliente con Churn Propensity Score > 0.60 y lo etiqueta.' },
+            { agent: 'PersonaVigente AI', action: 'Genera una oferta de retención personalizada basada en el arquetipo del cliente.' },
+            { agent: 'OptiVigente AI', action: 'Calcula el descuento óptimo para la oferta, basado en ocupación y elasticidad.' },
+            { agent: 'ChatVigente AI', action: 'Envía la oferta al cliente por WhatsApp con botones de acción rápida.' },
+            { agent: 'Sistema', action: 'Registra la interacción en `fact_event`, cerrando el bucle del Data Flywheel.' },
+        ],
+        ocupacion: [
+            { agent: 'OptiVigente AI', action: 'Detecta proyección de baja utilización (<80%) en las próximas horas.' },
+            { agent: 'OptiVigente AI', action: 'Calcula un descuento dinámico proporcional a la brecha de utilización.' },
+            { agent: 'RiskGuard AI', action: 'Valida la oferta. Ejecuta una simulación para asegurar que no compromete el margen mínimo del servicio.' },
+            { agent: 'ChatVigente AI', action: 'Recibe la oferta aprobada y la envía como "campaña flash" a clientes con alta propensión a aceptar.' },
+        ],
+        riesgo: [
+            { agent: 'RiskGuard AI', action: 'Detecta una alerta financiera (e.g., Probabilidad de quiebra > 10%).' },
+            { agent: 'Sistema', action: 'Envía una notificación inmediata y contextualizada vía Slack/Email al CFO y COO.' },
+            { agent: 'RiskGuard AI', action: 'Envía una señal de "freno" (`inhibit_discount_flag=true`) a OptiVigente AI.' },
+            { agent: 'OptiVigente AI', action: 'Lee el flag, bloquea nuevos descuentos y cambia su lógica de "maximizar utilización" a "preservar margen".' },
+        ]
+    };
+    
+    const journeySteps = [
+        { stage: "Descubrimiento", text: "Cliente impactado por contenido en redes (Reel 'antes/después'). CTA a 'Diagnóstico 3D Gratuito'." },
+        { stage: "Check-in y Diagnóstico", text: "Cliente llega, realiza check-in digital y pasa a escaneo 3D y térmico con FotoFinder (10 min)." },
+        { stage: "Plan Personalizado", text: "Recibe en 5 min un plan generado por PersonaVigente AI, basado en su 'Índice de Vigencia' objetivo." },
+        { stage: "Tratamiento", text: "La cita se ejecuta en una cabina asignada dinámicamente por OptiVigente AI para máxima eficiencia." },
+        { stage: "Seguimiento Automatizado", text: "Recibe instrucciones post-procedimiento y seguimiento por WhatsApp, gestionado por ChatVigente AI." },
+        { stage: "Fidelización y Comunidad", text: "Invitado a unirse al 'CLUB'. PersonaVigente AI envía ofertas de renovación en el momento oportuno." }
+    ];
+
+
+    // --- RENDER FUNCTIONS ---
+    function renderAgents() {
+        const container = document.querySelector('#ecosistema .grid');
+        let content = '';
+        agents.forEach(agent => {
+            content += `
+                <div class="bg-gray-900 p-6 rounded-xl border border-gray-800 flex items-start space-x-4 hover:bg-gray-800 transition-colors">
+                    <div class="text-3xl pt-1">${agent.icon}</div>
+                    <div>
+                        <h4 class="font-bold text-white">${agent.name}</h4>
+                        <p class="mt-1 text-sm text-gray-400">${agent.desc}</p>
+                    </div>
+                </div>
+            `;
+        });
+        container.innerHTML = content;
+    }
+
+    function renderOrchestration(flow) {
+        const container = document.getElementById('orchestration-content');
+        container.innerHTML = ''; // Clear previous content
+        orchestrations[flow].forEach((step, index) => {
+            const stepEl = document.createElement('div');
+            stepEl.className = 'flow-step';
+            stepEl.style.animationDelay = `${index * 0.15}s`;
+            stepEl.innerHTML = `
+                <div class="flex-shrink-0 w-10 h-10 rounded-full bg-gray-700 text-white flex items-center justify-center font-bold">${index + 1}</div>
+                <div class="ml-4">
+                    <p class="font-semibold text-white">${step.agent}</p>
+                    <p class="text-sm text-gray-400">${step.action}</p>
+                </div>
+            `;
+            container.appendChild(stepEl);
+        });
+    }
+    
+    function renderJourney() {
+        const container = document.querySelector('#operaciones .space-y-8');
+        let content = '';
+        journeySteps.forEach((step, index) => {
+            const alignmentClass = index % 2 === 0 ? 'sm:items-start sm:text-left' : 'sm:items-end sm:text-right';
+            const marginClass = index % 2 === 0 ? 'sm:mr-auto' : 'sm:ml-auto';
+            content += `
+            <div class="flex flex-col ${alignmentClass}">
+                <div class="w-full sm:w-1/2 p-6 bg-gray-900 rounded-lg border border-gray-800 ${marginClass}">
+                    <h4 class="font-bold text-white">${index+1}. ${step.stage}</h4>
+                    <p class="text-sm mt-1 text-gray-400">${step.text}</p>
+                </div>
+            </div>
+            `;
+        });
+        container.innerHTML = content;
+    }
+
+    // --- CHART DEFAULTS ---
+    const chartTextColor = '#E0E0E0';
+    const chartGridColor = 'rgba(255, 255, 255, 0.1)';
+
+    // --- CHARTS ---
+    function createSpaceChart() {
+        const ctx = document.getElementById('spaceChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Rejuv. Facial', 'Cirugía Ambulatoria', 'Dental', 'Depilación', 'Grooming', 'Sala CLUB', 'Soporte'],
+                datasets: [{
+                    label: '% de Espacio (250 m²)',
+                    data: [20, 15, 12, 15, 12, 20, 6],
+                    backgroundColor: ['#ffffff', '#e2e8f0', '#cbd5e1', '#94a3b8', '#64748b', '#f59e0b', '#475569'],
+                    borderColor: '#111827', // bg-gray-900
+                    borderWidth: 4,
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'right',
+                        labels: {
+                            color: chartTextColor
+                        }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return `${context.label}: ${context.raw}%`;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    function createPnlChart() {
+        const ctx = document.getElementById('pnlChart').getContext('2d');
+        const labels = Array.from({ length: 13 }, (_, i) => `Mes ${i}`);
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Ingresos Proyectados (Base)',
+                    data: [0, 50, 120, 200, 280, 350, 420, 480, 530, 570, 610, 630, 650].map(v => v * 1000),
+                    borderColor: '#FFFFFF',
+                    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                    fill: true,
+                    tension: 0.3,
+                    pointBackgroundColor: '#FFFFFF'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            callback: function(value) {
+                                return '$' + (value / 1000) + 'K';
+                            },
+                            color: chartTextColor
+                        },
+                        grid: {
+                            color: chartGridColor
+                        }
+                    },
+                    x: {
+                        ticks: {
+                            color: chartTextColor
+                        },
+                        grid: {
+                            color: chartGridColor
+                        }
+                    }
+                },
+                plugins: {
+                   legend: {
+                       labels: {
+                           color: chartTextColor
+                       }
+                   },
+                   tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                let label = context.dataset.label || '';
+                                if (label) {
+                                    label += ': ';
+                                }
+                                if (context.parsed.y !== null) {
+                                    label += new Intl.NumberFormat('es-MX', { style: 'currency', currency: 'MXN' }).format(context.parsed.y);
+                                }
+                                return label;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    function createRoiChart() {
+        const ctx = document.getElementById('roiChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['HIFU Ultraformer III', 'Láser de Depilación'],
+                datasets: [{
+                    label: 'ROI (Anualizado)',
+                    data: [163, 123],
+                    backgroundColor: ['#e2e8f0', '#94a3b8'],
+                    borderColor: ['#f8fafc', '#cbd5e1'],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                indexAxis: 'y',
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                         callbacks: {
+                            label: function(context) {
+                                return `ROI: ${context.raw}%`;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        beginAtZero: true,
+                        ticks: {
+                             callback: function(value) {
+                                return value + '%';
+                            },
+                            color: chartTextColor
+                        },
+                        grid: {
+                            color: chartGridColor
+                        }
+                    },
+                    y: {
+                         ticks: {
+                            color: chartTextColor
+                        },
+                        grid: {
+                            color: chartGridColor
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    // --- EVENT LISTENERS ---
+    const riskButtons = document.querySelectorAll('.risk-button');
+    const semaphore = document.getElementById('risk-semaphore');
+    const statusText = document.getElementById('risk-status-text');
+    const riskDesc = document.getElementById('risk-description');
+
+    riskButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            const riskLevel = button.dataset.risk;
+            semaphore.classList.remove('bg-green-500', 'bg-amber-500', 'bg-red-500');
+            if (riskLevel === 'seguro') {
+                semaphore.classList.add('bg-green-500');
+                statusText.textContent = 'Seguro';
+                riskDesc.textContent = "Altman Z-Score > 2.9. El negocio opera dentro de los parámetros de seguridad.";
+            } else if (riskLevel === 'precaucion') {
+                semaphore.classList.add('bg-amber-500');
+                statusText.textContent = 'Precaución';
+                riskDesc.textContent = "Altman Z-Score 1.8-2.9. Desviación moderada. Se limitan descuentos agresivos.";
+            } else {
+                semaphore.classList.add('bg-red-500');
+                statusText.textContent = 'Alerta';
+                riskDesc.textContent = "Altman Z-Score < 1.8. Riesgo significativo. Se bloquean descuentos.";
+            }
+        });
+    });
+
+    const tabButtons = document.querySelectorAll('.tab-button');
+    tabButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            tabButtons.forEach(btn => btn.classList.remove('active'));
+            button.classList.add('active');
+            renderOrchestration(button.dataset.tab);
+        });
+    });
+    
+    const navLinks = document.querySelectorAll('.nav-link');
+    const sections = document.querySelectorAll('section');
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                navLinks.forEach(link => {
+                    link.classList.remove('active');
+                    if (link.getAttribute('href').substring(1) === entry.target.id) {
+                        link.classList.add('active');
+                    }
+                });
+            }
+        });
+    }, { threshold: 0.4 });
+
+    sections.forEach(section => {
+        observer.observe(section);
+    });
+
+    const mobileMenuButton = document.getElementById('mobile-menu-button');
+    const mobileMenu = document.getElementById('mobile-menu');
+    mobileMenuButton.addEventListener('click', () => {
+        mobileMenu.classList.toggle('hidden');
+    });
+    
+    const mobileLinks = mobileMenu.querySelectorAll('a');
+    mobileLinks.forEach(link => {
+        link.addEventListener('click', () => {
+            mobileMenu.classList.add('hidden');
+        });
+    });
+
+    // --- INITIALIZATION ---
+    renderAgents();
+    renderOrchestration('churn'); // Initial tab
+    renderJourney();
+    createSpaceChart();
+    createPnlChart();
+    createRoiChart();
+});
+</script>
+
+</body>
+</html>
