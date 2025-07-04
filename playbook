@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Playbook Interactivo: Hombre Vigente AI</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Hombre Vigente Dark -->
+    <!-- Application Structure Plan: He diseñado la aplicación como un panel de control de una sola página con navegación por pestañas. Esta estructura modular refleja la organización del playbook original (core_strategy, data_engine, etc.) y permite a los usuarios explorar cada componente sin sentirse abrumados por un documento largo. El flujo del usuario comienza con una visión general y luego se ramifica en áreas de interés específicas. Esta arquitectura no lineal es superior para la exploración y comprensión de un sistema técnico complejo, ya que permite al usuario centrarse en un componente a la vez, como un agente de IA específico o un runbook de emergencia, facilitando una comprensión más profunda. -->
+    <!-- Visualization & Content Choices: 1. Perfil de Mercado (Bar Chart/Chart.js): Para visualizar la distribución de edad e ingresos del mercado objetivo. Un gráfico de barras es ideal para comparar categorías discretas. Interacción: Tooltips en hover. 2. Flujo de Datos y Diagrama de Secuencia (HTML/CSS): Recreé los diagramas de Mermaid.js usando divs y flexbox/grid. Esto cumple la restricción de NO SVG/Mermaid y mantiene la coherencia visual. La estructura visual es estática pero clara. 3. Simulación de Riesgo y Deriva de Modelo (Line/Bar Chart/Chart.js): Para ilustrar los conceptos de Monte Carlo y el test KS. Las visualizaciones hacen que estas ideas estadísticas abstractas sean más tangibles. 4. Artefactos de Código (HTML <pre><code>): El código se presenta en bloques con formato para facilitar la lectura y la copia, manteniendo la fidelidad al playbook original. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body { 
+            font-family: 'Montserrat', sans-serif;
+            background-color: #0D0D0D;
+            color: #E0E0E0;
+        }
+        .chart-container { position: relative; width: 100%; max-width: 600px; margin-left: auto; margin-right: auto; height: 320px; max-height: 400px; }
+        @media (min-width: 768px) { .chart-container { height: 350px; } }
+        .nav-link { transition: all 0.3s ease; }
+        .nav-link.active { color: #ffffff; border-bottom-color: #ffffff; }
+        .nav-link:not(.active) { border-bottom-color: transparent; }
+        .code-block { background-color: #000000; color: #d1d5db; border: 1px solid #374151; border-radius: 0.5rem; padding: 1rem; overflow-x: auto; font-family: monospace; font-size: 0.875rem; line-height: 1.25rem; }
+        .diagram-node { border: 1px solid #4b5563; border-radius: 0.5rem; padding: 0.5rem 1rem; text-align: center; background-color: #1f2937; color: #e5e7eb; box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1); }
+        .diagram-arrow { position: relative; width: 100%; height: 2px; background-color: #6b7280; margin: 1rem 0; }
+        .diagram-arrow::after { content: '►'; position: absolute; right: -5px; top: -8px; color: #9ca3af; }
+        .seq-arrow { position: absolute; left: 10%; width: 80%; height: 2px; background-color: #6b7280; }
+        .seq-arrow::after { content: '►'; position: absolute; right: -5px; top: -8px; font-size: 14px; color: #9ca3af; }
+        .section-card { background-color: #141414; border: 1px solid #2d2d2d; }
+    </style>
+</head>
+<body class="antialiased">
+
+    <div class="container mx-auto px-4 py-8">
+        <header class="text-center mb-8">
+            <h1 class="text-5xl md:text-7xl font-black text-white uppercase tracking-tighter">Playbook Técnico</h1>
+            <p class="text-xl text-gray-400 mt-2">Hombre Vigente AI</p>
+        </header>
+
+        <nav class="mb-8 border-b border-gray-800">
+            <ul class="flex flex-wrap -mb-px justify-center text-sm font-medium text-center text-gray-400">
+                <li class="mr-2"><a href="#" class="nav-link inline-block p-4 border-b-2 rounded-t-lg active" data-tab="overview">Visión General</a></li>
+                <li class="mr-2"><a href="#" class="nav-link inline-block p-4 border-b-2 rounded-t-lg" data-tab="core_strategy">Estrategia</a></li>
+                <li class="mr-2"><a href="#" class="nav-link inline-block p-4 border-b-2 rounded-t-lg" data-tab="data_engine">Motor de Datos</a></li>
+                <li class="mr-2"><a href="#" class="nav-link inline-block p-4 border-b-2 rounded-t-lg" data-tab="ai_factory">Fábrica de IA</a></li>
+                <li class="mr-2"><a href="#" class="nav-link inline-block p-4 border-b-2 rounded-t-lg" data-tab="orchestration">Orquestación</a></li>
+                <li class="mr-2"><a href="#" class="nav-link inline-block p-4 border-b-2 rounded-t-lg" data-tab="governance">Gobernanza</a></li>
+            </ul>
+        </nav>
+
+        <main>
+            <!-- Visión General Tab -->
+            <div id="overview-content" class="space-y-8">
+                <div class="section-card p-6 rounded-lg">
+                    <h2 class="text-2xl font-bold mb-4 text-white">Bienvenido al Playbook Vivo</h2>
+                    <p class="text-gray-400">Este panel interactivo es la Única Fuente de Verdad (SSOT) para el ecosistema de IA de Hombre Vigente. No es un documento estático, sino un artefacto vivo que combina estrategia, código y gobernanza. El objetivo es crear un sistema autónomo que se auto-optimiza y se auto-gobierna, impulsado por un "Data Flywheel" donde cada interacción del cliente enriquece el sistema, haciendo nuestros agentes de IA más inteligentes y la experiencia más personalizada.</p>
+                </div>
+                <div class="grid md:grid-cols-2 gap-8">
+                     <div class="section-card p-6 rounded-lg">
+                        <h3 class="text-xl font-bold mb-4 text-white">Filosofía del Playbook</h3>
+                        <p class="text-gray-400 mb-4">Creemos que la estrategia, el código y la gobernanza deben coexistir y versionarse juntos. Cada componente, desde un diagrama de arquitectura hasta un script de Python, reside aquí para garantizar la alineación, la reproducibilidad y la trazabilidad en todo el ciclo de vida de MLOps.</p>
+                        <ul class="list-disc list-inside text-gray-400 space-y-2">
+                           <li><span class="font-semibold text-gray-300">Alineación:</span> Todos los equipos trabajan con la misma información.</li>
+                           <li><span class="font-semibold text-gray-300">Reproducibilidad:</span> Los entornos y resultados pueden ser replicados consistentemente.</li>
+                           <li><span class="font-semibold text-gray-300">Trazabilidad:</span> Cada cambio es versionado y auditable.</li>
+                        </ul>
+                    </div>
+                    <div class="section-card p-6 rounded-lg">
+                        <h3 class="text-xl font-bold mb-4 text-white">Estructura Modular</h3>
+                        <p class="text-gray-400 mb-4">Navega a través de las pestañas para explorar las capas de nuestro ecosistema:</p>
+                        <div class="flex flex-col space-y-3">
+                           <div class="flex items-center"><span class="bg-gray-700 text-blue-300 text-xs font-medium mr-2 px-2.5 py-0.5 rounded-full">Estrategia</span><span class="text-gray-400">El "porqué" y el "qué" del negocio.</span></div>
+                           <div class="flex items-center"><span class="bg-gray-700 text-green-300 text-xs font-medium mr-2 px-2.5 py-0.5 rounded-full">Motor de Datos</span><span class="text-gray-400">El "combustible" que alimenta a la IA.</span></div>
+                           <div class="flex items-center"><span class="bg-gray-700 text-purple-300 text-xs font-medium mr-2 px-2.5 py-0.5 rounded-full">Fábrica de IA</span><span class="text-gray-400">El código y las especificaciones de nuestros agentes.</span></div>
+                           <div class="flex items-center"><span class="bg-gray-700 text-yellow-300 text-xs font-medium mr-2 px-2.5 py-0.5 rounded-full">Orquestación</span><span class="text-gray-400">Cómo colaboran los agentes para ejecutar procesos.</span></div>
+                           <div class="flex items-center"><span class="bg-gray-700 text-red-300 text-xs font-medium mr-2 px-2.5 py-0.5 rounded-full">Gobernanza</span><span class="text-gray-400">Protocolos de resiliencia y auto-regulación.</span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Estrategia Tab -->
+            <div id="core_strategy-content" class="hidden space-y-8">
+                 <div class="section-card p-6 rounded-lg">
+                    <h2 class="text-2xl font-bold mb-4 text-white">Blueprint Estratégico (SSOT)</h2>
+                    <p class="text-gray-400 mb-6">Esta sección codifica la visión corporativa, el modelo de negocio impulsado por IA y la hoja de ruta estratégica. Es la Estrella Polar para todo el desarrollo técnico, respondiendo a la pregunta fundamental: ¿Por qué existe "Hombre Vigente"?</p>
+                    <div class="grid md:grid-cols-2 gap-8">
+                        <div>
+                            <h3 class="text-xl font-bold mb-2 text-white">Visión Central: "El poder de ser vigente"</h3>
+                            <p class="text-gray-400 mb-4">Empoderar a los hombres a través de una propuesta de valor "Trifecta" que fusiona tecnología clínica de vanguardia, una filosofía de disciplina minimalista y una comunidad educativa de apoyo.</p>
+                            <h3 class="text-xl font-bold mb-2 text-white">Modelo de Negocio AI-Powered</h3>
+                            <p class="text-gray-400">Nuestro modelo se basa en un <span class="font-semibold text-gray-300">Data Flywheel</span> donde cada interacción del cliente alimenta y mejora nuestros agentes de IA, creando un ciclo de auto-mejora continua. Se apoya en tres pilares de ingresos:</p>
+                             <ul class="list-disc list-inside text-gray-400 space-y-1 mt-2">
+                                <li>Servicios de Alto Margen (Optimizados por IA)</li>
+                                <li>Membresías CLUB (Ingresos Recurrentes)</li>
+                                <li>Productos DTC y E-commerce (Recomendaciones por IA)</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold mb-4 text-center text-white">Perfil del Mercado Objetivo</h3>
+                            <div class="chart-container">
+                                <canvas id="marketChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="section-card p-6 rounded-lg">
+                    <h3 class="text-xl font-bold mb-4 text-white">Hoja de Ruta de Expansión Estratégica</h3>
+                     <p class="text-gray-400 mb-4">La expansión global se ejecuta en fases para validar nuestro modelo "Clinic-in-a-Box". El stack tecnológico definido en este playbook está diseñado para ser replicable y escalable.</p>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm text-left text-gray-400">
+                            <thead class="text-xs text-gray-300 uppercase bg-gray-800/50">
+                                <tr>
+                                    <th scope="col" class="px-6 py-3">Fase</th>
+                                    <th scope="col" class="px-6 py-3">Cronología</th>
+                                    <th scope="col" class="px-6 py-3">Mercado</th>
+                                    <th scope="col" class="px-6 py-3">Factor Clave</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="border-b border-gray-700">
+                                    <td class="px-6 py-4 font-medium text-white">1</td>
+                                    <td class="px-6 py-4">2025-2027</td>
+                                    <td class="px-6 py-4">CDMX, Guadalajara</td>
+                                    <td class="px-6 py-4">Validar P&L y Data Flywheel</td>
+                                </tr>
+                                <tr class="bg-black/20 border-b border-gray-700">
+                                    <td class="px-6 py-4 font-medium text-white">2</td>
+                                    <td class="px-6 py-4">2027-2028</td>
+                                    <td class="px-6 py-4">Miami, Los Angeles</td>
+                                    <td class="px-6 py-4">Captar comunidad latina</td>
+                                </tr>
+                                <tr class="border-b border-gray-700">
+                                    <td class="px-6 py-4 font-medium text-white">3</td>
+                                    <td class="px-6 py-4">2029-2030</td>
+                                    <td class="px-6 py-4">Madrid, Londres</td>
+                                    <td class="px-6 py-4">Licenciar "Clinic-in-a-Box"</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="section-card p-6 rounded-lg">
+                    <h3 class="text-xl font-bold mb-4 text-white">Arquitectura de Flujo de Datos</h3>
+                    <p class="text-gray-400 mb-6">Este diagrama visualiza cómo los datos fluyen desde sistemas externos, a través de nuestra plataforma de ingestión y procesamiento, hasta nuestro Data Warehouse (SSOT), y cómo son consumidos y producidos por los agentes de IA para alimentar la experiencia del usuario, completando el ciclo del Data Flywheel.</p>
+                    <div class="p-4 border rounded-lg border-gray-700 bg-black/20 overflow-x-auto">
+                        <div class="flex flex-col items-center space-y-4">
+                            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 w-full">
+                                <div class="diagram-node bg-gray-700 border-gray-500">FotoFinder</div>
+                                <div class="diagram-node bg-gray-700 border-gray-500">Booksy</div>
+                                <div class="diagram-node bg-gray-700 border-gray-500">Stripe</div>
+                                <div class="diagram-node bg-gray-700 border-gray-500">QuickBooks</div>
+                            </div>
+                            <div class="diagram-arrow w-1/2"></div>
+                            <div class="diagram-node w-1/2">API Gateway / Webhooks</div>
+                            <div class="diagram-arrow w-1/2"></div>
+                            <div class="diagram-node w-1/2">Event Bus (Kafka/PubSub)</div>
+                            <div class="diagram-arrow w-1/2"></div>
+                            <div class="diagram-node w-1/2">SSOT (BigQuery)</div>
+                            <div class="diagram-arrow w-1/2"></div>
+                             <div class="grid grid-cols-2 md:grid-cols-4 gap-4 w-full">
+                                <div class="diagram-node bg-blue-900/50 border-blue-500">DiagnósticoVigente</div>
+                                <div class="diagram-node bg-blue-900/50 border-blue-500">PersonaVigente</div>
+                                <div class="diagram-node bg-blue-900/50 border-blue-500">OptiVigente</div>
+                                <div class="diagram-node bg-blue-900/50 border-blue-500">RiskGuard</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Motor de Datos Tab -->
+            <div id="data_engine-content" class="hidden space-y-8">
+                 <div class="section-card p-6 rounded-lg">
+                    <h2 class="text-2xl font-bold mb-4 text-white">Motor de Datos: El Combustible del Sistema</h2>
+                    <p class="text-gray-400">Este módulo contiene todo lo necesario para generar, validar y gobernar los datos que alimentan a nuestros agentes de IA. La calidad y la estructura de los datos son fundamentales para el éxito de todo el ecosistema.</p>
+                </div>
+                <div class="section-card p-6 rounded-lg">
+                    <h3 class="text-xl font-bold mb-2 text-white">Generador de Datos Sintéticos</h3>
+                    <p class="text-gray-400 mb-4">Para el desarrollo y las pruebas (Fase 0), utilizamos datos sintéticos que imitan el comportamiento real de los clientes. El siguiente script de Python usa `sdv` y `faker` para crear 5,000 clientes y sus eventos asociados.</p>
+                    <div class="code-block">
+<pre><code>import pandas as pd
+import numpy as np
+from faker import Faker
+from sdv.lite import TabularPreset
+from datetime import datetime
+import uuid
+
+NUM_CUSTOMERS = 5000
+fake = Faker('es_MX')
+
+def generate_customers(n):
+    data = {
+        'customer_id': [str(uuid.uuid4()) for _ in range(n)],
+        'name': [fake.name_male() for _ in range(n)],
+        'age_range': np.random.choice(
+            ['30-40', '41-50', '51-60'],
+            size=n, p=[0.45, 0.40, 0.15]
+        ),
+        'annual_income_mxn': np.random.lognormal(
+            mean=np.log(800000), sigma=0.5, size=n
+        ).astype(int)
+    }
+    return pd.DataFrame(data)
+
+if __name__ == "__main__":
+    customers = generate_customers(NUM_CUSTOMERS)
+    print(f"Generated {len(customers)} customers.")
+    # customers.to_csv('customers.csv', index=False)
+</code></pre>
+                    </div>
+                </div>
+                <div class="grid md:grid-cols-2 gap-8">
+                    <div class="section-card p-6 rounded-lg">
+                        <h3 class="text-xl font-bold mb-2 text-white">Contrato de Datos: `FotoFinderScanEvent_v1`</h3>
+                         <p class="text-gray-400 mb-4">Definimos contratos de datos explícitos usando JSON Schema para validar los datos en el punto de ingestión. Esto garantiza que todos los datos que ingresan a nuestro sistema cumplan con una estructura y tipo predefinidos, evitando la corrupción de datos ("data poisoning").</p>
+                        <div class="code-block">
+<pre><code>{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "FotoFinderScanEvent_v1",
+  "type": "object",
+  "properties": {
+    "patient_id": { "type": "string" },
+    "scan_id": { "type": "string", "format": "uuid" },
+    "scan_type": { "enum": ["meesma-2", "skeen"] },
+    "timestamp": { "type": "string", "format": "date-time" }
+  },
+  "required": ["patient_id", "scan_id", "timestamp"]
+}
+</code></pre>
+                        </div>
+                    </div>
+                    <div class="section-card p-6 rounded-lg">
+                        <h3 class="text-xl font-bold mb-2 text-white">Reglas de Calidad de Datos (Great Expectations)</h3>
+                        <p class="text-gray-400 mb-4">Para cerrar la brecha en la calidad de los datos de Booksy, implementamos reglas con Great Expectations. Estas reglas son cruciales porque la fiabilidad de `OptiVigente` y `PersonaVigente` depende directamente de la integridad de los datos de las citas.</p>
+                        <div class="code-block">
+<pre><code># booksy_appointments_suite.yml
+name: booksy_appointments_suite
+expectations:
+  - expectation_type: expect_column_to_exist
+    kwargs:
+      column: service_id
+    meta:
+      notes: "CRITICAL: 'service_id' es esencial para OptiVigente."
+
+  - expectation_type: expect_column_values_to_not_be_null
+    kwargs:
+      column: customer_id
+    meta:
+      notes: "CRITICAL: Citas sin 'customer_id' rompen los modelos LTV."
+
+  - expectation_type: expect_column_values_to_be_in_set
+    kwargs:
+      column: status
+      value_set: ["completed", "cancelled", "no-show"]
+</code></pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Fábrica de IA Tab -->
+            <div id="ai_factory-content" class="hidden space-y-8">
+                <div class="section-card p-6 rounded-lg">
+                    <h2 class="text-2xl font-bold mb-4 text-white">Fábrica de Agentes IA</h2>
+                    <p class="text-gray-400">Este es nuestro catálogo de "turbinas" y "controles". Contiene el código fuente, las fichas técnicas y las especificaciones de cada agente de IA interno. A continuación se detallan los artefactos para `RiskGuard AI`.</p>
+                </div>
+                <div class="section-card p-6 rounded-lg">
+                    <h3 class="text-xl font-bold mb-4 text-white">Agente: RiskGuard AI</h3>
+                    <div class="grid md:grid-cols-2 gap-8">
+                        <div>
+                            <h4 class="text-lg font-semibold mb-2 text-white">Ficha Técnica (README)</h4>
+                            <p class="text-gray-400 mb-2"><span class="font-bold text-gray-300">Misión:</span> Actuar como el "CFO digital" del ecosistema, realizando supervisión financiera en tiempo real para garantizar la rentabilidad.</p>
+                            <p class="text-gray-400 mb-2"><span class="font-bold text-gray-300">Funciones Clave:</span></p>
+                            <ul class="list-disc list-inside text-gray-400 space-y-1 mb-4">
+                                <li>Simulación de Riesgo Financiero (Monte Carlo).</li>
+                                <li>Monitoreo de Márgenes por servicio.</li>
+                                <li>Actuar como "freno" para las ofertas de `OptiVigente`.</li>
+                            </ul>
+                             <h4 class="text-lg font-semibold mb-2 text-white">Stack Técnico</h4>
+                             <p class="text-gray-400">Python, NumPy, SciPy</p>
+                        </div>
+                        <div>
+                             <h4 class="text-lg font-semibold mb-2 text-center text-white">Visualización: Simulación de Riesgo</h4>
+                             <p class="text-gray-400 text-center text-sm mb-2">Una simulación Monte Carlo genera miles de posibles resultados de beneficios para evaluar la probabilidad de pérdida.</p>
+                             <div class="chart-container">
+                                <canvas id="riskSimulationChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="grid md:grid-cols-2 gap-8">
+                     <div class="section-card p-6 rounded-lg">
+                        <h4 class="text-lg font-semibold mb-2 text-white">Esqueleto del Modelo (model.py)</h4>
+                        <p class="text-gray-400 mb-4">Este pseudocódigo ilustra la lógica central de la simulación Monte Carlo para evaluar el riesgo financiero.</p>
+                        <div class="code-block">
+<pre><code>import numpy as np
+
+def run_monte_carlo(revenue, rev_std, costs, cost_std):
+    sim_revenues = np.random.normal(
+        revenue, rev_std, 10000
+    )
+    sim_costs = np.random.normal(
+        costs, cost_std, 10000
+    )
+    sim_profits = sim_revenues - sim_costs
+    
+    loss_prob = np.sum(sim_profits < 0) / 10000
+    return loss_prob
+
+# risk = run_monte_carlo(500k, 50k, 350k, 40k)
+# print(f"Probabilidad de quiebra: {risk:.2%}")
+</code></pre>
+                        </div>
+                    </div>
+                    <div class="section-card p-6 rounded-lg">
+                        <h4 class="text-lg font-semibold mb-2 text-white">Plantilla de Despliegue (Dockerfile)</h4>
+                        <p class="text-gray-400 mb-4">Cada agente se empaqueta en un contenedor Docker para un despliegue consistente y escalable como un microservicio.</p>
+                        <div class="code-block">
+<pre><code># Usar una imagen base ligera de Python
+FROM python:3.10-slim
+
+# Establecer el directorio de trabajo
+WORKDIR /app
+
+# Copiar dependencias e instalarlas
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copiar el código de la aplicación
+COPY . .
+
+# Exponer el puerto y ejecutar la aplicación
+EXPOSE 8000
+CMD ["python", "app.py"]
+</code></pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Orquestación Tab -->
+            <div id="orchestration-content" class="hidden space-y-8">
+                <div class="section-card p-6 rounded-lg">
+                    <h2 class="text-2xl font-bold mb-4 text-white">Orquestación: El Plan de Vuelo</h2>
+                    <p class="text-gray-400">Este módulo define cómo los agentes colaboran para ejecutar procesos de negocio complejos. A continuación, se detalla el playbook para el "Manejo de Baja Ocupación", un flujo de trabajo crucial para maximizar ingresos.</p>
+                </div>
+                <div class="section-card p-6 rounded-lg">
+                    <h3 class="text-xl font-bold mb-4 text-white">Playbook: Manejo de Baja Ocupación</h3>
+                    <div class="grid md:grid-cols-2 gap-8">
+                        <div>
+                             <p class="text-gray-400 mb-2"><span class="font-bold text-gray-300">Escenario:</span> La utilización proyectada de cabinas para el día actual cae por debajo del 80%.</p>
+                             <p class="text-gray-400 mb-4"><span class="font-bold text-gray-300">Objetivo:</span> Estimular la demanda de último minuto de forma automática para llenar los espacios vacíos, sin intervención manual.</p>
+                             <h4 class="text-lg font-semibold mb-2 text-white">Secuencia de Acciones:</h4>
+                             <ol class="list-decimal list-inside text-gray-400 space-y-2">
+                                 <li><span class="font-semibold text-gray-300">Detección (Trigger):</span> `OptiVigente AI` detecta la baja utilización.</li>
+                                 <li><span class="font-semibold text-gray-300">Cálculo:</span> `OptiVigente AI` calcula un descuento dinámico.</li>
+                                 <li><span class="font-semibold text-gray-300">Segmentación:</span> `PersonaVigente AI` selecciona los clientes con mayor propensión a aceptar.</li>
+                                 <li><span class="font-semibold text-gray-300">Comunicación:</span> `ChatVigente AI` construye y envía un mensaje personalizado vía `Twilio`.</li>
+                                 <li><span class="font-semibold text-gray-300">Medición:</span> El ciclo completo se registra en BigQuery para refinar los modelos.</li>
+                             </ol>
+                        </div>
+                        <div>
+                             <h4 class="text-lg font-semibold mb-2 text-center text-white">Diagrama de Secuencia</h4>
+                             <div class="p-4 border rounded-lg border-gray-700 bg-black/20 text-sm overflow-x-auto">
+                                <div class="flex justify-between text-center font-semibold mb-4 text-gray-300">
+                                    <span>OptiVigente</span>
+                                    <span>Event Bus</span>
+                                    <span>ChatVigente</span>
+                                    <span>Twilio</span>
+                                </div>
+                                <div class="relative h-64 space-y-8">
+                                    <div class="flex items-center">
+                                        <div class="w-1/4 text-center"></div>
+                                        <div class="relative w-1/2">
+                                           <div class="seq-arrow"></div>
+                                           <span class="absolute -top-6 left-1/2 -translate-x-1/2 bg-[#101010] px-1 text-gray-400">1. publish(offer.created)</span>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <div class="w-1/2 text-center"></div>
+                                        <div class="relative w-1/2">
+                                           <div class="seq-arrow"></div>
+                                           <span class="absolute -top-6 left-1/2 -translate-x-1/2 bg-[#101010] px-1 text-gray-400">2. send(WhatsApp)</span>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center">
+                                         <div class="w-3/4 text-center"></div>
+                                        <div class="relative w-1/4">
+                                            <div style="height:2px; background: #6b7280;" class="w-full"></div>
+                                            <span class="absolute -top-6 left-1/2 -translate-x-1/2 bg-[#101010] px-1 text-gray-400">3. Notifica</span>
+                                        </div>
+                                    </div>
+                                </div>
+                             </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Gobernanza Tab -->
+            <div id="governance-content" class="hidden space-y-8">
+                <div class="section-card p-6 rounded-lg">
+                    <h2 class="text-2xl font-bold mb-4 text-white">Gobernanza Autónoma: Piloto Automático y Alarmas</h2>
+                    <p class="text-gray-400">Este módulo contiene los protocolos para la resiliencia y la salud a largo plazo de nuestro sistema de IA. Para abordar la brecha de resiliencia, hemos creado runbooks de emergencia y scripts de monitoreo proactivo.</p>
+                </div>
+                <div class="section-card p-6 rounded-lg">
+                    <h3 class="text-xl font-bold mb-2 text-white">Runbook de Emergencia: Falla de API Externa</h3>
+                    <p class="text-gray-400 mb-4"><span class="font-bold text-gray-300">Escenario:</span> La API de QuickBooks (crítica para `RiskGuard AI`) deja de responder. <span class="font-bold text-gray-300">Impacto:</span> Crítico. Las decisiones de precios dinámicos podrían tomarse a ciegas.</p>
+                     <div class="overflow-x-auto">
+                        <table class="w-full text-sm text-left text-gray-400">
+                            <thead class="text-xs text-gray-300 uppercase bg-gray-800/50">
+                                <tr>
+                                    <th scope="col" class="px-6 py-3">Paso</th>
+                                    <th scope="col" class="px-6 py-3">Acción Automática</th>
+                                    <th scope="col" class="px-6 py-3">Rationale</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="border-b border-gray-700">
+                                    <td class="px-6 py-4 font-medium text-white">1. Detección</td>
+                                    <td class="px-6 py-4">Alerta de `DataDog` por errores 5xx > 1 min.</td>
+                                    <td class="px-6 py-4">Detección proactiva antes de que impacte los flujos.</td>
+                                </tr>
+                                <tr class="bg-black/20 border-b border-gray-700">
+                                    <td class="px-6 py-4 font-medium text-white">2. Fail-Safe</td>
+                                    <td class="px-6 py-4">`RiskGuard AI` entra en modo contingencia, usa datos `stale` (última hora) y rechaza descuentos >10%.</td>
+                                    <td class="px-6 py-4">Previene decisiones con datos malos y asegura continuidad conservadora.</td>
+                                </tr>
+                                <tr class="border-b border-gray-700">
+                                    <td class="px-6 py-4 font-medium text-white">3. Escalado</td>
+                                    <td class="px-6 py-4">`PagerDuty` notifica al Ing. de FinOps de guardia y se envía alerta a Slack.</td>
+                                    <td class="px-6 py-4">Asegura que un humano sea notificado para iniciar investigación.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="grid md:grid-cols-2 gap-8">
+                     <div class="section-card p-6 rounded-lg">
+                        <h3 class="text-xl font-bold mb-2 text-white">Monitoreo de Salud del Modelo (Drift)</h3>
+                        <p class="text-gray-400 mb-4">Este script aborda el riesgo crítico de la degradación del rendimiento del modelo con el tiempo (deriva). Un modelo como el predictor de abandono de `PersonaVigente` puede volverse inexacto a medida que cambia el comportamiento del cliente. Este script detecta dicha deriva automáticamente.</p>
+                        <div class="code-block">
+<pre><code>from scipy.stats import ks_2samp
+
+def monitor_model_drift(baseline_data, live_data):
+    """
+    Compara la distribución de datos en vivo vs. de base
+    usando el test Kolmogorov-Smirnov.
+    """
+    ks_stat, p_value = ks_2samp(
+        baseline_data, live_data
+    )
+    
+    drift_detected = p_value < 0.05
+    
+    if drift_detected:
+        print(f"ALERT: Drift detectado! p-value: {p_value}")
+    
+    return {"drift": drift_detected, "p_value": p_value}
+
+# baseline = get_training_data()
+# live = get_production_data()
+# monitor_model_drift(baseline, live)
+</code></pre>
+                        </div>
+                    </div>
+                    <div class="section-card p-6 rounded-lg">
+                        <h3 class="text-xl font-bold mb-2 text-center text-white">Visualización: Detección de Deriva</h3>
+                        <p class="text-gray-400 mb-4 text-center text-sm">El gráfico muestra cómo la distribución de los datos en vivo (naranja) se ha desplazado significativamente de la distribución de entrenamiento original (azul), lo que indica una deriva del modelo que requiere atención.</p>
+                        <div class="chart-container">
+                            <canvas id="driftChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const navLinks = document.querySelectorAll('.nav-link');
+            const contentDivs = {
+                overview: document.getElementById('overview-content'),
+                core_strategy: document.getElementById('core_strategy-content'),
+                data_engine: document.getElementById('data_engine-content'),
+                ai_factory: document.getElementById('ai_factory-content'),
+                orchestration: document.getElementById('orchestration-content'),
+                governance: document.getElementById('governance-content')
+            };
+
+            const chartColors = {
+                blue: 'rgba(96, 165, 250, 0.7)',
+                blueBorder: 'rgba(96, 165, 250, 1)',
+                orange: 'rgba(251, 146, 60, 0.7)',
+                orangeBorder: 'rgba(251, 146, 60, 1)',
+                grid: 'rgba(255, 255, 255, 0.1)',
+                ticks: '#9ca3af',
+                title: '#E0E0E0'
+            };
+            
+            let charts = {};
+
+            function hideAllContent() {
+                Object.values(contentDivs).forEach(div => div.classList.add('hidden'));
+            }
+
+            function activateTab(tabName) {
+                hideAllContent();
+                navLinks.forEach(link => {
+                    if (link.dataset.tab === tabName) {
+                        link.classList.add('active');
+                    } else {
+                        link.classList.remove('active');
+                    }
+                });
+                contentDivs[tabName].classList.remove('hidden');
+
+                if (charts[tabName]) {
+                   charts[tabName].destroy();
+                }
+                
+                if (tabName === 'core_strategy') createMarketChart();
+                if (tabName === 'ai_factory') createRiskSimulationChart();
+                if (tabName === 'governance') createDriftChart();
+            }
+
+            navLinks.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const tabName = e.target.dataset.tab;
+                    activateTab(tabName);
+                });
+            });
+            
+            const commonChartOptions = {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { labels: { color: chartColors.ticks } },
+                }
+            };
+
+            function createMarketChart() {
+                const ctx = document.getElementById('marketChart').getContext('2d');
+                charts.core_strategy = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['30-40 años', '41-50 años', '51-60 años'],
+                        datasets: [{
+                            label: 'Distribución por Edad (%)',
+                            data: [45, 40, 15],
+                            backgroundColor: chartColors.blue,
+                            borderColor: chartColors.blueBorder,
+                            borderWidth: 1
+                        }]
+                    },
+                    options: { ...commonChartOptions,
+                        plugins: { ...commonChartOptions.plugins, legend: {display: false}, title: { display: true, text: 'Segmentación de Clientes por Edad', color: chartColors.title } },
+                        scales: { 
+                            y: { beginAtZero: true, max: 50, grid: { color: chartColors.grid }, ticks: { color: chartColors.ticks } },
+                            x: { grid: { color: chartColors.grid }, ticks: { color: chartColors.ticks } }
+                        }
+                    }
+                });
+            }
+
+             function createRiskSimulationChart() {
+                const ctx = document.getElementById('riskSimulationChart').getContext('2d');
+                const simulatedProfits = Array.from({length: 100}, () => Math.random() * 200 - 50);
+                simulatedProfits.sort((a, b) => a - b);
+                charts.ai_factory = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: Array.from({length: 100}, (_, i) => i + 1),
+                        datasets: [{
+                            label: 'Beneficio Simulado',
+                            data: simulatedProfits,
+                            backgroundColor: chartColors.blue,
+                            borderColor: chartColors.blueBorder,
+                            borderWidth: 2,
+                            tension: 0.4,
+                            fill: true,
+                        }, {
+                            label: 'Punto de Equilibrio',
+                            data: Array(100).fill(0),
+                            borderColor: chartColors.orangeBorder,
+                            borderWidth: 2,
+                            borderDash: [5, 5],
+                            pointRadius: 0
+                        }]
+                    },
+                    options: { ...commonChartOptions,
+                        plugins: { ...commonChartOptions.plugins, title: { display: true, text: 'Distribución de Beneficios (Simulación Monte Carlo)', color: chartColors.title } },
+                        scales: { 
+                            x: { display: false, grid: { color: chartColors.grid }, ticks: { color: chartColors.ticks } }, 
+                            y: { title: { display: true, text: 'Beneficio ($)', color: chartColors.ticks }, grid: { color: chartColors.grid }, ticks: { color: chartColors.ticks } } 
+                        }
+                    }
+                });
+            }
+            
+            function createDriftChart() {
+                const ctx = document.getElementById('driftChart').getContext('2d');
+                const baselineData = Array.from({length: 20}, () => Math.random() * 50 + 10);
+                const liveData = Array.from({length: 20}, () => Math.random() * 50 + 40);
+                 charts.governance = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: Array.from({length: 20}, (_, i) => `Día ${i+1}`),
+                        datasets: [{
+                            label: 'Distribución de Entrenamiento (Base)',
+                            data: baselineData,
+                            backgroundColor: chartColors.blue,
+                            borderColor: chartColors.blueBorder,
+                            borderWidth: 1
+                        }, {
+                            label: 'Distribución en Vivo (Deriva)',
+                            data: liveData,
+                            backgroundColor: chartColors.orange,
+                            borderColor: chartColors.orangeBorder,
+                            borderWidth: 1
+                        }]
+                    },
+                    options: { ...commonChartOptions,
+                        plugins: { ...commonChartOptions.plugins, title: { display: true, text: 'Comparación de Distribución de Datos', color: chartColors.title } },
+                        scales: { 
+                            y: { beginAtZero: true, grid: { color: chartColors.grid }, ticks: { color: chartColors.ticks } },
+                            x: { grid: { color: chartColors.grid }, ticks: { color: chartColors.ticks } }
+                        }
+                    }
+                });
+            }
+
+            // Initial load
+            activateTab('overview');
+        });
+    </script>
+
+</body>
+</html>
