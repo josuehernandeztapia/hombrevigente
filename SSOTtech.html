@@ -1,0 +1,783 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hombre Vigente - Panel Interactivo Estratégico</title>
+    <!-- Chosen Palette: Minimalist Dark -->
+    <!-- Application Structure Plan: He diseñado una aplicación de una sola página centrada en un panel de control. La navegación no sigue el índice del informe, sino que se organiza en cinco secciones temáticas e intuitivas: 1) Dashboard Clave (la vista inicial, mostrando la salud del negocio en tiempo real), 2) Modelo de Negocio (explicando la propuesta de valor 'Trifecta' y el viaje del cliente), 3) Ecosistema IA (detallando el 'Data Flywheel' y los agentes de IA propietarios), 4) Operaciones y Expansión (mostrando la escalabilidad a través del 'Clinic-in-a-Box'), y 5) Finanzas y Riesgo (presentando las proyecciones y el análisis de rentabilidad). Esta estructura permite a un usuario, como un inversor, captar rápidamente la visión general y luego profundizar en las áreas de interés de forma no lineal, facilitando una comprensión más rápida y profunda del modelo de negocio. -->
+    <!-- Visualization & Content Choices: La información del informe se presenta de forma interactiva. 'Dashboard Clave': KPIs como tarjetas destacadas, un semáforo de riesgo RiskGuard en el que se puede hacer clic y un gráfico de líneas de Chart.js para los ingresos con filtros. 'Modelo de Negocio': La 'Trifecta' y el viaje del cliente se visualizan con diseños de columnas y líneas de tiempo HTML/CSS interactivas. 'Ecosistema IA': El 'Data Flywheel' se recrea como un diagrama HTML/CSS animado, y los agentes de IA se presentan en una cuadrícula de tarjetas expandibles. 'Operaciones': El layout de la clínica es un diagrama de divs HTML, y la hoja de ruta de expansión es una línea de tiempo interactiva. 'Finanzas': Gráficos de barras y donuts de Chart.js para proyecciones y CAPEX, con botones para cambiar escenarios. Todas las interacciones se manejan con Vanilla JS. Se confirma que no se utiliza SVG ni Mermaid JS. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: #0D0D0D;
+            color: #E0E0E0;
+        }
+        .nav-link {
+            transition: all 0.3s ease;
+            position: relative;
+            padding-bottom: 4px;
+        }
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #FFFFFF;
+            transition: width 0.3s ease;
+        }
+        .nav-link.active::after, .nav-link:hover::after {
+            width: 100%;
+        }
+        .card {
+            background-color: #141414;
+            border: 1px solid #2a2a2a;
+        }
+        .btn-primary {
+            @apply bg-white text-black font-bold py-3 px-8 rounded-full hover:bg-gray-300 transition-colors duration-300;
+        }
+        .btn-secondary {
+            background-color: #2a2a2a;
+            color: #E0E0E0;
+            transition: background-color 0.3s;
+        }
+        .btn-secondary.active {
+            background-color: #FFFFFF;
+            color: #0D0D0D;
+        }
+        .chart-container {
+            position: relative;
+            margin: auto;
+            height: 40vh;
+            width: 100%;
+            max-height: 400px;
+        }
+        .traffic-light-container {
+            cursor: pointer;
+        }
+        .traffic-light {
+            width: 80px;
+            height: 220px;
+            background-color: #1f1f1f;
+            border-radius: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-around;
+            align-items: center;
+            padding: 15px 0;
+            border: 4px solid #2a2a2a;
+        }
+        .light {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: #0D0D0D;
+            transition: background-color 0.3s, box-shadow 0.3s;
+        }
+        .light.red.active { background-color: #EF4444; box-shadow: 0 0 25px #EF4444; }
+        .light.yellow.active { background-color: #FBBF24; box-shadow: 0 0 25px #FBBF24; }
+        .light.green.active { background-color: #22C55E; box-shadow: 0 0 25px #22C55E; }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 100;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.7);
+            animation: fadeIn 0.3s;
+        }
+        .modal-content {
+            animation: slideIn 0.3s;
+        }
+        @keyframes fadeIn { from {opacity: 0;} to {opacity: 1;} }
+        @keyframes slideIn { from {transform: translateY(-50px);} to {transform: translateY(0);} }
+    </style>
+</head>
+<body class="antialiased">
+
+    <header class="bg-black/50 backdrop-blur-sm sticky top-0 z-50 border-b border-gray-800/50">
+        <nav class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center">
+                    <span class="text-2xl font-black tracking-tighter text-white uppercase">Hombre Vigente</span>
+                    <span class="ml-3 text-sm font-bold text-gray-400">SSOT</span>
+                </div>
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-4">
+                        <a href="#dashboard" class="nav-link text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-bold active">Dashboard</a>
+                        <a href="#modelo" class="nav-link text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-bold">Modelo</a>
+                        <a href="#ia" class="nav-link text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-bold">IA</a>
+                        <a href="#operaciones" class="nav-link text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-bold">Operaciones</a>
+                        <a href="#finanzas" class="nav-link text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-bold">Finanzas</a>
+                    </div>
+                </div>
+                <div class="md:hidden">
+                    <select id="mobile-nav" class="bg-gray-900 border border-gray-700 text-white text-sm rounded-lg focus:ring-white focus:border-white block w-full p-2.5">
+                        <option value="#dashboard">Dashboard</option>
+                        <option value="#modelo">Modelo</option>
+                        <option value="#ia">IA</option>
+                        <option value="#operaciones">Operaciones</option>
+                        <option value="#finanzas">Finanzas</option>
+                    </select>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main id="main-content" class="container mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
+        
+        <section id="dashboard" class="space-y-12">
+            <div class="text-center">
+                <h1 class="text-5xl md:text-8xl font-black text-white uppercase tracking-tighter leading-none">El Poder de Ser Vigente</h1>
+                <p class="mt-6 max-w-2xl mx-auto text-lg text-gray-400">Panel de control ejecutivo para el ecosistema de IA que redefine el bienestar masculino.</p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <div class="lg:col-span-2 space-y-8">
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+                        <div class="card p-4 rounded-xl">
+                            <h3 class="text-sm font-bold text-gray-500 uppercase">Ventas (Mes)</h3>
+                            <p class="mt-1 text-3xl font-black text-white">$650K</p>
+                        </div>
+                        <div class="card p-4 rounded-xl">
+                            <h3 class="text-sm font-bold text-gray-500 uppercase">Visitas (Día)</h3>
+                            <p class="mt-1 text-3xl font-black text-white">20</p>
+                        </div>
+                        <div class="card p-4 rounded-xl">
+                            <h3 class="text-sm font-bold text-gray-500 uppercase">LTV/CAC</h3>
+                            <p class="mt-1 text-3xl font-black text-green-400">&ge;12</p>
+                        </div>
+                        <div class="card p-4 rounded-xl">
+                            <h3 class="text-sm font-bold text-gray-500 uppercase">Utilización</h3>
+                            <p class="mt-1 text-3xl font-black text-green-400">&ge;80%</p>
+                        </div>
+                    </div>
+                    <div class="card p-6 rounded-xl">
+                        <div class="flex justify-between items-center mb-4">
+                            <h2 class="text-xl font-bold text-white">Tendencia de Ingresos</h2>
+                            <div id="revenue-filter-group" class="flex space-x-1 bg-black p-1 rounded-lg">
+                                <button data-period="D" class="btn-secondary px-3 py-1 text-sm rounded-md font-bold">Día</button>
+                                <button data-period="S" class="btn-secondary px-3 py-1 text-sm rounded-md font-bold active">Semana</button>
+                                <button data-period="M" class="btn-secondary px-3 py-1 text-sm rounded-md font-bold">Mes</button>
+                            </div>
+                        </div>
+                        <div class="chart-container h-[280px] sm:h-[320px]">
+                            <canvas id="revenueChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card p-6 rounded-xl flex flex-col items-center justify-center">
+                    <h2 class="text-xl font-bold mb-4 text-center text-white">Vitalidad Financiera</h2>
+                    <p class="text-sm text-center text-gray-500 mb-4">Estado de riesgo calculado por <strong>RiskGuard AI</strong>. Clic para detalles.</p>
+                    <div id="traffic-light-container" class="traffic-light-container">
+                        <div class="traffic-light">
+                            <div id="light-red" class="light red"></div>
+                            <div id="light-yellow" class="light yellow"></div>
+                            <div id="light-green" class="light green active"></div>
+                        </div>
+                    </div>
+                    <div id="risk-status-text" class="mt-4 text-center">
+                        <span class="text-lg font-bold text-green-400">Seguro</span>
+                        <p class="text-xs text-gray-500 mt-1">Altman Z-Score &gt; 2.9</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="modelo" class="hidden space-y-12">
+            <div class="text-center">
+                 <h1 class="text-4xl md:text-6xl font-black tracking-tighter text-white uppercase">Un Modelo de Negocio Diferencial</h1>
+                 <p class="mt-6 max-w-3xl mx-auto text-lg text-gray-400">Nuestra ventaja reside en la sinergia de tres pilares que crean un foso competitivo y una experiencia superior.</p>
+            </div>
+            
+            <div>
+                <h2 class="text-2xl font-black text-center mb-8 text-white tracking-tight">La Propuesta de Valor "Trifecta"</h2>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
+                    <div class="card p-6 rounded-xl border-t-2 border-white">
+                        <div class="text-4xl mb-4">🔬</div>
+                        <h3 class="text-xl font-bold mb-2 text-white">Tecnología Clínica</h3>
+                        <p class="text-gray-400">Equipamiento de grado médico y diagnósticos objetivos para resultados superiores y validados.</p>
+                    </div>
+                    <div class="card p-6 rounded-xl border-t-2 border-white">
+                        <div class="text-4xl mb-4">✨</div>
+                        <h3 class="text-xl font-bold mb-2 text-white">Disciplina Minimalista</h3>
+                        <p class="text-gray-400">Enfoque en tratamientos de alto impacto. La simplicidad que habilita la optimización por IA.</p>
+                    </div>
+                    <div class="card p-6 rounded-xl border-t-2 border-white">
+                        <div class="text-4xl mb-4">🤝</div>
+                        <h3 class="text-xl font-bold mb-2 text-white">Comunidad Educativa</h3>
+                        <p class="text-gray-400">Un club que genera efectos de red, aumenta la retención y maximiza el Lifetime Value (LTV).</p>
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                 <h2 class="text-2xl font-black text-center mb-8 text-white tracking-tight">El Viaje del Cliente Orquestado por IA</h2>
+                 <p class="text-center text-gray-400 mb-8 max-w-2xl mx-auto">Cada paso está diseñado y potenciado por nuestros agentes de IA para una experiencia fluida y personalizada.</p>
+                <div class="relative w-full overflow-x-auto pb-4">
+                    <div class="flex space-x-8 md:space-x-0 md:grid md:grid-cols-6 md:gap-4">
+                        <div class="absolute top-1/2 left-0 w-full h-0.5 bg-gray-800 -translate-y-1/2 hidden md:block"></div>
+                        <div id="customer-journey-steps" class="flex md:contents">
+                        </div>
+                    </div>
+                </div>
+                <div id="journey-details" class="mt-8 card p-6 rounded-xl min-h-[150px]">
+                </div>
+            </div>
+
+        </section>
+
+        <section id="ia" class="hidden space-y-12">
+            <div class="text-center">
+                 <h1 class="text-4xl md:text-6xl font-black tracking-tighter text-white uppercase">Ecosistema de IA</h1>
+                 <p class="mt-6 max-w-3xl mx-auto text-lg text-gray-400">Nuestra IP es un sistema de agentes autónomos que aprenden y se auto-optimizan, el motor de nuestro "Data Flywheel".</p>
+            </div>
+            
+            <div>
+                 <h2 class="text-2xl font-black text-center mb-8 text-white tracking-tight">El "Data Flywheel": Ciclo de Auto-mejora</h2>
+                <div class="card rounded-xl p-8">
+                     <p class="text-center text-gray-400 mb-6 max-w-3xl mx-auto">La arquitectura orientada a eventos es el corazón del sistema. Cada interacción genera un evento que alimenta a nuestros agentes, creando un ciclo virtuoso.</p>
+                    <div class="w-full max-w-4xl mx-auto" id="data-flywheel-diagram">
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <h2 class="text-2xl font-black text-center mb-8 text-white tracking-tight">Inventario de Agentes de IA Propietarios</h2>
+                <div id="ai-agents-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                </div>
+            </div>
+        </section>
+
+        <section id="operaciones" class="hidden space-y-12">
+            <div class="text-center">
+                 <h1 class="text-4xl md:text-6xl font-black tracking-tighter text-white uppercase">Operaciones y Expansión</h1>
+                 <p class="mt-6 max-w-3xl mx-auto text-lg text-gray-400">Empaquetamos nuestra sofisticación en un modelo "Clinic-in-a-Box" para una expansión global sistemática.</p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+                <div class="card p-6 rounded-xl">
+                     <h2 class="text-2xl font-bold mb-4 text-white">Layout Optimizado (250 m²)</h2>
+                     <p class="text-gray-400 mb-6">El espacio físico está diseñado para maximizar el flujo de clientes y la rentabilidad.</p>
+                    <div id="clinic-layout-diagram" class="grid grid-cols-3 grid-rows-3 gap-2 w-full aspect-square bg-black p-2 rounded-lg">
+                    </div>
+                </div>
+                <div class="card p-6 rounded-xl">
+                     <h2 class="text-2xl font-bold mb-4 text-white">Estructura Organizacional Lean</h2>
+                     <p class="text-gray-400 mb-6">La IA aumenta la efectividad de nuestro personal, permitiendo una estructura esbelta y eficiente.</p>
+                    <ul id="staffing-list" class="space-y-3">
+                    </ul>
+                </div>
+            </div>
+            
+            <div>
+                 <h2 class="text-2xl font-black text-center mb-8 text-white tracking-tight">Hoja de Ruta de Expansión Global</h2>
+                <div class="relative w-full">
+                     <div class="absolute top-1/2 left-0 w-full h-0.5 bg-gray-800 -translate-y-1/2 hidden md:block"></div>
+                     <div id="expansion-roadmap-steps" class="flex space-x-8 overflow-x-auto py-4 md:space-x-0 md:grid md:grid-cols-4 md:gap-4">
+                     </div>
+                 </div>
+                 <div id="expansion-details" class="mt-8 card p-6 rounded-xl min-h-[150px]">
+                 </div>
+            </div>
+
+        </section>
+
+        <section id="finanzas" class="hidden space-y-12">
+            <div class="text-center">
+                 <h1 class="text-4xl md:text-6xl font-black tracking-tighter text-white uppercase">Finanzas y Unit Economics</h1>
+                 <p class="mt-6 max-w-3xl mx-auto text-lg text-gray-400">Análisis transparente de proyecciones, rentabilidad y riesgos, gestionados activamente por nuestra IA.</p>
+            </div>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-5 gap-8">
+                <div class="lg:col-span-3 card p-6 rounded-xl">
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="text-xl font-bold text-white">Proyección P&L a 5 Años</h2>
+                        <div id="pnl-filter-group" class="flex space-x-1 bg-black p-1 rounded-lg">
+                            <button data-scenario="pesimista" class="btn-secondary px-3 py-1 text-sm rounded-md font-bold">Pesimista</button>
+                            <button data-scenario="base" class="btn-secondary px-3 py-1 text-sm rounded-md font-bold active">Base</button>
+                            <button data-scenario="optimista" class="btn-secondary px-3 py-1 text-sm rounded-md font-bold">Optimista</button>
+                        </div>
+                    </div>
+                    <div class="chart-container h-[350px]">
+                        <canvas id="pnlChart"></canvas>
+                    </div>
+                </div>
+                <div class="lg:col-span-2 space-y-8">
+                    <div class="card p-6 rounded-xl">
+                        <h2 class="text-xl font-bold mb-4 text-white">Unit Economics Clave</h2>
+                        <ul class="space-y-4">
+                            <li class="flex items-center justify-between">
+                                <span class="font-medium text-gray-400">Ratio LTV/CAC</span>
+                                <span class="font-black text-2xl text-green-400">&ge; 12</span>
+                            </li>
+                            <li class="flex items-center justify-between">
+                                <span class="font-medium text-gray-400">CAC Payback</span>
+                                <span class="font-black text-2xl text-green-400">&lt; 2 meses</span>
+                            </li>
+                            <li class="flex items-center justify-between">
+                                <span class="font-medium text-gray-400">Punto de Equilibrio</span>
+                                <span id="break-even-text" class="font-black text-2xl text-white">26 meses</span>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="card p-6 rounded-xl">
+                        <h2 class="text-xl font-bold mb-4 text-white">Inversión Inicial (CAPEX)</h2>
+                        <div class="chart-container h-[200px]">
+                            <canvas id="capexChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+    
+    <div id="modal" class="modal">
+      <div class="modal-content card rounded-xl max-w-lg w-11/12 mx-auto mt-20 mb-8 p-6 relative">
+        <button id="close-modal" class="absolute top-4 right-4 text-gray-400 hover:text-white text-2xl font-bold">&times;</button>
+        <div id="modal-body"></div>
+      </div>
+    </div>
+
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const sections = document.querySelectorAll('main > section');
+            const navLinks = document.querySelectorAll('header nav a.nav-link');
+            const mobileNav = document.getElementById('mobile-nav');
+
+            const financialData = {
+                revenue: {
+                    D: { labels: ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'], data: [18, 22, 25, 20, 30, 35, 28] },
+                    S: { labels: ['Sem 1', 'Sem 2', 'Sem 3', 'Sem 4'], data: [150, 165, 160, 175] },
+                    M: { labels: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun'], data: [600, 620, 650, 680, 710, 750] },
+                },
+                pnl: {
+                    base: { labels: ['Año 1', 'Año 2', 'Año 3', 'Año 4', 'Año 5'], revenue: [7.8, 10, 12.5, 15, 18], ebitda: [0.5, 2.5, 4.7, 6.7, 8.5], breakEven: '26 meses' },
+                    pesimista: { labels: ['Año 1', 'Año 2', 'Año 3', 'Año 4', 'Año 5'], revenue: [5, 7, 8, 9, 10], ebitda: [-1, 0.5, 1.5, 2.5, 3], breakEven: '38 meses' },
+                    optimista: { labels: ['Año 1', 'Año 2', 'Año 3', 'Año 4', 'Año 5'], revenue: [9, 13, 17, 21, 25], ebitda: [1.5, 5, 8, 11, 14], breakEven: '18 meses' },
+                },
+                capex: {
+                    labels: ['Equipamiento', 'Adecuación', 'Mobiliario y Tech'],
+                    data: [60, 25, 15],
+                    total: '7.5 MDP'
+                }
+            };
+            
+            const customerJourneyData = [
+                { stage: 1, title: 'Descubrimiento', icon: '📱', details: 'El cliente potencial ve contenido de alto impacto en Instagram o LinkedIn. El CTA es un "Diagnóstico 3D Gratuito", un potente lead magnet.' },
+                { stage: 2, title: 'Diagnóstico', icon: '🩺', details: 'Check-in digital rápido. Escaneo 3D y térmico con FotoFinder. Este proceso captura los datos objetivos que alimentan a la IA.' },
+                { stage: 3, title: 'Plan Personalizado', icon: '🤖', details: 'En minutos, `PersonaVigente AI` genera un plan de tratamiento hiperpersonalizado, basado en el "Índice de Vigencia" y simulaciones visuales.' },
+                { stage: 4, title: 'Tratamiento', icon: '💆‍♂️', details: 'El tratamiento se ejecuta en una cabina asignada dinámicamente por `OptiVigente AI` para maximizar la eficiencia de los recursos.' },
+                { stage: 5, title: 'Seguimiento', icon: '💬', details: '`ChatVigente AI` gestiona el cuidado post-tratamiento y el agendamiento de citas de seguimiento vía WhatsApp, asegurando una continuidad sin fricción.' },
+                { stage: 6, title: 'Fidelización', icon: '🏆', details: 'Se invita al cliente a unirse a la comunidad "CLUB". `PersonaVigente AI` envía ofertas personalizadas para maximizar el LTV.' }
+            ];
+
+            const aiAgentsData = [
+                { name: 'DiagnosticoVigente', icon: '🧬', desc: 'Analiza escaneos 3D/térmicos y propone un plan inicial.', tech: 'CNN, XGBoost' },
+                { name: 'PersonaVigente', icon: '🎯', desc: 'Hiperpersonalización, scoring de propensión a compra y churn.', tech: 'LightFM, GPT-4o' },
+                { name: 'OptiVigente', icon: '⚙️', desc: 'Optimiza agenda, turnos y pricing dinámico para >80% de utilización.', tech: 'Prophet, MILP' },
+                { name: 'RiskGuard', icon: '🛡️', desc: 'Supervisión financiera, simulación de riesgos (Monte Carlo) y alertas.', tech: 'Altman Z-Score, Python' },
+                { name: 'ChatVigente', icon: '💬', desc: 'Chatbot multicanal para reservas, soporte y flujos de retención.', tech: 'RAG, Dialogflow CX' },
+                { name: 'AssetVigente', icon: '🔧', desc: 'Mantenimiento predictivo de equipos clínicos a través de sensores IoT.', tech: 'Series Temporales, InfluxDB' }
+            ];
+            
+            const clinicLayoutData = [
+                { area: 'Rejuvenecimiento Facial', span: 'col-span-1 row-span-1', percentage: '20%' },
+                { area: 'Cirugía Ambulatoria', span: 'col-span-1 row-span-1', percentage: '15%' },
+                { area: 'Dental', span: 'col-span-1 row-span-1', percentage: '12%' },
+                { area: 'Sala "CLUB"', span: 'col-span-2 row-span-1', percentage: '20%' },
+                { area: 'Depilación y Corporal', span: 'col-span-1 row-span-1', percentage: '15%' },
+                { area: 'Grooming Básico', span: 'col-span-1 row-span-1', percentage: '12%' },
+                { area: 'Soporte y Almacén', span: 'col-span-2 row-span-1', percentage: '6%' },
+            ];
+            
+            const staffingData = [
+                { role: 'COO / Médico Responsable', fte: 1 },
+                { role: 'Coordinador de Comunidad', fte: 1 },
+                { role: 'Técnicos Estéticos', fte: 3 },
+                { role: 'Dentista', fte: 0.5 },
+                { role: 'Cirujano Plástico', fte: 'Fee-split' },
+                { role: 'Recepción / Ventas', fte: 2 },
+            ];
+            
+            const expansionRoadmapData = [
+                { phase: 1, period: '2025-27', market: 'CDMX, GDL', goal: 'Validar P&L y perfeccionar el Data Flywheel.', gate: 'COFEPRIS' },
+                { phase: 2, period: '2027-28', market: 'Miami, LA', goal: 'Penetrar la comunidad latina con un ticket más alto.', gate: 'FDA 510(k)' },
+                { phase: 3, period: '2029-30', market: 'Madrid, Londres', goal: 'Punto de inflexión: Licenciar "Clinic-in-a-Box" como SaaS.', gate: 'MDR (EU)' },
+                { phase: 4, period: '2030+', market: 'Corea, EAU', goal: 'Joint Ventures premium en mercados de ultra-lujo.', gate: 'SFDA / DHA' }
+            ];
+
+            let revenueChart, pnlChart, capexChart;
+            const chartTextColor = '#E0E0E0';
+            const chartGridColor = 'rgba(255, 255, 255, 0.1)';
+
+            function showSection(hash) {
+                const targetHash = hash || '#dashboard';
+                
+                sections.forEach(section => {
+                    section.classList.add('hidden');
+                });
+                
+                const activeSection = document.querySelector(targetHash);
+                if (activeSection) {
+                    activeSection.classList.remove('hidden');
+                } else {
+                    document.querySelector('#dashboard').classList.remove('hidden');
+                }
+
+                navLinks.forEach(link => {
+                    link.classList.toggle('active', link.getAttribute('href') === targetHash);
+                });
+                
+                if (mobileNav.value !== targetHash) {
+                    mobileNav.value = targetHash;
+                }
+            }
+
+            function navigate(event) {
+                event.preventDefault();
+                const hash = this.getAttribute('href');
+                
+                if (window.location.hash !== hash) {
+                    history.pushState({path: hash}, '', hash);
+                }
+                
+                showSection(hash);
+            }
+
+            navLinks.forEach(link => link.addEventListener('click', navigate));
+
+            mobileNav.addEventListener('change', (e) => {
+                const hash = e.target.value;
+                if (window.location.hash !== hash) {
+                    history.pushState({path: hash}, '', hash);
+                }
+                showSection(hash);
+            });
+
+            window.addEventListener('popstate', (event) => {
+                showSection(window.location.hash);
+            });
+
+            showSection(window.location.hash);
+
+
+            function initRevenueChart() {
+                const ctx = document.getElementById('revenueChart').getContext('2d');
+                revenueChart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: financialData.revenue.S.labels,
+                        datasets: [{
+                            label: 'Ingresos (miles $)',
+                            data: financialData.revenue.S.data,
+                            borderColor: '#FFFFFF',
+                            backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                            borderWidth: 2,
+                            tension: 0.4,
+                            fill: true,
+                        }]
+                    },
+                    options: {
+                        responsive: true, maintainAspectRatio: false,
+                        scales: { 
+                            y: { beginAtZero: true, grid: { color: chartGridColor }, ticks: { color: chartTextColor } },
+                            x: { grid: { color: chartGridColor }, ticks: { color: chartTextColor } }
+                        },
+                        plugins: { legend: { display: false } }
+                    }
+                });
+            }
+
+            function updateRevenueChart(period) {
+                const newData = financialData.revenue[period];
+                revenueChart.data.labels = newData.labels;
+                revenueChart.data.datasets[0].data = newData.data;
+                revenueChart.update();
+            }
+            
+            document.getElementById('revenue-filter-group').addEventListener('click', (e) => {
+                if(e.target.tagName === 'BUTTON') {
+                    const period = e.target.dataset.period;
+                    updateRevenueChart(period);
+                    document.querySelectorAll('#revenue-filter-group button').forEach(btn => btn.classList.remove('active'));
+                    e.target.classList.add('active');
+                }
+            });
+
+            function initPnlChart() {
+                const ctx = document.getElementById('pnlChart').getContext('2d');
+                const initialData = financialData.pnl.base;
+                pnlChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: initialData.labels,
+                        datasets: [
+                            { label: 'Ingresos (MDP)', data: initialData.revenue, backgroundColor: '#4a4a4a' },
+                            { label: 'EBITDA (MDP)', data: initialData.ebitda, backgroundColor: '#FFFFFF' }
+                        ]
+                    },
+                    options: {
+                        responsive: true, maintainAspectRatio: false,
+                        scales: { 
+                            y: { beginAtZero: true, stacked: false, grid: { color: chartGridColor }, ticks: { color: chartTextColor } }, 
+                            x: { stacked: false, grid: { color: chartGridColor }, ticks: { color: chartTextColor } } 
+                        },
+                        plugins: { legend: { position: 'bottom', labels: { color: chartTextColor } } }
+                    }
+                });
+            }
+
+            function updatePnlChart(scenario) {
+                 const newData = financialData.pnl[scenario];
+                 pnlChart.data.datasets[0].data = newData.revenue;
+                 pnlChart.data.datasets[1].data = newData.ebitda;
+                 pnlChart.update();
+                 document.getElementById('break-even-text').textContent = newData.breakEven;
+            }
+
+            document.getElementById('pnl-filter-group').addEventListener('click', (e) => {
+                if(e.target.tagName === 'BUTTON') {
+                    const scenario = e.target.dataset.scenario;
+                    updatePnlChart(scenario);
+                    document.querySelectorAll('#pnl-filter-group button').forEach(btn => btn.classList.remove('active'));
+                    e.target.classList.add('active');
+                }
+            });
+            
+            function initCapexChart() {
+                const ctx = document.getElementById('capexChart').getContext('2d');
+                capexChart = new Chart(ctx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: financialData.capex.labels,
+                        datasets: [{
+                            data: financialData.capex.data,
+                            backgroundColor: ['#FFFFFF', '#9ca3af', '#4b5563'],
+                            borderWidth: 0,
+                        }]
+                    },
+                    options: {
+                        responsive: true, maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: false },
+                            tooltip: { callbacks: { label: (context) => `${context.label}: ${context.raw}%` } },
+                            title: {
+                                display: true, text: `Total: ${financialData.capex.total}`, position: 'bottom',
+                                font: { size: 14, weight: 'bold' }, color: chartTextColor, padding: { top: 10 }
+                            }
+                        }
+                    }
+                });
+            }
+
+            const trafficLightContainer = document.getElementById('traffic-light-container');
+            const modal = document.getElementById('modal');
+            const closeModal = document.getElementById('close-modal');
+            const modalBody = document.getElementById('modal-body');
+            
+            const riskData = {
+                green: { status: 'Seguro', color: 'green', conditions: 'Altman Z-Score > 2.9. Probabilidad de quiebra < 5%. El negocio opera dentro de los parámetros de seguridad financiera. Los sistemas automáticos de optimización funcionan sin restricciones.'},
+                yellow: { status: 'Precaución', color: 'yellow', conditions: 'Altman Z-Score entre 1.8 y 2.9. Indica una desviación moderada. `RiskGuard AI` impone restricciones a los descuentos para proteger los márgenes.'},
+                red: { status: 'Alerta Crítica', color: 'red', conditions: 'Altman Z-Score < 1.8. Riesgo financiero significativo. `RiskGuard AI` bloquea automáticamente todos los descuentos.'}
+            };
+
+            function setTrafficLight(state) {
+                document.querySelectorAll('.light').forEach(l => l.classList.remove('active'));
+                const statusText = document.getElementById('risk-status-text');
+                const lightEl = document.getElementById(`light-${riskData[state].color}`);
+                lightEl.classList.add('active');
+                
+                statusText.innerHTML = `
+                    <span class="text-lg font-bold text-${riskData[state].color}-400">${riskData[state].status}</span>
+                    <p class="text-xs text-gray-500 mt-1">${riskData[state].conditions.split('.')[0]}</p>
+                `;
+            }
+
+            trafficLightContainer.addEventListener('click', () => {
+                const activeLight = document.querySelector('.light.active').id.split('-')[1];
+                const data = riskData[activeLight];
+                modalBody.innerHTML = `
+                    <h3 class="text-xl font-bold mb-2 text-${data.color}-400">Estado: ${data.status}</h3>
+                    <p class="text-gray-300">${data.conditions}</p>
+                `;
+                modal.style.display = 'flex';
+            });
+            
+            closeModal.addEventListener('click', () => modal.style.display = 'none');
+            window.addEventListener('click', (e) => { if (e.target == modal) modal.style.display = 'none'; });
+            
+            function populateCustomerJourney() {
+                const container = document.getElementById('customer-journey-steps');
+                const detailsContainer = document.getElementById('journey-details');
+                
+                customerJourneyData.forEach((step, index) => {
+                    const stepEl = document.createElement('div');
+                    stepEl.className = 'flex-shrink-0 w-48 md:w-auto md:relative flex flex-col items-center cursor-pointer journey-step';
+                    stepEl.dataset.index = index;
+                    stepEl.innerHTML = `
+                        <div class="z-10 flex items-center justify-center w-16 h-16 rounded-full bg-gray-900 border-2 border-gray-700 transition-all duration-300">
+                            <span class="text-3xl">${step.icon}</span>
+                        </div>
+                        <div class="mt-2 text-center">
+                            <h4 class="font-bold text-white">${step.title}</h4>
+                            <p class="text-sm text-gray-500">Etapa ${step.stage}</p>
+                        </div>
+                    `;
+                    container.appendChild(stepEl);
+                });
+
+                function updateJourneyDetails(index) {
+                    const stepData = customerJourneyData[index];
+                    detailsContainer.innerHTML = `
+                        <h3 class="font-bold text-lg mb-2 text-white">${stepData.icon} Etapa ${stepData.stage}: ${stepData.title}</h3>
+                        <p class="text-gray-300">${stepData.details}</p>
+                    `;
+                    
+                    document.querySelectorAll('.journey-step .border-2').forEach(el => el.classList.replace('border-white', 'border-gray-700'));
+                    document.querySelector(`.journey-step[data-index='${index}'] .border-2`).classList.replace('border-gray-700', 'border-white');
+                }
+
+                container.addEventListener('click', (e) => {
+                    const stepEl = e.target.closest('.journey-step');
+                    if (stepEl) {
+                        updateJourneyDetails(stepEl.dataset.index);
+                    }
+                });
+
+                updateJourneyDetails(0);
+            }
+
+            function populateAIAgents() {
+                const grid = document.getElementById('ai-agents-grid');
+                aiAgentsData.forEach(agent => {
+                    const card = document.createElement('div');
+                    card.className = 'card rounded-xl p-6 cursor-pointer transform hover:scale-105 transition-transform duration-300';
+                    card.innerHTML = `
+                        <div class="flex items-center space-x-4">
+                            <div class="text-4xl">${agent.icon}</div>
+                            <div>
+                                <h3 class="text-xl font-bold text-white">${agent.name} AI</h3>
+                                <p class="text-sm text-gray-400">${agent.tech}</p>
+                            </div>
+                        </div>
+                        <p class="mt-4 text-gray-400">${agent.desc}</p>
+                    `;
+                    grid.appendChild(card);
+                });
+            }
+
+            function createFlywheelDiagram() {
+                const container = document.getElementById('data-flywheel-diagram');
+                container.innerHTML = `
+                    <div class="relative w-full aspect-square flex items-center justify-center">
+                        <div class="absolute w-full h-full border-2 border-dashed border-gray-700 rounded-full animate-spin" style="animation-duration: 20s;"></div>
+                        <div class="absolute w-3/4 h-3/4 border-2 border-dashed border-gray-700 rounded-full animate-spin" style="animation-duration: 15s; animation-direction: reverse;"></div>
+                        <div class="z-10 text-center bg-black p-4 rounded-full border border-gray-700">
+                            <h4 class="text-xl font-bold text-white">Data Flywheel</h4>
+                            <p class="text-sm text-gray-400">Sistema Auto-reforzado</p>
+                        </div>
+                        <div class="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-blue-900/50 text-blue-300 text-xs font-bold px-3 py-1 rounded-full">Interacción</div>
+                        <div class="absolute right-0 top-1/2 -translate-y-1/2 translate-x-1/2 bg-green-900/50 text-green-300 text-xs font-bold px-3 py-1 rounded-full">Datos</div>
+                        <div class="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 bg-yellow-900/50 text-yellow-300 text-xs font-bold px-3 py-1 rounded-full">Modelos IA</div>
+                        <div class="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-1/2 bg-purple-900/50 text-purple-300 text-xs font-bold px-3 py-1 rounded-full">Optimización</div>
+                    </div>
+                `;
+            }
+
+            function createClinicLayout() {
+                const container = document.getElementById('clinic-layout-diagram');
+                container.innerHTML = '';
+                clinicLayoutData.forEach(item => {
+                    const div = document.createElement('div');
+                    div.className = `${item.span} bg-gray-900/50 border border-gray-800 rounded-lg flex flex-col items-center justify-center text-center p-2 transform hover:bg-gray-800/50 transition-colors duration-300`;
+                    div.innerHTML = `<h5 class="font-bold text-sm md:text-base text-white">${item.area}</h5><p class="text-xs md:text-sm text-gray-400">${item.percentage}</p>`;
+                    container.appendChild(div);
+                });
+            }
+
+            function populateStaffingList() {
+                const list = document.getElementById('staffing-list');
+                list.innerHTML = '';
+                staffingData.forEach(item => {
+                    const li = document.createElement('li');
+                    li.className = 'flex justify-between items-center p-3 bg-gray-900/50 rounded-lg border border-gray-800';
+                    li.innerHTML = `
+                        <span class="font-medium text-white">${item.role}</span>
+                        <span class="text-sm font-bold text-black bg-gray-300 px-2 py-1 rounded-full">${item.fte === 'Fee-split' ? item.fte : `${item.fte} FTE`}</span>
+                    `;
+                    list.appendChild(li);
+                });
+            }
+            
+            function populateExpansionRoadmap() {
+                const container = document.getElementById('expansion-roadmap-steps');
+                const detailsContainer = document.getElementById('expansion-details');
+                
+                expansionRoadmapData.forEach((step, index) => {
+                    const stepEl = document.createElement('div');
+                    stepEl.className = 'flex-shrink-0 w-48 md:w-auto md:relative flex flex-col items-center cursor-pointer roadmap-step';
+                    stepEl.dataset.index = index;
+                    stepEl.innerHTML = `
+                        <div class="z-10 flex items-center justify-center w-16 h-16 rounded-full bg-gray-900 border-2 border-gray-700 transition-all duration-300">
+                            <span class="text-xl font-bold text-white">${step.phase}</span>
+                        </div>
+                        <div class="mt-2 text-center">
+                            <h4 class="font-bold text-white">${step.market}</h4>
+                            <p class="text-sm text-gray-500">${step.period}</p>
+                        </div>
+                    `;
+                    container.appendChild(stepEl);
+                });
+
+                function updateRoadmapDetails(index) {
+                    const stepData = expansionRoadmapData[index];
+                    detailsContainer.innerHTML = `
+                        <h3 class="font-bold text-lg mb-2 text-white">Fase ${stepData.phase}: ${stepData.market} (${stepData.period})</h3>
+                        <p class="text-gray-300 mb-2"><strong>Clave de Éxito:</strong> ${stepData.goal}</p>
+                        <p class="text-gray-300"><strong>Gate Regulatorio:</strong> <span class="font-medium bg-red-900/50 text-red-300 px-2 py-0.5 rounded">${stepData.gate}</span></p>
+                    `;
+                    
+                    document.querySelectorAll('.roadmap-step .border-2').forEach(el => el.classList.replace('border-white', 'border-gray-700'));
+                    document.querySelector(`.roadmap-step[data-index='${index}'] .border-2`).classList.replace('border-gray-700', 'border-white');
+                }
+
+                container.addEventListener('click', (e) => {
+                    const stepEl = e.target.closest('.roadmap-step');
+                    if (stepEl) {
+                        updateRoadmapDetails(stepEl.dataset.index);
+                    }
+                });
+
+                updateRoadmapDetails(0);
+            }
+
+            initRevenueChart();
+            initPnlChart();
+            initCapexChart();
+            populateCustomerJourney();
+            populateAIAgents();
+            createFlywheelDiagram();
+            createClinicLayout();
+            populateStaffingList();
+            populateExpansionRoadmap();
+            setTrafficLight('green');
+        });
+    </script>
+</body>
+</html>
