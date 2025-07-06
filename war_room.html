@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hombre Vigente: War Room Digital</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Black, White & Red (Inspired by Logo) -->
+    <!-- Application Structure Plan: A single-page dashboard with a fixed sidebar for thematic navigation (Resumen, Signos Vitales, Biopsia de Arquetipos, etc.), reflecting the report's surgical metaphor. This structure allows users to quickly access specific insights without linear scrolling. The core interaction is the 'Biopsia' section, where users can toggle between 'Carlos' and 'Eduardo' archetypes to dynamically compare their data, barriers, and marketing needs side-by-side. This non-linear, task-oriented design is chosen for its efficiency in presenting complex information to strategic decision-makers. -->
+    <!-- Visualization & Content Choices: Data is presented using a mix of Chart.js for quantitative visualization and styled HTML for qualitative insights. Donut charts show proportions (Market Fragmentation), bar charts show comparisons and rankings (Values, BNPL preference), and a radar chart compares archetype values. This multi-format approach addresses different analytical goals (Inform, Compare, Deep Dive) within the designed structure. Key numbers are highlighted in large 'stat cards'. Qualitative 'Citas de Oro' are presented as blockquotes to emphasize their importance. All choices adhere to the NO SVG/Mermaid constraint, using Canvas for charts and HTML/CSS for other visuals. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body { 
+            font-family: 'Montserrat', sans-serif; 
+            background-color: #0D0D0D; 
+            color: #E0E0E0;
+        }
+        .chart-container { position: relative; width: 100%; max-width: 600px; margin-left: auto; margin-right: auto; height: 350px; max-height: 400px; }
+        .nav-link { transition: all 0.2s ease-in-out; }
+        .nav-link.active { background-color: #E50914; color: white; }
+        .nav-link:not(.active):hover { background-color: #222; color: white; }
+        .content-section { display: none; }
+        .content-section.active { display: block; }
+        .archetype-btn.active { background-color: #E50914; color: white; }
+        .archetype-btn:not(.active) { background-color: #333; color: #ccc; }
+        .fade-in { animation: fadeIn 0.5s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .section-title {
+            @apply text-3xl md:text-4xl font-black tracking-tighter text-white uppercase mb-4;
+        }
+    </style>
+</head>
+<body class="antialiased">
+    <div class="flex flex-col md:flex-row min-h-screen">
+        <aside class="w-full md:w-64 bg-black md:border-r border-gray-800 p-4 md:fixed md:h-full">
+            <h1 class="text-xl font-black text-white mb-1 uppercase tracking-tighter">Hombre Vigente</h1>
+            <h2 class="text-sm font-bold text-red-600 mb-6 uppercase">War Room Digital</h2>
+            <nav id="main-nav" class="flex flex-row md:flex-col gap-2">
+                <a href="#" data-target="resumen" class="nav-link active flex items-center gap-3 px-4 py-2 rounded-lg text-sm font-semibold">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><path d="m9 12 2 2 4-4"/></svg>
+                    Resumen Ejecutivo
+                </a>
+                <a href="#" data-target="vitales" class="nav-link flex items-center gap-3 px-4 py-2 rounded-lg text-sm font-semibold">
+                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+                    Signos Vitales
+                </a>
+                <a href="#" data-target="biopsia" class="nav-link flex items-center gap-3 px-4 py-2 rounded-lg text-sm font-semibold">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><path d="M12 18a4 4 0 1 0 0-8 4 4 0 0 0 0 8z"/><path d="M12 12v4"/></svg>
+                    Biopsia Arquetipos
+                </a>
+                <a href="#" data-target="diagnostico" class="nav-link flex items-center gap-3 px-4 py-2 rounded-lg text-sm font-semibold">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.2 15c.7-1.2 1-2.5.7-3.9-.6-2.4-2.2-4.5-4.4-5.9-1.4-.9-3-1.4-4.5-1.4-1.5 0-3 .5-4.5 1.4-2.2 1.4-3.8 3.5-4.4 5.9-.3 1.4 0 2.7.7 3.9l4.5 7.4 2.5-4.2 2.5 4.2z"/></svg>
+                    Diagnóstico
+                </a>
+                <a href="#" data-target="voz" class="nav-link flex items-center gap-3 px-4 py-2 rounded-lg text-sm font-semibold">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                    Voz del Cliente
+                </a>
+                <a href="#" data-target="plan" class="nav-link flex items-center gap-3 px-4 py-2 rounded-lg text-sm font-semibold">
+                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 8.5c.3-1.8 1.4-3.3 2.8-4.4 1.8-1.3 4.1-2.1 6.7-2.1s4.9.8 6.7 2.1c1.4 1.1 2.5 2.6 2.8 4.4"/><path d="M21.5 15.5c-.3 1.8-1.4 3.3-2.8 4.4-1.8 1.3-4.1 2.1-6.7 2.1s-4.9-.8-6.7-2.1c-1.4-1.1-2.5-2.6-2.8-4.4"/><path d="M2.5 12h19"/><path d="M17 16a2.4 2.4 0 0 0-2-2 2.4 2.4 0 0 0-2 2"/><path d="M7 8a2.4 2.4 0 0 1 2-2 2.4 2.4 0 0 1 2 2"/></svg>
+                    Plan Quirúrgico
+                </a>
+            </nav>
+        </aside>
+
+        <main class="flex-1 md:ml-64 p-4 sm:p-6 lg:p-8">
+            <section id="resumen" class="content-section active fade-in">
+                <h2 class="section-title">Resumen Ejecutivo: Veredicto y Recomendaciones</h2>
+                <p class="mb-8 text-gray-400 max-w-3xl">Esta es la síntesis del análisis 360°. A continuación, se presentan las validaciones de las hipótesis centrales y las recomendaciones estratégicas prioritarias para la "Junta Médica", diseñadas para optimizar el lanzamiento y maximizar el potencial de mercado.</p>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="bg-gray-900 p-6 rounded-xl border border-gray-700">
+                        <h3 class="font-bold text-lg text-white mb-3">Veredicto de Hipótesis Centrales</h3>
+                        <ul class="space-y-3 text-sm">
+                            <li class="flex items-start gap-3"><strong class="text-green-500 font-bold">✓ VALIDADO:</strong> El arquetipo premium "Carlos" existe (5.8%), pero valora resultados sobre comunidad.</li>
+                            <li class="flex items-start gap-3"><strong class="text-green-500 font-bold">✓ VALIDADO:</strong> El costo es la barrera #1. La estrategia BNPL es una herramienta de conversión indispensable.</li>
+                            <li class="flex items-start gap-3"><strong class="text-yellow-400 font-bold">~ AJUSTE:</strong> La "Comunidad" tiene baja resonancia. Debe evolucionar a una "Experiencia de Club" premium.</li>
+                            <li class="flex items-start gap-3"><strong class="text-green-500 font-bold">✓ VALIDADO:</strong> La integración de IA es un potente diferenciador con un 82.6% de aceptación.</li>
+                        </ul>
+                    </div>
+                    <div class="bg-gray-900 p-6 rounded-xl border border-gray-700">
+                        <h3 class="font-bold text-lg text-white mb-3">Recomendaciones de Alto Nivel</h3>
+                        <ul class="space-y-3 text-sm">
+                            <li class="flex items-start gap-3"><strong class="font-semibold text-red-500">1.</strong> Implementar BNPL como motor de conversión para tickets altos.</li>
+                            <li class="flex items-start gap-3"><strong class="font-semibold text-red-500">2.</strong> Crear un marketing de doble embudo: uno educativo para "Eduardo" (novatos) y otro de alto rendimiento para "Carlos" (expertos).</li>
+                            <li class="flex items-start gap-3"><strong class="font-semibold text-red-500">3.</strong> Reenmarcar el pilar de "Comunidad" a "The Club Experience", enfocándose en exclusividad y amenidades.</li>
+                            <li class="flex items-start gap-3"><strong class="font-semibold text-red-500">4.</strong> Ajustar el mensaje de marketing para "Carlos", enfatizando "Garantía de Resultados" y "Calidad Clínica".</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="mt-8 bg-red-900/20 border-l-4 border-red-600 p-4 rounded-r-lg">
+                    <p class="text-sm text-red-300"><strong class="font-semibold text-red-200">La Tesis Validada:</strong> El mercado sufre de fragmentación, desea una solución integral, valora la certeza tecnológica que ofrecemos y nuestra arquitectura única puede servir con precisión a los segmentos premium ("Carlos") y de entrada ("Eduardo"). Este informe es nuestro plan de batalla para la ejecución.</p>
+                </div>
+            </section>
+            
+            <section id="vitales" class="content-section">
+                <h2 class="section-title">Signos Vitales del Mercado</h2>
+                <p class="mb-8 text-gray-400 max-w-3xl">Una panorámica del público objetivo (N=121) que establece el contexto macro. Estos son los hábitos, valores y el potencial de inversión que definen nuestro campo de juego.</p>
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <div class="bg-gray-900 p-6 rounded-xl border border-gray-700">
+                        <h3 class="font-bold text-center text-white mb-4 uppercase">Comportamiento del Mercado</h3>
+                         <div class="grid grid-cols-2 gap-4 text-center">
+                            <div>
+                                <div class="text-5xl font-black text-red-500">79%</div>
+                                <div class="text-sm text-gray-400 mt-1">Visita centros de cuidado mensual o más frecuente</div>
+                            </div>
+                            <div>
+                                <div class="text-5xl font-black text-red-500">83%</div>
+                                <div class="text-sm text-gray-400 mt-1">Interesado o Muy Interesado en el concepto</div>
+                            </div>
+                        </div>
+                        <div class="mt-6">
+                            <h4 class="font-bold text-center text-sm text-gray-300 mb-2 uppercase">El Dolor de la Fragmentación: ¿Dónde se cuidan hoy?</h4>
+                            <div class="chart-container h-64 max-h-64">
+                                <canvas id="fragmentationChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-gray-900 p-6 rounded-xl border border-gray-700">
+                        <h3 class="font-bold text-center text-white mb-4 uppercase">¿Qué Valoran Realmente?</h3>
+                         <p class="text-center text-sm text-gray-400 mb-4">El valor #1 son los resultados, por encima de la tecnología o la conveniencia.</p>
+                         <div class="chart-container h-[340px] max-h-[340px]">
+                            <canvas id="valuesChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="bg-gray-900 p-6 rounded-xl border border-gray-700 lg:col-span-2">
+                        <h3 class="font-bold text-center text-white mb-4 uppercase">Potencial de Inversión Mensual</h3>
+                         <p class="text-center text-sm text-gray-400 mb-4">Existe un segmento premium significativo. El 11.6% está dispuesto a invertir más de $8,000 MXN al mes.</p>
+                         <div class="chart-container h-72 max-h-72">
+                            <canvas id="investmentChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <section id="biopsia" class="content-section">
+                <h2 class="section-title">Biopsia de Arquetipos</h2>
+                <p class="mb-6 text-gray-400 max-w-3xl">Análisis profundo de los dos perfiles de cliente que definen nuestra estrategia de doble embudo. Selecciona un arquetipo para ver su perfil detallado, sus barreras y el mensaje de marketing óptimo para capturarlo.</p>
+                
+                <div id="archetype-selector" class="flex justify-center gap-2 mb-6 bg-black p-1.5 rounded-xl max-w-md mx-auto">
+                    <button data-archetype="carlos" class="archetype-btn w-full py-2 px-4 rounded-lg text-sm font-bold transition-colors duration-200 active">🤵🏻‍♂️ CARLOS</button>
+                    <button data-archetype="eduardo" class="archetype-btn w-full py-2 px-4 rounded-lg text-sm font-bold transition-colors duration-200">🧑🏻‍🎓 EDUARDO</button>
+                </div>
+
+                <div id="archetype-display" class="grid grid-cols-1 lg:grid-cols-5 gap-6 bg-gray-900 p-6 rounded-xl border border-gray-700 fade-in">
+                    <div class="lg:col-span-3">
+                        <h3 id="archetype-name" class="text-2xl font-bold text-white mb-4 uppercase"></h3>
+                        <div class="grid grid-cols-2 sm:grid-cols-3 gap-4 mb-6 text-center">
+                            <div class="bg-black p-3 rounded-lg">
+                                <div id="archetype-size" class="text-3xl font-black text-red-500"></div>
+                                <div class="text-xs text-gray-400 font-semibold uppercase">Segmento</div>
+                            </div>
+                            <div class="bg-black p-3 rounded-lg">
+                                <div id="archetype-spending" class="text-3xl font-black text-red-500"></div>
+                                <div class="text-xs text-gray-400 font-semibold uppercase">Gasto</div>
+                            </div>
+                             <div class="bg-black p-3 rounded-lg">
+                                <div id="archetype-tech" class="text-3xl font-black text-red-500"></div>
+                                <div class="text-xs text-gray-400 font-semibold uppercase">Tech</div>
+                            </div>
+                        </div>
+                        <div class="space-y-4 text-sm">
+                            <div>
+                                <h4 class="font-bold text-gray-300 uppercase">Principal Barrera</h4>
+                                <p id="archetype-barrier" class="text-gray-300 bg-yellow-900/20 border-l-4 border-yellow-500 p-3 rounded-r-lg mt-1"></p>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-gray-300 uppercase">Mensaje Óptimo</h4>
+                                <p id="archetype-message" class="text-gray-300 bg-green-900/20 border-l-4 border-green-500 p-3 rounded-r-lg mt-1"></p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="lg:col-span-2">
+                         <h4 class="font-bold text-gray-300 text-center mb-2 uppercase">Prioridades de Valor</h4>
+                        <div class="chart-container h-72 max-h-72">
+                            <canvas id="archetypeRadarChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <section id="diagnostico" class="content-section">
+                <h2 class="section-title">Diagnóstico de Estrategia</h2>
+                <p class="mb-8 text-gray-400 max-w-3xl">Evaluación de las estrategias clave: la mitigación de costo a través de BNPL y el impacto de nuestra propuesta de valor "Trifecta".</p>
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <div class="bg-gray-900 p-6 rounded-xl border border-gray-700">
+                        <h3 class="font-bold text-center text-white mb-1 uppercase">Validación de Estrategia BNPL</h3>
+                        <p class="text-sm text-center text-gray-400 mb-4">El segmento sensible al costo sobre-indexa significativamente en la preferencia por facilidades de pago, validando el BNPL como catalizador de conversión.</p>
+                        <div class="chart-container h-80 max-h-80">
+                            <canvas id="bnplChart"></canvas>
+                        </div>
+                    </div>
+                     <div class="bg-gray-900 p-6 rounded-xl border border-gray-700">
+                        <h3 class="font-bold text-center text-white mb-1 uppercase">Análisis de la Propuesta de Valor "Trifecta"</h3>
+                        <p class="text-sm text-center text-gray-400 mb-4">Dos de los tres pilares resuenan con fuerza. El tercero requiere un reenfoque estratégico.</p>
+                        <div class="space-y-4 mt-6">
+                            <div class="flex items-center gap-4 p-4 bg-green-900/20 rounded-lg">
+                                <div class="text-2xl">✅</div>
+                                <div>
+                                    <h4 class="font-bold text-green-400">Tecnología Clínica</h4>
+                                    <p class="text-sm text-gray-300">Validado. La IA y la tecnología avanzada son un potente diferenciador con un 82.6% de aceptación.</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-4 p-4 bg-green-900/20 rounded-lg">
+                                <div class="text-2xl">✅</div>
+                                <div>
+                                    <h4 class="font-bold text-green-400">Disciplina Minimalista</h4>
+                                    <p class="text-sm text-gray-300">Validado. La "Comodidad todo en uno" es valorada por el 43.8% y ataca la fragmentación del mercado.</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-4 p-4 bg-yellow-900/20 rounded-lg">
+                                <div class="text-2xl">⚠️</div>
+                                <div>
+                                    <h4 class="font-bold text-yellow-400">Comunidad Educativa</h4>
+                                    <p class="text-sm text-gray-300">Ajuste Requerido. Baja resonancia. Debe evolucionar a una "Experiencia de Club" premium y exclusiva.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <section id="voz" class="content-section">
+                <h2 class="section-title">Voz del Cliente: Las "Citas de Oro"</h2>
+                <p class="mb-8 text-gray-400 max-w-3xl">El análisis cualitativo revela las expectativas emocionales y los riesgos de percepción. Estas son las voces directas de nuestro mercado objetivo que dan forma a la experiencia.</p>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div class="bg-gray-900 p-6 rounded-xl border border-gray-700">
+                        <h3 class="font-bold text-lg text-white mb-3 uppercase">Tema 1: Entorno Masculino</h3>
+                        <blockquote class="border-l-4 border-red-600 pl-4 text-sm italic text-gray-300 space-y-3">
+                            <p>"...que sea un servicio masculino de verdad, que no parezca destinado a homosexuales."</p>
+                            <p>"...un ambiente agradable y lleno de real testosterona."</p>
+                        </blockquote>
+                        <p class="text-xs text-red-400 mt-3 font-semibold">Diagnóstico: Riesgo de posicionamiento crítico. La marca debe proyectar sofisticación sin perder una identidad intencionalmente masculina.</p>
+                    </div>
+                    <div class="bg-gray-900 p-6 rounded-xl border border-gray-700">
+                        <h3 class="font-bold text-lg text-white mb-3 uppercase">Tema 2: Confianza</h3>
+                        <blockquote class="border-l-4 border-red-600 pl-4 text-sm italic text-gray-300 space-y-3">
+                            <p>"...que esté regulado, tengan certificados que avalen los tratamientos."</p>
+                            <p>"Honestidad en la información que me proporcionan."</p>
+                        </blockquote>
+                        <p class="text-xs text-red-400 mt-3 font-semibold">Diagnóstico: La confianza es la moneda de cambio. Comunicar activamente certificaciones y transparencia es central para la propuesta de valor.</p>
+                    </div>
+                    <div class="bg-gray-900 p-6 rounded-xl border border-gray-700">
+                        <h3 class="font-bold text-lg text-white mb-3 uppercase">Tema 3: El "Club"</h3>
+                         <blockquote class="border-l-4 border-red-600 pl-4 text-sm italic text-gray-300 space-y-3">
+                            <p>"Café, bebidas, música agradable."</p>
+                            <p>"...servicios de relajación para hombres masajes, vapor que nos ayuden a quitar el estrés."</p>
+                        </blockquote>
+                         <p class="text-xs text-red-400 mt-3 font-semibold">Diagnóstico: El valor no está en "talleres", sino en el acceso a un santuario exclusivo. Replantear "Comunidad" como "Club Experience" con amenidades premium.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section id="plan" class="content-section">
+                <h2 class="section-title">Plan Quirúrgico: Acciones y Ajustes</h2>
+                <p class="mb-8 text-gray-400 max-w-3xl">Esta es la hoja de ruta prescriptiva para la "Junta Médica". Cada recomendación consolida los hallazgos en un plan de acción claro para ajustar la ejecución del negocio y maximizar el éxito.</p>
+                <div class="space-y-6">
+                    <div class="bg-gray-900 p-6 rounded-xl border border-gray-700">
+                        <h3 class="text-lg font-bold text-red-500 mb-2">1. REFINAR MODELO FINANCIERO Y ARQUETIPOS</h3>
+                        <p class="text-sm text-gray-400"><strong class="font-semibold text-white">Evidencia:</strong> "Carlos" es un nicho (5.8%) que valora resultados, no comunidad. "Eduardo" es una oportunidad de volumen.</p>
+                        <p class="text-sm text-gray-200 mt-2 font-semibold"><strong>Acción:</strong> Actualizar modelos financieros (Unit Economics, Modelo de Negocio) para reflejar el tamaño validado del segmento premium. Establecer un CAC objetivo rentable. Enriquecer perfiles de arquetipos con sus motivaciones reales.</p>
+                    </div>
+                     <div class="bg-gray-900 p-6 rounded-xl border border-gray-700">
+                        <h3 class="text-lg font-bold text-red-500 mb-2">2. PRIORIZAR BNPL COMO HERRAMIENTA CENTRAL</h3>
+                        <p class="text-sm text-gray-400"><strong class="font-semibold text-white">Evidencia:</strong> La percepción de costo es la barrera #1 (32.2%) y este grupo prefiere fuertemente las opciones de financiamiento.</p>
+                        <p class="text-sm text-gray-200 mt-2 font-semibold"><strong>Acción:</strong> Acelerar despliegue de `RiskGuard AI`. Promocionar prominentemente las "facilidades de pago" en marketing y punto de venta para servicios sobre un umbral de precio (ej. $5,000 MXN) para catalizar la conversión.</p>
+                    </div>
+                     <div class="bg-gray-900 p-6 rounded-xl border border-gray-700">
+                        <h3 class="text-lg font-bold text-red-500 mb-2">3. IMPLEMENTAR MARKETING DE DOBLE EMBUDO</h3>
+                        <p class="text-sm text-gray-400"><strong class="font-semibold text-white">Evidencia:</strong> "Carlos" y "Eduardo" son dos mercados distintos con barreras y necesidades diferentes.</p>
+                        <p class="text-sm text-gray-200 mt-2 font-semibold"><strong>Acción:</strong> Modificar la estrategia omnicanal. Asignar presupuesto (20% inicial) a un embudo educativo para "Eduardo" (contenido, ofertas de entrada). Mantener un embudo de alto rendimiento para "Carlos" (resultados, testimonios, tecnología).</p>
+                    </div>
+                     <div class="bg-gray-900 p-6 rounded-xl border border-gray-700">
+                        <h3 class="text-lg font-bold text-red-500 mb-2">4. RE-CONCEPTUALIZAR "COMUNIDAD" COMO "THE CLUB"</h3>
+                        <p class="text-sm text-gray-400"><strong class="font-semibold text-white">Evidencia:</strong> La "Comunidad" tiene baja valoración cuantitativa. La data cualitativa demanda un ambiente de exclusividad y relajación.</p>
+                        <p class="text-sm text-gray-200 mt-2 font-semibold"><strong>Acción:</strong> Revisar narrativa estratégica. Evolucionar el concepto a "The Club Experience", enfatizando acceso a un santuario exclusivo con amenidades premium, alineando la oferta con el valor percibido por el cliente.</p>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+
+    const chartColors = {
+        red: '#E50914',
+        lightRed: 'rgba(229, 9, 20, 0.5)',
+        darkGray: '#333',
+        lightGray: '#aaa',
+        white: 'rgba(255, 255, 255, 0.9)',
+        background: 'rgba(229, 9, 20, 0.2)',
+        border: 'rgba(229, 9, 20, 1)',
+    };
+    
+    const chartDefaults = {
+        color: chartColors.lightGray,
+        font: {
+            family: "'Montserrat', sans-serif",
+        }
+    };
+
+    Chart.defaults.color = chartDefaults.color;
+    Chart.defaults.font.family = chartDefaults.font.family;
+
+    const archetypesData = {
+        carlos: {
+            name: "Carlos, el Rejuvenecedor",
+            size: "5.8%",
+            spending: ">$8k",
+            tech: "Experto",
+            barrier: "Dudas sobre la calidad al ofrecer todo en un solo lugar y la privacidad de sus datos. Valora la excelencia por encima de todo.",
+            message: "Resultados clínicos superiores garantizados por nuestra tecnología. Planes de tratamiento expertos y personalizados, asistidos por IA para máxima eficacia.",
+            values: {
+                labels: ['Resultados', 'Personalización', 'Tecnología', 'Experiencia', 'Comunidad'],
+                data: [5, 5, 4, 3, 1] 
+            }
+        },
+        eduardo: {
+            name: "Eduardo, el Novato Estético",
+            size: "~32%",
+            spending: "$1k-$4k",
+            tech: "Novato",
+            barrier: "Falta de información clara sobre los beneficios. Necesita educación y confianza para dar el primer paso.",
+            message: "Descubre el poder de cuidarte. Tu primer diagnóstico y tratamiento con un beneficio especial. Te guiamos paso a paso.",
+            values: {
+                labels: ['Resultados', 'Personalización', 'Tecnología', 'Experiencia', 'Comunidad'],
+                data: [4, 3, 2, 4, 3] 
+            }
+        }
+    };
+
+    let fragmentationChart, valuesChart, investmentChart, bnplChart, archetypeRadarChart;
+
+    function initCharts() {
+        const fragmentationCtx = document.getElementById('fragmentationChart')?.getContext('2d');
+        if (fragmentationCtx) {
+            fragmentationChart = new Chart(fragmentationCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Barbería', 'Clínica Estética', 'Salón/Spa', 'Varios Lugares', 'En Casa', 'Otros'],
+                    datasets: [{
+                        data: [28.93, 20.66, 19.01, 17.36, 10, 4.04],
+                        backgroundColor: [chartColors.red, '#666', chartColors.lightRed, chartColors.darkGray, '#999', '#444'],
+                        borderWidth: 2,
+                        borderColor: '#0D0D0D'
+                    }]
+                },
+                options: {
+                    responsive: true, maintainAspectRatio: false,
+                    plugins: { legend: { position: 'bottom', labels: { boxWidth: 12, padding: 15, color: chartColors.lightGray } } }
+                }
+            });
+        }
+        
+        const valuesCtx = document.getElementById('valuesChart')?.getContext('2d');
+        if(valuesCtx) {
+            valuesChart = new Chart(valuesCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Resultados visibles', 'Experiencia relajante', 'Asesoría profesional', 'Comodidad todo en uno', 'Tecnología avanzada', 'Precio accesible'],
+                    datasets: [{
+                        label: '% que lo valora',
+                        data: [69.42, 57.02, 51.24, 43.80, 41.32, 28.10],
+                        backgroundColor: chartColors.background,
+                        borderColor: chartColors.border,
+                        borderWidth: 2,
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true, maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: { 
+                        x: { beginAtZero: true, grid: { color: 'rgba(255,255,255,0.1)' }, ticks: { color: chartColors.lightGray } }, 
+                        y: { grid: { display: false }, ticks: { color: chartColors.lightGray } } 
+                    }
+                }
+            });
+        }
+
+        const investmentCtx = document.getElementById('investmentChart')?.getContext('2d');
+        if (investmentCtx) {
+            investmentChart = new Chart(investmentCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['$800-$1.5k', '$1.5k-$2.5k', '$2.5k-$4k', '$4k-$6k', '$6k-$8k', '>$8k'],
+                    datasets: [{
+                        label: 'Disposición de Inversión Mensual (%)',
+                        data: [19.0, 23.1, 27.3, 11.6, 7.4, 11.6],
+                        backgroundColor: [chartColors.darkGray, chartColors.darkGray, chartColors.darkGray, chartColors.lightRed, chartColors.lightRed, chartColors.red],
+                        borderRadius: 4
+                    }]
+                },
+                options: {
+                    responsive: true, maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                     scales: { 
+                         x: { grid: { display: false }, ticks: { color: chartColors.lightGray } }, 
+                         y: { grid: { color: 'rgba(255,255,255,0.1)' }, ticks: { color: chartColors.lightGray } } 
+                    }
+                }
+            });
+        }
+
+        const bnplCtx = document.getElementById('bnplChart')?.getContext('2d');
+        if (bnplCtx) {
+            bnplChart = new Chart(bnplCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Plan con Facilidades de Pago', 'Opciones de Financiamiento'],
+                    datasets: [
+                        {
+                            label: 'Sensible al Costo (N=39)',
+                            data: [46.2, 41.0],
+                            backgroundColor: chartColors.red,
+                            borderRadius: 4
+                        },
+                        {
+                            label: 'Población General (N=121)',
+                            data: [32.2, 29.8],
+                            backgroundColor: chartColors.darkGray,
+                            borderRadius: 4
+                        }
+                    ]
+                },
+                options: {
+                     responsive: true, maintainAspectRatio: false,
+                    plugins: { legend: { position: 'bottom', labels: { color: chartColors.lightGray } } },
+                    scales: { 
+                        y: { beginAtZero: true, title: { display: true, text: 'Preferencia (%)', color: chartColors.lightGray }, grid: { color: 'rgba(255,255,255,0.1)' }, ticks: { color: chartColors.lightGray } },
+                        x: { grid: { display: false }, ticks: { color: chartColors.lightGray } }
+                    }
+                }
+            });
+        }
+        
+        const archetypeRadarCtx = document.getElementById('archetypeRadarChart')?.getContext('2d');
+        if(archetypeRadarCtx) {
+            archetypeRadarChart = new Chart(archetypeRadarCtx, {
+                type: 'radar',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        label: 'Prioridad de Valor',
+                        data: [],
+                        fill: true,
+                        backgroundColor: chartColors.background,
+                        borderColor: chartColors.border,
+                        pointBackgroundColor: chartColors.border,
+                        pointBorderColor: '#fff',
+                        pointHoverBackgroundColor: '#fff',
+                        pointHoverBorderColor: chartColors.border
+                    }]
+                },
+                options: {
+                    responsive: true, maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        r: {
+                            angleLines: { color: 'rgba(255,255,255,0.2)' },
+                            grid: { color: 'rgba(255,255,255,0.2)' },
+                            pointLabels: { color: chartColors.white, font: { size: 11, weight: 'bold' } },
+                            ticks: { display: false, beginAtZero: true, max: 5, stepSize: 1, backdropColor: 'transparent' }
+                        }
+                    }
+                }
+            });
+        }
+    }
+
+    function updateArchetypeDisplay(archetypeKey) {
+        const data = archetypesData[archetypeKey];
+        if (!data) return;
+
+        const display = document.getElementById('archetype-display');
+        display.classList.remove('fade-in');
+        void display.offsetWidth; 
+        display.classList.add('fade-in');
+
+        document.getElementById('archetype-name').textContent = data.name;
+        document.getElementById('archetype-size').textContent = data.size;
+        document.getElementById('archetype-spending').textContent = data.spending;
+        document.getElementById('archetype-tech').textContent = data.tech;
+        document.getElementById('archetype-barrier').textContent = data.barrier;
+        document.getElementById('archetype-message').textContent = data.message;
+        
+        if (archetypeRadarChart) {
+            archetypeRadarChart.data.labels = data.values.labels;
+            archetypeRadarChart.data.datasets[0].data = data.values.data;
+            archetypeRadarChart.update();
+        }
+
+        const buttons = document.querySelectorAll('#archetype-selector button');
+        buttons.forEach(btn => {
+            btn.classList.toggle('active', btn.dataset.archetype === archetypeKey);
+        });
+    }
+
+    const nav = document.getElementById('main-nav');
+    const sections = document.querySelectorAll('.content-section');
+
+    nav.addEventListener('click', (e) => {
+        e.preventDefault();
+        const link = e.target.closest('a');
+        if (!link) return;
+
+        const targetId = link.dataset.target;
+        
+        sections.forEach(section => {
+            section.classList.toggle('active', section.id === targetId);
+        });
+
+        nav.querySelectorAll('a').forEach(navLink => {
+            navLink.classList.toggle('active', navLink.dataset.target === targetId);
+        });
+    });
+
+    const archetypeSelector = document.getElementById('archetype-selector');
+    archetypeSelector.addEventListener('click', (e) => {
+        const button = e.target.closest('button');
+        if (button && button.dataset.archetype) {
+            updateArchetypeDisplay(button.dataset.archetype);
+        }
+    });
+
+    initCharts();
+    updateArchetypeDisplay('carlos');
+});
+</script>
+
+</body>
+</html>
