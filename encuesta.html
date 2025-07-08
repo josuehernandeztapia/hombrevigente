@@ -3,239 +3,518 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hombre Vigente - Encuesta</title>
-    
-    <!-- Tailwind CSS -->
+    <title>Hombre Vigente: Dashboard Estratégico</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    
-    <!-- Google Fonts: Montserrat -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
-
-    <!-- Custom Styles -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Vigente Red & Carbon -->
+    <!-- Application Structure Plan: A single-page, scrollable dashboard. The structure follows the report's narrative: 1. Executive Summary (Veredicto) with KPIs. 2. Market Analysis (Tesis Validada) with charts on fragmentation, values, and barriers. 3. The "CLUB" Concept with charts for benefits and ambiance. 4. Customer Segmentation with interactive profile cards for "Carlos" and "Eduardo". 5. Expansion Roadmap as a visual timeline. 6. Action Plan in a clear three-column layout. A sticky top navigation allows easy jumping between sections. This user flow is intuitive, starting broad and progressively detailing each strategic pillar, making the complex report easily digestible. -->
+    <!-- Visualization & Content Choices: 
+        - Veredicto: Goal: Inform. Method: KPI Cards (HTML/Tailwind) for high-impact numbers. Justification: Quickly communicates the project's green light status.
+        - Fragmentación: Goal: Inform. Method: Donut Chart (Chart.js). Justification: Best way to show parts of a whole for market habits.
+        - Valores/Barreras: Goal: Compare. Method: Horizontal Bar Charts (Chart.js). Justification: Ideal for ranking preferences and obstacles clearly.
+        - Beneficios Club: Goal: Compare. Method: Horizontal Bar Chart (Chart.js). Justification: Ranks membership drivers effectively.
+        - Ambiente Ideal: Goal: Organize/Compare. Method: Radar Chart (Chart.js). Justification: Visually represents the desired "blend" of the three core concepts (Classic, Tech, Lounge).
+        - Clientes: Goal: Organize. Method: Interactive Cards (HTML/JS). Justification: Engages the user by allowing them to actively switch between the two key personas.
+        - Roadmap: Goal: Organize/Change. Method: Visual Timeline (HTML/Tailwind). Justification: Clearly shows the sequential launch plan without needing a complex chart.
+        - Plan de Acción: Goal: Inform. Method: 3-Column Layout (HTML/Tailwind). Justification: Organizes recommendations for different audiences as requested in the source.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
     <style>
         body {
-            font-family: 'Montserrat', sans-serif;
+            font-family: 'Inter', sans-serif;
             background-color: #0D0D0D;
             color: #E0E0E0;
         }
-        .hero-bg {
-            background-color: #0D0D0D;
-            background-image: url('https://placehold.co/1920x1080/0D0D0D/1c1c1c?text=HOMBRE+VIGENTE&font=montserrat');
-            background-size: 200px;
-            background-repeat: no-repeat;
-            background-position: center;
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 350px;
+            max-height: 400px;
         }
-        .section-title {
-            @apply text-4xl md:text-6xl font-black tracking-tighter text-white uppercase mb-12;
+        @media (max-width: 768px) {
+            .chart-container {
+                height: 300px;
+                max-height: 350px;
+            }
         }
-        .section-subtitle {
-            @apply text-center text-lg text-gray-400 max-w-3xl mx-auto mb-4;
+        .nav-link {
+            transition: all 0.3s ease;
+            @apply px-3 py-2 text-sm font-medium text-gray-300 rounded-md hover:bg-gray-700 hover:text-white;
         }
-        .btn-primary {
-            @apply bg-white text-black font-bold py-3 px-10 rounded-full hover:bg-gray-300 transition-colors duration-300;
+        .active-link {
+            @apply bg-red-600 text-white hover:bg-red-500;
         }
-        .form-question {
-            @apply mb-6;
+        .kpi-card {
+            @apply bg-[#1C1C1C] p-6 rounded-xl border border-gray-800 transition-all duration-300 hover:border-red-600 hover:-translate-y-1;
         }
-        .form-label {
-            @apply text-lg font-bold text-white mb-2;
+        .btn-switch {
+            @apply px-6 py-2 text-base font-semibold rounded-lg transition-all duration-200 border-2 border-transparent;
         }
-        .form-select, .form-input {
-            @apply w-full p-3 rounded-md bg-gray-800/50 border border-gray-700 focus:outline-none focus:border-white text-white placeholder-gray-500;
+        .btn-active {
+            @apply bg-red-600 text-white shadow-md;
         }
-        .form-error {
-            @apply border-red-500;
+        .btn-inactive {
+            @apply bg-gray-800 text-gray-300 hover:bg-gray-700 border-2 border-gray-700;
+        }
+        .logo-font {
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
         }
     </style>
 </head>
 <body class="antialiased">
-
-    <!-- Header -->
-    <header id="inicio" class="bg-black/50 backdrop-blur-sm fixed top-0 left-0 right-0 z-50">
-        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
-            <a href="#inicio" class="text-2xl font-black tracking-tighter text-white uppercase">Hombre Vigente</a>
-            <button id="mobile-menu-button" class="md:hidden focus:outline-none">
-                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
-            </button>
-        </div>
-        <div id="mobile-menu" class="hidden md:hidden px-6 pt-2 pb-4 bg-black/80">
-            <a href="#encuesta" class="block py-2 text-gray-300 hover:text-white">Encuesta</a>
-        </div>
-    </script>
+    <header class="bg-black/60 backdrop-blur-lg shadow-lg shadow-black/20 sticky top-0 z-50 border-b border-gray-800">
+        <nav class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <h1 class="text-xl text-white logo-font">
+                HOMBRE<span class="text-red-500">_</span>VIGENTE
+            </h1>
+            <div class="hidden md:flex items-center space-x-2">
+                <a href="#veredicto" class="nav-link active-link">Veredicto</a>
+                <a href="#mercado" class="nav-link">Mercado</a>
+                <a href="#club" class="nav-link">The Club</a>
+                <a href="#clientes" class="nav-link">Clientes</a>
+                <a href="#roadmap" class="nav-link">Roadmap</a>
+                <a href="#plan" class="nav-link">Plan de Acción</a>
+            </div>
+             <div class="md:hidden">
+                <select onchange="window.location.href=this.value" class="block w-full rounded-md border-gray-600 bg-gray-800 text-white shadow-sm focus:border-red-500 focus:ring focus:ring-red-500 focus:ring-opacity-50">
+                    <option value="#veredicto">Veredicto</option>
+                    <option value="#mercado">Mercado</option>
+                    <option value="#club">The Club</option>
+                    <option value="#clientes">Clientes</option>
+                    <option value="#roadmap">Roadmap</option>
+                    <option value="#plan">Plan</option>
+                </select>
+            </div>
+        </nav>
     </header>
 
-    <!-- Hero Section -->
-    <section class="hero-bg min-h-screen flex items-center justify-center text-center">
-        <div class="container mx-auto px-6">
-            <h1 class="text-5xl md:text-8xl font-black text-white uppercase tracking-tighter leading-none">
-                Encuesta Hombre Vigente
-            </h1>
-            <p class="text-lg md:text-xl text-gray-300 max-w-2xl mx-auto my-8">
-                Ayúdanos a entender tus necesidades en 5-6 minutos. Tus respuestas moldearán el futuro del cuidado masculino.
+    <main class="container mx-auto px-4 py-8 md:py-12">
+
+        <section id="veredicto" class="text-center mb-20 pt-16 -mt-16">
+            <h2 class="text-4xl md:text-5xl font-extrabold text-white mb-4">El Veredicto Final: <span class="text-red-500">Luz Verde</span></h2>
+            <p class="max-w-3xl mx-auto text-lg text-gray-400 mb-12">
+                El análisis de 442 encuestas valida con una confianza estadística máxima la viabilidad del proyecto. Los datos revelan una fórmula precisa para el lanzamiento y la expansión, transformando la incertidumbre en un plan de ejecución claro.
             </p>
-            <a href="#encuesta" class="btn-primary inline-block mt-4">Comenzar</a>
-        </div>
-    </section>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="kpi-card">
+                    <div class="text-5xl font-bold text-red-500 mb-2">94.1%</div>
+                    <h3 class="font-semibold text-gray-200">Intención de Visita</h3>
+                    <p class="text-sm text-gray-500">Porcentaje de mercado probable o muy probable de visitar.</p>
+                </div>
+                <div class="kpi-card">
+                    <div class="text-5xl font-bold text-red-500 mb-2">76%</div>
+                    <h3 class="font-semibold text-gray-200">Interés en "Todo en Uno"</h3>
+                    <p class="text-sm text-gray-500">Demanda clara por una solución integral que combata la fragmentación.</p>
+                </div>
+                <div class="kpi-card">
+                    <div class="text-5xl font-bold text-red-500 mb-2">89.8%</div>
+                    <h3 class="font-semibold text-gray-200">Interés Positivo en IA</h3>
+                    <p class="text-sm text-gray-500">La IA es percibida como un habilitador clave para garantizar resultados.</p>
+                </div>
+                <div class="kpi-card">
+                    <div class="text-5xl font-bold text-red-500 mb-2">~74%</div>
+                    <h3 class="font-semibold text-gray-200">Exige "Resultados Visibles"</h3>
+                    <p class="text-sm text-gray-500">El valor fundamental que el cliente busca por encima de todo.</p>
+                </div>
+            </div>
+        </section>
 
-    <!-- Encuesta Section -->
-    <section id="encuesta" class="py-24">
-        <div class="container mx-auto px-6">
-            <h2 class="section-title text-center">Tu Opinión Cuenta</h2>
-            <p class="section-subtitle">
-                Responde sobre tus preferencias de cuidado personal. Toma 5-6 minutos.
+        <hr class="my-16 border-gray-800">
+
+        <section id="mercado" class="mb-20 pt-16 -mt-16">
+            <h2 class="text-3xl md:text-4xl font-bold text-center text-white mb-4">Anatomía del Mercado (N=442)</h2>
+            <p class="max-w-3xl mx-auto text-lg text-gray-400 mb-12 text-center">
+                El análisis consolidado valida las hipótesis fundamentales sobre el mercado del cuidado masculino: es un sector fragmentado, donde el cliente valora los resultados tangibles y percibe el costo como una barrera de riesgo.
             </p>
-            <form id="encuestaForm" class="max-w-2xl mx-auto space-y-6 mt-8">
-                <!-- Demografía -->
-                <div class="form-question">
-                    <label class="form-label">1. ¿Cuál es tu rango de edad?</label>
-                    <select name="edad" class="form-select" required>
-                        <option value="">Selecciona</option>
-                        <option value="30-40">30-40</option>
-                        <option value="41-50">41-50</option>
-                        <option value="51-60">51-60</option>
-                    </select>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                <div class="bg-[#1C1C1C] p-6 rounded-xl border border-gray-800">
+                    <h3 class="text-2xl font-semibold text-center mb-2 text-white">1. El Dolor: Fragmentación del Mercado</h3>
+                    <p class="text-center text-gray-400 mb-4">El cliente navega un ecosistema disperso, validando la necesidad de una solución integral.</p>
+                    <div class="chart-container h-[300px] md:h-[350px]">
+                        <canvas id="fragmentacionChart"></canvas>
+                    </div>
                 </div>
-                <div class="form-question">
-                    <label class="form-label">2. ¿Cuál es tu ingreso anual aproximado?</label>
-                    <select name="ingreso" class="form-select" required>
-                        <option value="">Selecciona</option>
-                        <option value="<500k"><$500,000 MXN</option>
-                        <option value="500k-1M">$500,000-$1M MXN</option>
-                        <option value=">1M">>$1M MXN</option>
-                    </select>
+                 <div class="bg-[#1C1C1C] p-6 rounded-xl border border-gray-800">
+                    <h3 class="text-2xl font-semibold text-center mb-2 text-white">2. El Deseo: El Valor son los Resultados</h3>
+                    <p class="text-center text-gray-400 mb-4">La tecnología es el medio, no el fin. El cliente compra resultados visibles y certeza.</p>
+                    <div class="chart-container h-[300px] md:h-[350px]">
+                        <canvas id="valoresChart"></canvas>
+                    </div>
                 </div>
+                 <div class="lg:col-span-2 bg-[#1C1C1C] p-6 rounded-xl border border-gray-800">
+                    <h3 class="text-2xl font-semibold text-center mb-2 mt-8 text-white">3. La Barrera: Percepción de Costo y Riesgo</h3>
+                    <p class="text-center text-gray-400 mb-4">La principal barrera no es el precio absoluto, sino el riesgo de una alta inversión inicial para un resultado incierto.</p>
+                    <div class="chart-container h-[300px] md:h-[350px]">
+                        <canvas id="barrerasChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
 
-                <!-- Servicios y Pricing -->
-                <div class="form-question">
-                    <label class="form-label">3. Cara - Botox: Inyecciones que reducen arrugas, con 95% de mejora (JAMA Dermatology, 2016) en 2 semanas.</label>
-                    <div><label>¿Interés? </label><select name="interesBotox" class="form-select" required><option value="">Selecciona</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option></select></div>
-                    <div><label>¿Cuánto pagarías? </label><select name="precioBotox" class="form-select" required><option value="">Selecciona</option><option value="2125">$2,125</option><option value="2400">$2,400</option><option value="2750">$2,750</option><option value="3400">$3,400</option></select></div>
-                </div>
-                <div class="form-question">
-                    <label class="form-label">4. Grooming - Corte de Pelo: Estilizado profesional, con 95% de satisfacción (encuestas 2019), simple y efectivo.</label>
-                    <div><label>¿Interés? </label><select name="interesCorte" class="form-select" required><option value="">Selecciona</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option></select></div>
-                    <div><label>¿Cuánto pagarías? </label><select name="precioCorte" class="form-select" required><option value="">Selecciona</option><option value="255">$255</option><option value="290">$290</option><option value="340">$340</option><option value="380">$380</option><option value="425">$425</option></select></div>
-                </div>
-                <div class="form-question">
-                    <label class="form-label">5. Dientes - Blanqueamiento LED: Luz LED para blanquear dientes, con 88% de satisfacción (Journal of Dentistry, 2017) en 1 sesión.</label>
-                    <div><label>¿Interés? </label><select name="interesBlanqueamiento" class="form-select" required><option value="">Selecciona</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option></select></div>
-                    <div><label>¿Cuánto pagarías? </label><select name="precioBlanqueamiento" class="form-select" required><option value="">Selecciona</option><option value="2125">$2,125</option><option value="2300">$2,300</option><option value="2550">$2,550</option><option value="2725">$2,725</option><option value="2975">$2,975</option></select></div>
-                </div>
-                <div class="form-question">
-                    <label class="form-label">6. Cuerpo - Depilación Láser (hombros y espalda): Elimina vello en hombros y espalda, con 85% de reducción (Revista Dermatología, 2019) en 4-6 sesiones.</label>
-                    <div><label>¿Interés? </label><select name="interesDepilacion" class="form-select" required><option value="">Selecciona</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option></select></div>
-                    <div><label>¿Cuánto pagarías? </label><select name="precioDepilacion" class="form-select" required><option value="">Selecciona</option><option value="1700">$1,700</option><option value="1875">$1,875</option><option value="2125">$2,125</option><option value="2375">$2,375</option><option value="2550">$2,550</option></select></div>
-                </div>
-                <div class="form-question">
-                    <label class="form-label">7. Cirugía ambulatoria - Blefaroplastía: Cirugía para rejuvenecer párpados, con 92% de mejora (Aesthetic Surgery Journal, 2019) en 1-2 semanas.</label>
-                    <div><label>¿Interés? </label><select name="interesBlefaroplastia" class="form-select" required><option value="">Selecciona</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option></select></div>
-                    <div><label>¿Cuánto pagarías? </label><select name="precioBlefaroplastia" class="form-select" required><option value="">Selecciona</option><option value="17000">$17,000</option><option value="19125">$19,125</option><option value="21375">$21,375</option><option value="23375">$23,375</option><option value="25500">$25,500</option></select></div>
-                </div>
-                <div class="form-question">
-                    <label class="form-label">8. Cara - HIFU: Rejuvenecimiento facial sin cirugía en una sesión de 60-90 minutos, con 90% de satisfacción (Dermatologic Surgery, 2014) en 3-6 meses, simple y sin cremas costosas.</label>
-                    <div><label>¿Interés? </label><select name="interesHIFU" class="form-select" required><option value="">Selecciona</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option></select></div>
-                    <div><label>¿Cuánto pagarías? </label><select name="precioHIFU" class="form-select" required><option value="">Selecciona</option><option value="2550">$2,550</option><option value="2900">$2,900</option><option value="3400">$3,400</option><option value="3750">$3,750</option><option value="4250">$4,250</option></select></div>
-                </div>
-                <div class="form-question">
-                    <label class="form-label">9. Grooming - Manicure y Pedicure: Cuidado natural de uñas (manicure, 85% satisfacción, Journal of Aesthetic Nursing, 2018) y pies (pedicure, 87% mejora, Journal of Foot and Ankle Research, 2019), diseñado para hombres en un espacio cómodo.</label>
-                    <div><label>¿Interés en manicure? </label><select name="interesManicure" class="form-select" required><option value="">Selecciona</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option></select></div>
-                    <div><label>¿Interés en pedicure? </label><select name="interesPedicure" class="form-select" required><option value="">Selecciona</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option></select></div>
-                    <div><label>¿Cuánto pagarías por manicure? </label><select name="precioManicure" class="form-select" required><option value="">Selecciona</option><option value="255">$255</option><option value="290">$290</option><option value="340">$340</option><option value="380">$380</option><option value="425">$425</option></select></div>
-                    <div><label>¿Cuánto pagarías por pedicure? </label><select name="precioPedicure" class="form-select" required><option value="">Selecciona</option><option value="340">$340</option><option value="385">$385</option><option value="425">$425</option><option value="470">$470</option><option value="510">$510</option></select></div>
-                </div>
+        <hr class="my-16 border-gray-800">
 
-                <!-- Ubicación -->
-                <div class="form-question">
-                    <label class="form-label">10. ¿Prefieres Centro cerca de Bernardo Quintana?</label>
-                    <select name="ubicacionPref" class="form-select" required>
-                        <option value="">Selecciona</option>
-                        <option value="Sí">Sí</option>
-                        <option value="No">No</option>
-                        <option value="Tal vez">Tal vez</option>
-                    </select>
+        <section id="club" class="mb-20 pt-16 -mt-16">
+            <h2 class="text-3xl md:text-4xl font-bold text-center text-white mb-4">Blueprint de la Experiencia: "THE CLUB"</h2>
+             <p class="max-w-3xl mx-auto text-lg text-gray-400 mb-12 text-center">
+                Los datos del Grupo TEST (N=221) nos dan el diseño exacto de la experiencia que el mercado demanda. El pivote de "ecosistema" a una "comunidad" tangible y experiencial es la dirección correcta.
+            </p>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                 <div class="bg-[#1C1C1C] p-6 rounded-xl border border-gray-800">
+                    <h3 class="text-2xl font-semibold text-center mb-2 text-white">Los 3 Beneficios "Must-Have"</h3>
+                    <p class="text-center text-gray-400 mb-4">El mercado vota por la practicidad sobre el prestigio. Quieren que mejoremos su vida, no que les demos más tareas.</p>
+                    <div class="chart-container h-[300px] md:h-[350px]">
+                        <canvas id="beneficiosChart"></canvas>
+                    </div>
                 </div>
-                <div class="form-question">
-                    <label class="form-label">11. ¿Accesibilidad preferida?</label>
-                    <select name="accesibilidad" class="form-select" required>
-                        <option value="">Selecciona</option>
-                        <option value="Oficinas">Cerca oficinas</option>
-                        <option value="Casa">Cerca casa</option>
-                        <option value="Gimnasio">Cerca gimnasio</option>
-                    </select>
+                <div class="bg-[#1C1C1C] p-6 rounded-xl border border-gray-800">
+                    <h3 class="text-2xl font-semibold text-center mb-2 text-white">El Ambiente Ganador: "Classic Tech Lounge"</h3>
+                    <p class="text-center text-gray-400 mb-4">El cliente no quiere elegir; quiere una fusión de la calidez de un club, la precisión de un laboratorio y el confort de un lounge.</p>
+                    <div class="chart-container h-[300px] md:h-[350px]">
+                        <canvas id="ambienteChart"></canvas>
+                    </div>
                 </div>
+            </div>
+        </section>
 
-                <!-- Cultura -->
-                <div class="form-question">
-                    <label class="form-label">12. ¿Cuidar tu imagen te empodera?</label>
-                    <select name="empoderamiento" class="form-select" required>
-                        <option value="">Selecciona</option>
-                        <option value="1">1 = Para nada</option>
-                        <option value="2">2 = Poco</option>
-                        <option value="3">3 = Neutral</option>
-                        <option value="4">4 = Sí</option>
-                        <option value="5">5 = Mucho</option>
-                    </select>
-                </div>
-                <div class="form-question">
-                    <label class="form-label">13. ¿Te gustaría compartir experiencias y consejos de cuidado personal con otros hombres en un grupo?</label>
-                    <select name="comunidad" class="form-select" required>
-                        <option value="">Selecciona</option>
-                        <option value="1">1 = Para nada, no me interesa</option>
-                        <option value="2">2 = Poco, prefiero hacerlo solo</option>
-                        <option value="3">3 = Neutral, depende del grupo</option>
-                        <option value="4">4 = Sí, me parece útil</option>
-                        <option value="5">5 = Mucho, lo valoro mucho</option>
-                    </select>
-                </div>
+        <hr class="my-16 border-gray-800">
 
-                <button type="submit" class="btn-primary w-full mt-6">Enviar Encuesta</button>
-            </form>
+        <section id="clientes" class="mb-20 pt-16 -mt-16">
+            <h2 class="text-3xl md:text-4xl font-bold text-center text-white mb-4">Manual de Segmentación y Targeting</h2>
+            <p class="max-w-3xl mx-auto text-lg text-gray-400 mb-12 text-center">
+                Los datos validan dos arquetipos de cliente rentables y distintos. Es mandatorio implementar una estrategia de doble embudo para capturar ambos segmentos.
+            </p>
+            <div class="flex justify-center mb-8">
+                <div class="bg-black/50 p-1 rounded-lg flex space-x-1">
+                    <button id="btn-carlos" class="btn-switch btn-active">Carlos (Alto Valor)</button>
+                    <button id="btn-eduardo" class="btn-switch btn-inactive">Eduardo (Alto Volumen)</button>
+                </div>
+            </div>
+            <div id="content-carlos" class="bg-[#1C1C1C] p-8 rounded-xl border border-gray-800 transition-opacity duration-500">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div>
+                        <h3 class="text-2xl font-bold mb-2 text-white">Carlos, el Rejuvenecedor</h3>
+                        <p class="text-gray-400 mb-4">35-50 años, tecnológicamente adepto, orientado a resultados y con alta capacidad de pago. Paga por estar a la vanguardia.</p>
+                        <div class="space-y-3">
+                            <div class="flex items-start"><span class="text-red-500 mr-3 mt-1 font-bold">✓</span><div><span class="font-semibold text-gray-200">Demanda:</span> Acceso prioritario a nuevas tecnologías y resultados medibles.</div></div>
+                            <div class="flex items-start"><span class="text-red-500 mr-3 mt-1 font-bold">✓</span><div><span class="font-semibold text-gray-200">Ambiente Ideal:</span> Fusión de "Laboratorio Tecnológico" y "Lounge de Lujo".</div></div>
+                            <div class="flex items-start"><span class="text-red-500 mr-3 mt-1 font-bold">✓</span><div><span class="font-semibold text-gray-200">Ticket Promedio:</span> $12k - $18k MXN.</div></div>
+                        </div>
+                    </div>
+                    <div class="bg-gray-900/50 border border-gray-700 p-6 rounded-lg">
+                        <h4 class="font-bold text-lg mb-2 text-white">Blueprint de Diseño para Carlos</h4>
+                        <p class="text-gray-400">La oferta debe centrarse en la exclusividad y la eficiencia. Beneficios clave: **acceso prioritario a nuevos tratamientos**, **horarios exclusivos** y **descuentos especiales**.</p>
+                    </div>
+                </div>
+            </div>
+            <div id="content-eduardo" class="bg-[#1C1C1C] p-8 rounded-xl border border-gray-800 transition-opacity duration-500 hidden">
+                 <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div>
+                        <h3 class="text-2xl font-bold mb-2 text-white">Eduardo, el Novato Estético</h3>
+                        <p class="text-gray-400 mb-4">&lt;40 años, curioso pero cauto, sensible al riesgo inicial. Representa la puerta de entrada al mercado.</p>
+                        <div class="space-y-3">
+                            <div class="flex items-start"><span class="text-red-500 mr-3 mt-1 font-bold">✓</span><div><span class="font-semibold text-gray-200">Demanda:</span> Confianza, guía y pruebas sociales.</div></div>
+                            <div class="flex items-start"><span class="text-red-500 mr-3 mt-1 font-bold">✓</span><div><span class="font-semibold text-gray-200">Disparador Principal:</span> Ver resultados reales y ofertas de prueba.</div></div>
+                             <div class="flex items-start"><span class="text-red-500 mr-3 mt-1 font-bold">✓</span><div><span class="font-semibold text-gray-200">Ticket Promedio:</span> $3k - $5k MXN.</div></div>
+                        </div>
+                    </div>
+                    <div class="bg-gray-900/50 border border-gray-700 p-6 rounded-lg">
+                        <h4 class="font-bold text-lg mb-2 text-white">Blueprint de Conversión para Eduardo</h4>
+                        <p class="text-gray-400">La clave es de-riesgar la primera visita. Crear un **"Paquete de Iniciación"** de bajo costo que incluya diagnóstico 3D y un tratamiento con resultados inmediatos. Mensaje: "Resultados visibles desde tu primera visita".</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <hr class="my-16 border-gray-800">
+
+        <section id="roadmap" class="mb-20 pt-16 -mt-16">
+            <h2 class="text-3xl md:text-4xl font-bold text-center text-white mb-4">Roadmap de Expansión Nacional</h2>
+             <p class="max-w-3xl mx-auto text-lg text-gray-400 mb-12 text-center">
+               La secuencia de lanzamiento se basa en una progresión lógica, comenzando en el mercado de mayor valor para establecer la marca y luego expandiéndose.
+            </p>
+            <div class="relative w-full">
+                <div class="absolute left-1/2 top-0 bottom-0 w-0.5 bg-gray-800 hidden md:block"></div>
+                <div class="space-y-12 md:space-y-0">
+                    
+                    <div class="md:grid md:grid-cols-2 md:gap-8 items-center relative">
+                        <div class="md:text-right">
+                             <div class="bg-[#1C1C1C] p-6 rounded-xl border-l-4 border-red-600">
+                                <p class="text-gray-500 text-sm">Fase 1</p>
+                                <h3 class="text-2xl font-bold text-white">Monterrey (Flagship)</h3>
+                                <p class="text-gray-400 mt-2"><strong>Razón:</strong> Máxima alineación estratégica per cápita y poder adquisitivo. Ideal para lanzar el concepto premium.</p>
+                                <p class="text-sm mt-2 font-semibold text-gray-300">Zonas: San Pedro Garza García.</p>
+                            </div>
+                        </div>
+                        <div class="hidden md:block absolute left-1/2 -translate-x-1/2 bg-gray-800 p-1 rounded-full"><div class="h-4 w-4 bg-red-600 rounded-full"></div></div>
+                        <div class="hidden md:block"></div>
+                    </div>
+
+                    <div class="md:grid md:grid-cols-2 md:gap-8 items-center relative">
+                        <div class="hidden md:block"></div>
+                        <div class="hidden md:block absolute left-1/2 -translate-x-1/2 bg-gray-800 p-1 rounded-full"><div class="h-4 w-4 bg-red-500 rounded-full"></div></div>
+                        <div>
+                             <div class="bg-[#1C1C1C] p-6 rounded-xl border-l-4 border-red-500">
+                                <p class="text-gray-500 text-sm">Fase 2</p>
+                                <h3 class="text-2xl font-bold text-white">CDMX (Mercado Espejo)</h3>
+                                <p class="text-gray-400 mt-2"><strong>Razón:</strong> Perfil de cliente similar a Monterrey y mayor mercado absoluto. Ideal para replicar el modelo.</p>
+                                <p class="text-sm mt-2 font-semibold text-gray-300">Zonas: Polanco, Lomas, Santa Fe.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                     <div class="md:grid md:grid-cols-2 md:gap-8 items-center relative">
+                        <div class="md:text-right">
+                             <div class="bg-[#1C1C1C] p-6 rounded-xl border-l-4 border-red-400">
+                                <p class="text-gray-500 text-sm">Fase 3</p>
+                                <h3 class="text-2xl font-bold text-white">Guadalajara (Mercado Creativo)</h3>
+                                <p class="text-gray-400 mt-2"><strong>Razón:</strong> Mezcla saludable de "Carlos" y "Eduardo". Oportunidad para adaptar la estética a un "Classic Lounge".</p>
+                                <p class="text-sm mt-2 font-semibold text-gray-300">Zonas: Providencia, Puerta de Hierro.</p>
+                            </div>
+                        </div>
+                        <div class="hidden md:block absolute left-1/2 -translate-x-1/2 bg-gray-800 p-1 rounded-full"><div class="h-4 w-4 bg-red-400 rounded-full"></div></div>
+                        <div class="hidden md:block"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <hr class="my-16 border-gray-800">
+
+        <section id="plan" class="pt-16 -mt-16">
+            <h2 class="text-3xl md:text-4xl font-bold text-center text-white mb-4">Plan de Acción Final</h2>
+            <p class="max-w-3xl mx-auto text-lg text-gray-400 mb-12 text-center">
+               Directivas claras, concisas y accionables para cada stakeholder clave, diseñadas para catalizar la acción inmediata y asegurar la alineación total.
+            </p>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="bg-[#1C1C1C] p-6 rounded-xl border border-gray-800">
+                    <h3 class="text-xl font-bold mb-4 text-white">Para el Fundador</h3>
+                    <ul class="space-y-3 text-gray-400">
+                        <li class="flex items-start"><span class="text-red-500 mr-2 mt-1"> ▶ </span><p><strong>Capitalizar:</strong> Usar este informe para cerrar la ronda Serie A.</p></li>
+                        <li class="flex items-start"><span class="text-red-500 mr-2 mt-1"> ▶ </span><p><strong>Liderar:</strong> Encarnar y comunicar la visión del "Classic Tech Lounge".</p></li>
+                        <li class="flex items-start"><span class="text-red-500 mr-2 mt-1"> ▶ </span><p><strong>Reclutar:</strong> Fichar al "Socio Ancla" con un paquete de equity estratégico.</p></li>
+                    </ul>
+                </div>
+                <div class="bg-[#1C1C1C] p-6 rounded-xl border border-gray-800">
+                    <h3 class="text-xl font-bold mb-4 text-white">Para el Equipo</h3>
+                    <ul class="space-y-3 text-gray-400">
+                        <li class="flex items-start"><span class="text-red-500 mr-2 mt-1"> ▶ </span><p><strong>Operaciones:</strong> Iniciar importación de equipos y diseño arquitectónico del flagship.</p></li>
+                        <li class="flex items-start"><span class="text-red-500 mr-2 mt-1"> ▶ </span><p><strong>Marketing:</strong> Construir y lanzar la estrategia de DOBLE EMBUDO.</p></li>
+                        <li class="flex items-start"><span class="text-red-500 mr-2 mt-1"> ▶ </span><p><strong>Tecnología:</strong> Priorizar el desarrollo del sistema BNPL y el Módulo de Imagen.</p></li>
+                    </ul>
+                </div>
+                <div class="bg-[#1C1C1C] p-6 rounded-xl border border-gray-800">
+                    <h3 class="text-xl font-bold mb-4 text-white">Para Inversionistas</h3>
+                    <ul class="space-y-3 text-gray-400">
+                        <li class="flex items-start"><span class="text-red-500 mr-2 mt-1"> ▶ </span><p><strong>La Tesis:</strong> Invertir en una fórmula validada, no en una hipótesis.</p></li>
+                        <li class="flex items-start"><span class="text-red-500 mr-2 mt-1"> ▶ </span><p><strong>Uso de Fondos:</strong> CAPEX para el flagship y Marketing para la adquisición.</p></li>
+                        <li class="flex items-start"><span class="text-red-500 mr-2 mt-1"> ▶ </span><p><strong>La Salida:</strong> Modelo escalable "Clinic-in-a-Box" con potencial SaaS.</p></li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-black mt-20 border-t border-gray-800">
+        <div class="container mx-auto px-4 py-6 text-center text-sm text-gray-600">
+            <p class="text-lg text-white logo-font mb-2">HOMBRE<span class="text-red-500">_</span>VIGENTE</p>
+            <p>&copy; 2025 Hombre Vigente. Todos los derechos reservados.</p>
+            <p class="text-gray-700 mt-1">Informe Estratégico Interactivo v3.0</p>
         </div>
-    </section>
-</main>
+    </footer>
 
-<!-- JavaScript -->
-<script>
-    document.addEventListener('DOMContentLoaded', () => {
-        const mobileMenuButton = document.getElementById('mobile-menu-button');
-        const mobileMenu = document.getElementById('mobile-menu');
-        const encuestaForm = document.getElementById('encuestaForm');
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const chartLabelColor = '#9ca3af'; 
+            const chartGridColor = '#374151'; 
 
-        // Mobile Menu Toggle
-        mobileMenuButton.addEventListener('click', () => {
-            mobileMenu.classList.toggle('hidden');
-        });
-        mobileMenu.querySelector('a').addEventListener('click', () => {
-            mobileMenu.classList.add('hidden');
-        });
-
-        // Form Submission to Google Sheets
-        encuestaForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            const formData = new FormData(encuestaForm);
-            const data = {};
-            for (let [key, value] of formData.entries()) {
-                data[key] = value;
-            }
-            fetch('https://script.google.com/home/projects/1FxBDKkb99O8RsP49tjE4gW5RqYRgfm2jtqJDmmL3hhiTsOPfIiVFwlMC/edit', { // Reemplaza con tu URL
-                method: 'POST',
-                body: JSON.stringify(data),
-                headers: { 'Content-Type': 'application/json' }
-            })
-            .then(response => {
-                if (response.ok) {
-                    alert('¡Encuesta enviada con éxito! Gracias por tu tiempo.');
-                    encuestaForm.reset();
-                } else {
-                    alert('Error al enviar la encuesta. Intenta de nuevo.');
+            const chartOptions = {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false,
+                    },
+                    tooltip: {
+                        backgroundColor: '#111827',
+                        titleColor: '#ffffff',
+                        bodyColor: '#ffffff',
+                        padding: 10,
+                        cornerRadius: 6,
+                        displayColors: false,
+                    }
+                },
+                scales: {
+                    x: {
+                        ticks: { color: chartLabelColor, font: { weight: '500' } },
+                        grid: { color: chartGridColor, drawOnChartArea: false }
+                    },
+                    y: {
+                        ticks: { color: chartLabelColor, font: { weight: '500' } },
+                        grid: { color: chartGridColor }
+                    }
                 }
-            })
-            .catch(error => alert('Error: ' + error.message));
-        });
-    });
-</script>
+            };
+            
+            const fragmentacionData = {
+                labels: ['Barbería', 'Clínica Derm.', 'Salón/Spa', 'Varios', 'En Casa', 'Ninguno'],
+                datasets: [{
+                    data: [37, 18.5, 16.7, 13.8, 10, 4],
+                    backgroundColor: ['#dc2626', '#f59e0b', '#10b981', '#3b82f6', '#6366f1', '#8b5cf6'],
+                    borderColor: '#1C1C1C',
+                    borderWidth: 4,
+                    hoverOffset: 4
+                }]
+            };
+            new Chart(document.getElementById('fragmentacionChart'), {
+                type: 'doughnut',
+                data: fragmentacionData,
+                options: {
+                    ...chartOptions,
+                    plugins: {
+                        ...chartOptions.plugins,
+                         legend: {
+                            display: true,
+                            position: 'bottom',
+                            labels: {
+                                color: chartLabelColor,
+                                padding: 15,
+                                font: { weight: '500' }
+                            }
+                        }
+                    }
+                }
+            });
 
+            const valoresData = {
+                labels: ['Resultados Visibles', 'Exp. Relajante', 'Asesoría Prof.', 'Tec. Avanzada'],
+                datasets: [{
+                    label: 'Valoración',
+                    data: [74.4, 57.2, 58.4, 45.2],
+                    backgroundColor: '#dc2626',
+                    borderRadius: 4
+                }]
+            };
+            new Chart(document.getElementById('valoresChart'), {
+                type: 'bar',
+                data: valoresData,
+                options: { ...chartOptions, indexAxis: 'y', scales: { x: { grid: { drawOnChartArea: true, color: chartGridColor } }, y: { grid: { drawOnChartArea: false } } } }
+            });
+            
+            const barrerasData = {
+                labels: ['Percepción de Costo', 'Dudas sobre Calidad', 'Desconfianza'],
+                datasets: [{
+                    label: '% que lo percibe como barrera',
+                    data: [50, 46, 38],
+                    backgroundColor: '#f59e0b',
+                    borderRadius: 4
+                }]
+            };
+            new Chart(document.getElementById('barrerasChart'), {
+                type: 'bar',
+                data: barrerasData,
+                options: { ...chartOptions, indexAxis: 'y', scales: { x: { grid: { drawOnChartArea: true, color: chartGridColor } }, y: { grid: { drawOnChartArea: false } } } }
+            });
+
+            const beneficiosData = {
+                labels: ['Horarios Exclusivos', 'Descuentos', 'Regaderas/Lockers'],
+                datasets: [{
+                    label: 'Ranking de Importancia (Media, menor es mejor)',
+                    data: [3.4, 3.8, 3.8],
+                    backgroundColor: ['#dc2626', '#b91c1c', '#991b1b'],
+                    borderRadius: 4
+                }]
+            };
+            new Chart(document.getElementById('beneficiosChart'), {
+                type: 'bar',
+                data: beneficiosData,
+                options: { ...chartOptions, indexAxis: 'y', scales: { x: { grid: { drawOnChartArea: true, color: chartGridColor } }, y: { grid: { drawOnChartArea: false } } } }
+            });
+            
+            const ambienteData = {
+                labels: ['Club Clásico', 'Lab. Tech', 'Lounge Lujo'],
+                datasets: [{
+                    label: 'Preferencia de Ambiente',
+                    data: [59.8, 50.4, 50.1],
+                    fill: true,
+                    backgroundColor: 'rgba(220, 38, 38, 0.2)',
+                    borderColor: 'rgb(220, 38, 38)',
+                    pointBackgroundColor: 'rgb(220, 38, 38)',
+                    pointBorderColor: '#fff',
+                    pointHoverBackgroundColor: '#fff',
+                    pointHoverBorderColor: 'rgb(220, 38, 38)'
+                }]
+            };
+            new Chart(document.getElementById('ambienteChart'), {
+                type: 'radar',
+                data: ambienteData,
+                options: {
+                    ...chartOptions,
+                    scales: {
+                        r: {
+                            angleLines: { color: chartGridColor },
+                            grid: { color: chartGridColor },
+                            pointLabels: { color: chartLabelColor, font: {size: 14, weight: 'bold'} },
+                            ticks: {
+                                color: chartLabelColor,
+                                backdropColor: 'rgba(28, 28, 28, 0.6)'
+                            }
+                        }
+                    }
+                }
+            });
+
+            const btnCarlos = document.getElementById('btn-carlos');
+            const btnEduardo = document.getElementById('btn-eduardo');
+            const contentCarlos = document.getElementById('content-carlos');
+            const contentEduardo = document.getElementById('content-eduardo');
+
+            btnCarlos.addEventListener('click', () => {
+                btnCarlos.classList.remove('btn-inactive');
+                btnCarlos.classList.add('btn-active');
+                btnEduardo.classList.remove('btn-active');
+                btnEduardo.classList.add('btn-inactive');
+                contentCarlos.classList.remove('hidden');
+                contentEduardo.classList.add('hidden');
+            });
+
+            btnEduardo.addEventListener('click', () => {
+                btnEduardo.classList.remove('btn-inactive');
+                btnEduardo.classList.add('btn-active');
+                btnCarlos.classList.remove('btn-active');
+                btnCarlos.classList.add('btn-inactive');
+                contentEduardo.classList.remove('hidden');
+                contentCarlos.classList.add('hidden');
+            });
+            
+            const sections = document.querySelectorAll('section');
+            const navLinks = document.querySelectorAll('.nav-link');
+
+            window.addEventListener('scroll', () => {
+                let current = '';
+                sections.forEach(section => {
+                    const sectionTop = section.offsetTop;
+                    if (pageYOffset >= sectionTop - 70) {
+                        current = section.getAttribute('id');
+                    }
+                });
+
+                navLinks.forEach(link => {
+                    link.classList.remove('active-link');
+                    if (link.getAttribute('href').includes(current)) {
+                        link.classList.add('active-link');
+                    }
+                });
+            });
+        });
+    </script>
 </body>
 </html>
