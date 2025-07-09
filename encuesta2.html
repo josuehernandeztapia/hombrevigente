@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hombre Vigente: Dashboard Estratégico</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Hombre Vigente (Deep Black, Stark White, Vibrant Red) -->
+    <!-- Application Structure Plan: Se ha diseñado una aplicación de una sola página con un flujo narrativo ("scrollytelling"). Comienza con el veredicto de alto impacto, seguido por el análisis del mercado, la solución propuesta, la segmentación de clientes, el plan de expansión y el plan de acción. Esta estructura guía al usuario a través de una historia coherente, desde el "porqué" hasta el "cómo", facilitando la comprensión y la retención de la información clave. La navegación superior permite el acceso directo a cada sección, mientras que la interactividad fomenta la exploración de los datos. -->
+    <!-- Visualization & Content Choices: Se utilizan gráficos de Chart.js (Dona, Barras Horizontales) para visualizar datos cuantitativos de forma clara y comparable, como la fragmentación del mercado y la jerarquía de valores. Las interacciones se centran en tooltips para obtener detalles. Para datos cualitativos y de organización, como los arquetipos de cliente y los planes de acción, se utilizan tarjetas y pestañas interactivas (HTML/CSS/JS) que permiten mostrar información detallada sin abrumar al usuario. El mapa de expansión es una representación estilizada con HTML/CSS para mantener la simplicidad y el enfoque en la interacción de clic. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: #0D0D0D;
+            color: #E0E0E0;
+        }
+        .nav-link {
+            transition: color 0.3s, border-bottom-color 0.3s;
+            border-bottom: 2px solid transparent;
+        }
+        .nav-link:hover, .nav-link.active {
+            color: #FF3B3B;
+            border-bottom-color: #FF3B3B;
+        }
+        .brand-text { color: #FF3B3B; }
+        .brand-bg { background-color: #FF3B3B; }
+        .brand-border { border-color: #FF3B3B; }
+        .card {
+            background-color: #1A1A1A;
+            border-radius: 0.75rem;
+            border: 1px solid #2a2a2a;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 0 25px rgba(255, 59, 59, 0.15);
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 350px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 400px;
+            }
+        }
+        .map-dot {
+            transition: transform 0.2s, background-color 0.2s;
+        }
+        .map-dot:hover {
+            transform: scale(1.5);
+        }
+        .map-dot.active {
+            background-color: #FF3B3B;
+            transform: scale(1.5);
+        }
+        .tab.active {
+            border-bottom: 2px solid #FF3B3B;
+            color: #FF3B3B;
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <header class="bg-black/50 backdrop-blur-md sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <h1 class="text-2xl font-black tracking-tighter text-white uppercase">Hombre <span class="brand-text">Vigente</span></h1>
+            <div class="hidden md:flex space-x-8 font-bold">
+                <a href="#veredicto" class="nav-link text-gray-300 hover:text-white">Veredicto</a>
+                <a href="#mercado" class="nav-link text-gray-300 hover:text-white">Mercado</a>
+                <a href="#solucion" class="nav-link text-gray-300 hover:text-white">Solución</a>
+                <a href="#clientes" class="nav-link text-gray-300 hover:text-white">Clientes</a>
+                <a href="#expansion" class="nav-link text-gray-300 hover:text-white">Expansión</a>
+                <a href="#accion" class="nav-link text-gray-300 hover:text-white">Plan de Acción</a>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <section id="veredicto" class="py-20 md:py-28 text-center bg-[#141414]">
+            <div class="container mx-auto px-6">
+                <h2 class="text-sm font-bold uppercase tracking-widest brand-text">El Veredicto Final</h2>
+                <p class="mt-4 text-4xl md:text-6xl font-black tracking-tighter text-white">LUZ VERDE CON FÓRMULA DE ÉXITO VALIDADA</p>
+                <p class="max-w-3xl mx-auto mt-6 text-lg text-gray-400">El análisis de <strong class="brand-text">442 encuestas</strong> valida la oportunidad de mercado. Con un <strong class="brand-text">85.08% de interés</strong>, la propuesta resuena con fuerza. La clave del éxito no es una teoría, sino un modelo de negocio validado por los datos del consumidor.</p>
+                <div class="max-w-4xl mx-auto mt-12 p-8 card bg-black">
+                    <h3 class="text-xl font-bold text-center brand-text">La Fórmula del Éxito</h3>
+                    <div class="mt-6 text-xl md:text-3xl font-bold flex flex-col md:flex-row items-center justify-center space-y-4 md:space-y-0 md:space-x-4">
+                        <div class="text-center">
+                            <p class="p-4 bg-gray-900 rounded-lg">(Resultados Visibles + Experiencia "Classic Tech Lounge")</p>
+                            <div class="h-px w-1/2 mx-auto bg-gray-700 my-2"></div>
+                            <p class="p-2 bg-gray-800 rounded-md">BNPL Estratégico</p>
+                        </div>
+                        <p class="text-4xl brand-text mx-4">&times;</p>
+                        <p class="p-4 bg-gray-900 rounded-lg">Comunidad "THE CLUB"</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section id="mercado" class="py-20 md:py-28">
+            <div class="container mx-auto px-6">
+                <h2 class="text-sm font-bold uppercase tracking-widest brand-text text-center">La Fotografía del Mercado</h2>
+                <p class="mt-4 text-4xl md:text-5xl font-black tracking-tighter text-center text-white">Entendiendo el Terreno de Juego</p>
+                <p class="max-w-3xl mx-auto mt-6 text-lg text-gray-400 text-center">Los datos revelan un mercado con un dolor claro, un deseo definido y una barrera específica. Esta es la oportunidad que Hombre Vigente está posicionado para capturar.</p>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mt-16">
+                    <div class="card p-6 text-center">
+                        <p class="text-5xl">🧩</p>
+                        <h3 class="mt-4 text-xl font-bold text-white">El Dolor</h3>
+                        <p class="mt-2 text-gray-400">Un mercado fragmentado obliga al cliente a ser su propio "gestor", buscando soluciones en barberías, spas y clínicas por separado.</p>
+                    </div>
+                    <div class="card p-6 text-center">
+                        <p class="text-5xl">🎯</p>
+                        <h3 class="mt-4 text-xl font-bold text-white">El Deseo</h3>
+                        <p class="mt-2 text-gray-400">Los <strong>Resultados Visibles</strong> son el factor dominante (37.3%), superando por mucho al precio. El cliente busca eficacia comprobada.</p>
+                    </div>
+                    <div class="card p-6 text-center">
+                        <p class="text-5xl">🚧</p>
+                        <h3 class="mt-4 text-xl font-bold text-white">La Barrera</h3>
+                        <p class="mt-2 text-gray-400">Un <strong>41.2%</strong> percibe el costo como el principal obstáculo, lo que revela la necesidad de una estrategia de precios inteligente.</p>
+                    </div>
+                    <div class="card p-6 text-center">
+                        <p class="text-5xl">🚀</p>
+                        <h3 class="mt-4 text-xl font-bold text-white">El Potencial</h3>
+                        <p class="mt-2 text-gray-400">El concepto de "THE CLUB" aumenta el interés en un <strong>10%</strong>, validando la comunidad como un multiplicador de valor y retención.</p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 mt-20 items-center">
+                    <div class="card p-8">
+                        <h3 class="text-2xl font-bold text-white">Diagnóstico de la Fragmentación</h3>
+                        <p class="mt-2 text-gray-400">Los clientes acuden a múltiples lugares. Esto valida la oportunidad de una solución "todo en uno" que ofrezca conveniencia y un estándar de calidad unificado.</p>
+                        <div class="chart-container mt-6">
+                            <canvas id="fragmentationChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="card p-8">
+                        <h3 class="text-2xl font-bold text-white">Jerarquía de Valores del Cliente</h3>
+                        <p class="mt-2 text-gray-400">Lo que el cliente valora más es claro: Resultados y Experiencia por encima del Precio. La tecnología es el medio para garantizar esos resultados.</p>
+                        <div class="chart-container mt-6">
+                            <canvas id="valuesChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="solucion" class="py-20 md:py-28 bg-[#141414]">
+            <div class="container mx-auto px-6">
+                <h2 class="text-sm font-bold uppercase tracking-widest brand-text text-center">El Blueprint de la Solución</h2>
+                <p class="mt-4 text-4xl md:text-5xl font-black tracking-tighter text-center text-white">Diseñando la Experiencia Ganadora</p>
+                <p class="max-w-3xl mx-auto mt-6 text-lg text-gray-400 text-center">La estrategia de Hombre Vigente responde directamente a los dolores y deseos del mercado con un modelo de negocio y una experiencia de cliente meticulosamente diseñados.</p>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 mt-16 items-start">
+                    <div class="card p-8">
+                        <h3 class="text-2xl font-bold text-white">Derribando la Barrera del Costo</h3>
+                        <p class="mt-2 text-gray-400">Los clientes prefieren modelos de pago estructurados. El BNPL (facilidades de pago) es la llave para desbloquear servicios de mayor valor.</p>
+                        <div class="chart-container mt-6">
+                            <canvas id="paymentChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="card p-8">
+                        <h3 class="text-2xl font-bold text-white">El Veredicto sobre "THE CLUB"</h3>
+                        <p class="mt-2 text-gray-400">Los beneficios más deseados son funcionales: horarios exclusivos y descuentos. Esto define la oferta de los tiers "Esencial" y "Elite".</p>
+                        <div class="chart-container mt-6">
+                            <canvas id="clubBenefitsChart"></canvas>
+                        </div>
+                    </div>
+                     <div class="card p-8 lg:col-span-2">
+                        <h3 class="text-2xl font-bold text-center text-white">El Ambiente Ganador: "Classic Tech Lounge"</h3>
+                        <p class="mt-2 text-gray-400 text-center max-w-2xl mx-auto">La fusión perfecta entre la confianza de un laboratorio de precisión y la comodidad de un club de caballeros. Es el contenedor de la experiencia.</p>
+                        <div class="mt-8 grid grid-cols-1 md:grid-cols-2 gap-8 text-left">
+                            <div>
+                                <h4 class="font-bold text-lg text-white">🛋️ Elementos Clásicos / Lounge</h4>
+                                <ul class="mt-4 space-y-2 list-disc list-inside text-gray-400">
+                                    <li>Maderas oscuras y sofás de cuero</li>
+                                    <li>Privacidad visual y ambiente tranquilo</li>
+                                    <li>Servicio de bar y bebidas de cortesía</li>
+                                    <li>Sensación de exclusividad y relajación</li>
+                                </ul>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-lg text-white">🔬 Elementos Tecnológicos / Precisión</h4>
+                                <ul class="mt-4 space-y-2 list-disc list-inside text-gray-400">
+                                    <li>Equipos de alta tecnología visibles</li>
+                                    <li>Instalaciones modernas e impecables</li>
+                                    <li>Personal certificado y profesional</li>
+                                    <li>Entorno que comunica eficacia y resultados</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="clientes" class="py-20 md:py-28">
+            <div class="container mx-auto px-6">
+                <h2 class="text-sm font-bold uppercase tracking-widest brand-text text-center">Conociendo a Nuestros Clientes</h2>
+                <p class="mt-4 text-4xl md:text-5xl font-black tracking-tighter text-center text-white">Segmentación y Targeting Definitivo</p>
+                 <p class="max-w-3xl mx-auto mt-6 text-lg text-gray-400 text-center">No todos los clientes son iguales. El éxito radica en enfocar los esfuerzos en los arquetipos correctos y excluir activamente a aquellos que no están listos para nuestro valor.</p>
+                <div class="max-w-4xl mx-auto mt-12">
+                    <div class="flex justify-center border-b border-gray-800">
+                        <button data-tab="carlos" class="customer-tab tab px-6 py-3 font-semibold text-lg active">Carlos</button>
+                        <button data-tab="eduardo" class="customer-tab tab px-6 py-3 font-semibold text-lg">Eduardo</button>
+                        <button data-tab="anti-persona" class="customer-tab tab px-6 py-3 font-semibold text-lg">Anti-Persona</button>
+                    </div>
+
+                    <div id="customer-content" class="mt-8">
+                        <div id="carlos-content" class="customer-info">
+                            <div class="card p-8">
+                                <h3 class="text-3xl font-bold text-white">Carlos, el Rejuvenecedor <span class="text-base font-normal text-gray-500">(35-50 años)</span></h3>
+                                <p class="mt-4 text-gray-400 text-lg">Busca "Resultados Visibles" y valora la "Tecnología Avanzada". Está dispuesto a invertir en tratamientos de alto valor, pero necesita que la barrera del costo sea eliminada.</p>
+                                <div class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div>
+                                        <h4 class="font-bold brand-text">Estrategia Clave</h4>
+                                        <p class="text-gray-400">Ofrecerle un plan de pagos flexibles <strong>(BNPL)</strong> para transformar una decisión de alta fricción en una inversión mensual manejable.</p>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-bold brand-text">Membresía Ideal</h4>
+                                        <p class="text-gray-400"><strong>"Elite" de THE CLUB</strong>, ya que valora la exclusividad, el acceso prioritario y el estatus que la membresía confiere.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="eduardo-content" class="customer-info hidden">
+                            <div class="card p-8">
+                                <h3 class="text-3xl font-bold text-white">Eduardo, el Novato Estético <span class="text-base font-normal text-gray-500">(30-40 años)</span></h3>
+                                <p class="mt-4 text-gray-400 text-lg">Actualmente resuelve sus necesidades en una barbería o en casa. Sus barreras son la incertidumbre y la falta de información. Necesita un punto de entrada de bajo riesgo.</p>
+                                <div class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div>
+                                        <h4 class="font-bold brand-text">Estrategia Clave</h4>
+                                        <p class="text-gray-400">Atraerlo con <strong>paquetes de iniciación con descuento</strong> y contenido educativo que desmitifique los tratamientos y construya confianza.</p>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-bold brand-text">Membresía Ideal</h4>
+                                        <p class="text-gray-400"><strong>"Esencial" de THE CLUB</strong>, ofreciéndole beneficios funcionales (horarios, descuentos) sin un gran compromiso inicial.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="anti-persona-content" class="customer-info hidden">
+                            <div class="card p-8">
+                                <h3 class="text-3xl font-bold text-white">La Anti-Persona: A Quién Excluir</h3>
+                                <p class="mt-4 text-gray-400 text-lg">Para maximizar el ROI, es crucial no malgastar recursos en el público equivocado. Identificamos dos perfiles a evitar en campañas de conversión directa.</p>
+                                <div class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div>
+                                        <h4 class="font-bold brand-text">El "Rechazador de la Categoría"</h4>
+                                        <p class="text-gray-400">Su barrera es "No considero necesario este tipo de cuidado". Debe ser <strong>excluido activamente</strong> de las campañas de targeting.</p>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-bold brand-text">El "Escéptico del Valor"</h4>
+                                        <p class="text-gray-400">Desconfía de los resultados o del costo. No es un objetivo de conversión directa, sino de <strong>nutrición a largo plazo</strong> con contenido educativo.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section id="expansion" class="py-20 md:py-28 bg-[#141414]">
+            <div class="container mx-auto px-6">
+                <h2 class="text-sm font-bold uppercase tracking-widest brand-text text-center">El Mapa de Expansión</h2>
+                <p class="mt-4 text-4xl md:text-5xl font-black tracking-tighter text-center text-white">Roadmap Geográfico Estratégico</p>
+                <p class="max-w-3xl mx-auto mt-6 text-lg text-gray-400 text-center">El lanzamiento se realizará por fases, comenzando en los mercados con mayor alineación estratégica. Haz clic en una ciudad para ver los detalles de selección de sitio.</p>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-12 mt-16">
+                    <div class="lg:col-span-1">
+                        <div class="card p-8">
+                             <h3 class="text-2xl font-bold text-white">Roadmap de Lanzamiento</h3>
+                             <ol class="mt-4 space-y-4">
+                                <li class="flex items-start">
+                                    <span class="font-bold text-lg brand-text mr-4">1.</span>
+                                    <div>
+                                        <h4 class="font-bold text-white">Fase 1 (Año 1)</h4>
+                                        <p class="text-gray-400">Lanzamiento en <strong>Monterrey y CDMX</strong>, los mercados con mayor concentración del cliente ideal.</p>
+                                    </div>
+                                </li>
+                                <li class="flex items-start">
+                                    <span class="font-bold text-lg brand-text mr-4">2.</span>
+                                    <div>
+                                        <h4 class="font-bold text-white">Fase 2 (Año 2)</h4>
+                                        <p class="text-gray-400">Expansión a <strong>Guadalajara</strong>, un mercado con fuerte potencial y sofisticación creciente.</p>
+                                    </div>
+                                </li>
+                                <li class="flex items-start">
+                                    <span class="font-bold text-lg brand-text mr-4">3.</span>
+                                    <div>
+                                        <h4 class="font-bold text-white">Fase 3 (Año 2-3)</h4>
+                                        <p class="text-gray-400">Entrada en <strong>Querétaro</strong>, un mercado de alto crecimiento ideal para consolidar el modelo.</p>
+                                    </div>
+                                </li>
+                             </ol>
+                        </div>
+                         <div id="site-selection-info" class="card p-8 mt-8">
+                            <h3 id="city-name" class="text-2xl font-bold text-white">Selecciona una ciudad</h3>
+                            <div>
+                                <h4 class="font-bold brand-text mt-4">Micro-zonas Ideales</h4>
+                                <p id="city-zones" class="text-gray-400">...</p>
+                                <h4 class="font-bold brand-text mt-4">Tipo de Inmueble</h4>
+                                <p id="city-property" class="text-gray-400">...</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="lg:col-span-2 card p-8 flex items-center justify-center min-h-[400px] md:min-h-[600px] bg-black">
+                        <div class="relative w-full max-w-lg h-auto aspect-square">
+                            <div class="absolute top-[25%] left-[30%]">
+                                <button data-city="mty" class="map-dot city-selector w-5 h-5 bg-gray-700 rounded-full"></button>
+                                <span class="ml-2 absolute whitespace-nowrap -top-2 left-6 font-semibold text-white">Monterrey</span>
+                            </div>
+                             <div class="absolute top-[40%] left-[45%]">
+                                <button data-city="qro" class="map-dot city-selector w-5 h-5 bg-gray-700 rounded-full"></button>
+                                 <span class="ml-2 absolute whitespace-nowrap -top-2 left-6 font-semibold text-white">Querétaro</span>
+                            </div>
+                             <div class="absolute top-[45%] left-[25%]">
+                                <button data-city="gdl" class="map-dot city-selector w-5 h-5 bg-gray-700 rounded-full"></button>
+                                 <span class="ml-2 absolute whitespace-nowrap -top-2 left-6 font-semibold text-white">Guadalajara</span>
+                            </div>
+                             <div class="absolute top-[50%] left-[50%]">
+                                <button data-city="cdmx" class="map-dot city-selector w-5 h-5 bg-gray-700 rounded-full active"></button>
+                                <span class="ml-2 absolute whitespace-nowrap -top-2 left-6 font-semibold text-white">CDMX</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section id="accion" class="py-20 md:py-28">
+             <div class="container mx-auto px-6">
+                <h2 class="text-sm font-bold uppercase tracking-widest brand-text text-center">Plan de Acción Final</h2>
+                <p class="mt-4 text-4xl md:text-5xl font-black tracking-tighter text-center text-white">Directivas Claras por Audiencia</p>
+                 <p class="max-w-3xl mx-auto mt-6 text-lg text-gray-400 text-center">El blueprint destilado en directivas claras y accionables para cada stakeholder clave, asegurando la alineación y ejecución del proyecto.</p>
+
+                <div class="max-w-4xl mx-auto mt-12">
+                     <div class="flex justify-center border-b border-gray-800">
+                        <button data-tab="founder" class="action-tab tab px-6 py-3 font-semibold text-lg active">Fundador</button>
+                        <button data-tab="team" class="action-tab tab px-6 py-3 font-semibold text-lg">Equipo</button>
+                        <button data-tab="investors" class="action-tab tab px-6 py-3 font-semibold text-lg">Inversionistas</button>
+                    </div>
+
+                    <div id="action-content" class="mt-8">
+                        <div id="founder-content" class="action-info">
+                            <div class="card p-8">
+                                <ul class="space-y-4 list-decimal list-inside text-gray-300">
+                                    <li class="text-lg"><strong class="font-bold text-white">Asegurar Capital:</strong> Priorizar la ronda de inversión para cubrir el CAPEX y la adquisición de tecnología aprobada.</li>
+                                    <li class="text-lg"><strong class="font-bold text-white">Proteger la PI:</strong> Acelerar el desarrollo de los agentes de IA propietarios (`RiskGuard`, `PersonaVigente`) como foso competitivo.</li>
+                                    <li class="text-lg"><strong class="font-bold text-white">Custodiar la Marca:</strong> Liderar personalmente la ejecución del ambiente "Classic Tech Lounge" sin compromisos.</li>
+                                     <li class="text-lg"><strong class="font-bold text-white">Construir el Equipo Clave:</strong> Reclutar al personal médico y estético central que encarne los valores de la marca.</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div id="team-content" class="action-info hidden">
+                            <div class="card p-8">
+                                <h4 class="font-bold text-xl text-white">Marketing</h4>
+                                <ul class="mt-2 space-y-2 list-disc list-inside text-gray-400">
+                                    <li>Ejecutar estrategia de doble embudo para "Carlos" y "Eduardo".</li>
+                                    <li>Construir una biblioteca de testimonios y estudios de caso.</li>
+                                    <li>Implementar la exclusión activa de la "Anti-Persona".</li>
+                                </ul>
+                                <h4 class="font-bold text-xl mt-6 text-white">Operaciones</h4>
+                                <ul class="mt-2 space-y-2 list-disc list-inside text-gray-400">
+                                    <li>Implementar el blueprint de experiencia "Classic Tech Lounge".</li>
+                                    <li>Diseñar paquetes y planes en torno a los tiers de membresía.</li>
+                                    <li>Establecer un modelo híbrido de acuerdos con especialistas.</li>
+                                </ul>
+                                <h4 class="font-bold text-xl mt-6 text-white">Tecnología</h4>
+                                 <ul class="mt-2 space-y-2 list-disc list-inside text-gray-400">
+                                    <li>Prioridad #1: Desarrollar el motor de BNPL (`RiskGuard AI`).</li>
+                                    <li>Construir el `Imaging Module` con estándares API-FIRST.</li>
+                                    <li>Asegurar la integración del ecosistema para alimentar el "Data Flywheel".</li>
+                                </ul>
+                            </div>
+                        </div>
+                         <div id="investors-content" class="action-info hidden">
+                            <div class="card p-8">
+                                <h4 class="font-bold text-xl text-white">La Tesis de Inversión</h4>
+                                 <ul class="mt-4 space-y-4 list-decimal list-inside text-gray-300">
+                                    <li class="text-lg"><strong class="font-bold text-white">Mercado Validado:</strong> 85.08% de interés en un mercado fragmentado.</li>
+                                    <li class="text-lg"><strong class="font-bold text-white">Fórmula Probada:</strong> Modelo que equilibra resultados, experiencia y un mecanismo financiero (BNPL).</li>
+                                    <li class="text-lg"><strong class="font-bold text-white">Foso Competitivo Sostenible:</strong> Ecosistema de IA propietario (`PersonaVigente`, `RiskGuard`) que crea un "Data Flywheel".</li>
+                                     <li class="text-lg"><strong class="font-bold text-white">Crecimiento Escalable:</strong> Roadmap claro y un modelo "Clinic-in-a-Box" diseñado para una expansión eficiente.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+             </div>
+        </section>
+    </main>
+
+    <footer class="border-t border-gray-900">
+        <div class="container mx-auto px-6 py-8 text-center">
+            <p class="text-lg font-black text-white uppercase"><strong>Hombre</strong> <span class="brand-text">Vigente</span></p>
+            <p class="text-sm text-gray-500 mt-2">Dashboard Estratégico Interactivo &copy; 2024</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const chartOptions = {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            color: '#E0E0E0',
+                            font: {
+                                family: 'Montserrat',
+                                size: 12,
+                            },
+                            padding: 20,
+                            boxWidth: 15,
+                        }
+                    },
+                    tooltip: {
+                        backgroundColor: '#0D0D0D',
+                        titleFont: { weight: 'bold', family: 'Montserrat' },
+                        bodyFont: { family: 'Montserrat' },
+                        padding: 10,
+                        cornerRadius: 4,
+                        borderColor: '#FF3B3B',
+                        borderWidth: 1,
+                        callbacks: {
+                           label: function(context) {
+                                let label = context.dataset.label || '';
+                                if (label) {
+                                    label += ': ';
+                                }
+                                if (context.parsed.y !== null) {
+                                   label += context.parsed.y + '%';
+                                }
+                                if (context.parsed.x !== null && !context.parsed.y) {
+                                    label += context.parsed.x + '%';
+                                }
+                                if(context.parsed && context.chart.config.type === 'doughnut') {
+                                    label = context.label + ': ' + context.parsed + '%';
+                                }
+                                return label;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                     x: {
+                        ticks: { color: '#9CA3AF', font: { family: 'Montserrat' } },
+                        grid: { display: false }
+                    },
+                    y: {
+                        ticks: { color: '#9CA3AF', font: { family: 'Montserrat' } },
+                        grid: { color: 'rgba(255, 255, 255, 0.1)' }
+                    }
+                }
+            };
+
+            const barChartOptions = { ...chartOptions, indexAxis: 'y' };
+            
+            const chartColors = ['#FFFFFF', '#B0B0B0', '#808080', '#505050', '#333333', '#FF3B3B'];
+
+            new Chart(document.getElementById('fragmentationChart'), {
+                type: 'doughnut',
+                data: {
+                    labels: ['Barbería', 'Clínica Estética', 'Salón/Spa', 'Varios Lugares', 'En Casa', 'Sin Rutina'],
+                    datasets: [{
+                        label: 'Lugar Actual de Cuidado',
+                        data: [18.55, 9.28, 8.60, 7.01, 5.43, 51.13],
+                        backgroundColor: chartColors,
+                        borderColor: '#1A1A1A',
+                        borderWidth: 4
+                    }]
+                },
+                options: { ...chartOptions, plugins: { ...chartOptions.plugins, legend: { position: 'right', labels: {...chartOptions.plugins.legend.labels, color: '#E0E0E0'} } } }
+            });
+
+            new Chart(document.getElementById('valuesChart'), {
+                type: 'bar',
+                data: {
+                    labels: ['Resultados Visibles', 'Asesoría Profesional', 'Experiencia Relajante', 'Conveniencia', 'Tecnología Avanzada', 'Precio Accesible'],
+                    datasets: [{
+                        label: '% de Selección',
+                        data: [37.33, 29.41, 28.73, 27.60, 22.40, 21.49],
+                        backgroundColor: '#E0E0E0',
+                        hoverBackgroundColor: '#FF3B3B',
+                        borderRadius: 4
+                    }]
+                },
+                options: barChartOptions
+            });
+
+            new Chart(document.getElementById('paymentChart'), {
+                type: 'bar',
+                data: {
+                    labels: ['Plan con Facilidades', 'Paquetes con Descuento', 'Consideraría Membresía', 'Pago Individual'],
+                    datasets: [{
+                        label: '% Preferencia',
+                        data: [28.46, 26.70, 22.62, 17.42],
+                        backgroundColor: '#E0E0E0',
+                        hoverBackgroundColor: '#FF3B3B',
+                        borderRadius: 4
+                    }]
+                },
+                 options: barChartOptions
+            });
+
+            new Chart(document.getElementById('clubBenefitsChart'), {
+                type: 'bar',
+                data: {
+                    labels: ['Horarios Exclusivos', 'Descuentos', 'Regaderas/Lockers', 'Lounge (Snacks)', 'Acceso Prioritario', 'Pláticas con Expertos'],
+                    datasets: [{
+                        label: 'Ranking de Importancia (Menor es mejor)',
+                        data: [3.4, 3.8, 3.8, 3.9, 3.9, 4.2],
+                        backgroundColor: '#E0E0E0',
+                        hoverBackgroundColor: '#FF3B3B',
+                        borderRadius: 4
+                    }]
+                },
+                options: barChartOptions
+            });
+            
+            const customerTabs = document.querySelectorAll('.customer-tab');
+            const customerContents = document.querySelectorAll('.customer-info');
+            customerTabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    customerTabs.forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                    const target = tab.getAttribute('data-tab');
+                    customerContents.forEach(content => {
+                        if (content.id === `${target}-content`) {
+                            content.classList.remove('hidden');
+                        } else {
+                            content.classList.add('hidden');
+                        }
+                    });
+                });
+            });
+
+            const actionTabs = document.querySelectorAll('.action-tab');
+            const actionContents = document.querySelectorAll('.action-info');
+            actionTabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    actionTabs.forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                    const target = tab.getAttribute('data-tab');
+                    actionContents.forEach(content => {
+                        if (content.id === `${target}-content`) {
+                            content.classList.remove('hidden');
+                        } else {
+                            content.classList.add('hidden');
+                        }
+                    });
+                });
+            });
+            
+            const cityData = {
+                cdmx: {
+                    name: 'Ciudad de México',
+                    zones: 'Polanco, Lomas de Chapultepec, Santa Fe, Corredor Reforma.',
+                    property: 'Local comercial a pie de calle (150-250 m²) o en planta baja de edificio corporativo AAA.'
+                },
+                mty: {
+                    name: 'Monterrey',
+                    zones: 'San Pedro Garza García (Valle Oriente, Valle de Campestre).',
+                    property: 'Espacio en rascacielos corporativo o local comercial independiente con alta seguridad.'
+                },
+                gdl: {
+                    name: 'Guadalajara',
+                    zones: 'Providencia (Midtown Jalisco), Corredor Lafayette/Cervantes.',
+                    property: 'Local en desarrollo de uso mixto de alta gama o casa de época remodelada.'
+                },
+                qro: {
+                    name: 'Querétaro',
+                    zones: 'Juriquilla, Zibatá, Milenio III.',
+                    property: 'Local comercial (70-150 m²) en plaza comercial nueva o de reciente creación.'
+                }
+            };
+            
+            const citySelectors = document.querySelectorAll('.city-selector');
+            const cityNameEl = document.getElementById('city-name');
+            const cityZonesEl = document.getElementById('city-zones');
+            const cityPropertyEl = document.getElementById('city-property');
+            
+            function updateCityInfo(cityKey) {
+                const data = cityData[cityKey];
+                cityNameEl.textContent = data.name;
+                cityZonesEl.textContent = data.zones;
+                cityPropertyEl.textContent = data.property;
+                
+                citySelectors.forEach(selector => {
+                    selector.classList.remove('active');
+                    if(selector.getAttribute('data-city') === cityKey) {
+                        selector.classList.add('active');
+                    }
+                });
+            }
+
+            citySelectors.forEach(selector => {
+                selector.addEventListener('click', () => {
+                    const cityKey = selector.getAttribute('data-city');
+                    updateCityInfo(cityKey);
+                });
+            });
+
+            updateCityInfo('cdmx');
+
+        });
+    </script>
+</body>
+</html>
