@@ -326,7 +326,7 @@ input[type="number"]:focus {
     <header class="mb-8 text-center bg-transparent rounded-xl p-6">
         <h1 class="text-4xl lg:text-5xl font-black text-white leading-tight tracking-tighter mb-2">Modelo Financiero - <span class="highlight-text">Hombre Vigente</span></h1>
         <p class="text-xl text-slate-400 mt-2">Ecosistema Integral - IA NATIVE</p>
-        <p class="text-lg text-slate-500 mt-1">Series A Due Diligence (Calibración V33)</p>
+        <p class="text-lg text-slate-500 mt-1">Series A Due Diligence (Calibración V34)</p>
         <div class="flex justify-center items-center gap-4 mt-4">
             <button onclick="toggleDebug()" class="bg-gray-700 hover:bg-gray-600 text-white px-4 py-2 rounded-lg font-medium transition duration-300 inline-flex items-center gap-2">
                 <i data-lucide="bug" class="w-5 h-5"></i> Debug
@@ -536,7 +536,7 @@ let toggleControls = {
   MarketingVigenteAI: true,
   PersonaVigenteAI: true
 };
-// Injected modelData from internal documents - V33 CALIBRATION
+// Injected modelData from internal documents - V34 CALIBRATION
 const baseModelData = {
     general: { currency: "MXN", projectionTimeline: { unit: "months", duration: 60 }, scenario: "base" },
     fxRates: { MXN: 1, USD: 20, COP: 3999, EUR: 22 },
@@ -1447,7 +1447,7 @@ function assembleFinancialStatements(modelData, monthlyRevenue, monthlyCosts, pr
  * Main orchestrator of the financial model.
  */
 function calculateFinancials() {
-    log('🚀 ModelCalc v33.0 (Gemini Integration) STARTING');
+    log('🚀 ModelCalc v34.0 (API Fix) STARTING');
     try {
         financialResults = { pl: [], cf: [], bs: [], kpis: [], tirEquity: 0, detailedPL: [], breakEvenMonth: null };
         modelData.capitalStructure.debtFacilities.forEach(f => f.amountDrawn = 0);
@@ -1565,7 +1565,7 @@ function calculateFinancials() {
             });
         }
         
-        log('       ✅        ModelCalc v33.0 COMPLETED');
+        log('       ✅        ModelCalc v34.0 COMPLETED');
         return true;
     } catch (error) {
         log(`       ❌        ERROR in ModelCalc: ${error.message}`);
@@ -2353,8 +2353,10 @@ async function callGeminiAPI(prompt, useJson = false, schema = null) {
         });
 
         if (!response.ok) {
-            const errorBody = await response.text();
-            throw new Error(`API request failed with status ${response.status}: ${errorBody}`);
+            const errorBody = await response.json(); // API errors are expected to be JSON
+            // Display a user-friendly message based on the error
+            const errorMessage = `Error al contactar la IA: ${errorBody.error.message || 'Error desconocido'}. (Código: ${errorBody.error.code || 'N/A'})`;
+            throw new Error(errorMessage);
         }
 
         const result = await response.json();
@@ -2369,7 +2371,8 @@ async function callGeminiAPI(prompt, useJson = false, schema = null) {
         }
     } catch (error) {
         console.error("Error calling Gemini API:", error);
-        return `Error al contactar la IA: ${error.message}`;
+        // The error message is now more user-friendly from the check above
+        return error.message;
     }
 }
 
