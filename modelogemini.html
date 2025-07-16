@@ -326,7 +326,7 @@ input[type="number"]:focus, input[type="text"]:focus {
     <header class="mb-4 text-center bg-transparent rounded-xl p-6">
         <h1 class="text-4xl lg:text-5xl font-black text-white leading-tight tracking-tighter mb-2">Modelo Financiero - <span class="highlight-text">Hombre Vigente</span></h1>
         <p class="text-xl text-slate-400 mt-2">Ecosistema Integral - IA NATIVE</p>
-        <p class="text-lg text-slate-500 mt-1">Series A Due Diligence (Calibración V37)</p>
+        <p class="text-lg text-slate-500 mt-1">Series A Due Diligence (Calibración V38)</p>
         <div class="flex justify-center items-center gap-4 mt-4">
             <button onclick="toggleDebug()" class="bg-gray-700 hover:bg-gray-600 text-white px-4 py-2 rounded-lg font-medium transition duration-300 inline-flex items-center gap-2">
                 <i data-lucide="bug" class="w-5 h-5"></i> Debug
@@ -542,7 +542,7 @@ let toggleControls = {
   MarketingVigenteAI: true,
   PersonaVigenteAI: true
 };
-// Injected modelData from internal documents - V37 CALIBRATION
+// Injected modelData from internal documents - V38 CALIBRATION
 const baseModelData = {
     general: { currency: "MXN", projectionTimeline: { unit: "months", duration: 60 }, scenario: "base" },
     fxRates: { MXN: 1, USD: 20, COP: 3999, EUR: 22 },
@@ -2394,47 +2394,66 @@ async function callGeminiAPI(prompt, useJson = false, schema = null) {
 }
 
 /**
- * V37 CHANGE: Builds a comprehensive context string from the model data.
+ * V38 CHANGE: Builds a much more comprehensive context string from the model data.
  */
 function buildFullModelContext() {
     let context = "### CONTEXTO DEL MODELO FINANCIERO 'HOMBRE VIGENTE' ###\n\n";
 
-    // Marketing Assumptions
-    context += "#### Estrategia de Marketing y Expansión ####\n";
-    context += `- Presupuesto de Sostenimiento Mensual/Sucursal: ${formatCurrency(modelData.marketing.sustainBudgetPerLocation)}\n`;
-    context += `- Presupuesto Lanzamiento Plaza (Ciudad Nueva): ${formatCurrency(modelData.marketing.launchStrategy.plazaLaunchBudget)}\n`;
-    context += `- Presupuesto Lanzamiento Sucursal (Existente): ${formatCurrency(modelData.marketing.launchStrategy.sucursalLaunchBudget)}\n`;
-    context += "Plan de Expansión (Aperturas):\n";
-    modelData.expansionPlan.expansionSchedule.forEach(e => {
-        context += `  - Mes ${e.month}: Apertura en ${e.city}\n`;
+    // Helper to format a section
+    const formatSection = (title, dataObject) => {
+        let sectionContent = `#### ${title} ####\n`;
+        sectionContent += "```json\n" + JSON.stringify(dataObject, null, 2) + "\n```\n\n";
+        return sectionContent;
+    };
+
+    // Add all relevant sections from modelData
+    context += formatSection("Supuestos Generales y de Marketing", {
+        general: modelData.general,
+        marketing: modelData.marketing,
+        marketingChannels: modelData.marketingChannels,
+        expansionPlan: modelData.expansionPlan
     });
-    context += "\n";
 
-    // Customer Archetypes
-    context += "#### Arquetipos de Cliente (Drivers LTV, CAC & Churn) ####\n";
-    for (const key in modelData.customerArchetypes) {
-        const arch = modelData.customerArchetypes[key];
-        const funnel = modelData.marketingChannels[`${key}Funnel`];
-        const ltv = arch.annualLTV !== undefined ? arch.annualLTV : arch.ltv;
-        context += `- ${arch.description}: LTV=${formatCurrency(ltv)}, CAC=${formatCurrency(funnel.cac)}, Churn Anual=${(arch.churnRate*100).toFixed(0)}%, Mix=${(arch.percentage*100)}%\n`;
-    }
-    context += "\n";
+    context += formatSection("Supuestos de Clientes y LTV", {
+        customerArchetypes: modelData.customerArchetypes,
+        customerJourney: "(Ver detalles en pricing y revenue build up)"
+    });
     
-    // AI Levers
-    context += "#### Palancas de IA y Viralidad ####\n";
-    context += `- Uplift por Personalización IA: ${(modelData.personaVigenteAI.aiPersonalizationUplift * 100).toFixed(0)}%\n`;
-    context += `- Boost Venta Cruzada IA: ${(modelData.aiDefaults.crossSellBoost * 100).toFixed(0)}%\n`;
-    context += `- Multiplicador Viral (Eduardo): ${modelData.marketingChannels.eduardoFunnel.wordOfMouthMultiplier}x\n\n`;
+    context += formatSection("Supuestos de Pricing, Servicios y Productos", {
+        pricing: modelData.pricing,
+        productsRevenue: modelData.productsRevenue
+    });
 
-    // Financial Results
+    context += formatSection("Supuestos de Costos y Capital", {
+        opexSucursal: modelData.opexSucursal,
+        opexCorporativo: modelData.opexCorporativo,
+        capexSucursal: modelData.capexSucursal,
+        capexTecnologico: modelData.capexTecnologico,
+        capitalStructure: modelData.capitalStructure
+    });
+    
+    context += formatSection("Supuestos de IA y Operaciones", {
+        aiDefaults: modelData.aiDefaults,
+        personaVigenteAI: modelData.personaVigenteAI,
+        optiVigenteAI: modelData.optiVigenteAI,
+        capacity: {
+            treatmentRooms: modelData.capacity.treatmentRooms,
+            dailyOperatingHours: modelData.capacity.dailyOperatingHours,
+            daysOpenPerMonth: modelData.capacity.daysOpenPerMonth,
+            targetUtilization: modelData.capacity.targetUtilization,
+            maxSurgeriesPerMonth: modelData.capacity.maxSurgeriesPerMonth
+        }
+    });
+
+    // Add Financial Results
     context += "#### Resultados Financieros Clave (Anual) ####\n";
     financialResults.pl.forEach((year, i) => {
         context += `Año ${i+1}: Ingresos=${formatCurrency(year.totalRevenue)}, EBITDA=${formatCurrency(year.ebitda)}, Utilidad Neta=${formatCurrency(year.netIncome)}\n`;
     });
-     if (financialResults.kpis.length > 4) {
+    if (financialResults.kpis.length > 4) {
         const kpisY5 = financialResults.kpis[4];
         context += `KPIs Finales (Año 5): Sucursales=${kpisY5.activeSucursales}, Clientes=${Math.round(kpisY5.totalActiveCustomers)}, LTV:CAC General=${kpisY5.ltv_cac_ratio.toFixed(1)}x\n`;
-     }
+    }
     
     return context;
 }
@@ -2469,9 +2488,8 @@ async function submitCopilotQuery() {
     responseContainer.style.display = 'block';
     responseContainer.innerHTML = '<div class="loader"></div>';
 
-    // V37 CHANGE: Build the full context before sending the prompt.
     const modelContext = buildFullModelContext();
-    const fullPrompt = `Como un analista financiero experto (CFA) con profundo conocimiento del negocio, analiza la siguiente data y responde a la pregunta del usuario. Conecta los puntos entre las asunciones y los resultados para dar una respuesta detallada y con causa-raíz.
+    const fullPrompt = `Como un analista financiero experto (CFA) con profundo conocimiento del negocio, analiza la siguiente data y responde a la pregunta del usuario. Conecta los puntos entre las asunciones (modelData) y los resultados (financialResults) para dar una respuesta detallada y con causa-raíz.
 
 ${modelContext}
 
@@ -2481,7 +2499,6 @@ PREGUNTA DEL USUARIO:
 Responde en español, usando un tono profesional y directo. Utiliza markdown básico (negritas con **, listas con -) para formatear tu respuesta.`;
 
     const response = await callGeminiAPI(fullPrompt);
-    // Basic markdown to HTML conversion
     let htmlResponse = response.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>'); // Bold
     htmlResponse = htmlResponse.replace(/\n/g, '<br>'); // Newlines
     responseContainer.innerHTML = htmlResponse;
@@ -2494,7 +2511,6 @@ Responde en español, usando un tono profesional y directo. Utiliza markdown bá
 async function generateExecutiveSummary() {
     showGeminiModal('Generando Resumen Ejecutivo...', '<div class="loader"></div>');
 
-    // V37 CHANGE: Use the full context for a better summary.
     const modelContext = buildFullModelContext();
     const prompt = `Actúa como un analista financiero senior preparando un reporte para la junta directiva de 'Hombre Vigente'. Basado en los siguientes datos del modelo, escribe un resumen ejecutivo conciso.
 
