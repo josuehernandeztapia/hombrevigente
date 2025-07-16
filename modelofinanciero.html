@@ -202,22 +202,6 @@ input[type="number"]:focus {
     box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.5);
     background-color: #374151;
 }
-.control-grid {
-    display: grid;
-    grid-template-columns: auto 1fr;
-    gap: 1rem;
-    align-items: center;
-}
-.control-grid label {
-    text-align: left;
-    white-space: nowrap;
-}
-.control-grid .slider-container {
-    display: grid;
-    grid-template-columns: 1fr auto;
-    gap: 1rem;
-    align-items: center;
-}
 /* Scenario Switcher */
 .scenario-switcher {
     display: flex;
@@ -257,7 +241,7 @@ input[type="number"]:focus {
     <header class="mb-8 text-center bg-transparent rounded-xl p-6">
         <h1 class="text-4xl lg:text-5xl font-black text-white leading-tight tracking-tighter mb-2">Modelo Financiero - <span class="highlight-text">Hombre Vigente</span></h1>
         <p class="text-xl text-slate-400 mt-2">Ecosistema Integral - IA NATIVE</p>
-        <p class="text-lg text-slate-500 mt-1">Series A Due Diligence (Calibración V31)</p>
+        <p class="text-lg text-slate-500 mt-1">Series A Due Diligence (Calibración V32)</p>
         <button onclick="toggleDebug()" class="mt-4 bg-gray-700 hover:bg-gray-600 text-white px-4 py-2 rounded-lg font-medium transition duration-300 inline-flex items-center gap-2">
             <i data-lucide="bug" class="w-5 h-5"></i> Debug
         </button>
@@ -279,7 +263,6 @@ input[type="number"]:focus {
         <div class="card">
             <h3 class="text-xl font-semibold mb-4 text-white">     🎯      Investment Returns</h3>
             <div class="mb-4">
-                <!-- V31 CHANGE: Exit multiple slider range and default value updated -->
                 <label>Exit Multiple: <input type="range" id="exit-multiple-slider" min="6" max="10" step="0.1" value="8" class="input-slider"></label>
                 <span id="exit-multiple-display" class="font-bold text-blue-400">8.0x</span>
             </div>
@@ -453,7 +436,7 @@ let toggleControls = {
   MarketingVigenteAI: true,
   PersonaVigenteAI: true
 };
-// Injected modelData from internal documents - V31 CALIBRATION
+// Injected modelData from internal documents - V32 CALIBRATION
 const baseModelData = {
     general: { currency: "MXN", projectionTimeline: { unit: "months", duration: 60 }, scenario: "base" },
     fxRates: { MXN: 1, USD: 20, COP: 3999, EUR: 22 },
@@ -483,7 +466,6 @@ const baseModelData = {
             plazaLaunchBudget: 2840000,
             sucursalLaunchBudget: 750000
         },
-        // V31 CHANGE: Base marketing budget updated
         sustainBudgetPerLocation: 50000 
     },
     marketingChannels: {
@@ -786,14 +768,13 @@ const baseModelData = {
     }
 };
 let modelData = JSON.parse(JSON.stringify(baseModelData)); // Working copy
-// V31 CHANGE: Scenario definitions updated
 const scenarios = {
     pessimistic: {
         marketing: { sustainBudgetPerLocation: 40000 },
         marketingChannels: { eduardoFunnel: { wordOfMouthMultiplier: 1.22 } },
         customerArchetypes: { carlos: { churnRate: 0.20 }, eduardo: { churnRate: 0.30 } }
     },
-    base: {}, // Base now uses the updated baseModelData with 50k budget
+    base: {},
     optimistic: {
         marketing: { sustainBudgetPerLocation: 60000 },
         marketingChannels: { eduardoFunnel: { wordOfMouthMultiplier: 1.35 } },
@@ -872,7 +853,6 @@ function runMonthlySimulation(modelData, previousMonthState, month) {
     const launchConfig = modelData.marketing.launchStrategy;
     const expansionEvent = modelData.expansionPlan.expansionSchedule.find(e => e.month === month);
     
-    // V29 CHANGE: Enhanced Expansion Logic (Plaza vs Sucursal)
     if (month <= launchConfig.durationMonths) {
         // Initial seed funding period
         totalMarketingBudget = launchConfig.seedFundingAllocation / launchConfig.durationMonths;
@@ -950,7 +930,6 @@ function runMonthlySimulation(modelData, previousMonthState, month) {
                 const subSegment = archetypeConfig.subSegments[subSegmentName];
                 const customersInSubSegment = customersInThisLocation * subSegment.weight;
                 
-                // --- V29 LOGIC: Bottom-up Revenue Calculation ---
                 for (const sessionName in subSegment.journey) {
                     const sessionDetails = subSegment.journey[sessionName];
                     const monthlyFrequency = (sessionDetails.frequency || 0) / 12;
@@ -1165,7 +1144,6 @@ function calculateMonthlyCosts(modelData, currentState, previousYearRevenue, pre
  * Module 3: Financial Statement Assembler and Capital Logic
  */
 function assembleFinancialStatements(modelData, monthlyRevenue, monthlyCosts, previousMonthState, month) {
-    // --- V29 LOGIC: Reconciled Bottom-Up Costs ---
     let suppliesCost = 0;
     let medicalServicesRevenue = 0;
     let bnplFees = 0;
@@ -1369,7 +1347,7 @@ function assembleFinancialStatements(modelData, monthlyRevenue, monthlyCosts, pr
  * Main orchestrator of the financial model.
  */
 function calculateFinancials() {
-    log('🚀 ModelCalc v31.0 (Scenario Rebalance) STARTING');
+    log('🚀 ModelCalc v32.0 (Responsive UI) STARTING');
     try {
         financialResults = { pl: [], cf: [], bs: [], kpis: [], tirEquity: 0, detailedPL: [], breakEvenMonth: null };
         modelData.capitalStructure.debtFacilities.forEach(f => f.amountDrawn = 0);
@@ -1487,7 +1465,7 @@ function calculateFinancials() {
             });
         }
         
-        log('       ✅        ModelCalc v31.0 COMPLETED');
+        log('       ✅        ModelCalc v32.0 COMPLETED');
         return true;
     } catch (error) {
         log(`       ❌        ERROR in ModelCalc: ${error.message}`);
@@ -1985,9 +1963,11 @@ function updateModelValue(pathParts, value) {
         return false;
     }
 }
+// V32 RESPONSIVE CHANGE: Control creation functions updated with responsive classes
 function createSliderControl(config, container) {
     const div = document.createElement('div');
-    div.className = 'control-grid';
+    div.className = 'grid grid-cols-1 md:grid-cols-2 gap-y-1 gap-x-4 items-center';
+
     const label = document.createElement('label');
     label.className = "text-sm font-medium text-slate-300";
     if (config.tooltip) label.setAttribute('data-tooltip', config.tooltip);
@@ -1995,17 +1975,17 @@ function createSliderControl(config, container) {
     div.appendChild(label);
     
     const sliderContainer = document.createElement('div');
-    sliderContainer.className = 'slider-container';
+    sliderContainer.className = 'flex items-center gap-4 w-full';
     
     const slider = document.createElement('input');
     slider.type = 'range';
     slider.min = config.min;
     slider.max = config.max;
     slider.step = config.step;
-    slider.className = 'input-slider';
+    slider.className = 'input-slider flex-grow';
     
     const display = document.createElement('span');
-    display.className = "font-bold text-blue-400 w-24 text-right";
+    display.className = "font-bold text-blue-400 w-20 text-right";
     
     const pathParts = config.path.split('.');
     const currentValue = getModelValue(pathParts) || config.min;
@@ -2027,12 +2007,14 @@ function createSliderControl(config, container) {
 }
 function createNumberControl(config, container) {
     const div = document.createElement('div');
-    div.className = 'control-grid';
+    div.className = 'grid grid-cols-1 md:grid-cols-2 gap-y-1 gap-x-4 items-center';
+
     const label = document.createElement('label');
     label.className = "text-sm font-medium text-slate-300";
     if (config.tooltip) label.setAttribute('data-tooltip', config.tooltip);
     label.textContent = config.label;
     div.appendChild(label);
+
     const input = document.createElement('input');
     input.type = 'number';
     input.min = config.min;
@@ -2055,7 +2037,7 @@ function createNumberControl(config, container) {
 }
 function createToggleControl(config, container, controlId) {
     const div = document.createElement('div');
-    div.className = 'control-grid';
+    div.className = 'grid grid-cols-2 gap-4 items-center';
     
     const label = document.createElement('label');
     label.className = "text-sm font-medium text-slate-300";
@@ -2064,7 +2046,7 @@ function createToggleControl(config, container, controlId) {
     div.appendChild(label);
     
     const toggleContainer = document.createElement('div');
-    toggleContainer.className = 'flex items-center gap-2';
+    toggleContainer.className = 'flex items-center justify-end gap-2';
     
     const checkbox = document.createElement('input');
     checkbox.type = 'checkbox';
