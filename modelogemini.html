@@ -2339,8 +2339,8 @@ function closeGeminiModal() {
  */
 async function callGeminiAPI(prompt, useJson = false, schema = null) {
     let userApiKey = document.getElementById('api-key-input').value.trim();
-    let apiKey = userApiKey ? userApiKey : ""; 
-    
+    const defaultApiKey = "AIzaSyC7fM09NbztVZjXJZYroONxcPZDOLmka0s"; // Agregas esta línea
+    let apiKey = userApiKey ? userApiKey : defaultApiKey; // Modificas esta línea
     const model = "gemini-2.0-flash";
     const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
     
