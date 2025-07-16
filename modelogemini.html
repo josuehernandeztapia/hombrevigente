@@ -326,7 +326,7 @@ input[type="number"]:focus, input[type="text"]:focus {
     <header class="mb-4 text-center bg-transparent rounded-xl p-6">
         <h1 class="text-4xl lg:text-5xl font-black text-white leading-tight tracking-tighter mb-2">Modelo Financiero - <span class="highlight-text">Hombre Vigente</span></h1>
         <p class="text-xl text-slate-400 mt-2">Ecosistema Integral - IA NATIVE</p>
-        <p class="text-lg text-slate-500 mt-1">Series A Due Diligence (Calibración V36)</p>
+        <p class="text-lg text-slate-500 mt-1">Series A Due Diligence (Calibración V37)</p>
         <div class="flex justify-center items-center gap-4 mt-4">
             <button onclick="toggleDebug()" class="bg-gray-700 hover:bg-gray-600 text-white px-4 py-2 rounded-lg font-medium transition duration-300 inline-flex items-center gap-2">
                 <i data-lucide="bug" class="w-5 h-5"></i> Debug
@@ -337,7 +337,6 @@ input[type="number"]:focus, input[type="text"]:focus {
         </div>
     </header>
     
-    <!-- V36 CHANGE: API Key Input Field -->
     <div class="max-w-xl mx-auto mb-6 p-4 bg-yellow-900/50 border border-yellow-700 rounded-lg text-center">
         <label for="api-key-input" class="block text-sm font-medium text-yellow-200 mb-2">Tu API Key de Gemini (Opcional)</label>
         <input type="text" id="api-key-input" class="w-full p-2 text-xs bg-gray-800 border-gray-600 rounded-md text-white" placeholder="Pega tu clave aquí si la conexión automática falla...">
@@ -543,7 +542,7 @@ let toggleControls = {
   MarketingVigenteAI: true,
   PersonaVigenteAI: true
 };
-// Injected modelData from internal documents - V36 CALIBRATION
+// Injected modelData from internal documents - V37 CALIBRATION
 const baseModelData = {
     general: { currency: "MXN", projectionTimeline: { unit: "months", duration: 60 }, scenario: "base" },
     fxRates: { MXN: 1, USD: 20, COP: 3999, EUR: 22 },
@@ -2339,9 +2338,8 @@ function closeGeminiModal() {
  * @returns {Promise<string>} - The text response from the API.
  */
 async function callGeminiAPI(prompt, useJson = false, schema = null) {
-    // V36 FIX: Use user-provided key as a primary, fallback to platform key.
     let userApiKey = document.getElementById('api-key-input').value.trim();
-    let apiKey = userApiKey ? userApiKey : ""; // Use user key if present
+    let apiKey = userApiKey ? userApiKey : ""; 
     
     const model = "gemini-2.0-flash";
     const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
@@ -2367,7 +2365,7 @@ async function callGeminiAPI(prompt, useJson = false, schema = null) {
             body: JSON.stringify(payload)
         });
 
-        const responseText = await response.text(); // Get raw text to debug
+        const responseText = await response.text();
         log(`[GEMINI] Raw response: ${responseText}`);
 
         if (!response.ok) {
@@ -2396,11 +2394,58 @@ async function callGeminiAPI(prompt, useJson = false, schema = null) {
 }
 
 /**
+ * V37 CHANGE: Builds a comprehensive context string from the model data.
+ */
+function buildFullModelContext() {
+    let context = "### CONTEXTO DEL MODELO FINANCIERO 'HOMBRE VIGENTE' ###\n\n";
+
+    // Marketing Assumptions
+    context += "#### Estrategia de Marketing y Expansión ####\n";
+    context += `- Presupuesto de Sostenimiento Mensual/Sucursal: ${formatCurrency(modelData.marketing.sustainBudgetPerLocation)}\n`;
+    context += `- Presupuesto Lanzamiento Plaza (Ciudad Nueva): ${formatCurrency(modelData.marketing.launchStrategy.plazaLaunchBudget)}\n`;
+    context += `- Presupuesto Lanzamiento Sucursal (Existente): ${formatCurrency(modelData.marketing.launchStrategy.sucursalLaunchBudget)}\n`;
+    context += "Plan de Expansión (Aperturas):\n";
+    modelData.expansionPlan.expansionSchedule.forEach(e => {
+        context += `  - Mes ${e.month}: Apertura en ${e.city}\n`;
+    });
+    context += "\n";
+
+    // Customer Archetypes
+    context += "#### Arquetipos de Cliente (Drivers LTV, CAC & Churn) ####\n";
+    for (const key in modelData.customerArchetypes) {
+        const arch = modelData.customerArchetypes[key];
+        const funnel = modelData.marketingChannels[`${key}Funnel`];
+        const ltv = arch.annualLTV !== undefined ? arch.annualLTV : arch.ltv;
+        context += `- ${arch.description}: LTV=${formatCurrency(ltv)}, CAC=${formatCurrency(funnel.cac)}, Churn Anual=${(arch.churnRate*100).toFixed(0)}%, Mix=${(arch.percentage*100)}%\n`;
+    }
+    context += "\n";
+    
+    // AI Levers
+    context += "#### Palancas de IA y Viralidad ####\n";
+    context += `- Uplift por Personalización IA: ${(modelData.personaVigenteAI.aiPersonalizationUplift * 100).toFixed(0)}%\n`;
+    context += `- Boost Venta Cruzada IA: ${(modelData.aiDefaults.crossSellBoost * 100).toFixed(0)}%\n`;
+    context += `- Multiplicador Viral (Eduardo): ${modelData.marketingChannels.eduardoFunnel.wordOfMouthMultiplier}x\n\n`;
+
+    // Financial Results
+    context += "#### Resultados Financieros Clave (Anual) ####\n";
+    financialResults.pl.forEach((year, i) => {
+        context += `Año ${i+1}: Ingresos=${formatCurrency(year.totalRevenue)}, EBITDA=${formatCurrency(year.ebitda)}, Utilidad Neta=${formatCurrency(year.netIncome)}\n`;
+    });
+     if (financialResults.kpis.length > 4) {
+        const kpisY5 = financialResults.kpis[4];
+        context += `KPIs Finales (Año 5): Sucursales=${kpisY5.activeSucursales}, Clientes=${Math.round(kpisY5.totalActiveCustomers)}, LTV:CAC General=${kpisY5.ltv_cac_ratio.toFixed(1)}x\n`;
+     }
+    
+    return context;
+}
+
+
+/**
  * Opens the strategic copilot modal.
  */
 function openCopilotModal() {
     const modalContent = `
-        <p class="text-slate-400 mb-4">Haz una pregunta sobre el estado actual del modelo. Por ejemplo: "Sugiere 3 iniciativas para mejorar el EBITDA del año 3" o "Analiza los principales riesgos de esta proyección".</p>
+        <p class="text-slate-400 mb-4">Haz una pregunta sobre el estado actual del modelo. Por ejemplo: "Sugiere 3 iniciativas para mejorar el EBITDA del año 3" o "¿Por qué cae el número de clientes en el año 3?".</p>
         <textarea id="copilot-prompt" class="w-full h-24 p-2 bg-gray-700 border border-gray-600 rounded-md text-white" placeholder="Escribe tu pregunta aquí..."></textarea>
         <div class="text-right mt-4">
             <button onclick="submitCopilotQuery()" class="bg-purple-600 hover:bg-purple-500 text-white px-4 py-2 rounded-lg font-medium">Enviar Pregunta ✨</button>
@@ -2424,26 +2469,22 @@ async function submitCopilotQuery() {
     responseContainer.style.display = 'block';
     responseContainer.innerHTML = '<div class="loader"></div>';
 
-    // Create a summary of the current financial state
-    let financialSummary = "Resumen Financiero Anual (en MXN):\n";
-    financialResults.pl.forEach((year, i) => {
-        financialSummary += `Año ${i+1}: Ingresos=${formatCurrency(year.totalRevenue)}, EBITDA=${formatCurrency(year.ebitda)}, Utilidad Neta=${formatCurrency(year.netIncome)}\n`;
-    });
-    const kpisY5 = financialResults.kpis[4];
-    financialSummary += `KPIs Año 5: Sucursales=${kpisY5.activeSucursales}, Clientes=${Math.round(kpisY5.totalActiveCustomers)}, LTV:CAC=${kpisY5.ltv_cac_ratio.toFixed(1)}x\n`;
+    // V37 CHANGE: Build the full context before sending the prompt.
+    const modelContext = buildFullModelContext();
+    const fullPrompt = `Como un analista financiero experto (CFA) con profundo conocimiento del negocio, analiza la siguiente data y responde a la pregunta del usuario. Conecta los puntos entre las asunciones y los resultados para dar una respuesta detallada y con causa-raíz.
 
-    const fullPrompt = `Como un analista financiero experto (CFA), analiza la siguiente proyección para la empresa 'Hombre Vigente' y responde a la pregunta del usuario. Sé conciso, estratégico y ofrece respuestas accionables.
-
-DATOS FINANCIEROS DEL MODELO:
-${financialSummary}
+${modelContext}
 
 PREGUNTA DEL USUARIO:
 "${userQuery}"
 
-Responde en español.`;
+Responde en español, usando un tono profesional y directo. Utiliza markdown básico (negritas con **, listas con -) para formatear tu respuesta.`;
 
     const response = await callGeminiAPI(fullPrompt);
-    responseContainer.innerHTML = response.replace(/\n/g, '<br>');
+    // Basic markdown to HTML conversion
+    let htmlResponse = response.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>'); // Bold
+    htmlResponse = htmlResponse.replace(/\n/g, '<br>'); // Newlines
+    responseContainer.innerHTML = htmlResponse;
 }
 
 
@@ -2453,21 +2494,18 @@ Responde en español.`;
 async function generateExecutiveSummary() {
     showGeminiModal('Generando Resumen Ejecutivo...', '<div class="loader"></div>');
 
-    let plData = "Estado de Resultados Anual (en MXN):\n";
-    financialResults.pl.forEach((year, i) => {
-        plData += `Año ${i+1}: Ingresos=${formatCurrency(year.totalRevenue)}, COGS=${formatCurrency(year.cogs)}, OPEX=${formatCurrency(year.opex)}, EBITDA=${formatCurrency(year.ebitda)}, Utilidad Neta=${formatCurrency(year.netIncome)}\n`;
-    });
-
-    const prompt = `Actúa como un analista financiero senior preparando un reporte para la junta directiva de 'Hombre Vigente'. Basado en los siguientes datos del Estado de Resultados (P&L), escribe un resumen ejecutivo conciso.
+    // V37 CHANGE: Use the full context for a better summary.
+    const modelContext = buildFullModelContext();
+    const prompt = `Actúa como un analista financiero senior preparando un reporte para la junta directiva de 'Hombre Vigente'. Basado en los siguientes datos del modelo, escribe un resumen ejecutivo conciso.
 
 Enfócate en:
-1. La trayectoria de crecimiento de los ingresos.
-2. La evolución de la rentabilidad (márgenes y EBITDA).
-3. Los puntos clave o inflexiones (ej. cuándo se vuelve rentable).
+1. La trayectoria de crecimiento de los ingresos y sus drivers.
+2. La evolución de la rentabilidad (márgenes y EBITDA) y sus causas.
+3. Los puntos clave o inflexiones (ej. cuándo se vuelve rentable y por qué).
 4. Un área potencial de riesgo u oportunidad que se desprenda de los números.
 
-DATOS DEL P&L:
-${plData}
+DATOS DEL MODELO:
+${modelContext}
 
 El resumen debe ser profesional, claro y en español.`;
 
