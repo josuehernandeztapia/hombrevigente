@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hombre Vigente - SSOT Interactivo DTC</title>
+    
+    <!-- Chosen Palette: Hombre Vigente Dark Theme -->
+    <!-- Application Structure Plan: A dashboard-style SPA with a fixed left-hand navigation menu. This structure was chosen to provide constant, easy access to all major information pillars (Dashboard, Products, Ingredient Matrix, Strategy, AI Engine), which is ideal for an internal tool where users need to quickly switch between different data contexts. The main view dynamically displays the selected section. Product details are revealed in an elegant modal window to keep the main interface clean and focused. This user flow allows for both a high-level overview and deep-dive analysis without navigating away from the central hub, maximizing efficiency for product, marketing, and ops teams. -->
+    <!-- Visualization & Content Choices: 
+        - Report Info: Market Size Data -> Goal: Inform -> Viz: Bar Chart (Chart.js) -> Interaction: Hover for details -> Justification: Best for comparing discrete market values (Global vs LATAM vs MX).
+        - Report Info: Key Business KPIs -> Goal: Inform -> Viz: Stat Cards (HTML/Tailwind) -> Interaction: None -> Justification: Provides immediate, high-impact visibility of critical metrics.
+        - Report Info: Product Portfolio -> Goal: Organize & Explore -> Viz: Interactive Cards Grid (HTML/JS) -> Interaction: Click to open detailed modal -> Justification: User-friendly browsing of the entire catalog with access to deep-dive information on demand.
+        - Report Info: Cross-Product Ingredients -> Goal: Analyze Relationships -> Viz: Interactive Heatmap Table (HTML/CSS/JS) -> Interaction: Hover for ingredient function -> Justification: Directly addresses the 'Thermal' prompt requirement by visually representing ingredient concentration and synergy in a clear, comparative matrix.
+        - Report Info: AI Personalization Flow -> Goal: Explain Process -> Viz: HTML/CSS Flowchart -> Interaction: None -> Justification: A simple, visual representation of a complex process is more digestible than text, built without forbidden libraries.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg-main: #111827; /* gray-900 */
+            --bg-card: #1F2937; /* gray-800 */
+            --text-primary: #F3F4F6; /* gray-100 */
+            --text-secondary: #9CA3AF; /* gray-400 */
+            --border-color: #374151; /* gray-700 */
+            --accent-primary: #3B82F6; /* blue-500 */
+            --accent-primary-hover: #2563EB; /* blue-600 */
+        }
+        body { font-family: 'Inter', sans-serif; background-color: var(--bg-main); color: var(--text-primary); }
+        .nav-link { display: flex; align-items: center; padding: 0.75rem 1rem; margin: 0.25rem 0; border-radius: 0.5rem; transition: all 0.2s ease-in-out; color: var(--text-secondary); }
+        .nav-link:hover { background-color: var(--border-color); color: var(--text-primary); }
+        .nav-link.active { background-color: var(--accent-primary); color: white; box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1); }
+        .nav-link svg { margin-right: 0.75rem; }
+        .card { background-color: var(--bg-card); border-radius: 0.75rem; border: 1px solid var(--border-color); box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.05); transition: all 0.2s ease-in-out; }
+        .card:hover { box-shadow: 0 10px 15px -3px rgb(59 130 246 / 0.1), 0 4px 6px -4px rgb(59 130 246 / 0.1); border-color: var(--accent-primary); }
+        .stat-card { padding: 1.5rem; }
+        .chart-container { position: relative; width: 100%; max-width: 900px; margin-left: auto; margin-right: auto; height: 300px; max-height: 40vh; }
+        .modal { display: none; position: fixed; z-index: 50; inset: 0; background-color: rgba(17, 24, 39, 0.8); backdrop-filter: blur(4px); }
+        .modal-content { max-height: 90vh; }
+        .tab-button { padding: 0.5rem 1rem; border-bottom: 2px solid transparent; transition: all 0.2s; color: var(--text-secondary); }
+        .tab-button:hover { color: var(--text-primary); }
+        .tab-button.active { border-color: var(--accent-primary); color: var(--accent-primary); font-weight: 600; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        .heatmap-cell { transition: background-color 0.3s; }
+        .heatmap-cell:hover { background-color: #1E40AF !important; }
+        .flowchart-node { border: 2px solid var(--border-color); padding: 1rem; border-radius: 0.5rem; text-align: center; background-color: var(--bg-card); min-width: 150px; }
+        .flowchart-arrow { position: relative; flex-grow: 1; height: 2px; background-color: var(--border-color); }
+        .flowchart-arrow::after { content: '▶'; position: absolute; right: -8px; top: -11px; color: var(--border-color); }
+        .brand-gradient { background: -webkit-linear-gradient(45deg, #A5B4FC, #3B82F6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    </style>
+</head>
+<body class="flex min-h-screen">
+
+    <nav class="w-64 bg-gray-900/80 backdrop-blur-sm border-r border-gray-700 p-4 fixed h-full flex flex-col">
+        <div class="flex items-center mb-8">
+            <div class="font-black text-3xl mr-2 text-gray-400">H<span class="brand-gradient">V</span></div>
+            <h1 class="text-xl font-bold text-gray-200">Hombre Vigente</h1>
+        </div>
+        <ul>
+            <li><a href="#dashboard" class="nav-link active" data-section="dashboard">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-layout-dashboard"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg>
+                Visión General
+            </a></li>
+            <li><a href="#products" class="nav-link" data-section="products">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-flask-conical"><path d="M10 2v7.31"/><path d="M14 9.31V2"/><path d="M8.5 2h7"/><path d="M14 9.31C16.57 10.92 18 14.21 18 18a4 4 0 0 1-8 0c0-3.79 1.43-7.08 4-8.69Z"/><path d="M6 18a4 4 0 0 0 4 4h4a4 4 0 0 0 4-4"/></svg>
+                Portafolio DTC
+            </a></li>
+            <li><a href="#matrix" class="nav-link" data-section="matrix">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-grid-3x3"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M3 9h18"/><path d="M3 15h18"/><path d="M9 3v18"/><path d="M15 3v18"/></svg>
+                Matriz de Activos
+            </a></li>
+            <li><a href="#strategy" class="nav-link" data-section="strategy">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-target"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+                Estrategia y Ops
+            </a></li>
+            <li><a href="#ai" class="nav-link" data-section="ai">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-brain-circuit"><path d="M12 5a3 3 0 1 0-5.997.001A3 3 0 0 0 12 5Zm0a3 3 0 1 0 5.997.001A3 3 0 0 0 12 5Z"/><path d="M12 12a3 3 0 1 0-5.997.001A3 3 0 0 0 12 12Zm0a3 3 0 1 0 5.997.001A3 3 0 0 0 12 12Z"/><path d="M12 19a3 3 0 1 0-5.997.001A3 3 0 0 0 12 19Zm0a3 3 0 1 0 5.997.001A3 3 0 0 0 12 19Z"/><path d="M21 12h-3"/><path d="M6 12H3"/><path d="M12 19v-3"/><path d="M12 8V5"/><path d="M20 7.5a1.5 1.5 0 0 0-3 0"/><path d="M4 7.5a1.5 1.5 0 0 1 3 0"/><path d="M20 16.5a1.5 1.5 0 0 1-3 0"/><path d="M4 16.5a1.5 1.5 0 0 0 3 0"/></svg>
+                Motor AI
+            </a></li>
+        </ul>
+        <div class="mt-auto text-xs text-gray-500">
+            <p>&copy; 2025 Hombre Vigente SSOT v1.3</p>
+            <p>Última actualización: 17 Julio 2025</p>
+        </div>
+    </nav>
+
+    <main class="ml-64 p-8 w-full">
+        <section id="dashboard" class="main-section">
+            <h2 class="text-3xl font-bold mb-2 text-gray-100">Visión General: El Ecosistema DTC</h2>
+            <p class="text-gray-400 mb-8 max-w-4xl">Bienvenido al SSOT de Hombre Vigente. Esta plataforma centraliza la inteligencia de negocio, estrategia de producto y protocolos operativos para nuestra línea Direct-To-Consumer. El objetivo es alinear a todos los equipos bajo una visión unificada, basada en datos y centrada en el cliente, para ejecutar nuestro playbook con precisión quirúrgica.</p>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+                <div class="card stat-card">
+                    <h3 class="text-gray-400 font-semibold mb-1">Oportunidad de Mercado (MX)</h3>
+                    <p class="text-3xl font-bold text-white">$4.5B USD</p>
+                    <p class="text-sm text-green-400">+12% CAGR Proyectado</p>
+                </div>
+                <div class="card stat-card">
+                    <h3 class="text-gray-400 font-semibold mb-1">Intención de Visita (Validada)</h3>
+                    <p class="text-3xl font-bold text-white">93.89%</p>
+                    <p class="text-sm text-gray-400">N=442 Encuestas</p>
+                </div>
+                 <div class="card stat-card">
+                    <h3 class="text-gray-400 font-semibold mb-1">KPI Clave: LTV/CAC Ratio Target</h3>
+                    <p class="text-3xl font-bold text-white">> 4:1</p>
+                    <p class="text-sm text-gray-400">Año 2 en adelante</p>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 xl:grid-cols-5 gap-6">
+                <div class="card p-6 xl:col-span-3">
+                    <h3 class="text-xl font-bold mb-4 text-gray-100">Oportunidad de Mercado: Grooming Masculino</h3>
+                    <p class="text-gray-400 mb-4 text-sm">El mercado de cuidado masculino está en plena expansión, con un crecimiento acelerado en LATAM. Nuestra estrategia se enfoca en capitalizar esta tendencia con una propuesta de valor superior.</p>
+                    <div class="chart-container">
+                        <canvas id="marketChart"></canvas>
+                    </div>
+                </div>
+                <div class="card p-6 xl:col-span-2">
+                    <h3 class="text-xl font-bold mb-4 text-gray-100">ADN y Manifiesto de Marca</h3>
+                    <p class="text-gray-400 mb-4 text-sm">Nuestros productos son la extensión de la experiencia del club, basados en principios de minimalismo, ciencia y eficacia.</p>
+                    <ul class="space-y-3 text-gray-300">
+                        <li class="flex items-start"><strong class="mr-2 text-accent-primary font-bold">●</strong><div><strong>Menos es Más:</strong> Fórmulas multifuncionales que reemplazan rutinas complejas.</div></li>
+                        <li class="flex items-start"><strong class="mr-2 text-accent-primary font-bold">●</strong><div><strong>Evidencia Científica:</strong> Activos con respaldo clínico en concentraciones efectivas.</div></li>
+                        <li class="flex items-start"><strong class="mr-2 text-accent-primary font-bold">●</strong><div><strong>Transparencia Total:</strong> Sin ingredientes de relleno, sin claims engañosos.</div></li>
+                        <li class="flex items-start"><strong class="mr-2 text-accent-primary font-bold">●</strong><div><strong>Sostenibilidad Práctica:</strong> Empaques inteligentes, reciclables y diseñados para el hombre en movimiento.</div></li>
+                        <li class="flex items-start"><strong class="mr-2 text-accent-primary font-bold">●</strong><div><strong>Sinergia Club-DTC:</strong> Cada producto potencia y prolonga los resultados obtenidos en el club.</div></li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section id="products" class="main-section hidden">
+            <h2 class="text-3xl font-bold mb-2 text-gray-100">Portafolio de Productos DTC</h2>
+            <p class="text-gray-400 mb-8 max-w-4xl">Explore cada producto del ecosistema Hombre Vigente. Cada ficha contiene la información completa: desde su justificación estratégica y fórmula quirúrgica hasta los protocolos de validación y especificaciones de empaque. Esta es la fuente única de verdad para desarrollo, marketing y operaciones.</p>
+            <div id="product-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            </div>
+        </section>
+
+        <section id="matrix" class="main-section hidden">
+            <h2 class="text-3xl font-bold mb-2 text-gray-100">Matriz de Activos Quirúrgicos</h2>
+            <p class="text-gray-400 mb-8 max-w-4xl">Esta matriz visualiza la arquitectura de nuestras fórmulas. Analice la sinergia de los "activos backbone" presentes en múltiples productos para garantizar tolerancia y consistencia, y los "activos de autor" que otorgan la funcionalidad única a cada producto. La intensidad del color (vista "Thermal") representa la concentración o importancia del activo en la fórmula.</p>
+            <div class="card p-2 sm:p-4 overflow-x-auto">
+                <table id="asset-matrix" class="w-full min-w-[1200px] text-sm text-left">
+                </table>
+            </div>
+        </section>
+
+        <section id="strategy" class="main-section hidden">
+             <h2 class="text-3xl font-bold mb-2 text-gray-100">Estrategia y Operaciones</h2>
+            <p class="text-gray-400 mb-8 max-w-4xl">Esta sección detalla el plan maestro para llevar el portafolio DTC al mercado. Contiene los criterios de formulación, los protocolos de validación, la estrategia de marketing y el plan de escalabilidad, asegurando una ejecución consistente y de alta calidad en todas las áreas.</p>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div class="card p-6">
+                    <h3 class="text-xl font-bold mb-4 text-gray-100">Principios de Formulación y Desarrollo</h3>
+                    <ul class="space-y-3 text-gray-300">
+                        <li><strong>✓ Criterios de Selección:</strong> Priorizamos multifuncionalidad, activos compartidos, universalidad y máxima tolerancia.</li>
+                        <li><strong>✓ Lógica de Fórmulas:</strong> Combinamos "activos backbone" (base) con "activos de autor" (diferenciadores) para crear sinergias en capas.</li>
+                        <li><strong>✓ Exclusiones Rigurosas:</strong> Se evitan alérgenos comunes, sulfatos agresivos, parabenos, ftalatos, y rellenos innecesarios.</li>
+                        <li><strong>✓ Protocolos de Prueba:</strong> Implementamos pruebas de estabilidad, compatibilidad de empaque, tolerancia dermatológica y pilotaje en páneles de usuarios del club para mejora iterativa.</li>
+                    </ul>
+                </div>
+                <div class="card p-6">
+                    <h3 class="text-xl font-bold mb-4 text-gray-100">Estrategia de Marketing y KPIs</h3>
+                     <ul class="space-y-3 text-gray-300">
+                        <li><strong>✓ Canales Prioritarios:</strong> Marketing de contenidos (educacional), Paid Social (Meta, TikTok), SEM (Google Ads) y alianzas estratégicas.</li>
+                        <li><strong>✓ Automatización:</strong> Funnels de email marketing para onboarding, recompra y recuperación de carritos abandonados.</li>
+                        <li><strong>✓ KPIs Críticos:</strong> Churn Rate (<5%), NPS (>60), LTV/CAC (>4:1), Tasa de Recompra (>35%).</li>
+                        <li><strong>✓ Sinergia Club+DTC:</strong> El club actúa como el principal canal de adquisición y validación, ofreciendo una experiencia omnicanal única.</li>
+                    </ul>
+                </div>
+                <div class="card p-6 lg:col-span-2">
+                    <h3 class="text-xl font-bold mb-4 text-gray-100">Operaciones y Escalabilidad</h3>
+                    <p class="text-gray-400 mb-4 text-sm">Nuestro modelo operativo está diseñado para ser ágil, resiliente y escalable, garantizando calidad y consistencia desde la producción hasta la entrega.</p>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div>
+                            <h4 class="font-semibold text-gray-200">Supply Chain</h4>
+                            <p class="text-sm text-gray-400">Proveedores validados, manufactura local bajo normas GMP, y control de calidad riguroso en cada lote.</p>
+                        </div>
+                         <div>
+                            <h4 class="font-semibold text-gray-200">Gestión de Stock</h4>
+                            <p class="text-sm text-gray-400">Política de inventarios optimizada para evitar quiebres de stock y sobreinventario, con logística DTC tercerizada.</p>
+                        </div>
+                         <div>
+                            <h4 class="font-semibold text-gray-200">Lanzamiento de Variantes</h4>
+                            <p class="text-sm text-gray-400">Protocolo de lanzamiento rápido para nuevos productos, bundles y ediciones limitadas, basado en data del motor AI.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="ai" class="main-section hidden">
+            <h2 class="text-3xl font-bold mb-2 text-gray-100">Motor AI y Personalización</h2>
+            <p class="text-gray-400 mb-8 max-w-4xl">El motor de IA es el cerebro de nuestro ecosistema. Transforma datos del usuario en rutinas personalizadas, recomendaciones de productos y una experiencia de cliente dinámica. Este "data flywheel" no solo mejora la satisfacción individual, sino que retroalimenta a desarrollo para la innovación continua del portafolio.</p>
+            <div class="card p-8">
+                <h3 class="text-xl font-bold mb-6 text-center text-gray-100">Flujo del "Data Flywheel" de Personalización</h3>
+                <div class="flex items-center justify-between w-full flex-col md:flex-row gap-4">
+                    <div class="flowchart-node">
+                        <h4 class="font-semibold text-gray-200">1. Screening Inteligente</h4>
+                        <p class="text-sm text-gray-400">Onboarding digital (QR/App) captura tipo de piel, hábitos, objetivos y diagnóstico Thermal+RGB.</p>
+                    </div>
+                    <div class="flowchart-arrow hidden md:block"></div>
+                    <div class="flowchart-node">
+                        <h4 class="font-semibold text-gray-200">2. Recomendación</h4>
+                        <p class="text-sm text-gray-400">El AI procesa datos y sugiere una rutina inicial y un bundle de productos personalizado.</p>
+                    </div>
+                    <div class="flowchart-arrow hidden md:block"></div>
+                    <div class="flowchart-node">
+                        <h4 class="font-semibold text-gray-200">3. Feedback Loop</h4>
+                        <p class="text-sm text-gray-400">El sistema registra el uso, solicita feedback y monitorea la adherencia y satisfacción del usuario.</p>
+                    </div>
+                     <div class="flowchart-arrow hidden md:block"></div>
+                    <div class="flowchart-node">
+                        <h4 class="font-semibold text-gray-200">4. Optimización</h4>
+                        <p class="text-sm text-gray-400">Ajuste dinámico de rutinas, gestión de recompra y data agregada para I+D de nuevos productos.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+    
+    <div id="product-modal" class="modal p-4 items-center justify-center">
+        <div id="modal-content-wrapper" class="card w-full max-w-4xl modal-content flex flex-col relative">
+            <button id="close-modal" class="absolute top-4 right-4 text-gray-500 hover:text-white transition-colors">
+                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+            </button>
+            <div id="modal-header" class="p-6 border-b border-gray-700">
+            </div>
+            <div class="p-6 overflow-y-auto">
+                <div id="modal-tabs" class="border-b border-gray-700 mb-6">
+                </div>
+                <div id="modal-body">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const ssotData = {
+            kpis: {
+                marketSize: {
+                    global: 35.1,
+                    latam: 8.7,
+                    mexico: 4.5,
+                },
+            },
+            products: [
+                {
+                    id: 'limpiador-2en1',
+                    name: 'Limpiador Facial 2 en 1',
+                    line: 'Cuidado Facial',
+                    tagline: 'Limpieza profunda e hidratación en un solo paso.',
+                    fichaTecnica: {
+                        tipo: 'Gel-crema de limpieza e hidratación facial',
+                        funcion: 'Limpieza profunda, preservación barrera cutánea, minimiza irritación'
+                    },
+                    formulaQuirurgica: [
+                        { ingrediente: 'Agua purificada (Aqua)', concentracion: 'Base', justificacion: 'Vehículo universal' },
+                        { ingrediente: 'Glicerina vegetal (Glycerin)', concentracion: '6.0%', justificacion: 'Humectante universal' },
+                        { ingrediente: 'Niacinamida (Niacinamide)', concentracion: '4.0%', justificacion: 'Seborregulador, antiinflamatorio' },
+                        { ingrediente: 'Decyl Glucoside', concentracion: '3.0%', justificacion: 'Tensioactivo suave' },
+                        { ingrediente: 'Pantenol (B5)', concentracion: '1.0%', justificacion: 'Reparador barrera' },
+                        { ingrediente: 'Aloe vera (Aloe barbadensis leaf extract)', concentracion: '1.5%', justificacion: 'Calmante, antioxidante' },
+                        { ingrediente: 'Ácido hialurónico (Sodium hyaluronate)', concentracion: '0.8%', justificacion: 'Hidratante profundo' },
+                        { ingrediente: 'Alantoína (Allantoin)', concentracion: '0.15%', justificacion: 'Reparadora, calmante' }
+                    ],
+                    usoYRutinas: 'Aplicar sobre rostro húmedo. Masajear 30 segundos, enjuagar. Usar AM/PM y tras el ejercicio. Compatible con todo tipo de piel. Ideal como primer paso de rutina club.',
+                    empaqueYLegal: 'Tubo/pump airless 120 ml. Etiqueta minimalista con INCI, claims (“sin sulfatos, sin fragancia”). Lote, shelf-life, pictograma de uso, QR a tutorial digital. Cumple EC 1223/2009, FDA, COFEPRIS.',
+                    validacion: 'Test dermatológico en 50 usuarios con piel sensible. Panel Club: 97% tolerancia, 4.7/5 satisfacción, ≥75% recompra. Pruebas de estabilidad 3 meses/40°C.'
+                },
+                {
+                    id: 'gel-crema-hidratante',
+                    name: 'Gel-Crema Hidratante/Antiedad Universal',
+                    line: 'Cuidado Facial',
+                    tagline: 'Hidratación multifunción y defensa antiedad.',
+                    fichaTecnica: {
+                        tipo: 'Hidratante facial anti-edad, textura ligera',
+                        funcion: 'Rehidrata, previene envejecimiento, barrera antioxidante'
+                    },
+                    formulaQuirurgica: [
+                        { ingrediente: 'Agua purificada (Aqua)', concentracion: 'Base', justificacion: 'Vehículo' },
+                        { ingrediente: 'Niacinamida (Niacinamide)', concentracion: '4.0%', justificacion: 'Antiedad, refuerza barrera' },
+                        { ingrediente: 'Ácido hialurónico (Sodium hyaluronate)', concentracion: '1.5%', justificacion: 'Hidratación dérmica' },
+                        { ingrediente: 'Péptidos biomiméticos (Palmitoyl hexapeptide-12)', concentracion: '0.5%', justificacion: 'Estimula colágeno' },
+                        { ingrediente: 'Glicerina vegetal (Glycerin)', concentracion: '6.0%', justificacion: 'Humectante universal' },
+                        { ingrediente: 'Vitamina E (Tocopherol)', concentracion: '0.5%', justificacion: 'Antioxidante' },
+                        { ingrediente: 'Pantenol (Panthenol)', concentracion: '1.0%', justificacion: 'Reparador, calmante' },
+                        { ingrediente: 'Aloe vera (Aloe barbadensis leaf extract)', concentracion: '1.0%', justificacion: 'Calmante, antioxidante' }
+                    ],
+                    usoYRutinas: 'Aplicar AM (con FPS) y/o PM sobre rostro limpio. Para todo tipo de piel; puede usarse tras afeitado o ejercicio. Layering seguro con protector solar o sérum.',
+                    empaqueYLegal: 'Airless 50 ml, etiqueta gris minimalista. Claims: "antiedad", "todo tipo de piel", "base científica". Lote, shelf-life, QR a fichas clínicas y video-uso. EC 1223/2009, FDA, COFEPRIS compliant.',
+                    validacion: 'Pruebas clínicas: reducción transepidérmica de agua (TEWL) y mejoría de elasticidad en 30 días. Panel club: satisfacción ≥4.6/5. Prueba de estabilidad 6 meses/40°C.'
+                },
+                {
+                    id: 'protector-solar',
+                    name: 'Protector Solar Gel-Crema',
+                    line: 'Cuidado Facial',
+                    tagline: 'Defensa UVA/UVB urbana, hidratación y efecto mate.',
+                    fichaTecnica: {
+                        tipo: 'Protector facial mineral, textura invisible',
+                        funcion: 'Defensa UVA/UVB urbana, hidratación y efecto mate'
+                    },
+                    formulaQuirurgica: [
+                        { ingrediente: 'Dióxido de titanio (Titanium dioxide)', concentracion: '6.0%', justificacion: 'UVB/UVA físico' },
+                        { ingrediente: 'Óxido de zinc (Zinc oxide)', concentracion: '6.0%', justificacion: 'UVA/UVB física, calmante' },
+                        { ingrediente: 'Niacinamida (Niacinamide)', concentracion: '2.0%', justificacion: 'Antioxidante, refuerzo de barrera' },
+                        { ingrediente: 'Glicerina (Glycerin)', concentracion: '7.0%', justificacion: 'Humectante' },
+                        { ingrediente: 'Ácido hialurónico (Sodium hyaluronate)', concentracion: '1.0%', justificacion: 'Hidratante' },
+                        { ingrediente: 'Vitamina E (Tocopherol)', concentracion: '0.5%', justificacion: 'Antioxidante' },
+                        { ingrediente: 'Extracto de té verde (Camellia sinensis extract)', concentracion: '1.0%', justificacion: 'Protector ambiental' },
+                        { ingrediente: 'Emulsionante ligero (Polyglyceryl-6 distearate)', concentracion: '1.2%', justificacion: 'Textura y estabilidad' }
+                    ],
+                    usoYRutinas: 'Aplicar después de la hidratante en rostro y cuello. Reaplicar cada 2-3 horas en exposición solar intensa. Compatible con cualquier piel. No comedogénico.',
+                    empaqueYLegal: 'Tubo airless 50 ml, color mate. Claims: "FPS 50 UVA/UVB", "sin alcohol", "sin fragancia", "mineral". Etiquetado regulatorio para FPS, INCI, QR tutorial. Cumple EC 1223/2009, FDA, COFEPRIS.',
+                    validacion: 'Test SPF clínico, resistencia sudor y fotoestabilidad. Panel usuario: 95% no deja residuo, 4.6/5 satisfacción. Estabilidad 6 meses/40°C, controles de filtro FDA.'
+                },
+                {
+                    id: 'cera-modeladora',
+                    name: 'Cera Modeladora Gel-Crema',
+                    line: 'Grooming y Capilar',
+                    tagline: 'Fija, nutre y estiliza sin residuos.',
+                     fichaTecnica: {
+                        tipo: 'Cera-crema flexible y multifuncional para cabello',
+                        funcion: 'Fija, nutre y estiliza sin residuos'
+                    },
+                    formulaQuirurgica: [
+                        { ingrediente: 'Cera de carnauba (Copernicia cerifera wax)', concentracion: '6.0%', justificacion: 'Fijación y textura' },
+                        { ingrediente: 'Manteca de karité (Butyrospermum parkii butter)', concentracion: '3.0%', justificacion: 'Nutrición capilar' },
+                        { ingrediente: 'Glicerina vegetal (Glycerin)', concentracion: '7.0%', justificacion: 'Hidratante del cabello' },
+                        { ingrediente: 'Aceite de jojoba (Simmondsia chinensis oil)', concentracion: '2.0%', justificacion: 'Suavidad, control sebo' },
+                        { ingrediente: 'Vitamina E (Tocopherol)', concentracion: '0.5%', justificacion: 'Protección antioxidante' },
+                        { ingrediente: 'Goma xantana (Xanthan gum)', concentracion: '0.25%', justificacion: 'Homogeneidad y cuerpo' }
+                    ],
+                    usoYRutinas: 'Frotar pequeña cantidad y aplicar sobre cabello seco o húmedo. Peinar según estilo; acabado mate o brillo natural. Seguro para uso diario y fácil de remover.',
+                    empaqueYLegal: 'Tarro airless o tubo 50 ml, cierre hermético. Etiqueta: "sin siliconas, no deja residuos, look clean". INCI con claims legales, lote, shelf-life, QR tutorial styling. Cumple EC 1223/2009, FDA.',
+                    validacion: 'Panel usuario: fijación adecuada en ≥90% de estilos, sin residuos blancos en 98%. Satisfacción ≥4.6/5, test de estabilidad física/química.'
+                },
+                {
+                    id: 'desodorante-natural',
+                    name: 'Desodorante Natural Barra',
+                    line: 'Higiene Personal',
+                    tagline: 'Control eficaz de olor, cuidado axilar (sin aluminio).',
+                    fichaTecnica: {
+                        tipo: 'Desodorante barra clean',
+                        funcion: 'Control eficaz de olor, cuidado axilar (sin aluminio)'
+                    },
+                    formulaQuirurgica: [
+                        { ingrediente: 'Manteca de karité (Butyrospermum parkii butter)', concentracion: '10.0%', justificacion: 'Suavidad y barrera' },
+                        { ingrediente: 'Almidón de maíz/arruruz (Zea mays starch/Maranta starch)', concentracion: '9.0%', justificacion: 'Absorbe humedad' },
+                        { ingrediente: 'Bicarbonato de sodio (Sodium bicarbonate)', concentracion: '3.0%', justificacion: 'Neutraliza bacterias' },
+                        { ingrediente: 'Aceite de coco fraccionado (Cocos nucifera oil)', concentracion: '8.0%', justificacion: 'Antimicrobiano suavizante' },
+                        { ingrediente: 'Cera de candelilla (Euphorbia cerifera wax)', concentracion: '5.0%', justificacion: 'Consistencia' },
+                        { ingrediente: 'Glicerina vegetal (Glycerin)', concentracion: '5.0%', justificacion: 'Humectante' },
+                        { ingrediente: 'Aceite de jojoba (Simmondsia chinensis oil)', concentracion: '2.0%', justificacion: 'Equilibrio y suavidad' },
+                        { ingrediente: 'Vitamina E (Tocopherol)', concentracion: '0.5%', justificacion: 'Protección antioxidante' },
+                        { ingrediente: 'Pantenol (B5)', concentracion: '1.0%', justificacion: 'Reparador, calmante' }
+                    ],
+                    usoYRutinas: 'Aplicar sobre axilas limpias y secas, 1–2 pasadas. Puede usarse tras afeitado o ejercicio. No mancha ropa, uso diario.',
+                    empaqueYLegal: 'Barra sólida 50–75g, base giratoria. Etiqueta: "sin aluminio, sin fragancia intensa, hipoalergénico". Claims legales, INCI, lote, shelf-life, QR a infografía de aplicación. Compliant FDA, EU, COFEPRIS.',
+                    validacion: 'Test de eficacia 48h, dermatológico en piel sensible. Panel usuario: tolerancia ≥95%, satisfacción ≥4.6/5. No manchas visibles tras uso.'
+                },
+                {
+                    id: 'aceite-multifuncion',
+                    name: 'Aceite Multifunción (Barba/Rostro)',
+                    line: 'Grooming',
+                    tagline: 'Hidrata, suaviza y protege barba y piel.',
+                    fichaTecnica: {
+                        tipo: 'Aceite seco multifunción',
+                        funcion: 'Hidrata, suaviza y protege barba y piel'
+                    },
+                    formulaQuirurgica: [
+                        { ingrediente: 'Aceite de jojoba (Simmondsia chinensis oil)', concentracion: '35.0%', justificacion: 'Hidratación y balance sebo' },
+                        { ingrediente: 'Aceite semilla de uva (Vitis vinifera seed oil)', concentracion: '20.0%', justificacion: 'Ligereza, antioxidante' },
+                        { ingrediente: 'Aceite de argán (Argania spinosa kernel oil)', concentracion: '12.0%', justificacion: 'Nutre y repara vello' },
+                        { ingrediente: 'Aceite de almendra dulce (Prunus amygdalus dulcis oil)', concentracion: '10.0%', justificacion: 'Suavizante facial' },
+                        { ingrediente: 'Aceite de ricino (Ricinus communis oil)', concentracion: '7.0%', justificacion: 'Fortalece y da cuerpo' },
+                        { ingrediente: 'Vitamina E (tocoferol)', concentracion: '1.0%', justificacion: 'Antioxidante, conservante' },
+                        { ingrediente: 'Extracto de aloe vera (Aloe barbadensis extract)', concentracion: '1.0%', justificacion: 'Calma irritaciones' },
+                        { ingrediente: 'Pantenol (B5)', concentracion: '1.0%', justificacion: 'Reparador, hidratante' }
+                    ],
+                    usoYRutinas: 'Aplicar 4–6 gotas, frotar en manos y distribuir sobre barba y rostro limpios. Masajear. AM/PM o tras afeitado. No deja residuo graso. Uso diario, seguro para piel sensible.',
+                    empaqueYLegal: 'Botella ámbar, pump o gotero 30–50 ml. Etiqueta: ingredientes, claims, modo de uso claro, QR video. Cumple EC 1223/2009, FDA, COFEPRIS.',
+                    validacion: 'Panel usuario: ≥4.7/5 suavidad y apariencia, 0% reacción adversa en 50 sujetos. Prueba de estabilidad y compatibilidad química aceites.'
+                },
+                {
+                    id: 'shampoo-matizante',
+                    name: 'Shampoo Anticanas/Matizante Denso',
+                    line: 'Grooming y Capilar',
+                    tagline: 'Reduce amarillento, unifica tono, cuida cabello gris.',
+                    fichaTecnica: {
+                        tipo: 'Gel-crema denso matizante',
+                        funcion: 'Reduce amarillento, unifica tono, cuida cabello gris'
+                    },
+                    formulaQuirurgica: [
+                        { ingrediente: 'Agua purificada (Aqua)', concentracion: 'Base', justificacion: 'Vehículo' },
+                        { ingrediente: 'Glicerina vegetal (Glycerin)', concentracion: '6.0%', justificacion: 'Humectante universal' },
+                        { ingrediente: 'Óxidos de hierro (Iron oxides)', concentracion: '1.2%', justificacion: 'Pigmentación matizante natural' },
+                        { ingrediente: 'Mica micronizada (Mica)', concentracion: '0.5%', justificacion: 'Reflejo perlado' },
+                        { ingrediente: 'Manteca de karité (Butyrospermum parkii butter)', concentracion: '2.0%', justificacion: 'Cuerpo, nutrición' },
+                        { ingrediente: 'Aceite de jojoba (Simmondsia chinensis oil)', concentracion: '2.0%', justificacion: 'Nutre, acondiciona' },
+                        { ingrediente: 'Pantenol (B5)', concentracion: '1.0%', justificacion: 'Fortalece cutícula capilar' },
+                        { ingrediente: 'Carbón vegetal/Salvia (Charcoal/Salvia extract)', concentracion: '0.2%', justificacion: 'Neutraliza amarillos' },
+                        { ingrediente: 'Goma xantana (Xanthan gum)', concentracion: '0.3%', justificacion: 'Textura, estabilidad' }
+                    ],
+                    usoYRutinas: 'Aplicar sobre cabello húmedo, dejar actuar 2–5 min, enjuagar. Usar 2–3 veces/semana o según necesidad. Compatible con cabellos teñidos y tratados.',
+                    empaqueYLegal: 'Tubo flexible airless 100–150 ml, etiqueta contrastante. INCI, claims "sin amoníaco", "matiz gradual". Lote, shelf-life, QR tutorial matizante. Cumple EC 1223/2009, FDA, COFEPRIS.',
+                    validacion: 'Test usuario: ≥97% no mancha piel, 4.6/5 en uniformidad de tono gris. Prueba de estabilidad pigmentaria.'
+                }
+            ],
+            assets: [
+                { name: 'Niacinamida', backbone: true },
+                { name: 'Glicerina', backbone: true },
+                { name: 'Pantenol', backbone: true },
+                { name: 'Ácido Hialurónico', backbone: true },
+                { name: 'Aloe Vera', backbone: true },
+                { name: 'Vitamina E', backbone: true },
+                { name: 'Manteca de Karité', backbone: true },
+                { name: 'Aceite de Jojoba', backbone: true },
+                { name: 'Péptidos', backbone: false },
+                { name: 'Filtros Solares', backbone: false },
+                { name: 'Ceras/Arcillas', backbone: false },
+                { name: 'Activos Desodorantes', backbone: false },
+                { name: 'Pigmentos Matizantes', backbone: false },
+                { name: 'Alantoína', backbone: false },
+            ]
+        };
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const navLinks = document.querySelectorAll('.nav-link');
+            const sections = document.querySelectorAll('.main-section');
+            const modal = document.getElementById('product-modal');
+            const closeModalBtn = document.getElementById('close-modal');
+
+            function navigate(e) {
+                e.preventDefault();
+                const sectionId = this.dataset.section;
+
+                navLinks.forEach(link => link.classList.remove('active'));
+                this.classList.add('active');
+
+                sections.forEach(section => section.classList.add('hidden'));
+                document.getElementById(sectionId).classList.remove('hidden');
+                
+                window.history.pushState({section: sectionId}, '', `#${sectionId}`);
+            }
+            
+            function handlePopState(event) {
+                const sectionId = event.state ? event.state.section : 'dashboard';
+                navLinks.forEach(link => {
+                    link.classList.toggle('active', link.dataset.section === sectionId);
+                });
+                sections.forEach(section => {
+                    section.classList.toggle('hidden', section.id !== sectionId);
+                });
+            }
+
+            function openModal(productId) {
+                const product = ssotData.products.find(p => p.id === productId);
+                if (!product) return;
+
+                const modalHeader = document.getElementById('modal-header');
+                const modalTabsContainer = document.getElementById('modal-tabs');
+                const modalBody = document.getElementById('modal-body');
+
+                modalHeader.innerHTML = `
+                    <h3 class="text-2xl font-bold text-gray-100">${product.name}</h3>
+                    <p class="text-gray-400">${product.tagline}</p>
+                `;
+                
+                const tabs = [
+                    { id: 'ficha', name: 'Ficha Técnica' },
+                    { id: 'formula', name: 'Fórmula Quirúrgica' },
+                    { id: 'uso', name: 'Uso y Rutinas' },
+                    { id: 'empaque', name: 'Empaque y Legal' },
+                    { id: 'validacion', name: 'Validación' },
+                ];
+
+                modalTabsContainer.innerHTML = tabs.map(tab => `<button class="tab-button" data-tab="${tab.id}">${tab.name}</button>`).join('');
+                
+                const formulaTable = `
+                    <table class="w-full text-sm text-left">
+                        <thead class="text-xs text-gray-400 uppercase bg-gray-700">
+                            <tr>
+                                <th class="px-4 py-2">Ingrediente (INCI)</th>
+                                <th class="px-4 py-2">Concentración</th>
+                                <th class="px-4 py-2">Justificación</th>
+                            </tr>
+                        </thead>
+                        <tbody class="text-gray-300">
+                            ${product.formulaQuirurgica.map(ing => `
+                                <tr class="border-b border-gray-700">
+                                    <td class="px-4 py-2 font-medium text-gray-100">${ing.ingrediente}</td>
+                                    <td class="px-4 py-2">${ing.concentracion}</td>
+                                    <td class="px-4 py-2">${ing.justificacion}</td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                `;
+
+                modalBody.innerHTML = `
+                    <div id="tab-ficha" class="tab-content">
+                        <h4 class="font-bold text-lg mb-2 text-gray-200">Tipo</h4>
+                        <p class="text-gray-400 mb-4">${product.fichaTecnica.tipo}</p>
+                        <h4 class="font-bold text-lg mb-2 text-gray-200">Función</h4>
+                        <p class="text-gray-400 mb-4">${product.fichaTecnica.funcion}</p>
+                    </div>
+                    <div id="tab-formula" class="tab-content">
+                        ${formulaTable}
+                    </div>
+                    <div id="tab-uso" class="tab-content">
+                        <p class="text-gray-400 whitespace-pre-wrap">${product.usoYRutinas}</p>
+                    </div>
+                    <div id="tab-empaque" class="tab-content">
+                         <p class="text-gray-400 whitespace-pre-wrap">${product.empaqueYLegal}</p>
+                    </div>
+                    <div id="tab-validacion" class="tab-content">
+                        <p class="text-gray-400 whitespace-pre-wrap">${product.validacion}</p>
+                    </div>
+                `;
+
+                const tabButtons = modalTabsContainer.querySelectorAll('.tab-button');
+                const tabContents = modalBody.querySelectorAll('.tab-content');
+
+                function switchTab(e) {
+                    const tabId = e.target.dataset.tab;
+                    tabButtons.forEach(btn => btn.classList.remove('active'));
+                    e.target.classList.add('active');
+                    tabContents.forEach(content => content.classList.remove('active'));
+                    document.getElementById(`tab-${tabId}`).classList.add('active');
+                }
+
+                tabButtons.forEach(btn => btn.addEventListener('click', switchTab));
+                tabButtons[0].click();
+                modal.style.display = 'flex';
+            }
+
+            function closeModal() {
+                modal.style.display = 'none';
+            }
+            
+            function renderProducts() {
+                const grid = document.getElementById('product-grid');
+                grid.innerHTML = ssotData.products.map(p => `
+                    <div class="card p-4 cursor-pointer" data-product-id="${p.id}">
+                        <div class="mb-2">
+                           <span class="text-xs font-semibold inline-block py-1 px-2 uppercase rounded-full text-blue-300 bg-blue-900/50">${p.line}</span>
+                        </div>
+                        <h3 class="font-bold text-lg mb-1 text-gray-100">${p.name}</h3>
+                        <p class="text-sm text-gray-400">${p.tagline}</p>
+                    </div>
+                `).join('');
+
+                document.querySelectorAll('[data-product-id]').forEach(card => {
+                    card.addEventListener('click', () => openModal(card.dataset.productId));
+                });
+            }
+            
+            function renderMatrix() {
+                const table = document.getElementById('asset-matrix');
+                let headHTML = '<thead class="text-xs text-gray-400 uppercase bg-gray-700/50"><tr><th class="px-2 py-3 sticky left-0 bg-gray-800/80 backdrop-blur-sm">Activo Clave</th>';
+                ssotData.products.forEach(p => {
+                    headHTML += `<th class="px-2 py-3 text-center transform -rotate-45 whitespace-nowrap">${p.name}</th>`;
+                });
+                headHTML += '</tr></thead>';
+
+                let bodyHTML = '<tbody>';
+                ssotData.assets.forEach(asset => {
+                    bodyHTML += `<tr class="border-b border-gray-700"><td class="px-2 py-2 font-semibold sticky left-0 bg-gray-800/80 backdrop-blur-sm ${asset.backbone ? 'text-accent-primary' : 'text-gray-200'}">${asset.name} ${asset.backbone ? '<span title="Activo Backbone">*</span>' : ''}</td>`;
+                    ssotData.products.forEach(product => {
+                        const ingredient = product.formulaQuirurgica.find(ing => ing.ingrediente.toLowerCase().includes(asset.name.split(' ')[0].toLowerCase()));
+                        let cellContent = '';
+                        let cellClass = 'bg-gray-800';
+                        let tooltip = '';
+                        if(ingredient) {
+                            const concentrationMatch = ingredient.concentracion.match(/\d+(\.\d+)?/);
+                            const concentration = concentrationMatch ? parseFloat(concentrationMatch[0]) : 0;
+                            if (concentration >= 10) cellClass = 'bg-blue-800';
+                            else if (concentration >= 5) cellClass = 'bg-blue-700';
+                            else if (concentration >= 2) cellClass = 'bg-blue-600';
+                            else if (concentration > 0) cellClass = 'bg-blue-500';
+                            else cellClass = 'bg-sky-700';
+                            cellContent = '✓';
+                            tooltip = `${asset.name} en ${product.name}: ${ingredient.justificacion}`;
+                        }
+                        bodyHTML += `<td class="heatmap-cell text-center font-bold text-lg text-white ${cellClass}" title="${tooltip}">${cellContent}</td>`;
+                    });
+                    bodyHTML += '</tr>';
+                });
+                bodyHTML += '</tbody>';
+
+                table.innerHTML = headHTML + bodyHTML;
+            }
+
+            function initCharts() {
+                const ctx = document.getElementById('marketChart').getContext('2d');
+                new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Global', 'LATAM', 'México'],
+                        datasets: [{
+                            label: 'Tamaño de Mercado (en Billones USD)',
+                            data: [ssotData.kpis.marketSize.global, ssotData.kpis.marketSize.latam, ssotData.kpis.marketSize.mexico],
+                            backgroundColor: ['#4B5563', '#6B7280', '#3B82F6'],
+                            borderColor: '#1F2937',
+                            borderWidth: 2,
+                            borderRadius: 4
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: false },
+                            title: { display: false },
+                            tooltip: {
+                                backgroundColor: '#111827',
+                                titleFont: { size: 14, weight: 'bold' },
+                                bodyFont: { size: 12 },
+                                padding: 10,
+                                cornerRadius: 4,
+                                titleColor: '#F3F4F6',
+                                bodyColor: '#9CA3AF'
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                grid: { color: '#374151' },
+                                ticks: {
+                                    callback: function(value) { return '$' + value + 'B'; },
+                                    color: '#9CA3AF'
+                                }
+                            },
+                            x: {
+                                grid: { display: false },
+                                ticks: { color: '#D1D5DB', font: { weight: 'bold' } }
+                            }
+                        }
+                    }
+                });
+            }
+
+            navLinks.forEach(link => link.addEventListener('click', navigate));
+            closeModalBtn.addEventListener('click', closeModal);
+            modal.addEventListener('click', (e) => { if(e.target === modal) closeModal(); });
+            window.addEventListener('popstate', handlePopState);
+            
+            const initialSection = window.location.hash.substring(1) || 'dashboard';
+            document.querySelector(`.nav-link[data-section="${initialSection}"]`)?.click();
+
+
+            renderProducts();
+            renderMatrix();
+            initCharts();
+        });
+    </script>
+</body>
+</html>
