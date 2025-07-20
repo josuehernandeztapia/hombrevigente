@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Modelo Financiero - Hombre Vigente</title>
+<title>Modelo Financiero - Hombre Vigente V50.7</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -31,7 +31,7 @@ h1, h2, h3, h4 {
 .tab-button {
     transition: all 0.3s ease;
     cursor: pointer;
-    padding: 1rem 1.5rem;
+    padding: 0.75rem 1.25rem;
     border-bottom: 2px solid transparent;
     color: #9ca3af; /* gray-400 */
     font-weight: 500;
@@ -119,11 +119,17 @@ h1, h2, h3, h4 {
     color: #f9fafb; /* gray-50 */
     font-weight: 700;
 }
+.financial-table tr.net-revenue-row {
+    font-weight: 600;
+}
 .financial-table tr.sub-row td:first-child {
     padding-left: 2.5rem;
 }
 .financial-table tr.sub-sub-row td:first-child {
     padding-left: 4rem;
+}
+.financial-table tr.sub-sub-sub-row td:first-child {
+    padding-left: 5.5rem;
 }
 .financial-table tr.expandable {
     cursor: pointer;
@@ -169,6 +175,7 @@ h1, h2, h3, h4 {
     padding: 0.75rem;
     width: 280px;
     z-index: 100;
+    white-space: pre-wrap;
 }
 [data-tooltip]:before {
     content: attr(data-tooltip);
@@ -191,13 +198,13 @@ h1, h2, h3, h4 {
     opacity: 1;
 }
 /* Inputs and Selects */
-input[type="number"], input[type="range"] {
+input[type="number"], input[type="range"], input[type="text"], select {
     background-color: #374151; /* gray-700 */
     border-color: #4b5563; /* gray-600 */
     color: #e5e7eb; /* gray-200 */
     border-radius: 0.375rem;
 }
-input[type="number"]:focus {
+input[type="number"]:focus, input[type="text"]:focus, select:focus {
     border-color: #3b82f6; /* blue-500 */
     box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.5);
     background-color: #374151;
@@ -228,30 +235,123 @@ input[type="number"]:focus {
     font-weight: 600;
     box-shadow: 0 2px 4px rgba(0,0,0,0.2);
 }
+/* Gemini Modal Styles */
+.gemini-modal-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    z-index: 1040;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    backdrop-filter: blur(4px);
+}
+.gemini-modal-content {
+    background-color: #1f2937;
+    border: 1px solid #374151;
+    border-radius: 0.75rem;
+    width: 90%;
+    max-width: 600px;
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+}
+.gemini-modal-header {
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid #374151;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.gemini-modal-body {
+    padding: 1.5rem;
+    overflow-y: auto;
+    color: #e2e8f0;
+}
+.gemini-modal-body h5 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #f9fafb;
+    margin-bottom: 0.5rem;
+}
+.gemini-modal-body p {
+    margin-bottom: 1rem;
+    line-height: 1.6;
+}
+.gemini-modal-footer {
+    padding: 1rem 1.5rem;
+    border-top: 1px solid #374151;
+    text-align: right;
+}
+/* Loading Spinner */
+.loader {
+    width: 48px;
+    height: 48px;
+    border: 5px solid #FFF;
+    border-bottom-color: #3b82f6;
+    border-radius: 50%;
+    display: inline-block;
+    box-sizing: border-box;
+    animation: rotation 1s linear infinite;
+    margin: 2rem auto;
+}
+@keyframes rotation {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
 </style>
 </head>
 <body>
 <!-- Debug Panel -->
-<div id="debug-info" class="debug-info" style="display:none; position: fixed; top: 10px; right: 10px; z-index: 1000; padding: 10px; max-height: 400px; overflow-y: auto;">
+<div id="debug-info" class="debug-info" style="display:none; position: fixed; top: 10px; right: 10px; z-index: 1050; padding: 10px; max-height: 400px; overflow-y: auto;">
     <div id="debug-content"></div>
     <button onclick="toggleDebug()" class="bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded mt-2 text-xs">Cerrar</button>
 </div>
+<!-- Gemini Modal -->
+<div id="gemini-modal" class="gemini-modal-backdrop" style="display: none;">
+    <div class="gemini-modal-content">
+        <div class="gemini-modal-header">
+            <h4 id="gemini-modal-title" class="text-xl font-bold text-white"></h4>
+            <button onclick="closeGeminiModal()" class="text-gray-400 hover:text-white">&times;</button>
+        </div>
+        <div id="gemini-modal-body" class="gemini-modal-body">
+            <!-- Content will be injected here -->
+        </div>
+        <div id="gemini-modal-footer" class="gemini-modal-footer">
+             <button onclick="closeGeminiModal()" class="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-lg font-medium">Cerrar</button>
+        </div>
+    </div>
+</div>
 <div class="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8">
     <!-- Header -->
-    <header class="mb-8 text-center bg-transparent rounded-xl p-6">
+    <header class="mb-4 text-center bg-transparent rounded-xl p-6">
         <h1 class="text-4xl lg:text-5xl font-black text-white leading-tight tracking-tighter mb-2">Modelo Financiero - <span class="highlight-text">Hombre Vigente</span></h1>
         <p class="text-xl text-slate-400 mt-2">Ecosistema Integral - IA NATIVE</p>
-        <p class="text-lg text-slate-500 mt-1">Series A Due Diligence (Calibración V32)</p>
-        <button onclick="toggleDebug()" class="mt-4 bg-gray-700 hover:bg-gray-600 text-white px-4 py-2 rounded-lg font-medium transition duration-300 inline-flex items-center gap-2">
-            <i data-lucide="bug" class="w-5 h-5"></i> Debug
-        </button>
+        <p class="text-lg text-slate-500 mt-1">V50.7 - El Simulador de Sala de Juntas</p>
+        <div class="flex justify-center items-center gap-4 mt-4">
+            <button onclick="toggleDebug()" class="bg-gray-700 hover:bg-gray-600 text-white px-4 py-2 rounded-lg font-medium transition duration-300 inline-flex items-center gap-2">
+                <i data-lucide="bug" class="w-5 h-5"></i> Debug
+            </button>
+            <button onclick="openCopilotModal()" class="bg-purple-600 hover:bg-purple-500 text-white px-4 py-2 rounded-lg font-medium transition duration-300 inline-flex items-center gap-2">
+                <i data-lucide="sparkles" class="w-5 h-5"></i> Copiloto Estratégico
+            </button>
+        </div>
     </header>
     
+    <div class="max-w-xl mx-auto mb-6 p-4 bg-yellow-900/50 border border-yellow-700 rounded-lg text-center">
+        <label for="api-key-input" class="block text-sm font-medium text-yellow-200 mb-2">Tu API Key de Gemini (Opcional)</label>
+        <input type="text" id="api-key-input" class="w-full p-2 text-xs bg-gray-800 border-gray-600 rounded-md text-white" placeholder="Pega tu clave aquí si la conexión automática falla...">
+        <p class="text-xs text-yellow-400 mt-2">Obtén tu clave gratuita en <a href="https://aistudio.google.com/app/apikey" target="_blank" class="underline">Google AI Studio</a>.</p>
+    </div>
     <!-- WOW DASHBOARD - RESTRUCTURED -->
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
         <!-- FILA 1 -->
         <div class="card">
-            <h3 class="text-xl font-semibold mb-4 text-white">     💰      Capital Structure</h3>
+            <h3 class="text-xl font-semibold mb-4 text-white">         💰          Capital Structure</h3>
             <div class="grid grid-cols-2 gap-4">
                 <div>Equity Invested: <span id="equity-invested" class="font-bold text-blue-400">$0M</span></div>
                 <div>Break-Even: <span id="break-even-month" class="font-bold text-emerald-400">N/A</span></div>
@@ -261,7 +361,7 @@ input[type="number"]:focus {
         </div>
         
         <div class="card">
-            <h3 class="text-xl font-semibold mb-4 text-white">     🎯      Investment Returns</h3>
+            <h3 class="text-xl font-semibold mb-4 text-white">         🎯          Investment Returns</h3>
             <div class="mb-4">
                 <label>Exit Multiple: <input type="range" id="exit-multiple-slider" min="6" max="10" step="0.1" value="8" class="input-slider"></label>
                 <span id="exit-multiple-display" class="font-bold text-blue-400">8.0x</span>
@@ -277,19 +377,21 @@ input[type="number"]:focus {
     <!-- SEGUNDA FILA -->
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
         <div class="card">
-            <h3 class="text-xl font-semibold mb-4 text-white">     🏢      Growth & Scale</h3>
-            <div class="grid grid-cols-2 gap-4">
+            <h3 class="text-xl font-semibold mb-4 text-white">         🏢          Growth & Scale</h3>
+            <div class="grid grid-cols-2 gap-4 text-sm">
                 <div>Locations Y5: <span id="locations-y5" class="font-bold text-blue-400">0</span></div>
-                <div>Customers Y5: <span id="customers-y5" class="font-bold text-sky-400">0</span></div>
+                <div id="customers-y5-wrapper" data-tooltip="">Customers Y5: <span id="customers-y5" class="font-bold text-sky-400">0</span></div>
                 <div data-tooltip="" id="ltv-cac-tooltip-wrapper">LTV:CAC Ratio: <span id="ltv-cac-ratio" class="font-bold text-emerald-400">0x</span></div>
                 <div>Customer Density: <span id="customer-density" class="font-bold text-blue-400">0</span>/loc</div>
+                <div>LTV (Paid): <span id="ltv-value" class="font-bold text-blue-400">$0</span></div>
+                <div>CAC (Paid): <span id="cac-value" class="font-bold text-blue-400">$0</span></div>
             </div>
         </div>
         
         <div class="card">
-            <h3 class="text-xl font-semibold mb-4 text-white">     🤖      AI & Operations</h3>
+            <h3 class="text-xl font-semibold mb-4 text-white">         🤖          AI & Operations</h3>
             <div class="grid grid-cols-2 gap-4">
-                <div>AI Revenue Uplift: <span id="ai-revenue-uplift" class="font-bold text-emerald-400">+0%</span></div>
+                <div data-tooltip="Ingresos totales del Año 5 divididos entre el número de sucursales al final del periodo.">Rev./Sucursal Y5: <span id="revenue-per-location" class="font-bold text-emerald-400">$0M</span></div>
                 <div>Cross-sell Boost: <span id="cross-sell-boost" class="font-bold text-sky-400">+0%</span></div>
                 <div>Utilization: <span id="utilization-actual" class="font-bold text-blue-400">0%</span></div>
                 <div>Revenue/Customer: <span id="revenue-per-customer" class="font-bold text-blue-400">$0K</span></div>
@@ -308,27 +410,38 @@ input[type="number"]:focus {
     </div>
     <!-- Tab Content: Control -->
     <div id="content-control" class="content-section active">
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <!-- COLUMNA IZQUIERDA: Controles Estratégicos -->
+        <!--  🔥  UI REORGANIZATION V50 -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <!-- COLUMNA 1: Estrategia de Alto Nivel -->
             <div class="space-y-6">
                 <div class="card">
-                    <h4 class="font-semibold text-lg mb-4 text-white">      📊       Escenarios Estratégicos</h4>
-                    <div id="scenario-switcher-controls" class="space-y-4"></div>
+                    <h4 class="font-semibold text-lg mb-4 text-white"> 📊  Estrategia de Alto Nivel</h4>
+                    <div id="estrategia-controls" class="space-y-4"></div>
                 </div>
                  <div class="card">
-                    <h4 class="font-semibold text-lg mb-4 text-white">      🚀       Palancas de Crecimiento</h4>
-                    <div id="crecimiento-estrategico-controls" class="space-y-4"></div>
-                </div>
-            </div>
-            <!-- COLUMNA DERECHA: Controles de IA y Financiamiento -->
-            <div class="space-y-6">
-                <div class="card">
-                    <h4 class="font-semibold text-lg mb-4 text-white">      🤖       IA Native Controls</h4>
+                    <h4 class="font-semibold text-lg mb-4 text-white"> 🤖  IA Native Controls</h4>
                     <div id="ai-native-controls" class="space-y-4"></div>
                 </div>
+            </div>
+            <!-- COLUMNA 2: Operaciones y Finanzas -->
+            <div class="space-y-6">
+                <div class="card">
+                    <h4 class="font-semibold text-lg mb-4 text-white"> ⚙️  Operaciones y CAPEX</h4>
+                    <div id="operaciones-controls" class="space-y-4"></div>
+                     <div class="mt-4 pt-4 border-t border-gray-700">
+                        <div class="text-sm font-medium text-slate-300">CAPEX / Sucursal: <span id="capex-per-location-display" class="font-bold text-amber-400">$0</span></div>
+                    </div>
+                </div>
                  <div class="card">
-                    <h4 class="font-semibold text-lg mb-4 text-white">      💰       Financiamiento y Operaciones</h4>
-                    <div id="financiamiento-operaciones-controls" class="space-y-4"></div>
+                    <h4 class="font-semibold text-lg mb-4 text-white"> 💵  Monetización y Costos</h4>
+                    <div id="monetizacion-controls" class="space-y-4"></div>
+                </div>
+            </div>
+            <!-- COLUMNA 3: Calibración y Stress-Testing -->
+            <div class="space-y-6">
+                <div class="card">
+                    <h4 class="font-semibold text-lg mb-4 text-white"> 🎛️  Calibración y Stress-Testing</h4>
+                    <div id="calibracion-controls" class="space-y-4"></div>
                 </div>
             </div>
         </div>
@@ -343,7 +456,12 @@ input[type="number"]:focus {
     <div id="content-financieros" class="content-section">
         <div class="space-y-6">
             <div class="card">
-                <h3 class="text-xl font-semibold mb-4 text-white">Estado de Resultados (P&L)</h3>
+                <div class="flex justify-between items-center mb-4">
+                     <h3 class="text-xl font-semibold text-white">Estado de Resultados (P&L)</h3>
+                     <button onclick="generateExecutiveSummary()" class="bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2 rounded-lg font-medium transition duration-300 inline-flex items-center gap-2 text-sm">
+                        <i data-lucide="file-text" class="w-4 h-4"></i> Generar Resumen Ejecutivo     ✨
+                    </button>
+                </div>
                 <div class="overflow-x-auto">
                     <table class="financial-table">
                         <thead>
@@ -434,29 +552,44 @@ let charts = {};
 let toggleControls = {
   OptiVigenteAI: true,
   MarketingVigenteAI: true,
-  PersonaVigenteAI: true
+  PersonaVigenteAI: true,
+  bnplMarketingToggle: true 
 };
-// Injected modelData from internal documents - V32 CALIBRATION
+// Injected modelData from internal documents - V50.7 CALIBRATION
 const baseModelData = {
     general: { currency: "MXN", projectionTimeline: { unit: "months", duration: 60 }, scenario: "base" },
+    realismLevers: {
+        funnelConversionRate: 0.70,
+    },
+    customerBehavior: {
+        realismFactor: 1.0
+    },
+    adherenceMatrix: {
+        carlos: { ultra: 0.90, high: 0.75, premium: 0.60, luxury: 0.40, surgery: 0.95 },
+        eduardo: { ultra: 0.85, high: 0.65, premium: 0.35, luxury: 0.15, surgery: 0.95 },
+        mantenimiento: { ultra: 0.80, high: 0.50, premium: 0.15, luxury: 0.05, surgery: 0.95 },
+        transaccional: { ultra: 0.70, high: 0.30, premium: 0.05, luxury: 0.02, surgery: 0.95 }
+    },
     fxRates: { MXN: 1, USD: 20, COP: 3999, EUR: 22 },
     taxSettings: { isrMexico: 0.31, isrColombia: 0.35 },
     aiDefaults: {
         efficiencyUplift: 1.05,
         CACReduction: 0.10,
-        aiPersonalizationUplift: 0.15, // Base value
-        crossSellBoost: 0.12 
-    },
-    repurchaseSettings: {
-        repurchaseCycle: 0.25,
-        loyaltyMultiplier: 1.1,
-        servicesSynergy: 1.05
+        aiPersonalizationUplift: 0.08, 
+        crossSellBoost: 0.08
     },
     customerArchetypes: { 
-        carlos: { description: "Rejuvenecedor Premium 35-50", percentage: 0.08, ltv: 35000, cacTarget: 1200, churnRate: 0.15 },
-        eduardo: { description: "Novato Estético 25-40", percentage: 0.42, ltv: 18000, cacTarget: 750, churnRate: 0.25 },
-        transaccional: { description: "Cazador Ofertas", percentage: 0.22, ltv: 0, cacTarget: 400, churnRate: 1.0, primaryPurchase: "Pack Inicial" },
-        mantenimiento: { description: "Grooming Regular", percentage: 0.28, ltv: 7000, cacTarget: 450, churnRate: 0.35 }
+        carlos: { description: "Rejuvenecedor Premium 35-50", percentage: 0.08, ltv: 32085, cacTarget: 2510, churnRate: 0.20 }, 
+        eduardo: { description: "Novato Estético 25-40", percentage: 0.42, ltv: 26300, cacTarget: 750, churnRate: 0.35 }, 
+        transaccional: { 
+            description: "Cazador Ofertas", 
+            percentage: 0.22, 
+            ltv: 7980, 
+            cacTarget: 400, 
+            churnRate: 0.70,
+            conversionTo: { archetype: 'mantenimiento', rate: 0.20 },
+        },
+        mantenimiento: { description: "Grooming Regular", percentage: 0.28, ltv: 32980, cacTarget: 450, churnRate: 0.40 } 
     },
     marketing: {
         launchStrategy: {
@@ -466,143 +599,104 @@ const baseModelData = {
             plazaLaunchBudget: 2840000,
             sucursalLaunchBudget: 750000
         },
-        sustainBudgetPerLocation: 50000 
+        sustainBudgetPerLocation: 20000, 
+        walkInsPerLocationPerMonth: 50 
     },
     marketingChannels: {
-        carlosFunnel: { target: "carlos", cac: 500, wordOfMouthMultiplier: 1.15 },
-        eduardoFunnel: { target: "eduardo", cac: 300, wordOfMouthMultiplier: 1.28 }, 
-        transaccionalFunnel: { target: "transaccional", cac: 200, wordOfMouthMultiplier: 1.05 },
-        mantenimientoFunnel: { target: "mantenimiento", cac: 250, wordOfMouthMultiplier: 1.20 }
+        carlosFunnel: { target: "carlos", cac: 1800, wordOfMouthMultiplier: 1.15 },
+        eduardoFunnel: { target: "eduardo", cac: 1200, wordOfMouthMultiplier: 1.35 },
+        transaccionalFunnel: { target: "transaccional", cac: 0, wordOfMouthMultiplier: 1.05 },
+        mantenimientoFunnel: { target: "mantenimiento", cac: 600, wordOfMouthMultiplier: 1.20 }
     },
     pricing: {
+        premiumServiceDiscount: 0.0,
         services: [ 
-            { name: "HIFU", category: "Rejuvenecimiento y Facial", defaultPrice: 3800, suppliesCost: 140, tier: "premium" },
-            { name: "RF Microneedling", category: "Rejuvenecimiento y Facial", defaultPrice: 2800, suppliesCost: 170, tier: "premium" },
-            { name: "Botox", category: "Aplicaciones de Precisión", defaultPrice: 4800, suppliesCost: 100, tier: "premium", revenueShare: 0.35 },
-            { name: "Fillers", category: "Aplicaciones de Precisión", defaultPrice: 4800, suppliesCost: 140, tier: "premium", revenueShare: 0.35 },
-            { name: "Sculptra", category: "Aplicaciones de Precisión", defaultPrice: 11000, suppliesCost: 180, tier: "premium", revenueShare: 0.35 },
-            { name: "Láser CO2", category: "Rejuvenecimiento y Facial", defaultPrice: 4700, suppliesCost: 180, tier: "premium", revenueShare: 0.35 },
-            { name: "Lifting Hilos PDO", category: "Procedimientos de Contorno", defaultPrice: 3800, suppliesCost: 140, tier: "premium", revenueShare: 0.35 },
-            { name: "Liposucción Papada", category: "Procedimientos de Contorno", defaultPrice: 16500, suppliesCost: 8250, tier: "surgery", revenueShare: 0.50 },
-            { name: "Bichectomía", category: "Procedimientos de Contorno", defaultPrice: 14000, suppliesCost: 7000, tier: "surgery", revenueShare: 0.50 },
-            { name: "Blefaroplastia", category: "Procedimientos de Contorno", defaultPrice: 23000, suppliesCost: 11500, tier: "surgery", revenueShare: 0.50 },
-            { name: "Lipofilling", category: "Procedimientos de Contorno", defaultPrice: 14000, suppliesCost: 7000, tier: "surgery", revenueShare: 0.50 },
-            { name: "Limpieza Facial Profunda", category: "Rejuvenecimiento y Facial", defaultPrice: 750, suppliesCost: 75, tier: "mid" },
-            { name: "PRP Dermapen", category: "Rejuvenecimiento y Facial", defaultPrice: 3000, suppliesCost: 110, tier: "mid" },
-            { name: "Limpieza Ultrasonido", category: "Rejuvenecimiento y Facial", defaultPrice: 580, suppliesCost: 55, tier: "basic" },
-            { name: "Blanqueamiento LED", category: "Grooming y Wellness", defaultPrice: 3300, suppliesCost: 140, tier: "premium" },
-            { name: "Limpieza Dental", category: "Grooming y Wellness", defaultPrice: 1200, suppliesCost: 90, tier: "mid" },
-            { name: "Depilación Láser", category: "Grooming y Wellness", defaultPrice: 2300, suppliesCost: 140, tier: "mid" },
-            { name: "Masajes Descontracturantes", category: "Grooming y Wellness", defaultPrice: 950, suppliesCost: 75, tier: "basic" },
-            { name: "Bronceado UVA", category: "Grooming y Wellness", defaultPrice: 480, suppliesCost: 35, tier: "basic" },
-            { name: "Corte de Pelo", category: "Grooming y Wellness", defaultPrice: 380, suppliesCost: 28, tier: "basic" },
-            { name: "Ajuste Barba y Cejas", category: "Grooming y Wellness", defaultPrice: 280, suppliesCost: 18, tier: "basic" },
-            { name: "Manicure Natural", category: "Grooming y Wellness", defaultPrice: 380, suppliesCost: 28, tier: "basic" },
-            { name: "Pedicure Natural", category: "Grooming y Wellness", defaultPrice: 480, suppliesCost: 38, tier: "basic" },
-            { name: "Tinte Natural", category: "Grooming y Wellness", defaultPrice: 620, suppliesCost: 45, tier: "basic" },
-            { name: "Reducción Canas", category: "Grooming y Wellness", defaultPrice: 380, suppliesCost: 38, tier: "basic" },
-            { name: "Rebaje de Vello Corporal", category: "Grooming y Wellness", defaultPrice: 1000, suppliesCost: 50, tier: "basic" }
+            { name: "HIFU", category: "Rejuvenecimiento y Facial", defaultPrice: 3800, suppliesCost: 140, tier: "premium", adherenceTier: "premium", repurchaseCycleMonths: 12, avgDurationHours: 1.5 },
+            { name: "RF Microneedling", category: "Rejuvenecimiento y Facial", defaultPrice: 2800, suppliesCost: 170, tier: "premium", adherenceTier: "premium", repurchaseCycleMonths: 4, avgDurationHours: 1.0 },
+            { name: "Láser CO2", category: "Rejuvenecimiento y Facial", defaultPrice: 4700, suppliesCost: 180, tier: "premium", adherenceTier: "luxury", revenueShare: 0.35, repurchaseCycleMonths: 12, avgDurationHours: 1.0 },
+            { name: "Limpieza Facial Profunda", category: "Rejuvenecimiento y Facial", defaultPrice: 750, suppliesCost: 75, tier: "mid", adherenceTier: "high", repurchaseCycleMonths: 1.5, avgDurationHours: 1.0 },
+            { name: "PRP Dermapen", category: "Rejuvenecimiento y Facial", defaultPrice: 3000, suppliesCost: 110, tier: "mid", adherenceTier: "premium", repurchaseCycleMonths: 2, avgDurationHours: 1.0 },
+            { name: "Limpieza Ultrasonido", category: "Rejuvenecimiento y Facial", defaultPrice: 580, suppliesCost: 55, tier: "basic", adherenceTier: "high", repurchaseCycleMonths: 2, avgDurationHours: 0.75 },
+            { name: "Botox", category: "Aplicaciones de Precisión", defaultPrice: 4800, suppliesCost: 100, tier: "premium", adherenceTier: "premium", revenueShare: 0.35, repurchaseCycleMonths: 6, avgDurationHours: 0.5 },
+            { name: "Fillers", category: "Aplicaciones de Precisión", defaultPrice: 4800, suppliesCost: 140, tier: "premium", adherenceTier: "premium", revenueShare: 0.35, repurchaseCycleMonths: 9, avgDurationHours: 0.75 },
+            { name: "Sculptra", category: "Aplicaciones de Precisión", defaultPrice: 11000, suppliesCost: 180, tier: "premium", adherenceTier: "luxury", revenueShare: 0.35, repurchaseCycleMonths: 1.25, avgDurationHours: 1.0 },
+            { name: "Lifting Hilos PDO", category: "Procedimientos de Contorno", defaultPrice: 3800, suppliesCost: 140, tier: "premium", adherenceTier: "luxury", revenueShare: 0.35, repurchaseCycleMonths: 18, avgDurationHours: 1.5 },
+            { name: "Liposucción Papada", category: "Procedimientos de Contorno", defaultPrice: 16500, suppliesCost: 8250, tier: "surgery", adherenceTier: "surgery", revenueShare: 0.50, repurchaseCycleMonths: 60, avgDurationHours: 3.0 },
+            { name: "Bichectomía", category: "Procedimientos de Contorno", defaultPrice: 14000, suppliesCost: 7000, tier: "surgery", adherenceTier: "surgery", revenueShare: 0.50, repurchaseCycleMonths: 60, avgDurationHours: 2.0 },
+            { name: "Blefaroplastia", category: "Procedimientos de Contorno", defaultPrice: 23000, suppliesCost: 11500, tier: "surgery", adherenceTier: "surgery", revenueShare: 0.50, repurchaseCycleMonths: 60, avgDurationHours: 2.5 },
+            { name: "Lipofilling", category: "Procedimientos de Contorno", defaultPrice: 14000, suppliesCost: 7000, tier: "surgery", adherenceTier: "surgery", revenueShare: 0.50, repurchaseCycleMonths: 60, avgDurationHours: 2.5 },
+            { name: "Blanqueamiento LED", category: "Grooming y Wellness", defaultPrice: 3300, suppliesCost: 140, tier: "premium", adherenceTier: "premium", repurchaseCycleMonths: 8, avgDurationHours: 1.0 },
+            { name: "Limpieza Dental", category: "Grooming y Wellness", defaultPrice: 1200, suppliesCost: 90, tier: "mid", adherenceTier: "ultra", repurchaseCycleMonths: 6, avgDurationHours: 0.75 },
+            { name: "Depilación Láser", category: "Grooming y Wellness", defaultPrice: 2300, suppliesCost: 140, tier: "mid", adherenceTier: "high", repurchaseCycleMonths: 2, avgDurationHours: 1.0 },
+            { name: "Masajes Descontracturantes", category: "Grooming y Wellness", defaultPrice: 950, suppliesCost: 75, tier: "basic", adherenceTier: "high", repurchaseCycleMonths: 1, avgDurationHours: 1.0 },
+            { name: "Bronceado UVA", category: "Grooming y Wellness", defaultPrice: 480, suppliesCost: 35, tier: "basic", adherenceTier: "luxury", repurchaseCycleMonths: 0.5, avgDurationHours: 0.5 },
+            { name: "Corte de Pelo", category: "Grooming y Wellness", defaultPrice: 380, suppliesCost: 28, tier: "basic", adherenceTier: "ultra", repurchaseCycleMonths: 0.75, avgDurationHours: 0.75 },
+            { name: "Ajuste Barba y Cejas", category: "Grooming y Wellness", defaultPrice: 280, suppliesCost: 18, tier: "basic", adherenceTier: "ultra", repurchaseCycleMonths: 0.5, avgDurationHours: 0.5 },
+            { name: "Manicure Natural", category: "Grooming y Wellness", defaultPrice: 380, suppliesCost: 28, tier: "basic", adherenceTier: "ultra", repurchaseCycleMonths: 0.75, avgDurationHours: 0.5 },
+            { name: "Pedicure Natural", category: "Grooming y Wellness", defaultPrice: 480, suppliesCost: 38, tier: "basic", adherenceTier: "high", repurchaseCycleMonths: 1, avgDurationHours: 0.75 },
+            { name: "Tinte Natural", category: "Grooming y Wellness", defaultPrice: 620, suppliesCost: 45, tier: "basic", adherenceTier: "high", repurchaseCycleMonths: 1.5, avgDurationHours: 0.5 },
+            { name: "Reducción Canas", category: "Grooming y Wellness", defaultPrice: 380, suppliesCost: 38, tier: "basic", adherenceTier: "ultra", repurchaseCycleMonths: 1, avgDurationHours: 0.5 },
+            { name: "Rebaje de Vello Corporal", category: "Grooming y Wellness", defaultPrice: 1000, suppliesCost: 50, tier: "basic", adherenceTier: "high", repurchaseCycleMonths: 1, avgDurationHours: 0.75 }
         ],
         membership: {
-            access: {
-                price: 1400,
-                targetArchetype: ["eduardo", "mantenimiento"],
-                adoptionRate: 0.35,
-                benefits: { groomingDiscount: 0.15, priorityBooking: true, monthlyFacialIncluded: true },
-                behaviorChanges: { visitFrequencyIncrease: 1.2, premiumServiceTrial: 0.28, churnReduction: 0.20, crossSellPropensity: 0.25 }
-            },
-            elite: {
-                price: 3800,
-                targetArchetype: ["carlos"],
-                adoptionRate: 0.15,
-                benefits: { allServicesDiscount: 0.20, personalizedAIPlan: true, quarterlyConsultationIncluded: true, premiumServicesIncluded: 2 },
-                behaviorChanges: { visitFrequencyIncrease: 1.3, premiumServiceUptake: 0.75, churnReduction: 0.35, surgeryConversion: 0.08 }
-            }
+            access: { price: 1400, targetArchetype: ["eduardo", "mantenimiento"], adoptionRate: 0.35, behaviorChanges: { churnReduction: 0.20 }, discountRate: 0.15 },
+            elite: { price: 3800, targetArchetype: ["carlos"], adoptionRate: 0.15, behaviorChanges: { churnReduction: 0.35 }, discountRate: 0.20 }
         },
         bnpl: {
             enabled: true,
-            strategicImportance: "critical",
-            mode: "thirdParty",
-            feeRateThirdParty: 0.05,
-            conversionEngine: {
-                eduardo: { baseSpend: 18000, premiumSpend: 33000, conversionRate: 0.65, upliftMultiplier: 1.65 },
-                mantenimiento: { baseSpend: 17500, premiumSpend: 23000, conversionRate: 0.35, upliftMultiplier: 1.25 },
-                carlos: { baseSpend: 75000, premiumSpend: 95000, conversionRate: 0.25, upliftMultiplier: 1.20 }
-            }
+            marketingEnabled: true,
+            revenueUpliftMultiplier: 1.25,
+            minPriceThreshold: 2500 
         }
     },
     customerJourney: {
         carlos: {
-            subSegments: {
-                "carlosConservador": {
-                    weight: 0.60,
-                    journey: {
-                        "Sesión Anti-Edad Executive": { frequency: 2.8, price: 6800, duration: 2.8, bnplEnabled: true, services: ["HIFU", "RF Microneedling", "Limpieza Facial Profunda", "Corte de Pelo", "Ajuste Barba y Cejas", "Manicure Natural"] },
-                        "Sesión Injection Premium": { frequency: 1.8, price: 6400, duration: 2.3, bnplEnabled: true, services: ["Botox", "PRP Dermapen", "Corte de Pelo", "Ajuste Barba y Cejas", "Masajes Descontracturantes"] },
-                        "Sesión Grooming Executive": { frequency: 5.5, price: 2200, duration: 1.8, services: ["Corte de Pelo", "Ajuste Barba y Cejas", "Manicure Natural", "Pedicure Natural", "Tinte Natural", "Bronceado UVA", "Rebaje de Vello Corporal"] },
-                        "Sesión Dental & Wellness": { frequency: 0.9, price: 4400, duration: 2.3, services: ["Blanqueamiento LED", "Limpieza Dental", "Masajes Descontracturantes", "Corte de Pelo", "Ajuste Barba y Cejas"] }
-                    },
-                    annualLTV: 55000
-                },
-                "carlosPremium": {
-                    weight: 0.40,
-                    journey: {
-                        "Sesión Ultra Premium": { frequency: 2.5, price: 11000, duration: 3.2, bnplEnabled: true, services: ["HIFU", "Botox", "Fillers", "RF Microneedling", "Corte de Pelo", "Ajuste Barba y Cejas", "Manicure Natural", "Masajes Descontracturantes"] },
-                        "Sesión Advanced Aesthetic": { frequency: 0.8, price: 16500, duration: 2.8, bnplEnabled: true, services: ["Sculptra", "Láser CO2", "Lifting Hilos PDO", "PRP Dermapen", "Limpieza Facial Profunda"] },
-                        "Sesión Surgery Minor": { frequency: 0.12, price: 26000, duration: 3.8, bnplEnabled: true, services: ["Bichectomía", "Masajes Descontracturantes", "Corte de Pelo", "Ajuste Barba y Cejas", "Manicure Natural"], surgicalProcedure: true, capacityLimited: true },
-                        "Sesión Surgery Major": { frequency: 0.33, price: 32000, duration: 4.5, bnplEnabled: true, services: ["Blefaroplastia", "Lifting Hilos PDO", "Lipofilling", "Masajes Descontracturantes", "Corte de Pelo", "Ajuste Barba y Cejas"], surgicalProcedure: true, capacityLimited: true },
-                        "Sesión Body Contouring": { frequency: 0.05, price: 25000, duration: 4.5, bnplEnabled: true, services: ["Liposucción Papada", "RF Microneedling", "Masajes Descontracturantes", "Bronceado UVA"], surgicalProcedure: true, capacityLimited: true },
-                        "Sesión Executive Maintenance": { frequency: 5.5, price: 2900, duration: 1.8, services: ["Corte de Pelo", "Ajuste Barba y Cejas", "Manicure Natural", "Pedicure Natural", "Depilación Láser", "Bronceado UVA", "Rebaje de Vello Corporal"] },
-                        "Sesión Wellness Complete": { frequency: 3, price: 2800, duration: 2.0, services: ["Masajes Descontracturantes", "Bronceado UVA", "Limpieza Ultrasonido", "Corte de Pelo", "Reducción Canas"] }
-                    },
-                    annualLTV: 95000
-                }
-            }
+            "Corte de Pelo": 0.85, "Ajuste Barba y Cejas": 0.90, "Manicure Natural": 0.70,
+            "Reducción Canas": 0.60, "Limpieza Dental": 0.75,
+            "Limpieza Facial Profunda": 0.45, "Masajes Descontracturantes": 0.20, "Limpieza Ultrasonido": 0.35,
+            "Depilación Láser": 0.50, "Pedicure Natural": 0.40, "Tinte Natural": 0.25,
+            "Rebaje de Vello Corporal": 0.30,
+            "Botox": 0.40, "HIFU": 0.12, "RF Microneedling": 0.08, "Fillers": 0.06,
+            "PRP Dermapen": 0.03, "Blanqueamiento LED": 0.15,
+            "Láser CO2": 0.02, "Sculptra": 0.03, "Lifting Hilos PDO": 0.01, "Bronceado UVA": 0.08,
+            "Liposucción Papada": 0.01, "Bichectomía": 0.01, "Blefaroplastia": 0.02, "Lipofilling": 0.01
         },
         eduardo: {
-            subSegments: {
-                "eduardoBasico": {
-                    weight: 0.65,
-                    journey: {
-                        "Sesión Grooming Plus": { frequency: 7.5, price: 1650, duration: 1.4, services: ["Corte de Pelo", "Ajuste Barba y Cejas", "Manicure Natural", "Reducción Canas", "Bronceado UVA", "Rebaje de Vello Corporal"] },
-                        "Sesión Facial Complete": { frequency: 3.8, price: 2000, duration: 1.9, services: ["Limpieza Facial Profunda", "Limpieza Ultrasonido", "Corte de Pelo", "Ajuste Barba y Cejas", "Masajes Descontracturantes"] },
-                        "Sesión Wellness Entry": { frequency: 1.8, price: 2200, duration: 1.8, services: ["Masajes Descontracturantes", "Bronceado UVA", "Pedicure Natural", "Corte de Pelo", "Tinte Natural"] },
-                        "Sesión Premium Trial": { frequency: 0.9, price: 6000, duration: 2.3, bnplEnabled: true, services: ["HIFU", "PRP Dermapen", "Corte de Pelo", "Ajuste Barba y Cejas", "Manicure Natural"] },
-                        "Sesión Injection Entry": { frequency: 0.3, price: 7200, duration: 2.0, bnplEnabled: true, services: ["Botox", "Limpieza Facial Profunda", "Corte de Pelo", "Ajuste Barba y Cejas", "Masajes Descontracturantes"] }
-                    },
-                    annualLTV: 20000
-                },
-                "eduardoPremium": {
-                    weight: 0.35,
-                    journey: {
-                        "Sesión Anti-Edad Advanced": { frequency: 1.8, price: 7500, duration: 2.8, bnplEnabled: true, services: ["HIFU", "RF Microneedling", "Limpieza Facial Profunda", "Corte de Pelo", "Ajuste Barba y Cejas", "Manicure Natural"] },
-                        "Sesión Injection Premium": { frequency: 0.9, price: 7000, duration: 2.3, bnplEnabled: true, services: ["Botox", "Fillers", "PRP Dermapen", "Corte de Pelo", "Ajuste Barba y Cejas", "Masajes Descontracturantes"] },
-                        "Sesión Grooming Luxury": { frequency: 7.5, price: 2200, duration: 1.8, services: ["Corte de Pelo", "Ajuste Barba y Cejas", "Manicure Natural", "Pedicure Natural", "Tinte Natural", "Bronceado UVA", "Rebaje de Vello Corporal"] },
-                        "Sesión Body & Dental": { frequency: 1, price: 6200, duration: 2.5, bnplEnabled: true, services: ["Blanqueamiento LED", "Depilación Láser", "Limpieza Dental", "Corte de Pelo", "Masajes Descontracturantes"] },
-                        "Sesión Contorno Facial": { frequency: 0.33, price: 14000, duration: 2.5, bnplEnabled: true, services: ["Lipofilling", "Masajes Descontracturantes"], surgicalProcedure: true, capacityLimited: true },
-                        "Sesión Wellness Complete": { frequency: 2, price: 2800, duration: 2.0, services: ["Masajes Descontracturantes", "Reducción Canas", "Bronceado UVA", "Limpieza Ultrasonido", "Pedicure Natural"] }
-                    },
-                    annualLTV: 38000
-                }
-            }
+            "Corte de Pelo": 0.90, "Ajuste Barba y Cejas": 0.80, "Manicure Natural": 0.40,
+            "Reducción Canas": 0.15, "Limpieza Dental": 0.35,
+            "Limpieza Facial Profunda": 0.50, "Masajes Descontracturantes": 0.25, "Limpieza Ultrasonido": 0.30,
+            "Depilación Láser": 0.25, "Pedicure Natural": 0.20, "Tinte Natural": 0.15,
+            "Rebaje de Vello Corporal": 0.15,
+            "Botox": 0.08, "HIFU": 0.02, "RF Microneedling": 0.02, "Fillers": 0.0,
+            "PRP Dermapen": 0.01, "Blanqueamiento LED": 0.05,
+            "Láser CO2": 0.0, "Sculptra": 0.0, "Lifting Hilos PDO": 0.0, "Bronceado UVA": 0.02,
+            "Liposucción Papada": 0.0, "Bichectomía": 0.0, "Blefaroplastia": 0.0, "Lipofilling": 0.0
         },
-        transaccional: { subSegments: { "transaccionalPack": { weight: 0.70, description: "One-Time Experience Sessions", journey: { "Sesión Discovery Pack": { frequency: 1, price: 4000, duration: 2.5, services: ["Limpieza Facial Profunda", "Corte de Pelo", "Ajuste Barba y Cejas", "Manicure Natural", "Masajes Descontracturantes"] }, "Sesión Grooming Basic": { frequency: 2, price: 1200, duration: 1.0, services: ["Corte de Pelo", "Ajuste Barba y Cejas", "Bronceado UVA"] } }, annualLTV: 6400 }, "transaccionalExtendido": { weight: 0.30, description: "Extended Trial Sessions", journey: { "Sesión Discovery Pack": { frequency: 1, price: 4000, duration: 2.5, services: ["Limpieza Facial Profunda", "Corte de Pelo", "Ajuste Barba y Cejas", "Manicure Natural", "Masajes Descontracturantes"] }, "Sesión Grooming Extended": { frequency: 4, price: 1400, duration: 1.5, services: ["Corte de Pelo", "Ajuste Barba y Cejas", "Manicure Natural", "Bronceado UVA"] }, "Sesión Wellness Trial": { frequency: 1, price: 1800, duration: 1.5, services: ["Masajes Descontracturantes", "Limpieza Ultrasonido", "Corte de Pelo"] } }, annualLTV: 11400 } } },
-        mantenimiento: { subSegments: { "mantenimientoBasico": { weight: 0.55, description: "Regular Grooming + Wellness Sessions", journey: { "Sesión Grooming Express": { frequency: 12, price: 1400, duration: 1.5, services: ["Corte de Pelo", "Ajuste Barba y Cejas", "Reducción Canas", "Bronceado UVA", "Rebaje de Vello Corporal"] }, "Sesión Wellness Básica": { frequency: 4, price: 1800, duration: 2.0, services: ["Masajes Descontracturantes", "Limpieza Facial Profunda", "Corte de Pelo", "Ajuste Barba y Cejas"] }, "Sesión Grooming Plus": { frequency: 3, price: 1800, duration: 2.0, services: ["Corte de Pelo", "Ajuste Barba y Cejas", "Manicure Natural", "Pedicure Natural", "Bronceado UVA"] } }, annualLTV: 28500 }, "mantenimientoCompleto": { weight: 0.45, description: "Comprehensive Grooming + Occasional Premium", journey: { "Sesión Grooming Executive": { frequency: 6, price: 2000, duration: 2.0, services: ["Corte de Pelo", "Ajuste Barba y Cejas", "Manicure Natural", "Pedicure Natural", "Tinte Natural", "Bronceado UVA", "Rebaje de Vello Corporal"] }, "Sesión Wellness Pro": { frequency: 4, price: 2600, duration: 2.5, services: ["Masajes Descontracturantes", "Depilación Láser", "Limpieza Facial Profunda", "Corte de Pelo", "Reducción Canas"] }, "Sesión Dental Care": { frequency: 1, price: 3800, duration: 2.0, services: ["Blanqueamiento LED", "Limpieza Dental", "Corte de Pelo", "Ajuste Barba y Cejas"] }, "Sesión Premium Occasional": { frequency: 0.5, price: 6500, duration: 2.5, bnplEnabled: true, services: ["Botox", "Limpieza Facial Profunda", "Corte de Pelo", "Masajes Descontracturantes"] }, "Sesión Anti-Edad Entry": { frequency: 0.2, price: 5500, duration: 2.0, bnplEnabled: true, services: ["HIFU", "Corte de Pelo", "Ajuste Barba y Cejas", "Bronceado UVA"] } }, annualLTV: 38600 } } }
-    },
-    personaVigenteAI: {
-        enabled: true,
-        temporalCrossSell: {
-            "postHIFU": { timeline: "3 months after", recommendations: ["Botox", "Limpieza Facial Profunda", "PRP Dermapen"], conversionRate: 0.25, avgAdditionalRevenue: 1500 },
-            "postBotox": { timeline: "2 months after", recommendations: ["RF Microneedling", "Blanqueamiento LED"], conversionRate: 0.20, avgAdditionalRevenue: 1200 },
-            "groomingVisit": { timeline: "during visit", recommendations: ["Limpieza Facial", "Manicure", "Masajes"], conversionRate: 0.15, avgAdditionalRevenue: 500 }
+        mantenimiento: {
+            "Corte de Pelo": 1.0, "Ajuste Barba y Cejas": 1.0, "Manicure Natural": 0.50,
+            "Reducción Canas": 0.30, "Limpieza Dental": 0.40,
+            "Limpieza Facial Profunda": 0.40, "Masajes Descontracturantes": 0.20, "Limpieza Ultrasonido": 0.25,
+            "Depilación Láser": 0.15, "Pedicure Natural": 0.30, "Tinte Natural": 0.20,
+            "Rebaje de Vello Corporal": 0.20,
+            "Botox": 0.02, "HIFU": 0.01, "RF Microneedling": 0.0, "Fillers": 0.0,
+            "PRP Dermapen": 0.0, "Blanqueamiento LED": 0.03,
+            "Láser CO2": 0.0, "Sculptra": 0.0, "Lifting Hilos PDO": 0.0, "Bronceado UVA": 0.05,
+            "Liposucción Papada": 0.0, "Bichectomía": 0.0, "Blefaroplastia": 0.0, "Lipofilling": 0.0
         },
-        aiPersonalizationUplift: 0.08, 
-        dataFlywheelEffect: { month6: 1.05, month12: 1.10, month24: 1.15 }
+        transaccional: {
+            "Corte de Pelo": 0.80, "Ajuste Barba y Cejas": 0.70, "Manicure Natural": 0.25,
+            "Reducción Canas": 0.10, "Limpieza Dental": 0.15,
+            "Limpieza Facial Profunda": 0.20, "Masajes Descontracturantes": 0.15, "Limpieza Ultrasonido": 0.20,
+            "Depilación Láser": 0.05, "Pedicure Natural": 0.10, "Tinte Natural": 0.05,
+            "Rebaje de Vello Corporal": 0.10,
+            "Botox": 0.0, "HIFU": 0.0, "RF Microneedling": 0.0, "Fillers": 0.0,
+            "PRP Dermapen": 0.0, "Blanqueamiento LED": 0.0,
+            "Láser CO2": 0.0, "Sculptra": 0.0, "Lifting Hilos PDO": 0.0, "Bronceado UVA": 0.02,
+            "Liposucción Papada": 0.0, "Bichectomía": 0.0, "Blefaroplastia": 0.0, "Lipofilling": 0.0
+        }
     },
     expansionPlan: {
         enabled: true,
-        capexPerLocation: 4200000,
-        cashBufferMonths: 6, 
         expansionSchedule: [
             { month: 1,  city: "QRO", monthsSinceOpening: 0 }, 
             { month: 13, city: "MTY", monthsSinceOpening: 0 }, 
@@ -620,13 +714,6 @@ const baseModelData = {
             { month: 57, city: "BOG", monthsSinceOpening: 0 }
         ]
     },
-    capacity: {
-        treatmentRooms: 5, avgHoursPerSession: 2.3, dailyOperatingHours: 12, daysOpenPerMonth: 26, targetUtilization: 0.82,
-        activeSucursales: 1,
-        surgicalSuite: 1,
-        maxSurgeriesPerMonth: 10, 
-        get maxHoursPerMonth() { return this.treatmentRooms * this.dailyOperatingHours * this.daysOpenPerMonth * this.activeSucursales; }
-    },
     opexSucursal: {
         labor: {
             concierge: { salary: 12000, commissions: { retentionBonus: 2000, upsellRate: 0.02 } },
@@ -636,22 +723,40 @@ const baseModelData = {
         },
         staffRatios: { operariosPerRoom: 1.0, medicoPerSession: 0.01, conciergePerClient: 0.02 },
         energy: { fixedMonthlyKwh: 1000, costPerKwh: 4.5 },
-        rentaMensual: 40000, adminLocalMonthly: 10000
+        rentaMensual: 40000, 
+        adminLocalMonthly: 10000
+    },
+    capacity: {
+        treatmentRooms: 5, dailyOperatingHours: 12, daysOpenPerMonth: 26, targetUtilization: 0.70,
+        activeSucursales: 1,
+        surgicalSuite: 1,
+        maxSurgeriesPerMonth: 10, 
+        get maxHoursPerMonth() { return this.treatmentRooms * this.dailyOperatingHours * this.daysOpenPerMonth * this.activeSucursales; }
     },
     capexSucursal: {
+        remodelCostPerM2: 15000, 
+        clinicSizeM2: 250,
+        equipmentStrategy: "nuevo", 
         equipmentList: [
-             { category: "CORE MÉDICO-ESTÉTICO", name: "HIFU (Ultraformer III)", priceNew: 525000, priceReacondicionado: 285000, vidaUtilAnios: 5, maintenanceRate: 0.06, energyKwhPerHour: 2.0 },
-             { category: "ACCESORIOS", name: "Otros y Accesorios Menores", priceNew: 75000, priceReacondicionado: null, vidaUtilAnios: 3, maintenanceRate: 0.01, energyKwhPerHour: 0.1 }
+            { category: "CORE MÉDICO-ESTÉTICO", name: "HIFU (Ultraformer III)", priceNew: 525000, priceReacondicionado: 285000, vidaUtilAnios: 5, maintenanceRate: 0.06 },
+            { category: "CORE MÉDICO-ESTÉTICO", name: "Láser Fraccional CO2", priceNew: 500000, priceReacondicionado: 400000, vidaUtilAnios: 5, maintenanceRate: 0.08 },
+            { category: "CORE MÉDICO-ESTÉTICO", name: "RF Microneedling (Morpheus8)", priceNew: 350000, priceReacondicionado: 62500, vidaUtilAnios: 5, maintenanceRate: 0.07 },
+            { category: "CORE MÉDICO-ESTÉTICO", name: "Láser Nd:YAG", priceNew: 400000, priceReacondicionado: 150000, vidaUtilAnios: 5, maintenanceRate: 0.05 },
+            { category: "CORE MÉDICO-ESTÉTICO", name: "Liposuctor (VASER)", priceNew: 175000, priceReacondicionado: 140000, vidaUtilAnios: 5, maintenanceRate: 0.05 },
+            { category: "CORE MÉDICO-ESTÉTICO", name: "Instrumental Quirúrgico", priceNew: 90000, priceReacondicionado: null, vidaUtilAnios: 10, maintenanceRate: 0.02 },
+            { category: "CORE MÉDICO-ESTÉTICO", name: "Lámpara Quirúrgica LED", priceNew: 50000, priceReacondicionado: 40000, vidaUtilAnios: 7, maintenanceRate: 0.03 },
+            { category: "DENTAL", name: "Sillón Dental (A-dec 200)", priceNew: 75000, priceReacondicionado: 60000, vidaUtilAnios: 10, maintenanceRate: 0.04 },
+            { category: "DENTAL", name: "Blanqueamiento LED (Philips Zoom)", priceNew: 60000, priceReacondicionado: 48000, vidaUtilAnios: 3, maintenanceRate: 0.05 },
+            { category: "DENTAL", name: "Ultrasonido Dental", priceNew: 30000, priceReacondicionado: 24000, vidaUtilAnios: 5, maintenanceRate: 0.04 },
+            { category: "CORPORAL & DEPILACIÓN", name: "Láser de Diodo (Depilación)", priceNew: 500000, priceReacondicionado: 350000, vidaUtilAnios: 5, maintenanceRate: 0.08 },
+            { category: "CORPORAL & DEPILACIÓN", name: "Cabina UVA (Soltron)", priceNew: 125000, priceReacondicionado: 100000, vidaUtilAnios: 7, maintenanceRate: 0.05 },
+            { category: "CORPORAL & DEPILACIÓN", name: "Sauna de Cabina (Amerec)", priceNew: 115000, priceReacondicionado: 75000, vidaUtilAnios: 10, maintenanceRate: 0.03 },
+            { category: "GROOMING / ENTRADA", name: "Cauterizador Alta Frecuencia", priceNew: 25000, priceReacondicionado: 20000, vidaUtilAnios: 5, maintenanceRate: 0.03 },
+            { category: "GROOMING / ENTRADA", name: "Ultrasonido Facial", priceNew: 30000, priceReacondicionado: 24000, vidaUtilAnios: 5, maintenanceRate: 0.04 },
+            { category: "IMAGING MODULE", name: "Cámara RGB (Basler/Sony)", priceNew: 23000, priceReacondicionado: 18000, vidaUtilAnios: 5, maintenanceRate: 0.03 },
+            { category: "IMAGING MODULE", name: "Cámara Térmica (FLIR)", priceNew: 18000, priceReacondicionado: 13000, vidaUtilAnios: 5, maintenanceRate: 0.03 },
+            { category: "ACCESORIOS", name: "Otros y Accesorios Menores", priceNew: 75000, priceReacondicionado: null, vidaUtilAnios: 3, maintenanceRate: 0.01 }
         ]
-    },
-    capexTecnologico: {
-        initialInvestment: {
-            iaStackDevelopment: 5000000, // From Series A
-            serverEdgeHardware: 500000,
-            setupIntegration: 300000
-        },
-        recurringCapexAsRevenuePercentage: 0.02,
-        vidaUtilAnios: 4
     },
     opexCorporativo: {
         infrastructure: {
@@ -659,12 +764,12 @@ const baseModelData = {
             saasLicensesMonthly: 5000
         },
         G_A: {
-            baseMonthlyCost: 100000, // Lean start
+            baseMonthlyCost: 100000, 
             costPerLocationTrigger: 3,
             costIncreasePerTrigger: 50000
         },
         techTeam_RnD: {
-            baseMonthlyCost: 120000, // Lean start
+            baseMonthlyCost: 120000, 
             newHireTriggerLocations: 2,
             costPerNewHire: 80000
         }
@@ -680,9 +785,16 @@ const baseModelData = {
             { label: "Growth Debt", availableFromMonth: 30, maxAmount: 75000000, interestRate: 0.14, termYears: 5, amountDrawn: 0 }
         ]
     },
-    seasonality: [1.05, 0.95, 1.10, 0.90, 1.15, 0.85, 1.20, 0.80, 1.10, 0.95, 1.05, 0.90],
+    capexTecnologico: {
+        initialInvestment: {
+            iaStackDevelopment: 2500000
+        },
+        recurringCapexAsRevenuePercentage: 0.03,
+        vidaUtilAnios: 3
+    },
     locationRampUp: {
-        month0: 0.02, month1: 0.05, month2: 0.15, month3: 0.30, month4: 0.50, month5: 0.70, steadyState: 1.00
+        month0: 0.02, month1: 0.05, month2: 0.15, month3: 0.30, month4: 0.50, month5: 0.70, 
+        month6: 0.80, month7: 0.90, month8: 0.95, steadyState: 1.00
     },
     dataFlywheel: {
         enabled: true,
@@ -693,127 +805,110 @@ const baseModelData = {
     },
     marketingVigente: {
         enabled: true,
-        strategicFocus: 0.5, // 0 = Volume (Eduardo), 1 = Profitability (Carlos)
+        strategicFocus: 0.5, 
         dynamicCACOptimization: { 
             learningPeriod: 6,
             cacReductionRate: 0.02,
             maxReduction: 0.15 
-        },
-        marketIntelligence: {
-            'QRO': { carlosDensity: 0.15, competitionLevel: 0.3, brandAwareness: 0 },
-            'MTY': { carlosDensity: 0.23, competitionLevel: 0.6, brandAwareness: 0 },
-            'CDMX': { carlosDensity: 0.20, competitionLevel: 0.8, brandAwareness: 0 },
-            'GDL': { carlosDensity: 0.18, competitionLevel: 0.5, brandAwareness: 0 },
-            'CUN': { carlosDensity: 0.12, competitionLevel: 0.4, brandAwareness: 0 },
-            'BOG': { carlosDensity: 0.19, competitionLevel: 0.7, brandAwareness: 0 }
-        }
-    },
-    optiVigenteAI: {
-        enabled: true,
-        sessionOptimization: {
-            efficiencyUplift: 1.08, 
-            smartBundling: { utilizationTarget: 0.90, averageSessionDuration: 2.5, bundleDiscountMax: 0.12, anchorServices: ["Corte de Pelo", "Ajuste Barba y Cejas"], crossSellRate: 0.30 },
-            dynamicPricing: { peakHourMultiplier: 1.15, offPeakDiscount: 0.85 }
         }
     },
     productsRevenue: {
         enabled: true,
         launchMonth: 18, 
         strategicImportance: "high",
-        catalog: [
-            { name: "Cera Texturizante Premium", category: "hair", price: 450, cogs: 120, repurchaseCycle: 3, targetArchetype: ["carlos", "eduardo", "mantenimiento"] },
-            { name: "Gel Fijador Natural", category: "hair", price: 320, cogs: 85, repurchaseCycle: 2.5, targetArchetype: ["eduardo", "mantenimiento"] },
-            { name: "Shampoo Anticanas", category: "hair", price: 380, cogs: 95, repurchaseCycle: 2, targetArchetype: ["carlos", "mantenimiento"] },
-            { name: "Crema Anti-Edad Premium", category: "skincare", price: 780, cogs: 195, repurchaseCycle: 2.5, targetArchetype: ["carlos"] },
-            { name: "Crema Hidratante Piel Grasa", category: "skincare", price: 520, cogs: 140, repurchaseCycle: 3, targetArchetype: ["eduardo", "mantenimiento"] },
-            { name: "Crema Universal Piel Mixta", category: "skincare", price: 420, cogs: 110, repurchaseCycle: 3, targetArchetype: ["eduardo", "mantenimiento"] },
-            { name: "Bloqueador Solar Premium", category: "skincare", price: 380, cogs: 100, repurchaseCycle: 2, targetArchetype: ["carlos", "eduardo", "mantenimiento"] },
-            { name: "Aceite Barba Premium", category: "grooming", price: 350, cogs: 90, repurchaseCycle: 4, targetArchetype: ["carlos", "eduardo", "mantenimiento"] },
-            { name: "Kit Manicure Básico", category: "grooming", price: 280, cogs: 75, repurchaseCycle: 6, targetArchetype: ["eduardo", "mantenimiento"] }
-        ],
-        adoptionByArchetype: {
-            carlos: { initialAdoptionRate: 0.35, averageBasketSize: 2.1, premiumSkuPenetration: 0.80, crossSellFromServices: 0.45, repurchaseFrequency: 4.3 },
-            eduardo: { initialAdoptionRate: 0.55, averageBasketSize: 1.6, premiumSkuPenetration: 0.40, crossSellFromServices: 0.60, repurchaseFrequency: 4.6 },
-            mantenimiento: { initialAdoptionRate: 0.55, averageBasketSize: 1.8, premiumSkuPenetration: 0.25, crossSellFromServices: 0.35, repurchaseFrequency: 4.0 },
-            transaccional: { initialAdoptionRate: 0.20, averageBasketSize: 1.2, premiumSkuPenetration: 0.10, crossSellFromServices: 0.15, repurchaseFrequency: 2.5 }
-        },
-        repurchaseEngine: {
-            loyaltyMultiplier: { month3_6: 0.85, month7_12: 0.95, month13_plus: 1.05 },
-            servicesSynergy: { activeServiceCustomer: 1.4, premiumServiceCustomer: 1.8, membershipCustomer: 2.1 },
-            seasonalityBoost: { Q1: 0.90, Q2: 1.10, Q3: 1.05, Q4: 1.15 }
-        }
-    },
-    wordOfMouthEngine: {
-      enabled: true,
-      organicMultipliers: { 
-        month1_6: 1.1,
-        month7_12: 1.2,
-        month13_24: 1.25,
-        month25_plus: 1.4
-      }
-    },
-    viralByArchetype: {
-      carlos: { 
-        shareRate: 0.35,
-        viralCoefficient: 1.2
-      },
-      eduardo: { 
-        shareRate: 0.65,
-        viralCoefficient: 1.3
-      },
-      mantenimiento: { 
-        shareRate: 0.40,
-        viralCoefficient: 1.15
-      }
+        avgSpendPerCustomerPerMonth: 150,
+        cogsPercentage: 0.40
     }
 };
 let modelData = JSON.parse(JSON.stringify(baseModelData)); // Working copy
 const scenarios = {
     pessimistic: {
-        marketing: { sustainBudgetPerLocation: 40000 },
-        marketingChannels: { eduardoFunnel: { wordOfMouthMultiplier: 1.22 } },
-        customerArchetypes: { carlos: { churnRate: 0.20 }, eduardo: { churnRate: 0.30 } }
+        marketing: { sustainBudgetPerLocation: 15000 },
+        realismLevers: { funnelConversionRate: 0.60 },
+        customerArchetypes: { carlos: { churnRate: 0.30 }, eduardo: { churnRate: 0.45 }, mantenimiento: { churnRate: 0.55 } },
+        capacity: { targetUtilization: 0.65 }
     },
     base: {},
     optimistic: {
-        marketing: { sustainBudgetPerLocation: 60000 },
-        marketingChannels: { eduardoFunnel: { wordOfMouthMultiplier: 1.35 } },
-        personaVigenteAI: { aiPersonalizationUplift: 0.12, crossSellBoost: 0.15 }
+        marketing: { sustainBudgetPerLocation: 30000 },
+        marketingChannels: { eduardoFunnel: { wordOfMouthMultiplier: 1.45 } },
+        realismLevers: { funnelConversionRate: 0.80 },
+        customerArchetypes: { carlos: { churnRate: 0.18 }, eduardo: { churnRate: 0.30 }, mantenimiento: { churnRate: 0.35 } },
+        capacity: { targetUtilization: 0.75 }
     }
 };
 // Injected controlsConfig for Beauty Tech
 const controlsConfig = {
-    financiamientoOperaciones: [
-        { id: 'seriesA', label: 'Capital Serie A', min: 5000000, max: 50000000, step: 1000000, type: 'number', format: val => formatCurrency(val, true), tooltip: 'Capital Serie A para arranque y expansión inicial' },
-        { id: 'ventureDebtRate', label: 'Tasa Venture Debt', min: 0.12, max: 0.22, step: 0.005, type: 'range', format: val => (val * 100).toFixed(1) + '%', tooltip: 'Tasa de interés para la línea de Venture Debt' },
-        { id: 'targetUtilization', label: 'Utilización Target', min: 0.70, max: 0.90, step: 0.01, type: 'range', format: val => (val * 100).toFixed(0) + '%', tooltip: 'Target de ocupación de salas. Una decisión estratégica clave.' },
+    estrategia: [
+        { id: 'scenario', label: 'Escenarios Estratégicos', type: 'scenario', tooltip: 'Selecciona un preset de supuestos (Pesimista, Base, Optimista) que ajustará múltiples palancas a la vez. Puedes refinar cada palanca individualmente después.' },
+        { id: 'sustainBudgetPerLocation', label: 'Inversión Marketing Mensual', min: 15000, max: 35000, step: 1000, type: 'range', format: val => formatCurrency(val, true), tooltip: 'Presupuesto mensual de marketing por sucursal. Ajusta el ritmo de adquisición de clientes.' },
+        { 
+            id: 'strategicFocus', 
+            label: 'Foco Estratégico Mkt', 
+            min: 0, max: 1, step: 0.05, 
+            type: 'range', 
+            format: val => {
+                const rentabilidad = (val * 100).toFixed(0);
+                const adquisicion = 100 - rentabilidad;
+                return `${adquisicion}% Adq. / ${rentabilidad}% Rent.`;
+            }, 
+            tooltip: 'Define la asignación del presupuesto de marketing. 0% = Foco en Adquisición (Volumen, arquetipos de entrada), 100% = Foco en Rentabilidad (Clientes Premium, arquetipo Carlos).' 
+        },
+        { id: 'wordOfMouthMultiplierEduardo', label: 'Potencial Viral (Boca a Boca)', min: 1.05, max: 1.50, step: 0.01, type: 'range', format: val => val.toFixed(2) + 'x', tooltip: 'Multiplicador de crecimiento orgánico. Cada cliente pagado trae consigo clientes adicionales por recomendación.' },
     ],
-    crecimientoEstrategico: [
-        { id: 'sustainBudgetPerLocation', label: 'Inversión Marketing Mensual', min: 30000, max: 70000, step: 2500, type: 'range', format: val => formatCurrency(val, true), tooltip: 'Presupuesto mensual de marketing por sucursal para sostener el crecimiento.' },
-        { id: 'wordOfMouthMultiplierEduardo', label: 'Potencial Viral (Boca a Boca)', min: 1.20, max: 1.40, step: 0.01, type: 'range', format: val => val.toFixed(2) + 'x', tooltip: 'Multiplicador de crecimiento orgánico para el arquetipo "Eduardo".' },
-        { id: 'aiPersonalizationUplift', label: 'Uplift por Personalización IA', min: 0.05, max: 0.15, step: 0.01, type: 'range', format: val => (val * 100).toFixed(0) + '%', tooltip: 'Aumento de ingresos por personalización de ofertas con IA.' },
-        { id: 'crossSellBoost', label: 'Boost de Venta Cruzada IA', min: 0.08, max: 0.20, step: 0.01, type: 'range', format: val => (val * 100).toFixed(0) + '%', tooltip: 'Aumento de ingresos por recomendaciones de venta cruzada con IA.' }
+    operaciones: [
+        { id: 'seriesA', label: 'Capital Serie A', min: 5000000, max: 50000000, step: 1000000, type: 'number', format: val => formatCurrency(val, true), tooltip: 'Capital Serie A para arranque y expansión inicial.' },
+        { id: 'ventureDebtRate', label: 'Tasa Venture Debt', min: 0.12, max: 0.22, step: 0.005, type: 'range', format: val => (val * 100).toFixed(1) + '%', tooltip: 'Tasa de interés para la línea de Venture Debt.' },
+        { id: 'equipmentStrategy', label: 'Estrategia de Equipo', type: 'select', options: ['nuevo', 'reacondicionado'], tooltip: 'Elegir entre equipo nuevo (mayor CAPEX, mayor vida útil) o reacondicionado (menor CAPEX inicial).' },
+        { id: 'clinicSizeM2', label: 'Tamaño Clínica (m²)', min: 150, max: 400, step: 10, type: 'number', format: val => `${val} m²`, tooltip: 'Metros cuadrados para el cálculo del CAPEX de remodelación.' },
+        { id: 'remodelCostPerM2', label: 'Costo Remodelación ($/m²)', min: 12000, max: 25000, step: 500, type: 'number', format: val => formatCurrency(val, true), tooltip: 'Costo de adecuación por metro cuadrado.' },
     ],
     IA_Native_Controls: {
       OptiVigenteAI: {
         label: "OptiVigente AI (Eficiencia Operativa)",
         type: "toggle",
         default: true,
-        description: "Mejora la eficiencia operativa reduciendo costos variables."
+        description: "Aumenta las horas de servicio efectivas de la clínica optimizando agendas y recursos. Impacto directo en la capacidad de crecimiento."
       },
       MarketingVigenteAI: {
         label: "MarketingVigente AI (Optimización de CAC)",
         type: "toggle",
         default: true,
-        description: "Reduce el CAC asignando presupuestos inteligentemente."
+        description: "Reduce el Costo de Adquisición de Cliente (CAC) al optimizar la inversión en pauta digital de forma automática."
       },
       PersonaVigenteAI: {
         label: "PersonaVigente AI (Inteligencia de Cliente)",
         type: "toggle",
         default: true,
-        description: "Habilita cross-sell, upsell y personalización avanzada."
+        description: "Habilita el cross-sell y upsell personalizado, aumentando el ingreso promedio por cliente."
       }
-    }
+    },
+    monetizacion: [
+        { id: 'membershipPriceAccess', label: 'Precio Membresía Access', min: 800, max: 2000, step: 100, type: 'range', format: val => formatCurrency(val, true), tooltip: 'Precio mensual de la membresía de entrada para arquetipos Eduardo y Mantenimiento.' },
+        { id: 'membershipAdoptionAccess', label: 'Adopción Membresía Access', min: 0.20, max: 0.50, step: 0.01, type: 'range', format: val => (val * 100).toFixed(0) + '%', tooltip: 'Porcentaje de clientes elegibles que adoptan la membresía Access.' },
+        { id: 'membershipPriceElite', label: 'Precio Membresía Elite', min: 2500, max: 5000, step: 100, type: 'range', format: val => formatCurrency(val, true), tooltip: 'Precio mensual de la membresía premium para el arquetipo Carlos.' },
+        { id: 'membershipAdoptionElite', label: 'Adopción Membresía Elite', min: 0.10, max: 0.40, step: 0.01, type: 'range', format: val => (val * 100).toFixed(0) + '%', tooltip: 'Porcentaje de Carlos que adoptan la membresía Elite.' },
+        { id: 'dtcSpend', label: 'Gasto en Productos (DTC)/Cliente', min: 50, max: 400, step: 10, type: 'range', format: val => formatCurrency(val, true), tooltip: 'Gasto promedio mensual por cliente activo en productos de cuidado en casa.' },
+        { id: 'bnplMarketingToggle', label: 'BNPL en Marketing (Atracción)', type: 'toggle', tooltip: 'Activa/Desactiva la comunicación de BNPL en campañas de marketing para aumentar la conversión inicial.' },
+        { id: 'bnplUplift', label: 'Uplift por BNPL en Clínica (Upsale)', min: 1.0, max: 1.5, step: 0.01, type: 'range', format: val => `+${((val - 1) * 100).toFixed(0)}%`, tooltip: 'Multiplicador de ingresos en servicios caros gracias a las facilidades de pago (BNPL) ofrecidas en la clínica.' },
+        { id: 'specialistRevenueShare', label: 'Revenue Share Especialistas', min: 0.40, max: 0.60, step: 0.01, type: 'range', format: val => (val * 100).toFixed(0) + '%', tooltip: 'Porcentaje de los ingresos por servicios que se paga a los especialistas. Impacta directamente el margen bruto.' },
+    ],
+    calibracion: [
+        { id: 'treatmentRooms', label: 'Salas de Tratamiento / Sucursal', min: 3, max: 8, step: 1, type: 'range', format: val => `${val} salas`, tooltip: 'Número de salas de tratamiento por clínica. Define la capacidad de servicio y el CAPEX.' },
+        { id: 'targetUtilization', label: 'Utilización Target', min: 0.60, max: 0.85, step: 0.01, type: 'range', format: val => (val * 100).toFixed(0) + '%', tooltip: 'Target de ocupación de salas. Una decisión estratégica clave.' },
+        { id: 'funnelConversionRate', label: 'Tasa Conversión (Lead a Cliente)', min: 0.50, max: 0.90, step: 0.01, type: 'range', format: val => (val * 100).toFixed(0) + '%', tooltip: 'Porcentaje de clientes adquiridos que efectivamente inician tratamiento.' },
+        { id: 'adherenceUltra', label: 'Adherencia - Servicios Ultra', min: 0.70, max: 0.95, step: 0.01, type: 'range', format: val => (val * 100).toFixed(0) + '%', tooltip: 'Adherencia para servicios esenciales (corte, barba, higiene).' },
+        { id: 'adherenceHigh', label: 'Adherencia - Servicios High', min: 0.50, max: 0.85, step: 0.01, type: 'range', format: val => (val * 100).toFixed(0) + '%', tooltip: 'Adherencia para servicios de mantenimiento (faciales, masajes).' },
+        { id: 'adherencePremium', label: 'Adherencia - Servicios Premium', min: 0.30, max: 0.70, step: 0.01, type: 'range', format: val => (val * 100).toFixed(0) + '%', tooltip: 'Adherencia para servicios de inversión (botox, treatments).' },
+        { id: 'adherenceLuxury', label: 'Adherencia - Servicios Luxury', min: 0.10, max: 0.50, step: 0.01, type: 'range', format: val => (val * 100).toFixed(0) + '%', tooltip: 'Adherencia para servicios aspiracionales (procedimientos avanzados).' },
+        { id: 'churnRateCarlos', label: 'Churn Anual - Carlos', min: 0.15, max: 0.35, step: 0.01, type: 'range', format: val => (val * 100).toFixed(0) + '%', tooltip: 'Tasa de abandono anual para el arquetipo de mayor valor.' },
+        { id: 'churnRateEduardo', label: 'Churn Anual - Eduardo', min: 0.25, max: 0.50, step: 0.01, type: 'range', format: val => (val * 100).toFixed(0) + '%', tooltip: 'Tasa de abandono anual para el arquetipo de volumen.' },
+        { id: 'churnRateMantenimiento', label: 'Churn Anual - Mantenimiento', min: 0.30, max: 0.60, step: 0.01, type: 'range', format: val => (val * 100).toFixed(0) + '%', tooltip: 'Tasa de abandono anual para el arquetipo de mantenimiento.' },
+        // V50.6 ADDITIONS
+        { id: 'churnRateTransaccional', label: 'Churn Anual - Transaccional', min: 0.50, max: 0.90, step: 0.01, type: 'range', format: val => (val * 100).toFixed(0) + '%', tooltip: 'Tasa de abandono para el cliente más volátil, clave para el modelo de conversión.' },
+        { id: 'premiumServiceDiscount', label: 'Descuento Servicios Premium', min: 0, max: 0.40, step: 0.05, type: 'range', format: val => (val * 100).toFixed(0) + '%', tooltip: 'Descuento aplicado a Botox, HIFU, Fillers para calibrar vs mercado LATAM. 0% = precios actuales, 30% = más competitivo.' },
+        { id: 'realismFactor', label: 'Factor de Realismo General', min: 0.6, max: 1.0, step: 0.05, type: 'range', format: val => (val * 100).toFixed(0) + '%', tooltip: 'Aplica factor de conservadurismo a comportamiento de clientes. 100% = optimista, 80% = realista, 60% = conservador.' },
+    ]
 };
 let financialResults = { pl: [], cf: [], bs: [], kpis: [], tirEquity: 0, detailedPL: [] };
 const BALANCE_TOLERANCE = 1000;
@@ -834,198 +929,352 @@ function formatCurrency(value, full = false) {
     return '$' + Math.round(value).toLocaleString();
 }
 /**
+ * Churn dinámico por antigüedad de cohorte
+ */
+function getDynamicChurn(archetype, cohortAgeMonths) {
+    const baseChurn = modelData.customerArchetypes[archetype].churnRate;
+    let ageMultiplier;
+    if (cohortAgeMonths <= 3) {
+        ageMultiplier = 2.5;    // 2.5x más churn primeros 3 meses
+    } else if (cohortAgeMonths <= 12) {
+        ageMultiplier = 1.5;    // 1.5x churn hasta el año
+    } else {
+        ageMultiplier = 0.7;    // 30% menos churn después del año (lealtad)
+    }
+    return Math.min(baseChurn * ageMultiplier, 0.95); // Cap máximo 95%
+}
+/**
+ * 🔥  V50.3 REPLACEMENT: Calculates the average service hours a new customer will consume using the adherence matrix.
+ */
+function getAvgHoursPerNewCustomer(modelData) {
+    let totalHours = 0;
+    let totalPercentage = 0;
+    const { customerArchetypes, customerJourney, pricing, adherenceMatrix, customerBehavior } = modelData;
+    const realismFactor = customerBehavior?.realismFactor || 1.0;
+
+    for (const archetype in customerArchetypes) {
+        if (archetype === 'transaccional') continue; // Exclude walk-ins from paid acquisition calc
+        const archData = customerArchetypes[archetype];
+        const journey = customerJourney[archetype];
+        let hoursForArchetype = 0;
+        for (const serviceName in journey) {
+            const adoptionRate = journey[serviceName] * realismFactor;
+            const service = pricing.services.find(s => s.name === serviceName);
+            if (adoptionRate > 0 && service && service.repurchaseCycleMonths > 0) {
+                const adherenceTier = service.adherenceTier || 'high'; // fallback
+                const adherenceFactor = adherenceMatrix[archetype]?.[adherenceTier] || 0.75; // fallback
+                const monthlyFrequency = (1 / service.repurchaseCycleMonths) * adherenceFactor;
+                hoursForArchetype += adoptionRate * monthlyFrequency * service.avgDurationHours;
+            }
+        }
+        totalHours += hoursForArchetype * archData.percentage;
+        totalPercentage += archData.percentage;
+    }
+    
+    return totalPercentage > 0 ? totalHours / totalPercentage : 0.5; // Return weighted average, or a default of 0.5 hours
+}
+/**
  * Module 1: Customer Growth and Revenue Build-Up Engine.
+ * COHORT ENGINE: Re-architected to track monthly customer cohorts.
  */
 function runMonthlySimulation(modelData, previousMonthState, month) {
-    // PHASE 3 & 4: SAFE SWITCHES & PERMANENT LOGIC
-    let efficiencyUplift = toggleControls.OptiVigenteAI ? (modelData.aiDefaults?.efficiencyUplift ?? 1.0) : 1.0;
-    let CACReduction = toggleControls.MarketingVigenteAI ? (modelData.aiDefaults?.CACReduction ?? 0.0) : 0.0;
-    let aiPersonalizationUplift = toggleControls.PersonaVigenteAI ? (modelData.personaVigenteAI?.aiPersonalizationUplift ?? 0.0) : 0.0;
-    let crossSellBoost = toggleControls.PersonaVigenteAI ? (modelData.aiDefaults?.crossSellBoost ?? 0.0) : 0.0;
+    // --- I. SETUP AND LEVERS ---
+    const { aiDefaults, customerArchetypes, marketing, marketingChannels, pricing, customerJourney, expansionPlan, capacity, locationRampUp, productsRevenue, customerBehavior } = modelData;
+    const efficiencyUplift = toggleControls.OptiVigenteAI ? (aiDefaults?.efficiencyUplift ?? 1.0) : 1.0;
+    const CACReduction = toggleControls.MarketingVigenteAI ? (aiDefaults?.CACReduction ?? 0.0) : 0.0;
+    const aiPersonalizationUplift = toggleControls.PersonaVigenteAI ? (aiDefaults?.aiPersonalizationUplift ?? 0.0) : 0.0;
+    const crossSellBoost = toggleControls.PersonaVigenteAI ? (aiDefaults?.crossSellBoost ?? 0.0) : 0.0;
+    // V50.6 ADDITIONS
+    const realismFactor = customerBehavior?.realismFactor || 1.0;
+    const premiumDiscount = pricing?.premiumServiceDiscount || 0.0;
     
-    if (!previousMonthState.activeCustomers) {
-        previousMonthState.activeCustomers = { carlos: 0, eduardo: 0, transaccional: 0, mantenimiento: 0 };
+    const nextMonthCohorts = {};
+    
+    // --- II. CUSTOMER RETENTION & CONVERSION (COHORT-BASED) ---
+    for (const cohortMonth in previousMonthState.customerCohorts) {
+        const cohort = previousMonthState.customerCohorts[cohortMonth];
+        const survivingCohort = {};
+        let cohortHasSurvivors = false;
+        for (const archetype in cohort) {
+            const previousActive = cohort[archetype];
+            if (previousActive <= 0) continue;
+            const cohortAgeMonths = month - parseInt(cohortMonth);
+            const dynamicAnnualChurn = getDynamicChurn(archetype, cohortAgeMonths);
+            const monthlyChurnRate = 1 - Math.pow(1 - dynamicAnnualChurn, 1/12);
+            const membershipTier = (archetype === 'carlos') ? 'elite' : 'access';
+            const membership = pricing.membership[membershipTier];
+            let adoptionRate = 0, churnReduction = 0;
+            if (membership && membership.targetArchetype.includes(archetype)) {
+                adoptionRate = membership.adoptionRate;
+                churnReduction = membership.behaviorChanges.churnReduction;
+            }
+            
+            const members = previousActive * adoptionRate;
+            const nonMembers = previousActive - members;
+            const retainedMembers = members * (1 - (monthlyChurnRate * (1 - churnReduction)));
+            const retainedNonMembers = nonMembers * (1 - monthlyChurnRate);
+            
+            survivingCohort[archetype] = retainedMembers + retainedNonMembers;
+            if (survivingCohort[archetype] > 0.1) {
+                 cohortHasSurvivors = true;
+            }
+        }
+        const cohortAgeMonths = month - parseInt(cohortMonth);
+        if (cohortHasSurvivors && cohortAgeMonths <= 36) {
+             nextMonthCohorts[cohortMonth] = survivingCohort;
+        }
     }
-    previousMonthState.activeLocations.forEach(loc => loc.monthsSinceOpening++);
+    for (const cohortMonth in nextMonthCohorts) {
+        const cohort = nextMonthCohorts[cohortMonth];
+        if (cohort.transaccional > 0) {
+            const conversionConfig = customerArchetypes.transaccional.conversionTo;
+            const convertingCustomers = cohort.transaccional * (conversionConfig?.rate || 0);
+            if (convertingCustomers > 0) {
+                cohort.transaccional -= convertingCustomers;
+                cohort.mantenimiento = (cohort.mantenimiento || 0) + convertingCustomers;
+            }
+        }
+    }
+    // --- III. EXPANSION & CAPACITY CALCULATION ---
+    let activeSucursales = previousMonthState.activeSucursales;
+    let newLocationsThisMonth = 0;
+    const activeLocations = [...previousMonthState.activeLocations];
+    activeLocations.forEach(loc => { loc.monthsSinceOpening++; });
+    const expansionEvent = expansionPlan.expansionSchedule.find(e => e.month === month);
+    if (expansionEvent) {
+         activeSucursales++;
+         newLocationsThisMonth++;
+         activeLocations.push({ city: expansionEvent.city, monthsSinceOpening: 0, openingMonth: month });
+    }
+    const baseCapacityPerLocation = capacity.treatmentRooms * capacity.dailyOperatingHours * capacity.daysOpenPerMonth;
+    const totalCapacityAllLocations = baseCapacityPerLocation * activeSucursales;
+    const totalAvailableHours = totalCapacityAllLocations * capacity.targetUtilization * efficiencyUplift;
+    // --- IV. DYNAMIC CUSTOMER ACQUISITION (V49 LOGIC) ---
+    let hoursConsumedByExisting = 0;
+    for (const cohortMonth in nextMonthCohorts) {
+        for (const archetype in nextMonthCohorts[cohortMonth]) {
+            const customersInCohort = nextMonthCohorts[cohortMonth][archetype];
+            const journey = customerJourney[archetype];
+            for(const serviceName in journey) {
+                const service = pricing.services.find(s => s.name === serviceName);
+                if(service && service.repurchaseCycleMonths > 0) {
+                    const adherenceTier = service.adherenceTier || 'high';
+                    const adherenceFactor = modelData.adherenceMatrix[archetype]?.[adherenceTier] || 0.75;
+                    const monthlyFrequency = (1 / service.repurchaseCycleMonths) * adherenceFactor;
+                    hoursConsumedByExisting += customersInCohort * (journey[serviceName] * realismFactor) * monthlyFrequency * service.avgDurationHours;
+                }
+            }
+        }
+    }
     
-    // 1. New Customer Acquisition
+    const hoursAvailableForGrowth = Math.max(0, totalAvailableHours - hoursConsumedByExisting);
+    const avgHoursPerNewCustomer = getAvgHoursPerNewCustomer(modelData);
+    const maxNewCustomersFromCapacity = avgHoursPerNewCustomer > 0 ? Math.floor(hoursAvailableForGrowth / avgHoursPerNewCustomer) : 0;
     let totalMarketingBudget;
-    const launchConfig = modelData.marketing.launchStrategy;
-    const expansionEvent = modelData.expansionPlan.expansionSchedule.find(e => e.month === month);
-    
+    const launchConfig = marketing.launchStrategy;
     if (month <= launchConfig.durationMonths) {
-        // Initial seed funding period
         totalMarketingBudget = launchConfig.seedFundingAllocation / launchConfig.durationMonths;
     } else if (expansionEvent) {
-        // Check if it's a new city (plaza) or a new branch in an existing city
         const isNewPlaza = !previousMonthState.launchedMarkets.has(expansionEvent.city);
-        if (isNewPlaza) {
-            log(`🔥 PLAZA LAUNCH: Applying full marketing budget for new city: ${expansionEvent.city}`);
-            totalMarketingBudget = launchConfig.plazaLaunchBudget / launchConfig.durationMonths;
-        } else {
-            log(`🌿 SUCURSAL LAUNCH: Applying reduced marketing budget for existing city: ${expansionEvent.city}`);
-            totalMarketingBudget = launchConfig.sucursalLaunchBudget / launchConfig.durationMonths;
-        }
+        totalMarketingBudget = isNewPlaza ? (launchConfig.plazaLaunchBudget / launchConfig.durationMonths) : (launchConfig.sucursalLaunchBudget / launchConfig.durationMonths);
     } else {
-        // Sustaining budget for all active locations
-        totalMarketingBudget = modelData.marketing.sustainBudgetPerLocation * (previousMonthState.activeSucursales || 1);
+        totalMarketingBudget = marketing.sustainBudgetPerLocation * activeSucursales;
     }
     
-    totalMarketingBudget *= efficiencyUplift;
+    const budgetAllocations = calculateIntelligentBudgetAllocation(modelData, month, totalMarketingBudget);
+    const desiredNewCustomers = {};
+    let totalDesiredNewCustomers = 0;
     
-    const budgetAllocations = calculateIntelligentBudgetAllocation(modelData, month, totalMarketingBudget, previousMonthState.activeSucursales);
-    const newCustomers = {};
-    for (const archetype in modelData.customerArchetypes) {
-        const funnelKey = `${archetype}Funnel`;
-        const funnel = modelData.marketingChannels[funnelKey];
+    let effectiveConversionRate = modelData.realismLevers.funnelConversionRate;
+    if (modelData.pricing.bnpl.marketingEnabled) {
+        effectiveConversionRate *= 1.15;
+    }
+
+    for (const archetype in customerArchetypes) {
+        if (archetype === 'transaccional') continue;
+        const funnel = marketingChannels[`${archetype}Funnel`];
         if (!funnel) continue;
         const budgetForArchetype = budgetAllocations[archetype] || 0;
         const effectiveCAC = funnel.cac * (1 - CACReduction);
         const paidCustomers = effectiveCAC > 0 ? Math.floor(budgetForArchetype / effectiveCAC) : 0;
-        
-        const organicCustomers = Math.floor(paidCustomers * (funnel.wordOfMouthMultiplier -1));
-        newCustomers[archetype] = paidCustomers + organicCustomers;
+        const organicCustomers = Math.floor(paidCustomers * (funnel.wordOfMouthMultiplier - 1));
+        const totalAcquired = (paidCustomers + organicCustomers) * effectiveConversionRate;
+        desiredNewCustomers[archetype] = { total: totalAcquired, paid: paidCustomers * effectiveConversionRate, organic: organicCustomers * effectiveConversionRate };
+        totalDesiredNewCustomers += totalAcquired;
     }
-    
-    const activeCustomers = {};
-    let totalActiveCustomers = 0;
-    for (const archetype in modelData.customerArchetypes) {
-        const previousActive = previousMonthState.activeCustomers[archetype] || 0;
-        let churnRate = modelData.customerArchetypes[archetype].churnRate / 12;
-        
-        const membershipTier = (archetype === 'carlos') ? 'elite' : 'access';
-        const membership = modelData.pricing.membership[membershipTier];
-        let adoptionRate = 0;
-        let churnReduction = 0;
-        if(membership && membership.targetArchetype.includes(archetype)) {
-            adoptionRate = membership.adoptionRate;
-            churnReduction = membership.behaviorChanges.churnReduction;
+    const newCustomers = {};
+    const walkIns = (marketing.walkInsPerLocationPerMonth || 0) * activeSucursales;
+    newCustomers.transaccional = { total: walkIns, paid: 0, organic: walkIns };
+    if (totalDesiredNewCustomers > maxNewCustomersFromCapacity) {
+        log(` 📈  M${month}: Crecimiento limitado por capacidad. Deseados: ${Math.round(totalDesiredNewCustomers)}, Permitidos: ${maxNewCustomersFromCapacity}`);
+        const scaleFactor = totalDesiredNewCustomers > 0 ? maxNewCustomersFromCapacity / totalDesiredNewCustomers : 0;
+        for (const archetype in desiredNewCustomers) {
+            newCustomers[archetype] = {
+                total: desiredNewCustomers[archetype].total * scaleFactor,
+                paid: desiredNewCustomers[archetype].paid * scaleFactor,
+                organic: desiredNewCustomers[archetype].organic * scaleFactor
+            };
         }
-        
-        const members = previousActive * adoptionRate;
-        const nonMembers = previousActive - members;
-        const retainedMembers = members * (1 - (churnRate * (1 - churnReduction)));
-        const retainedNonMembers = nonMembers * (1 - churnRate);
-        
-        activeCustomers[archetype] = retainedMembers + retainedNonMembers + (newCustomers[archetype] || 0);
-        totalActiveCustomers += activeCustomers[archetype];
+    } else {
+        for (const archetype in desiredNewCustomers) {
+            newCustomers[archetype] = desiredNewCustomers[archetype];
+        }
     }
-    // 3. Calculate Revenue and Sessions
+    const newCohortData = {};
+    for(const archetype in newCustomers){
+        newCohortData[archetype] = newCustomers[archetype].total;
+    }
+    nextMonthCohorts[month] = newCohortData;
+    
+    // --- V. REVENUE ENGINE ---
     let serviceRevenue = 0;
     let totalSessionHours = 0;
+    let totalDiscounts = 0;
+    const activeSucursalesForRevenue = activeSucursales > 0 ? activeSucursales : 1;
+    const activeCustomers = {};
+    let totalActiveCustomers = 0;
+    // V50.7 ADDITION: Initialize breakdown objects
+    const tierBreakdown = { premium: 0, surgery: 0, mid: 0, basic: 0 };
+    const serviceBreakdown = {};
+    pricing.services.forEach(s => serviceBreakdown[s.name] = 0);
+
+    for (const cohortMonth in nextMonthCohorts) {
+        for (const archetype in nextMonthCohorts[cohortMonth]) {
+            activeCustomers[archetype] = (activeCustomers[archetype] || 0) + nextMonthCohorts[cohortMonth][archetype];
+        }
+    }
+    for (const archetype in activeCustomers) {
+        totalActiveCustomers += activeCustomers[archetype];
+    }
     
-    (previousMonthState.activeLocations.length > 0 ? previousMonthState.activeLocations : [{ monthsSinceOpening: month }]).forEach(loc => {
+    let totalServiceRevenueFromLocations = 0;
+    activeLocations.forEach(loc => {
         const rampUpKey = `month${loc.monthsSinceOpening}`;
-        const rampUpFactor = modelData.locationRampUp[rampUpKey] || modelData.locationRampUp.steadyState;
+        const rampUpFactor = locationRampUp[rampUpKey] || locationRampUp.steadyState;
         
-        let locationRevenue = 0;
-        let locationSessionHours = 0;
-        for (const archetype in activeCustomers) {
-            const customersInThisLocation = activeCustomers[archetype] / (previousMonthState.activeSucursales || 1);
-            if (customersInThisLocation <= 0) continue;
-            
-            const archetypeConfig = modelData.customerJourney[archetype];
-            
-            for (const subSegmentName in archetypeConfig.subSegments) {
-                const subSegment = archetypeConfig.subSegments[subSegmentName];
-                const customersInSubSegment = customersInThisLocation * subSegment.weight;
-                
-                for (const sessionName in subSegment.journey) {
-                    const sessionDetails = subSegment.journey[sessionName];
-                    const monthlyFrequency = (sessionDetails.frequency || 0) / 12;
-                    locationRevenue += customersInSubSegment * monthlyFrequency * (sessionDetails.price || 0);
-                    locationSessionHours += customersInSubSegment * monthlyFrequency * (sessionDetails.duration || 0);
+        for (const service of pricing.services) {
+            let customersUsingThisService = 0;
+            for (const archetype in activeCustomers) {
+                const adoptionRateForService = (customerJourney[archetype]?.[service.name] || 0) * realismFactor;
+                customersUsingThisService += (activeCustomers[archetype] / activeSucursalesForRevenue) * adoptionRateForService;
+            }
+
+            if (customersUsingThisService > 0 && service.repurchaseCycleMonths > 0) {
+                let weightedAdherence = 0;
+                let totalWeight = 0;
+                for (const archetype in activeCustomers) {
+                    const customerCount = activeCustomers[archetype] || 0;
+                    const adoptionRateForService = (customerJourney[archetype]?.[service.name] || 0) * realismFactor;
+                    if (customerCount > 0 && adoptionRateForService > 0) {
+                        const adherenceTier = service.adherenceTier || 'high';
+                        const adherenceFactor = modelData.adherenceMatrix[archetype]?.[adherenceTier] || 0.75;
+                        const weight = customerCount * adoptionRateForService;
+                        weightedAdherence += adherenceFactor * weight;
+                        totalWeight += weight;
+                    }
                 }
+                const finalAdherence = totalWeight > 0 ? weightedAdherence / totalWeight : 0.75;
+                const monthlyFrequency = (1 / service.repurchaseCycleMonths) * finalAdherence;
+                
+                let servicePrice = service.defaultPrice;
+                if (['Botox', 'HIFU', 'Fillers', 'RF Microneedling'].includes(service.name)) {
+                    servicePrice *= (1 - premiumDiscount);
+                }
+
+                if (pricing.bnpl.enabled && servicePrice > pricing.bnpl.minPriceThreshold) {
+                    servicePrice *= pricing.bnpl.revenueUpliftMultiplier;
+                }
+
+                for (const archetype in activeCustomers) {
+                    const membershipTier = (archetype === 'carlos') ? 'elite' : 'access';
+                    const membership = pricing.membership[membershipTier];
+                    if (membership && membership.targetArchetype.includes(archetype)) {
+                         const adoptionRateForService = (customerJourney[archetype]?.[service.name] || 0) * realismFactor;
+                         const membersConsuming = (activeCustomers[archetype] / activeSucursalesForRevenue) * adoptionRateForService * membership.adoptionRate;
+                         if (membersConsuming > 0) {
+                             const discountAmount = servicePrice * membership.discountRate;
+                             totalDiscounts += (membersConsuming * monthlyFrequency * discountAmount) * rampUpFactor;
+                         }
+                    }
+                }
+
+                const currentServiceRevenue = (customersUsingThisService * monthlyFrequency * servicePrice) * rampUpFactor;
+                totalServiceRevenueFromLocations += currentServiceRevenue;
+                totalSessionHours += (customersUsingThisService * monthlyFrequency * service.avgDurationHours) * rampUpFactor;
+
+                // V50.7 ADDITION: Aggregate revenue into breakdowns
+                if(tierBreakdown[service.tier] !== undefined) {
+                    tierBreakdown[service.tier] += currentServiceRevenue;
+                }
+                serviceBreakdown[service.name] += currentServiceRevenue;
             }
         }
-        
-        serviceRevenue += locationRevenue * rampUpFactor;
-        totalSessionHours += locationSessionHours * rampUpFactor;
     });
-    // Apply PersonaVigenteAI uplifts and Seasonality
-    const seasonalityFactor = modelData.seasonality?.[(month - 1) % 12] ?? 1.0;
-    serviceRevenue *= (1 + aiPersonalizationUplift + crossSellBoost) * seasonalityFactor;
-    // 4. Calculate other revenue streams
+    serviceRevenue = totalServiceRevenueFromLocations * (1 + aiPersonalizationUplift + crossSellBoost);
+    
     let membershipRevenue = 0;
     for (const archetype in activeCustomers) {
         const customers = activeCustomers[archetype];
         const membershipTier = (archetype === 'carlos') ? 'elite' : 'access';
-        const membership = modelData.pricing.membership[membershipTier];
+        const membership = pricing.membership[membershipTier];
         if (membership && membership.targetArchetype.includes(archetype)) {
-            const members = customers * membership.adoptionRate;
-            membershipRevenue += members * membership.price;
+            const customersPerLocation = customers / activeSucursalesForRevenue;
+            const membershipCustomersPerLocation = customersPerLocation * membership.adoptionRate;
+            let totalMembershipRevenue = 0;
+            activeLocations.forEach(loc => {
+                const rampUpKey = `month${loc.monthsSinceOpening}`;
+                const rampUpFactor = locationRampUp[rampUpKey] || locationRampUp.steadyState;
+                totalMembershipRevenue += (membershipCustomersPerLocation * membership.price) * rampUpFactor;
+            });
+            membershipRevenue += totalMembershipRevenue;
         }
+    }
+    const maxMembershipRevenue = (serviceRevenue - totalDiscounts) * 0.4;
+    if (membershipRevenue > maxMembershipRevenue) {
+        log(` ⚠️  Membresías limitadas: ${formatCurrency(membershipRevenue)} → ${formatCurrency(maxMembershipRevenue)}`);
+        membershipRevenue = maxMembershipRevenue;
     }
     
     let productRevenue = 0;
-    if (modelData.productsRevenue.enabled && month >= modelData.productsRevenue.launchMonth) {
-        const repurchaseCycle = modelData.repurchaseSettings?.repurchaseCycle ?? 0.20;
-        const loyaltyMultiplier = modelData.repurchaseSettings?.loyaltyMultiplier ?? 1.0;
-        const servicesSynergy = modelData.repurchaseSettings?.servicesSynergy ?? 1.0;
-        const averageTicket = modelData.productsRevenue.catalog.reduce((sum, p) => sum + p.price, 0) / (modelData.productsRevenue.catalog.length || 1);
-        
-        productRevenue += totalActiveCustomers * averageTicket * repurchaseCycle * loyaltyMultiplier * servicesSynergy;
+    if (productsRevenue.enabled && month >= productsRevenue.launchMonth) {
+        productRevenue = totalActiveCustomers * productsRevenue.avgSpendPerCustomerPerMonth;
     }
     
-    let totalRevenue = serviceRevenue + membershipRevenue + productRevenue;
+    let totalGrossRevenue = serviceRevenue + membershipRevenue + productRevenue;
+    log(` 💰  Revenue breakdown M${month}: Servicios=${formatCurrency(serviceRevenue)} | Membresías=${formatCurrency(membershipRevenue)} | Descuentos=${formatCurrency(totalDiscounts)}`);
+    let capacityUtilization = totalAvailableHours > 0 ? totalSessionHours / totalAvailableHours : 0;
     
-    // 5. Capacity Validation and Expansion
-    let activeSucursales = previousMonthState.activeSucursales;
-    let newLocationsThisMonth = 0;
-    const activeLocations = [...previousMonthState.activeLocations];
-    if (expansionEvent) {
-         activeSucursales++;
-         newLocationsThisMonth++;
-         activeLocations.push({ city: expansionEvent.city, monthsSinceOpening: 0 });
-         log(`      🚀       BLITZSCALING: Opening location #${activeSucursales} (${expansionEvent.city}) in month ${month}`);
-    }
-    
-    let revenueLost = 0;
-    const baseCapacityPerLocation = modelData.capacity.treatmentRooms * modelData.capacity.dailyOperatingHours * modelData.capacity.daysOpenPerMonth;
-    const totalCapacityAllLocations = baseCapacityPerLocation * activeSucursales;
-    const effectiveCapacity = totalCapacityAllLocations * modelData.capacity.targetUtilization * efficiencyUplift;
-    
-    let capacityUtilization = effectiveCapacity > 0 ? totalSessionHours / effectiveCapacity : 0;
-    
-    if (capacityUtilization > 1) {
-        revenueLost = totalRevenue * (1 - (1 / capacityUtilization));
-        totalRevenue -= revenueLost;
-        totalSessionHours = effectiveCapacity;
-        log(`      ⚠️       CAPACITY CONSTRAINT: Revenue lost ${formatCurrency(revenueLost)} due to overutilization`);
-    }
-    
-    const serviceUtilization = efficiencyUplift;
     return {
-        month: previousMonthState.month + 1,
-        activeCustomers,
-        totalActiveCustomers,
-        activeSucursales,
-        activeLocations,
-        launchedMarkets: new Set(activeLocations.map(l => l.city)),
-        newLocationsThisMonth,
-        marketingBudget: totalMarketingBudget,
+        month, activeCustomers, totalActiveCustomers, newCustomers, activeSucursales, activeLocations,
+        customerCohorts: nextMonthCohorts,
+        launchedMarkets: new Set(activeLocations.map(l => l.city)), newLocationsThisMonth, marketingBudget: totalMarketingBudget,
         revenue: { 
-            total: totalRevenue, 
-            lost: revenueLost,
-            services: serviceRevenue,
-            memberships: membershipRevenue,
-            products: productRevenue,
-            crossSell: serviceRevenue * (aiPersonalizationUplift + crossSellBoost) // Isolate the cross-sell value
+            total: totalGrossRevenue - totalDiscounts, gross: totalGrossRevenue, discounts: totalDiscounts, 
+            services: serviceRevenue, memberships: membershipRevenue, products: productRevenue, 
+            crossSell: serviceRevenue * (aiPersonalizationUplift + crossSellBoost),
+            byTier: tierBreakdown, byService: serviceBreakdown // V50.7 ADDITION
         },
-        operations: { 
-            totalSessionHours, 
-            capacityUtilization,
-            serviceUtilization
-        }
+        operations: { totalSessionHours, capacityUtilization }
     };
 }
-function calculateIntelligentBudgetAllocation(modelData, month, totalBudget, activeSucursales) {
-    const { strategicFocus } = modelData.marketingVigente;
-    let allocations = {};
-    const totalPercentage = Object.values(modelData.customerArchetypes).reduce((sum, arch) => sum + arch.percentage, 0);
-    
-    for(const archetype in modelData.customerArchetypes) {
-        allocations[archetype] = totalBudget * (modelData.customerArchetypes[archetype].percentage / totalPercentage);
+/**
+ * Allocates budget based on the strategic focus slider.
+ */
+function calculateIntelligentBudgetAllocation(modelData, month, totalBudget) {
+    const strategicFocus = modelData.marketingVigente.strategicFocus; 
+    let allocations = { carlos: 0, eduardo: 0, mantenimiento: 0, transaccional: 0 };
+    const profitabilityBudget = totalBudget * strategicFocus;
+    const acquisitionBudget = totalBudget * (1 - strategicFocus);
+    allocations.carlos = profitabilityBudget;
+    const eduardoWeight = modelData.customerArchetypes.eduardo.percentage;
+    const mantenimientoWeight = modelData.customerArchetypes.mantenimiento.percentage;
+    const totalAcquisitionWeight = eduardoWeight + mantenimientoWeight;
+    if (totalAcquisitionWeight > 0) {
+        allocations.eduardo = acquisitionBudget * (eduardoWeight / totalAcquisitionWeight);
+        allocations.mantenimiento = acquisitionBudget * (mantenimientoWeight / totalAcquisitionWeight);
+    } else {
+        allocations.eduardo = acquisitionBudget / 2;
+        allocations.mantenimiento = acquisitionBudget / 2;
     }
     return allocations;
 }
@@ -1034,7 +1283,7 @@ function calculateIntelligentBudgetAllocation(modelData, month, totalBudget, act
  */
 function calculateMonthlyCosts(modelData, currentState, previousYearRevenue, previousMonthState) { 
     const { month, operations, activeSucursales, newLocationsThisMonth, totalActiveCustomers } = currentState;
-    const { opexSucursal, opexCorporativo, capexSucursal, expansionPlan, capexTecnologico } = modelData;
+    const { opexSucursal, opexCorporativo, capexSucursal, capexTecnologico } = modelData;
     const operariosNeeded = Math.ceil(activeSucursales * modelData.capacity.treatmentRooms * opexSucursal.staffRatios.operariosPerRoom);
     const medicosNeeded = Math.ceil(operations.totalSessionHours * opexSucursal.staffRatios.medicoPerSession);
     const conciergesNeeded = Math.ceil(totalActiveCustomers * opexSucursal.staffRatios.conciergePerClient);
@@ -1043,75 +1292,48 @@ function calculateMonthlyCosts(modelData, currentState, previousYearRevenue, pre
     const costLaborConcierge = conciergesNeeded * opexSucursal.labor.concierge.salary;
     const totalCostLaborBase = costLaborOperarios + costLaborMedicos + costLaborConcierge;
     let energyVariableCost = 0;
-    const serviceToEquipment = {
-        'HIFU': { kwhPerHour: 2.0, avgDuration: 1.5 }, 'Láser CO2': { kwhPerHour: 2.5, avgDuration: 1.0 },
-        'RF Microneedling': { kwhPerHour: 1.5, avgDuration: 1.0 }, 'Botox': { kwhPerHour: 0.1, avgDuration: 0.5 },
-        'Fillers': { kwhPerHour: 0.1, avgDuration: 0.5 }, 'Depilación Láser': { kwhPerHour: 2.2, avgDuration: 1.0 },
-        'Blanqueamiento LED': { kwhPerHour: 0.3, avgDuration: 1.0 }, 'Corte de Pelo': { kwhPerHour: 0.1, avgDuration: 0.5 },
-        'Ajuste Barba y Cejas': { kwhPerHour: 0.1, avgDuration: 0.3 }, 'Manicure Natural': { kwhPerHour: 0.05, avgDuration: 0.5 },
-        'Pedicure Natural': { kwhPerHour: 0.05, avgDuration: 0.7 }, 'Limpieza Facial Profunda': { kwhPerHour: 0.2, avgDuration: 1.0 },
-        'PRP Dermapen': { kwhPerHour: 0.3, avgDuration: 1.0 }, 'Masajes Descontracturantes': { kwhPerHour: 0.05, avgDuration: 1.0 },
-        'Bronceado UVA': { kwhPerHour: 3.5, avgDuration: 0.5 }, 'Liposucción Papada': { kwhPerHour: 1.5, avgDuration: 3.0 },
-        'Bichectomía': { kwhPerHour: 1.0, avgDuration: 2.0 }, 'Blefaroplastia': { kwhPerHour: 1.2, avgDuration: 2.5 },
-        'Lipofilling': { kwhPerHour: 1.0, avgDuration: 2.5 }, 'Rebaje de Vello Corporal': { kwhPerHour: 0.1, avgDuration: 0.45 },
-        'default': { kwhPerHour: 0.2, avgDuration: 0.5 }
-    };
-    for (const archetype in currentState.activeCustomers) {
-        const customersOfThisType = currentState.activeCustomers[archetype];
-        if (customersOfThisType <= 0) continue;
-        const journey = modelData.customerJourney[archetype];
-        for (const subSegmentName in journey.subSegments) {
-            const subSegment = journey.subSegments[subSegmentName];
-            const customersInSubSegment = customersOfThisType * subSegment.weight;
-            for (const sessionName in subSegment.journey) {
-                const sessionDetails = subSegment.journey[sessionName];
-                const monthlyFrequency = sessionDetails.frequency / 12;
-                const sessionsThisMonth = customersInSubSegment * monthlyFrequency;
-                if(sessionDetails.services && Array.isArray(sessionDetails.services)){
-                    sessionDetails.services.forEach(serviceName => {
-                        const equipment = serviceToEquipment[serviceName] || serviceToEquipment['default'];
-                        const energyThisService = sessionsThisMonth * equipment.avgDuration * equipment.kwhPerHour;
-                        energyVariableCost += energyThisService * opexSucursal.energy.costPerKwh;
-                    });
-                }
-            }
-        }
-    }
+    
     const energyFixedCost = opexSucursal.energy.fixedMonthlyKwh * opexSucursal.energy.costPerKwh * activeSucursales;
     const totalCostEnergy = energyFixedCost + energyVariableCost;
     
     const costRenta = opexSucursal.rentaMensual * activeSucursales;
     const costAdminLocal = opexSucursal.adminLocalMonthly * activeSucursales;
-    const totalCapexValue = capexSucursal.equipmentList.reduce((acc, eq) => acc + (eq.priceReacondicionado || eq.priceNew), 0);
-    const avgMaintenanceRate = capexSucursal.equipmentList.length > 0 ? capexSucursal.equipmentList.reduce((acc, eq) => acc + (eq.maintenanceRate || 0), 0) / capexSucursal.equipmentList.length : 0;
-    const costMantenimientoMensual = (totalCapexValue * activeSucursales * avgMaintenanceRate) / 12;
-    const opexSucursalTotal = costRenta + costAdminLocal + costMantenimientoMensual;
+    
+    const opexSucursalTotal = costRenta + costAdminLocal;
     
     const opexGA = opexCorporativo.G_A.baseMonthlyCost + (Math.floor(activeSucursales / opexCorporativo.G_A.costPerLocationTrigger) * opexCorporativo.G_A.costIncreasePerTrigger);
     const numNewHires = Math.floor(activeSucursales / opexCorporativo.techTeam_RnD.newHireTriggerLocations);
     const opexTechTeam = opexCorporativo.techTeam_RnD.baseMonthlyCost + (numNewHires * opexCorporativo.techTeam_RnD.costPerNewHire);
     const opexInfra = opexCorporativo.infrastructure.cloudInfraMonthly + opexCorporativo.infrastructure.saasLicensesMonthly;
     const totalOpexCorporativo = opexGA + opexTechTeam + opexInfra;
+    // --- DYNAMIC CAPEX CALCULATION ---
     let capexPhysical = 0;
-    let capexTech = 0;
     if (newLocationsThisMonth > 0) {
-        capexPhysical += expansionPlan.capexPerLocation * newLocationsThisMonth;
+        const remodelCost = capexSucursal.remodelCostPerM2 * capexSucursal.clinicSizeM2;
+        const equipmentCost = capexSucursal.equipmentList.reduce((sum, item) => {
+            const price = capexSucursal.equipmentStrategy === 'reacondicionado' ? (item.priceReacondicionado || item.priceNew) : item.priceNew;
+            return sum + price;
+        }, 0);
+        capexPhysical += (remodelCost + equipmentCost) * newLocationsThisMonth;
     }
+    let capexTech = 0;
     if (month === 13) { 
-        capexTech += capexTecnologico.initialInvestment.iaStackDevelopment;
+        capexTech += capexTecnologico?.initialInvestment?.iaStackDevelopment || 0;
     }
     if (month > 12 && (month - 1) % 12 === 0) {
-        const recurringTechCapex = previousYearRevenue * capexTecnologico.recurringCapexAsRevenuePercentage;
+        const recurringTechCapex = previousYearRevenue * (capexTecnologico?.recurringCapexAsRevenuePercentage || 0.03);
         capexTech += recurringTechCapex;
-        log(`      💻       Recurring Tech CAPEX: ${formatCurrency(recurringTechCapex)}`);
     }
     
+    // --- Depreciation Calculation ---
     const totalPhysicalAssets = (previousMonthState.balanceSheet.fixedAssets || 0) + capexPhysical;
     const totalTechAssets = (previousMonthState.balanceSheet.techAssets || 0) + capexTech;
-    const avgVidaUtilEquipos = capexSucursal.equipmentList.length > 0 ? capexSucursal.equipmentList.reduce((acc, eq) => acc + eq.vidaUtilAnios, 0) / capexSucursal.equipmentList.length : 1;
     
-    const depreciationPhysical = totalPhysicalAssets / (avgVidaUtilEquipos * 12);
-    const depreciationTech = totalTechAssets / (capexTecnologico.vidaUtilAnios * 12);
+    const validEquipment = capexSucursal.equipmentList.filter(eq => eq && typeof eq.vidaUtilAnios === 'number');
+    const vidaUtilSum = validEquipment.reduce((sum, eq) => sum + eq.vidaUtilAnios, 0);
+    const avgVidaUtilEquipos = validEquipment.length > 0 ? vidaUtilSum / validEquipment.length : 5; 
+    const depreciationPhysical = avgVidaUtilEquipos > 0 ? totalPhysicalAssets / (avgVidaUtilEquipos * 12) : 0;
+    const depreciationTech = (capexTecnologico?.vidaUtilAnios || 3) > 0 ? totalTechAssets / ((capexTecnologico?.vidaUtilAnios || 3) * 12) : 0;
     const depreciacionMensual = depreciationPhysical + depreciationTech;
     
     return {
@@ -1146,28 +1368,31 @@ function calculateMonthlyCosts(modelData, currentState, previousYearRevenue, pre
 function assembleFinancialStatements(modelData, monthlyRevenue, monthlyCosts, previousMonthState, month) {
     let suppliesCost = 0;
     let medicalServicesRevenue = 0;
-    let bnplFees = 0;
     let productCogs = 0;
-
     const currentState = { ...monthlyRevenue, ...monthlyCosts.currentState };
     
     const pnl = {};
     pnl.revenue = (monthlyRevenue && monthlyRevenue.revenue) ? monthlyRevenue.revenue.total : 0;
+    pnl.grossRevenue = (monthlyRevenue && monthlyRevenue.revenue) ? monthlyRevenue.revenue.gross : 0;
+    pnl.discounts = (monthlyRevenue && monthlyRevenue.revenue) ? monthlyRevenue.revenue.discounts : 0;
+    pnl.marketingSpend = monthlyRevenue.marketingBudget;
     
     const detailedPL = {
         revenue: { 
             total: pnl.revenue, 
+            gross: pnl.grossRevenue,
+            discounts: pnl.discounts,
             services: monthlyRevenue.revenue.services, 
             products: monthlyRevenue.revenue.products, 
             memberships: monthlyRevenue.revenue.memberships, 
             crossSell: monthlyRevenue.revenue.crossSell,
-            byCategory: {} 
+            byTier: monthlyRevenue.revenue.byTier, // V50.7 ADDITION
+            byService: monthlyRevenue.revenue.byService // V50.7 ADDITION
         },
         cogs: { 
             total: 0, 
             supplies: 0, 
             products: 0,
-            bnpl: 0, 
             energy: monthlyCosts.cogs.energy, 
             byCategory: {} 
         },
@@ -1186,93 +1411,81 @@ function assembleFinancialStatements(modelData, monthlyRevenue, monthlyCosts, pr
         }
     };
     if (currentState.operations && currentState.activeCustomers) {
-        for (const archetype in currentState.activeCustomers) {
-            const totalCustomersOfThisType = currentState.activeCustomers[archetype];
-            if (totalCustomersOfThisType <= 0) continue;
-            
-            const archetypeConfig = modelData.customerJourney[archetype];
-            
-            for (const subSegmentName in archetypeConfig.subSegments) {
-                const subSegment = archetypeConfig.subSegments[subSegmentName];
-                const customersInThisSubSegment = totalCustomersOfThisType * subSegment.weight;
+        // Calculate Supplies and Revenue Share from the granular service engine
+        for (const service of modelData.pricing.services) {
+            let customersUsingThisService = 0;
+            for (const archetype in currentState.activeCustomers) {
+                const adoptionRate = (modelData.customerJourney[archetype]?.[service.name] || 0) * (modelData.customerBehavior?.realismFactor || 1.0);
+                customersUsingThisService += currentState.activeCustomers[archetype] * adoptionRate;
+            }
+            if (customersUsingThisService > 0 && service.repurchaseCycleMonths > 0) {
+                let weightedAdherence = 0;
+                let totalWeight = 0;
+                for (const archetype in currentState.activeCustomers) {
+                    const customerCount = currentState.activeCustomers[archetype] || 0;
+                    const adoptionRate = (modelData.customerJourney[archetype]?.[service.name] || 0) * (modelData.customerBehavior?.realismFactor || 1.0);
+                    if (customerCount > 0 && adoptionRate > 0) {
+                        const adherenceTier = service.adherenceTier || 'high';
+                        const adherenceFactor = modelData.adherenceMatrix[archetype]?.[adherenceTier] || 0.75;
+                        const weight = customerCount * adoptionRate;
+                        weightedAdherence += adherenceFactor * weight;
+                        totalWeight += weight;
+                    }
+                }
+                const finalAdherence = totalWeight > 0 ? weightedAdherence / totalWeight : 0.75;
+                const monthlyFrequency = (1 / service.repurchaseCycleMonths) * finalAdherence;
+                const totalSessions = customersUsingThisService * monthlyFrequency;
                 
-                for (const sessionName in subSegment.journey) {
-                    const sessionDetails = subSegment.journey[sessionName];
-                    const monthlyFrequency = sessionDetails.frequency / 12;
-                    let finalCustomersUsingService = customersInThisSubSegment;
+                suppliesCost += totalSessions * service.suppliesCost;
+                
+                if (service.revenueShare) {
+                    let servicePrice = service.defaultPrice;
+                    if (['Botox', 'HIFU', 'Fillers', 'RF Microneedling'].includes(service.name)) {
+                        servicePrice *= (1 - (modelData.pricing?.premiumServiceDiscount || 0.0));
+                    }
+                    const serviceRevenue = totalSessions * servicePrice;
+                    const maxRevenueShare = serviceRevenue * 0.5; // 50% máximo por servicio
+                    const calculatedShare = serviceRevenue * service.revenueShare;
+                    const finalShare = Math.min(calculatedShare, maxRevenueShare);
+                    medicalServicesRevenue += finalShare;
                     
-                    const sessionRevenue = finalCustomersUsingService * monthlyFrequency * sessionDetails.price;
-                    const servicesInSession = sessionDetails.services || [sessionName];
-                    servicesInSession.forEach(serviceNameInBundle => {
-                        const serviceData = modelData.pricing.services.find(s => s.name === serviceNameInBundle);
-                        if (serviceData) {
-                            const serviceCategory = serviceData.category || 'Otros';
-                            if (!detailedPL.revenue.byCategory[serviceCategory]) {
-                                detailedPL.revenue.byCategory[serviceCategory] = 0;
-                            }
-                            detailedPL.revenue.byCategory[serviceCategory] += sessionRevenue / servicesInSession.length;
-                            let costPerSession = serviceData.suppliesCost;
-                            if (typeof costPerSession === 'string' && costPerSession.includes('%')) {
-                                costPerSession = serviceData.defaultPrice * (parseFloat(costPerSession.replace('%', '')) / 100);
-                            }
-                            const cogsForService = finalCustomersUsingService * monthlyFrequency * costPerSession;
-                            suppliesCost += cogsForService;
-                             if (!detailedPL.cogs.byCategory[serviceCategory]) {
-                                detailedPL.cogs.byCategory[serviceCategory] = 0;
-                            }
-                            detailedPL.cogs.byCategory[serviceCategory] += cogsForService;
-                            if (serviceData.revenueShare) {
-                                medicalServicesRevenue += (sessionRevenue / servicesInSession.length) * serviceData.revenueShare;
-                            }
-                        }
-                    });
+                    if (calculatedShare > maxRevenueShare) {
+                        log(` ⚠️  Revenue share limitado en ${service.name}: ${formatCurrency(calculatedShare)} → ${formatCurrency(finalShare)}`);
+                    }
                 }
             }
         }
         
-        if (modelData.pricing.bnpl && modelData.pricing.bnpl.enabled) {
-             for (const archetype in currentState.activeCustomers) {
-                const customersOfThisType = currentState.activeCustomers[archetype];
-                if (customersOfThisType <= 0) continue;
-                
-                let archetypeRevenue = 0;
-                const archetypeConfig = modelData.customerJourney[archetype];
-                 for (const subSegmentName in archetypeConfig.subSegments) {
-                    const subSegment = archetypeConfig.subSegments[subSegmentName];
-                    const customersInThisSubSegment = customersOfThisType * subSegment.weight;
-                     for (const sessionName in subSegment.journey) {
-                        const sessionDetails = subSegment.journey[sessionName];
-                        archetypeRevenue += customersInThisSubSegment * (sessionDetails.frequency / 12) * sessionDetails.price;
-                    }
-                }
-                
-                let bnplUsageRate = 0;
-                if (modelData.pricing.bnpl.conversionEngine && modelData.pricing.bnpl.conversionEngine[archetype]) {
-                    bnplUsageRate = modelData.pricing.bnpl.conversionEngine[archetype].conversionRate;
-                }
-                const bnplVolumeThisArchetype = archetypeRevenue * bnplUsageRate;
-                bnplFees += bnplVolumeThisArchetype * (modelData.pricing.bnpl.feeRateThirdParty || 0.05);
-            }
-        }
         if (modelData.productsRevenue.enabled && month >= modelData.productsRevenue.launchMonth) {
-            productCogs = detailedPL.revenue.products * 0.4;
+            productCogs = detailedPL.revenue.products * modelData.productsRevenue.cogsPercentage;
         }
     }
     detailedPL.cogs.supplies = suppliesCost;
     detailedPL.cogs.products = productCogs;
-    detailedPL.cogs.bnpl = bnplFees;
-    detailedPL.cogs.total = suppliesCost + productCogs + bnplFees + detailedPL.cogs.energy;
+    detailedPL.cogs.total = suppliesCost + productCogs + detailedPL.cogs.energy;
     pnl.cogs = detailedPL.cogs.total;
     
+    const maxMedicalRevenue = monthlyCosts.opex.personnel * 0.6;
+    if (medicalServicesRevenue > maxMedicalRevenue) {
+        log(` ⚠️  Revenue share excede límite personal: ${formatCurrency(medicalServicesRevenue)} → ${formatCurrency(maxMedicalRevenue)}`);
+        medicalServicesRevenue = maxMedicalRevenue;
+    }
     detailedPL.opex.personnel.variable = medicalServicesRevenue;
-    detailedPL.opex.personnel.fixed = monthlyCosts.opex.personnel - medicalServicesRevenue;
+    detailedPL.opex.personnel.fixed = Math.max(0, monthlyCosts.opex.personnel - medicalServicesRevenue);
+    if (detailedPL.opex.personnel.fixed < 0) {
+        log(` 🚨  CRITICAL: Salarios fijos negativos detectados y corregidos`);
+        detailedPL.opex.personnel.fixed = monthlyCosts.opex.personnel * 0.4;
+        detailedPL.opex.personnel.variable = monthlyCosts.opex.personnel * 0.6;
+    }
+    
+    log(` 👥  Personal M${month}: Fijo=${formatCurrency(detailedPL.opex.personnel.fixed)} | Variable=${formatCurrency(detailedPL.opex.personnel.variable)} | Total=${formatCurrency(monthlyCosts.opex.personnel)}`);
     pnl.grossProfit = pnl.revenue - pnl.cogs;
     pnl.opex = monthlyCosts.opex.total + medicalServicesRevenue;
     pnl.ebitda = pnl.grossProfit - pnl.opex;
     pnl.depreciation = monthlyCosts.depreciation.total;
     pnl.ebit = pnl.ebitda - pnl.depreciation;
     
-    const prevDebtTotal = (previousMonthState.balanceSheet && previousMonthState.balanceSheet.debt && typeof previousMonthState.balanceSheet.debt.total !== 'undefined') ? previousMonthState.balanceSheet.debt.total : 0;
+    const prevDebtTotal = (previousMonthState.balanceSheet?.debt?.total) || 0;
     pnl.interestExpense = prevDebtTotal * (modelData.capitalStructure.debtFacilities[0].interestRate / 12);
     
     pnl.ebt = pnl.ebit - pnl.interestExpense;
@@ -1283,7 +1496,7 @@ function assembleFinancialStatements(modelData, monthlyRevenue, monthlyCosts, pr
     cashFlow.fromOperations = pnl.netIncome + pnl.depreciation;
     cashFlow.fromInvesting = -monthlyCosts.capex.total;
     
-    let openingCash = (previousMonthState.balanceSheet && previousMonthState.balanceSheet.cash) ? previousMonthState.balanceSheet.cash : modelData.capitalStructure.equityRounds.find(r => r.round === "Seed").amount;
+    let openingCash = (previousMonthState.balanceSheet?.cash) || 0;
     
     let fundsRaised = { equity: 0, debt: 0, from: '' };
     
@@ -1307,7 +1520,6 @@ function assembleFinancialStatements(modelData, monthlyRevenue, monthlyCosts, pr
                     facility.amountDrawn += drawAmount;
                     debtDrawnThisMonth += drawAmount;
                     fundsRaised.from += `${facility.label} `;
-                    log(`      💸       Drawing ${formatCurrency(drawAmount)} from ${facility.label}`);
                 }
             }
         }
@@ -1324,7 +1536,7 @@ function assembleFinancialStatements(modelData, monthlyRevenue, monthlyCosts, pr
     balanceSheet.techAssets = prevTechAssets - monthlyCosts.depreciation.tech + monthlyCosts.capex.tech;
     balanceSheet.totalAssets = balanceSheet.cash + balanceSheet.fixedAssets + balanceSheet.techAssets;
     balanceSheet.debt = { total: prevDebtTotal + fundsRaised.debt };
-    balanceSheet.equity = ((previousMonthState.balanceSheet && previousMonthState.balanceSheet.equity) ? previousMonthState.balanceSheet.equity : 0) + pnl.netIncome + fundsRaised.equity;
+    balanceSheet.equity = (previousMonthState.balanceSheet?.equity || 0) + pnl.netIncome + fundsRaised.equity;
     balanceSheet.totalLiabilitiesAndEquity = balanceSheet.debt.total + balanceSheet.equity;
     const balanceDifference = balanceSheet.totalAssets - balanceSheet.totalLiabilitiesAndEquity;
     if (Math.abs(balanceDifference) > 1000) {
@@ -1336,10 +1548,19 @@ function assembleFinancialStatements(modelData, monthlyRevenue, monthlyCosts, pr
         operations: currentState.operations,
         activeSucursales: currentState.activeSucursales,
         totalActiveCustomers: currentState.totalActiveCustomers,
+        newCustomers: currentState.newCustomers,
+        customerCohorts: currentState.customerCohorts,
+        newCustomersPaid: Object.fromEntries(
+            Object.entries(currentState.newCustomers).map(([arch, data]) => [
+                arch, 
+                typeof data === 'object' ? data.paid : 0
+            ])
+        ),
         activeLocations: currentState.activeLocations,
         launchedMarkets: currentState.launchedMarkets,
         kpis: {
-            ltv_cac_ratio: 0 // Placeholder
+            ltv_cac_ratio: 0,
+            ltvCacBreakdown: ''
         }
     };
 }
@@ -1347,14 +1568,14 @@ function assembleFinancialStatements(modelData, monthlyRevenue, monthlyCosts, pr
  * Main orchestrator of the financial model.
  */
 function calculateFinancials() {
-    log('🚀 ModelCalc v32.0 (Responsive UI) STARTING');
+    log('  🚀   ModelCalc v50.7 (Boardroom Simulator) STARTING');
     try {
         financialResults = { pl: [], cf: [], bs: [], kpis: [], tirEquity: 0, detailedPL: [], breakEvenMonth: null };
         modelData.capitalStructure.debtFacilities.forEach(f => f.amountDrawn = 0);
         
         let previousMonthState = {
             month: 0,
-            activeCustomers: { carlos: 0, eduardo: 0, transaccional: 0, mantenimiento: 0 },
+            customerCohorts: {}, 
             activeLocations: [],
             launchedMarkets: new Set(),
             activeSucursales: 0, 
@@ -1363,10 +1584,14 @@ function calculateFinancials() {
                 debt: { total: 0 }, equity: 0, totalLiabilitiesAndEquity: 0
             }
         };
-        previousMonthState.balanceSheet.cash = modelData.capitalStructure.equityRounds.find(r => r.round === "Seed").amount;
-        previousMonthState.balanceSheet.equity = modelData.capitalStructure.equityRounds.find(r => r.round === "Seed").amount;
-        previousMonthState.balanceSheet.totalAssets = previousMonthState.balanceSheet.cash;
-        previousMonthState.balanceSheet.totalLiabilitiesAndEquity = previousMonthState.balanceSheet.equity;
+        const seedRound = modelData.capitalStructure.equityRounds.find(r => r.month === 0);
+        if (seedRound) {
+            previousMonthState.balanceSheet.cash = seedRound.amount;
+            previousMonthState.balanceSheet.equity = seedRound.amount;
+            previousMonthState.balanceSheet.totalAssets = seedRound.amount;
+            previousMonthState.balanceSheet.totalLiabilitiesAndEquity = seedRound.amount;
+        }
+        
         let monthlyResults = [];
         let previousYearRevenue = 0;
         let cumulativeCFO = 0;
@@ -1397,6 +1622,8 @@ function calculateFinancials() {
             
             const annualPL = {
                 totalRevenue: yearMonthsData.reduce((sum, m) => sum + m.pnl.revenue, 0),
+                grossRevenue: yearMonthsData.reduce((sum, m) => sum + m.pnl.grossRevenue, 0),
+                discounts: yearMonthsData.reduce((sum, m) => sum + m.pnl.discounts, 0),
                 opex: yearMonthsData.reduce((sum, m) => sum + m.pnl.opex, 0),
                 cogs: yearMonthsData.reduce((sum, m) => sum + m.pnl.cogs, 0),
                 depreciation: yearMonthsData.reduce((sum, m) => sum + m.pnl.depreciation, 0),
@@ -1408,19 +1635,19 @@ function calculateFinancials() {
             annualPL.ebitdaMargin = annualPL.totalRevenue > 0 ? (annualPL.ebitda / annualPL.totalRevenue) : 0;
             financialResults.pl.push(annualPL);
             
+            // V50.7 ADDITION: Aggregate detailed breakdowns annually
             const annualDetailedPL = { 
                 revenue: { 
-                    byCategory: {},
                     services: yearMonthsData.reduce((s, m) => s + m.detailedPL.revenue.services, 0),
                     products: yearMonthsData.reduce((s, m) => s + m.detailedPL.revenue.products, 0),
                     memberships: yearMonthsData.reduce((s, m) => s + m.detailedPL.revenue.memberships, 0),
                     crossSell: yearMonthsData.reduce((s, m) => s + m.detailedPL.revenue.crossSell, 0),
+                    byTier: { premium: 0, surgery: 0, mid: 0, basic: 0 },
+                    byService: {}
                 }, 
                 cogs: { 
-                    byCategory: {},
                     supplies: yearMonthsData.reduce((s, m) => s + m.detailedPL.cogs.supplies, 0),
                     products: yearMonthsData.reduce((s, m) => s + m.detailedPL.cogs.products, 0),
-                    bnpl: yearMonthsData.reduce((s, m) => s + m.detailedPL.cogs.bnpl, 0),
                     energy: yearMonthsData.reduce((s, m) => s + m.detailedPL.cogs.energy, 0),
                 },
                 opex: {
@@ -1435,16 +1662,16 @@ function calculateFinancials() {
                     marketing: yearMonthsData.reduce((s, m) => s + m.detailedPL.opex.marketing, 0),
                 }
             };
-            yearMonthsData.forEach(m => {
-                for (const cat in m.detailedPL.revenue.byCategory) {
-                    if (!annualDetailedPL.revenue.byCategory[cat]) annualDetailedPL.revenue.byCategory[cat] = 0;
-                    annualDetailedPL.revenue.byCategory[cat] += m.detailedPL.revenue.byCategory[cat];
+            
+            yearMonthsData.forEach(monthData => {
+                for(const tier in monthData.detailedPL.revenue.byTier) {
+                    annualDetailedPL.revenue.byTier[tier] += monthData.detailedPL.revenue.byTier[tier];
                 }
-                 for (const cat in m.detailedPL.cogs.byCategory) {
-                    if (!annualDetailedPL.cogs.byCategory[cat]) annualDetailedPL.cogs.byCategory[cat] = 0;
-                    annualDetailedPL.cogs.byCategory[cat] += m.detailedPL.cogs.byCategory[cat];
+                for(const service in monthData.detailedPL.revenue.byService) {
+                    annualDetailedPL.revenue.byService[service] = (annualDetailedPL.revenue.byService[service] || 0) + monthData.detailedPL.revenue.byService[service];
                 }
             });
+
             financialResults.detailedPL.push(annualDetailedPL);
             
             const cfo = yearMonthsData.reduce((sum, m) => sum + m.cashFlow.fromOperations, 0);
@@ -1455,20 +1682,22 @@ function calculateFinancials() {
             const lastMonthOfYear = yearMonthsData[yearMonthsData.length - 1];
             financialResults.bs.push(lastMonthOfYear.balanceSheet);
             
-            const totalLTV = Object.values(modelData.customerArchetypes).reduce((acc, arch) => acc + (arch.ltv * arch.percentage), 0);
-            const totalCAC = Object.values(modelData.marketingChannels).reduce((acc, fun) => acc + (fun.cac * (modelData.customerArchetypes[fun.target]?.percentage || 0)), 0);
-            const ltv_cac_ratio = totalCAC > 0 ? totalLTV / totalCAC : 0;
+            const { ratio: ltv_cac_ratio, breakdown: ltvCacBreakdown, ltv, cac } = calculateBlendedLtvCac(modelData, yearMonthsData);
             financialResults.kpis.push({
                 totalActiveCustomers: lastMonthOfYear.totalActiveCustomers,
+                customerBreakdown: lastMonthOfYear.activeCustomers,
                 activeSucursales: lastMonthOfYear.activeSucursales,
-                ltv_cac_ratio: ltv_cac_ratio
+                ltv_cac_ratio,
+                ltvCacBreakdown,
+                ltv,
+                cac
             });
         }
         
-        log('       ✅        ModelCalc v32.0 COMPLETED');
+        log('  ✅   ModelCalc v50.7 COMPLETED');
         return true;
     } catch (error) {
-        log(`       ❌        ERROR in ModelCalc: ${error.message}`);
+        log(`  ❌   ERROR in ModelCalc: ${error.message}`);
         console.error(error);
         return false;
     }
@@ -1592,21 +1821,88 @@ function countActiveAIAgents() {
     count += 3; // Simulating other base agents
     return count;
 }
-function calculateLtvCacByArchetype() {
-    let breakdown = '';
-    for (const archetype in modelData.customerArchetypes) {
-        const ltv = modelData.customerArchetypes[archetype].ltv;
-        const cac = modelData.marketingChannels[`${archetype}Funnel`]?.cac || 0;
-        const ratio = cac > 0 ? (ltv / cac).toFixed(1) : 'N/A';
-        breakdown += `${archetype.charAt(0).toUpperCase() + archetype.slice(1)}: ${ratio}x\n`;
+//  🔥  V50.1 HELPER: Calculates Gross Margin for an archetype
+function calculateGrossMarginPerCustomer(modelData, archetypeKey) {
+    const journey = modelData.customerJourney[archetypeKey];
+    if (!journey) return 0;
+    let annualRevenue = 0;
+    let annualCogs = 0;
+    const realismFactor = modelData.customerBehavior?.realismFactor || 1.0;
+    for (const service of modelData.pricing.services) {
+        const adoptionRate = (journey[service.name] || 0) * realismFactor;
+        if (adoptionRate > 0 && service.repurchaseCycleMonths > 0) {
+            const adherenceTier = service.adherenceTier || 'high';
+            const adherenceFactor = modelData.adherenceMatrix[archetypeKey]?.[adherenceTier] || 0.75;
+            const annualFrequency = (12 / service.repurchaseCycleMonths) * adherenceFactor;
+            annualRevenue += adoptionRate * annualFrequency * service.defaultPrice;
+            annualCogs += adoptionRate * annualFrequency * service.suppliesCost;
+        }
     }
-    return breakdown.trim();
+    return annualRevenue - annualCogs;
+}
+//  🔥  V50.1 REBUILT: Calculates a true LTV based on Gross Margin and Churn
+function calculateBlendedLtvCac(modelData, yearMonthsData) {
+    let totalWeightedGrossMargin = 0;
+    let totalWeightedChurn = 0;
+    const paidArchetypes = ['carlos', 'eduardo', 'mantenimiento'];
+    const totalPaidPercentage = paidArchetypes.reduce((sum, arch) => sum + (modelData.customerArchetypes[arch].percentage || 0), 0);
+    
+    paidArchetypes.forEach(archetypeKey => {
+        const archetypeData = modelData.customerArchetypes[archetypeKey];
+        const grossMargin = calculateGrossMarginPerCustomer(modelData, archetypeKey);
+        const reweightedPercentage = archetypeData.percentage / totalPaidPercentage;
+        totalWeightedGrossMargin += grossMargin * reweightedPercentage;
+        totalWeightedChurn += archetypeData.churnRate * reweightedPercentage;
+    });
+    
+    const blendedLTV = totalWeightedChurn > 0 ? totalWeightedGrossMargin / totalWeightedChurn : 0;
+    
+    const totalMarketingSpend = yearMonthsData.reduce((sum, m) => sum + (m.pnl.marketingSpend || 0), 0);
+    const totalNewPaidCustomers = yearMonthsData.reduce((sum, m) => {
+        let monthlyPaidOnly = 0;
+        paidArchetypes.forEach(archetype => {
+            monthlyPaidOnly += m.newCustomersPaid?.[archetype] || 0;
+        });
+        return sum + monthlyPaidOnly;
+    }, 0);
+    
+    const blendedCAC = totalNewPaidCustomers > 0 ? totalMarketingSpend / totalNewPaidCustomers : 0;
+    const ratio = blendedCAC > 0 ? blendedLTV / blendedCAC : 0;
+    
+    const breakdown = `LTV Ponderado (Pagados): ${formatCurrency(blendedLTV)}\n` +
+        `  - Margen Bruto Anual Ponderado: ${formatCurrency(totalWeightedGrossMargin)}\n` +
+        `  - Tasa de Churn Anual Ponderada: ${(totalWeightedChurn * 100).toFixed(1)}%\n` +
+        `CAC Real (Pagados): ${formatCurrency(blendedCAC)}`;
+    
+    log(`  🔍  LTV DEBUG: Blended GM: ${formatCurrency(totalWeightedGrossMargin)}, Blended Churn: ${totalWeightedChurn.toFixed(2)}, Calculated LTV: ${formatCurrency(blendedLTV)}`);
+    return { ratio, breakdown, ltv: blendedLTV, cac: blendedCAC };
+}
+function formatCustomerBreakdown(breakdown) {
+    let tooltipText = 'Desglose de Clientes Activos (Año 5):\n';
+    for (const key in breakdown) {
+        tooltipText += `${key.charAt(0).toUpperCase() + key.slice(1)}: ${Math.round(breakdown[key]).toLocaleString()}\n`;
+    }
+    return tooltipText.trim();
+}
+// V50.2 HELPER: Calculate and update the Unit Economics display
+function updateUnitEconomics() {
+    const { capexSucursal } = modelData;
+    const remodelCost = capexSucursal.remodelCostPerM2 * capexSucursal.clinicSizeM2;
+    const equipmentCost = capexSucursal.equipmentList.reduce((sum, item) => {
+        const price = capexSucursal.equipmentStrategy === 'reacondicionado' ? (item.priceReacondicionado || item.priceNew) : item.priceNew;
+        return sum + price;
+    }, 0);
+    const totalCapex = remodelCost + equipmentCost;
+    const display = document.getElementById('capex-per-location-display');
+    if (display) {
+        display.textContent = formatCurrency(totalCapex);
+    }
 }
 function updateUI() {
-    log('       🔄        Updating Dashboard Interface...');
+    log('           🔄            Updating Dashboard Interface...');
     try {
         if (!financialResults.pl || financialResults.pl.length < 5) {
-             log('       ⚠️        Financial results not ready for UI update.');
+             log('           ⚠️            Financial results not ready for UI update.');
              return;
         }
         
@@ -1614,16 +1910,18 @@ function updateUI() {
         const ebitdaY5 = financialResults.pl[4].ebitda;
         const currentMultiple = parseFloat(document.getElementById('exit-multiple-slider').value);
         
-        const totalDebtAvailable = modelData.capitalStructure.debtFacilities.reduce((sum, facility) => sum + facility.maxAmount, 0);
         const totalDebtUsed = modelData.capitalStructure.debtFacilities.reduce((sum, facility) => sum + facility.amountDrawn, 0);
         const equityInvested = modelData.capitalStructure.equityRounds.reduce((sum, r) => sum + r.amount, 0);
         const selfFinanced = financialResults.cf.reduce((sum, year) => sum + Math.max(0, year.cfo), 0);
         const locationsY5 = financialResults.kpis[4].activeSucursales;
         const customersY5 = financialResults.kpis[4].totalActiveCustomers;
-        const customerGrowthCAGR = financialResults.kpis[0].totalActiveCustomers > 0 ? Math.pow(customersY5 / financialResults.kpis[0].totalActiveCustomers, 1/4) - 1 : 0;
+        const customerBreakdown = financialResults.kpis[4].customerBreakdown;
         const customerDensity = locationsY5 > 0 ? Math.round(customersY5 / locationsY5) : 0;
         const revenuePerCustomer = customersY5 > 0 ? financialResults.pl[4].totalRevenue / customersY5 : 0;
+        const revenuePerLocation = locationsY5 > 0 ? financialResults.pl[4].totalRevenue / locationsY5 : 0;
         
+        const ltvY5 = financialResults.kpis[4].ltv;
+        const cacY5 = financialResults.kpis[4].cac;
         document.getElementById('equity-invested').textContent = formatCurrency(equityInvested);
         document.getElementById('break-even-month').textContent = financialResults.breakEvenMonth ? `Mes ${financialResults.breakEvenMonth}` : 'N/A';
         document.getElementById('debt-used').textContent = formatCurrency(totalDebtUsed);
@@ -1635,21 +1933,26 @@ function updateUI() {
         
         document.getElementById('locations-y5').textContent = locationsY5;
         document.getElementById('customers-y5').textContent = Math.round(customersY5).toLocaleString();
+        document.getElementById('customers-y5-wrapper').dataset.tooltip = formatCustomerBreakdown(customerBreakdown);
         document.getElementById('ltv-cac-ratio').textContent = financialResults.kpis[4].ltv_cac_ratio.toFixed(1) + 'x';
-        document.getElementById('ltv-cac-tooltip-wrapper').dataset.tooltip = `Desglose por Arquetipo:\n${calculateLtvCacByArchetype()}`;
+        document.getElementById('ltv-cac-tooltip-wrapper').dataset.tooltip = financialResults.kpis[4].ltvCacBreakdown;
         document.getElementById('customer-density').textContent = customerDensity;
-        document.getElementById('ai-revenue-uplift').textContent = '+' + aiImpact.revenueUplift + '%';
-        document.getElementById('cross-sell-boost').textContent = '+' + (getCurrentCrossSellRate() * 100).toFixed(0) + '%';
+        
+        document.getElementById('ltv-value').textContent = formatCurrency(ltvY5);
+        document.getElementById('cac-value').textContent = formatCurrency(cacY5);
+        document.getElementById('revenue-per-location').textContent = formatCurrency(revenuePerLocation);
+        document.getElementById('cross-sell-boost').textContent = '+' + (modelData.aiDefaults.crossSellBoost * 100).toFixed(0) + '%';
         document.getElementById('utilization-actual').textContent = (modelData.capacity.targetUtilization * 100).toFixed(0) + '%';
         document.getElementById('revenue-per-customer').textContent = formatCurrency(revenuePerCustomer);
         document.getElementById('specialist-earnings').textContent = formatCurrency(calculateSpecialistMonthlyEarnings());
         document.getElementById('agents-active').textContent = countActiveAIAgents() + '/6';
         
+        updateUnitEconomics();
         updateTables();
         updateCharts();
-        log('       ✅        Dashboard UI Update completed.');
+        log('           ✅            Dashboard UI Update completed.');
     } catch (error) {
-        log(`       ❌        Error in updateUI: ${error.message}`);
+        log(`           ❌            Error in updateUI: ${error.message}`);
         console.error(error);
     }
 }
@@ -1667,7 +1970,9 @@ function updatePLTable() {
         tr.className = data.classes || '';
         if (data.isSub) tr.classList.add('sub-row');
         if (data.isSubSub) tr.classList.add('sub-sub-row');
+        if (data.isSubSubSub) tr.classList.add('sub-sub-sub-row');
         if (data.isTotal) tr.classList.add('total-row');
+        if (data.isNetRevenue) tr.classList.add('net-revenue-row');
         if (data.isExpandable) tr.classList.add('expandable');
         if (data.parentId) tr.dataset.parent = data.parentId;
         if (data.id) tr.id = data.id;
@@ -1690,45 +1995,32 @@ function updatePLTable() {
         });
         tbody.appendChild(tr);
     };
-    const revenueCategories = {
-        'Rejuvenecimiento y Facial': ['Rejuvenecimiento y Facial'],
-        'Aplicaciones de Precisión': ['Aplicaciones de Precisión'],
-        'Procedimientos de Contorno': ['Procedimientos de Contorno'],
-        'Grooming y Wellness': ['Grooming y Wellness']
-    };
-    // Calculate annual breakdowns
-    const annualRevenueBreakdown = financialResults.detailedPL.map(year => {
-        const breakdown = { services: year.revenue.services, crossSell: year.revenue.crossSell, byCategory: {} };
-        for (const key in revenueCategories) {
-            breakdown.byCategory[key] = revenueCategories[key].reduce((sum, cat) => sum + (year.revenue.byCategory[cat] || 0), 0);
-        }
-        return breakdown;
-    });
     
-    // Main Rows
-    createRow({ id: 'revenue', label: 'Ingresos Totales', values: financialResults.pl.map(y => y.totalRevenue), isTotal: true, isExpandable: true });
+    // V50.7 P&L Structure Update
+    createRow({ id: 'revenue', label: 'Ingresos Brutos', values: financialResults.pl.map(y => y.grossRevenue), isExpandable: true });
     
-    // Sub Rows for Revenue
-    const totalServiceRevenue = financialResults.detailedPL.map(y => y.revenue.services + y.revenue.crossSell);
-    createRow({ parentId: 'revenue', label: 'Ingresos por Servicios', values: totalServiceRevenue, isSub: true, isExpandable: true, id: 'revenue-services' });
-    createRow({ parentId: 'revenue-services', label: 'Rejuvenecimiento y Facial', values: annualRevenueBreakdown.map(y => y.byCategory['Rejuvenecimiento y Facial']), isSubSub: true });
-    createRow({ parentId: 'revenue-services', label: 'Aplicaciones de Precisión', values: annualRevenueBreakdown.map(y => y.byCategory['Aplicaciones de Precisión']), isSubSub: true });
-    createRow({ parentId: 'revenue-services', label: 'Procedimientos de Contorno', values: annualRevenueBreakdown.map(y => y.byCategory['Procedimientos de Contorno']), isSubSub: true });
-    createRow({ parentId: 'revenue-services', label: 'Grooming y Wellness', values: annualRevenueBreakdown.map(y => y.byCategory['Grooming y Wellness']), isSubSub: true });
-    createRow({ parentId: 'revenue-services', label: 'Cross-Sell (IA)', values: annualRevenueBreakdown.map(y => y.crossSell), isSubSub: true });
+    createRow({ parentId: 'revenue', id: 'services-revenue', label: 'Ingresos por Servicios', values: financialResults.detailedPL.map(y => y.revenue.services), isSub: true, isExpandable: true });
+    
+    // TIER BREAKDOWN
+    createRow({ parentId: 'services-revenue', id: 'premium-tier', label: 'Premium Services', values: financialResults.detailedPL.map(y => y.revenue.byTier.premium), isSubSub: true });
+    createRow({ parentId: 'services-revenue', id: 'surgery-tier', label: 'Surgery Services', values: financialResults.detailedPL.map(y => y.revenue.byTier.surgery), isSubSub: true });
+    createRow({ parentId: 'services-revenue', id: 'mid-tier', label: 'Mid-Tier Services', values: financialResults.detailedPL.map(y => y.revenue.byTier.mid), isSubSub: true });
+    createRow({ parentId: 'services-revenue', id: 'basic-tier', label: 'Basic Services', values: financialResults.detailedPL.map(y => y.revenue.byTier.basic), isSubSub: true });
+
     createRow({ parentId: 'revenue', label: 'Ingresos Membresías', values: financialResults.detailedPL.map(y => y.revenue.memberships), isSub: true });
     createRow({ parentId: 'revenue', label: 'Ingresos Productos (DTC)', values: financialResults.detailedPL.map(y => y.revenue.products), isSub: true });
     
-    createRow({ id: 'cogs', label: 'COGS', values: financialResults.pl.map(y => y.cogs), isTotal: true, isExpandable: true });
-    // Sub Rows for COGS
+    createRow({ label: '(-) Descuentos (Club)', values: financialResults.pl.map(y => -y.discounts) });
+    createRow({ label: 'Ingresos Netos', values: financialResults.pl.map(y => y.totalRevenue), isNetRevenue: true, isTotal: true });
+
+    createRow({ id: 'cogs', label: 'COGS', values: financialResults.pl.map(y => y.cogs), isExpandable: true });
     createRow({ parentId: 'cogs', label: 'COGS - Energía Equipos', values: financialResults.detailedPL.map(y => y.cogs.energy), isSub: true });
     createRow({ parentId: 'cogs', label: 'COGS - Insumos Servicios', values: financialResults.detailedPL.map(y => y.cogs.supplies), isSub: true });
     createRow({ parentId: 'cogs', label: 'COGS - Productos (DTC)', values: financialResults.detailedPL.map(y => y.cogs.products), isSub: true });
-    createRow({ parentId: 'cogs', label: 'COGS - Fees Transaccionales', values: financialResults.detailedPL.map(y => y.cogs.bnpl), isSub: true });
+    
     createRow({ label: 'Utilidad Bruta', values: financialResults.pl.map(y => y.totalRevenue - y.cogs), isTotal: true });
     
-    createRow({ id: 'opex', label: 'Gastos Operativos (OPEX)', values: financialResults.pl.map(y => y.opex), isTotal: false, isExpandable: true });
-    // Sub Rows for OPEX
+    createRow({ id: 'opex', label: 'Gastos Operativos (OPEX)', values: financialResults.pl.map(y => y.opex), isExpandable: true });
     const totalPersonnelCost = financialResults.detailedPL.map(y => y.opex.personnel.fixed + y.opex.personnel.variable);
     createRow({ parentId: 'opex', label: 'Gastos de Personal', values: totalPersonnelCost, isSub: true, isExpandable: true, id: 'opex-personnel' });
     createRow({ parentId: 'opex-personnel', label: 'Salarios Fijos', values: financialResults.detailedPL.map(y => y.opex.personnel.fixed), isSubSub: true });
@@ -1746,7 +2038,7 @@ function updatePLTable() {
     createRow({ label: 'EBIT', values: financialResults.pl.map(y => y.ebitda - y.depreciation), isTotal: true });
     createRow({ label: 'Gastos por Intereses', values: financialResults.pl.map(y => y.interestExpense) });
     createRow({ label: 'Utilidad Neta', values: financialResults.pl.map(y => y.netIncome), isTotal: true });
-    // Add event listeners for expand/collapse
+
     tbody.querySelectorAll('.expandable').forEach(row => {
         row.addEventListener('click', (e) => {
             e.stopPropagation();
@@ -1760,7 +2052,6 @@ function updatePLTable() {
                 icon.outerHTML = `<i data-lucide="minus-circle" class="expand-icon"></i>`;
             } else {
                 icon.outerHTML = `<i data-lucide="plus-circle" class="expand-icon"></i>`;
-                // If we are collapsing a parent, we must also collapse its children
                 const allChildren = tbody.querySelectorAll(`[data-parent^="${rowId}"]`);
                 allChildren.forEach(child => {
                     child.style.display = 'none';
@@ -1778,8 +2069,7 @@ function updatePLTable() {
             lucide.createIcons();
         });
     });
-    // Hide sub-rows initially
-    tbody.querySelectorAll('.sub-row, .sub-sub-row').forEach(subRow => {
+    tbody.querySelectorAll('.sub-row, .sub-sub-row, .sub-sub-sub-row').forEach(subRow => {
         subRow.style.display = 'none';
     });
     lucide.createIcons();
@@ -1829,7 +2119,7 @@ function updateBalanceSheetTable() {
     const rows = [
         { label: 'Efectivo', key: 'cash' },
         { label: 'Activos Fijos (Neto)', key: 'fixedAssets' },
-        { label: 'Activos Tecnológicos (Neto)', key: 'techAssets' }, // NEW ROW
+        { label: 'Activos Tecnológicos (Neto)', key: 'techAssets' }, 
         { label: 'TOTAL ACTIVOS', key: 'totalAssets', total: true, emphasize: true },
         { label: 'Deuda', key: 'debt' },
         { label: 'TOTAL PASIVOS', key: 'debt', total: true },
@@ -1861,9 +2151,9 @@ function updateBalanceSheetTable() {
         const lastBS = financialResults.bs[financialResults.bs.length - 1];
         const balanceDiff = lastBS.totalAssets - lastBS.totalLiabilitiesAndEquity;
         if (Math.abs(balanceDiff) < BALANCE_TOLERANCE) {
-            validationDiv.innerHTML = '<span class="text-green-400">       ✅        Balance Validado</span>';
+            validationDiv.innerHTML = '<span class="text-green-400">  ✅   Balance Validado</span>';
         } else {
-            validationDiv.innerHTML = `<span class="text-red-400">       ❌        Error de Balance: ${formatCurrency(balanceDiff)}</span>`;
+            validationDiv.innerHTML = `<span class="text-red-400">  ❌   Error de Balance: ${formatCurrency(balanceDiff)}</span>`;
         }
     }
 }
@@ -1889,7 +2179,7 @@ function updateCharts() {
     
     charts.revenue.data = {
         labels,
-        datasets: [{ label: 'Ingresos Totales', data: financialResults.pl.map(p => p.totalRevenue), backgroundColor: 'rgba(59, 130, 246, 0.6)' }]
+        datasets: [{ label: 'Ingresos Netos', data: financialResults.pl.map(p => p.totalRevenue), backgroundColor: 'rgba(59, 130, 246, 0.6)' }]
     };
     charts.revenue.update();
     charts.profitability.data = {
@@ -1919,11 +2209,11 @@ function updateCharts() {
     charts.cashflow.update();
 }
 function forceCalculate() {
-    log('       🔄        Manual recalculation requested.');
+    log('           🔄            Manual recalculation requested.');
     if (calculateFinancials()) {
         updateUI();
     } else {
-        log('       ❌        Manual recalculation failed.');
+        log('           ❌            Manual recalculation failed.');
     }
 }
 function getModelValue(pathParts) {
@@ -1963,11 +2253,36 @@ function updateModelValue(pathParts, value) {
         return false;
     }
 }
-// V32 RESPONSIVE CHANGE: Control creation functions updated with responsive classes
+function createSelectControl(config, container) {
+    const div = document.createElement('div');
+    div.className = 'grid grid-cols-1 md:grid-cols-2 gap-y-1 gap-x-4 items-center';
+    const label = document.createElement('label');
+    label.className = "text-sm font-medium text-slate-300";
+    if (config.tooltip) label.setAttribute('data-tooltip', config.tooltip);
+    label.textContent = config.label;
+    div.appendChild(label);
+    
+    const select = document.createElement('select');
+    select.className = "p-2 border border-gray-600 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 bg-gray-700 text-white w-full";
+    config.options.forEach(opt => {
+        const option = document.createElement('option');
+        option.value = opt;
+        option.textContent = opt.charAt(0).toUpperCase() + opt.slice(1);
+        select.appendChild(option);
+    });
+    const pathParts = config.path.split('.');
+    select.value = getModelValue(pathParts) || config.options[0];
+    div.appendChild(select);
+    container.appendChild(div);
+    select.addEventListener('change', function() {
+        if (updateModelValue(pathParts, this.value)) {
+            forceCalculate();
+        }
+    });
+}
 function createSliderControl(config, container) {
     const div = document.createElement('div');
     div.className = 'grid grid-cols-1 md:grid-cols-2 gap-y-1 gap-x-4 items-center';
-
     const label = document.createElement('label');
     label.className = "text-sm font-medium text-slate-300";
     if (config.tooltip) label.setAttribute('data-tooltip', config.tooltip);
@@ -1985,7 +2300,7 @@ function createSliderControl(config, container) {
     slider.className = 'input-slider flex-grow';
     
     const display = document.createElement('span');
-    display.className = "font-bold text-blue-400 w-20 text-right";
+    display.className = "font-bold text-blue-400 w-40 text-right"; 
     
     const pathParts = config.path.split('.');
     const currentValue = getModelValue(pathParts) || config.min;
@@ -2008,13 +2323,11 @@ function createSliderControl(config, container) {
 function createNumberControl(config, container) {
     const div = document.createElement('div');
     div.className = 'grid grid-cols-1 md:grid-cols-2 gap-y-1 gap-x-4 items-center';
-
     const label = document.createElement('label');
     label.className = "text-sm font-medium text-slate-300";
     if (config.tooltip) label.setAttribute('data-tooltip', config.tooltip);
     label.textContent = config.label;
     div.appendChild(label);
-
     const input = document.createElement('input');
     input.type = 'number';
     input.min = config.min;
@@ -2041,7 +2354,7 @@ function createToggleControl(config, container, controlId) {
     
     const label = document.createElement('label');
     label.className = "text-sm font-medium text-slate-300";
-    if (config.description) label.setAttribute('data-tooltip', config.description);
+    if (config.tooltip || config.description) label.setAttribute('data-tooltip', config.tooltip || config.description);
     label.textContent = config.label;
     div.appendChild(label);
     
@@ -2065,67 +2378,19 @@ function createToggleControl(config, container, controlId) {
     checkbox.addEventListener('change', function() {
         const isEnabled = this.checked;
         toggleControls[controlId] = isEnabled;
+        
+        // V50.3 Special logic for bnplMarketingToggle
+        if (controlId === 'bnplMarketingToggle') {
+            modelData.pricing.bnpl.marketingEnabled = isEnabled;
+        }
+
         statusText.textContent = isEnabled ? 'ENABLED' : 'DISABLED';
         statusText.className = isEnabled ? 'font-bold text-green-400' : 'font-bold text-red-400';
         
         forceCalculate();
     });
 }
-function setupControlGroup(groupKey, containerId) {
-    const container = document.getElementById(containerId);
-    if (!container) return;
-    container.innerHTML = '';
-    const groupConfig = controlsConfig[groupKey] || {};
-    
-    if (groupKey === 'IA_Native_Controls') {
-        for (const controlId in groupConfig) {
-            const config = groupConfig[controlId];
-            createToggleControl(config, container, controlId);
-        }
-    } else {
-        groupConfig.forEach(config => {
-            const pathMapping = {
-                'targetUtilization': 'capacity.targetUtilization',
-                'seriesA': 'capitalStructure.equityRounds.1.amount',
-                'ventureDebtRate': 'capitalStructure.debtFacilities.0.interestRate',
-                'sustainBudgetPerLocation': 'marketing.sustainBudgetPerLocation',
-                'wordOfMouthMultiplierEduardo': 'marketingChannels.eduardoFunnel.wordOfMouthMultiplier',
-                'aiPersonalizationUplift': 'personaVigenteAI.aiPersonalizationUplift',
-                'crossSellBoost': 'aiDefaults.crossSellBoost'
-            };
-            
-            config.path = pathMapping[config.id] || config.id;
-            if (config.type === 'range') { createSliderControl(config, container); } 
-            else if (config.type === 'number') { createNumberControl(config, container); }
-        });
-    }
-}
-function applyScenario(scenarioName) {
-    const isObject = item => item && typeof item === 'object' && !Array.isArray(item);
-    function mergeDeep(target, source) {
-        let output = { ...target };
-        if (isObject(target) && isObject(source)) {
-            Object.keys(source).forEach(key => {
-                if (isObject(source[key]) && key in target && isObject(target[key])) {
-                    output[key] = mergeDeep(target[key], source[key]);
-                } else {
-                    output[key] = source[key];
-                }
-            });
-        }
-        return output;
-    }
-    
-    const scenarioConfig = scenarios[scenarioName];
-    modelData = mergeDeep(JSON.parse(JSON.stringify(baseModelData)), scenarioConfig);
-    
-    log(`       📊        Escenario "${scenarioName}" aplicado.`);
-    forceCalculate();
-}
-function setupScenarioSwitcher() {
-    const container = document.getElementById('scenario-switcher-controls');
-    if (!container) return;
-    
+function createScenarioSwitcher(config, container){
     const switcher = document.createElement('div');
     switcher.className = 'scenario-switcher';
     
@@ -2155,11 +2420,91 @@ function setupScenarioSwitcher() {
     
     container.appendChild(switcher);
 }
+function setupControlGroup(groupKey, containerId) {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+    container.innerHTML = '';
+    const groupConfig = controlsConfig[groupKey] || {};
+    
+    if (groupKey === 'IA_Native_Controls') {
+        for (const controlId in groupConfig) {
+            const config = groupConfig[controlId];
+            createToggleControl(config, container, controlId);
+        }
+    } else {
+        groupConfig.forEach(config => {
+            // V50.6 FIX: Added all path mappings
+            const pathMapping = {
+                'seriesA': 'capitalStructure.equityRounds.1.amount',
+                'ventureDebtRate': 'capitalStructure.debtFacilities.0.interestRate',
+                'equipmentStrategy': 'capexSucursal.equipmentStrategy',
+                'clinicSizeM2': 'capexSucursal.clinicSizeM2',
+                'remodelCostPerM2': 'capexSucursal.remodelCostPerM2',
+                'sustainBudgetPerLocation': 'marketing.sustainBudgetPerLocation',
+                'strategicFocus': 'marketingVigente.strategicFocus',
+                'wordOfMouthMultiplierEduardo': 'marketingChannels.eduardoFunnel.wordOfMouthMultiplier',
+                'targetUtilization': 'capacity.targetUtilization',
+                'funnelConversionRate': 'realismLevers.funnelConversionRate',
+                'adherenceUltra': 'adherenceMatrix.eduardo.ultra',
+                'adherenceHigh': 'adherenceMatrix.eduardo.high',
+                'adherencePremium': 'adherenceMatrix.eduardo.premium',
+                'adherenceLuxury': 'adherenceMatrix.eduardo.luxury',
+                'churnRateCarlos': 'customerArchetypes.carlos.churnRate',
+                'churnRateEduardo': 'customerArchetypes.eduardo.churnRate',
+                'churnRateMantenimiento': 'customerArchetypes.mantenimiento.churnRate',
+                'churnRateTransaccional': 'customerArchetypes.transaccional.churnRate',
+                'treatmentRooms': 'capacity.treatmentRooms',
+                'membershipPriceAccess': 'pricing.membership.access.price',
+                'membershipAdoptionAccess': 'pricing.membership.access.adoptionRate',
+                'membershipPriceElite': 'pricing.membership.elite.price',
+                'membershipAdoptionElite': 'pricing.membership.elite.adoptionRate',
+                'dtcSpend': 'productsRevenue.avgSpendPerCustomerPerMonth',
+                'bnplUplift': 'pricing.bnpl.revenueUpliftMultiplier',
+                'specialistRevenueShare': 'opexSucursal.labor.medicoEsteticista.revenueShare',
+                'premiumServiceDiscount': 'pricing.premiumServiceDiscount',
+                'realismFactor': 'customerBehavior.realismFactor'
+            };
+            
+            config.path = pathMapping[config.id] || config.id;
+            if (config.type === 'scenario') { createScenarioSwitcher(config, container); }
+            else if (config.type === 'range') { createSliderControl(config, container); } 
+            else if (config.type === 'number') { createNumberControl(config, container); }
+            else if (config.type === 'select') { createSelectControl(config, container); }
+            else if (config.type === 'toggle') { createToggleControl(config, container, config.id); }
+        });
+    }
+}
+function applyScenario(scenarioName) {
+    const isObject = item => item && typeof item === 'object' && !Array.isArray(item);
+    function mergeDeep(target, source) {
+        let output = { ...target };
+        if (isObject(target) && isObject(source)) {
+            Object.keys(source).forEach(key => {
+                if (isObject(source[key]) && key in target && isObject(target[key])) {
+                    output[key] = mergeDeep(target[key], source[key]);
+                } else {
+                    output[key] = source[key];
+                }
+            });
+        }
+        return output;
+    }
+    
+    const scenarioConfig = scenarios[scenarioName];
+    modelData = mergeDeep(JSON.parse(JSON.stringify(baseModelData)), scenarioConfig);
+    
+    log(`           📊            Escenario "${scenarioName}" aplicado.`);
+    
+    // Update sliders to reflect the new modelData
+    setupControls();
+    forceCalculate();
+}
 function setupControls() {
-    setupScenarioSwitcher();
-    setupControlGroup('financiamientoOperaciones', 'financiamiento-operaciones-controls');
-    setupControlGroup('crecimientoEstrategico', 'crecimiento-estrategico-controls');
+    setupControlGroup('estrategia', 'estrategia-controls');
+    setupControlGroup('operaciones', 'operaciones-controls');
     setupControlGroup('IA_Native_Controls', 'ai-native-controls');
+    setupControlGroup('monetizacion', 'monetizacion-controls');
+    setupControlGroup('calibracion', 'calibracion-controls');
 }
 function setupExitMultipleSlider() {
     const slider = document.getElementById('exit-multiple-slider');
@@ -2202,17 +2547,263 @@ function setupTabs() {
         });
     });
 }
+// ===================================================================
+// ===== GEMINI API INTEGRATION ======================================
+// ===================================================================
+/**
+ * Shows the Gemini modal and sets its title and content.
+ * @param {string} title - The title for the modal header.
+ * @param {string} content - The HTML content for the modal body.
+ */
+function showGeminiModal(title, content) {
+    document.getElementById('gemini-modal-title').textContent = title;
+    document.getElementById('gemini-modal-body').innerHTML = content;
+    document.getElementById('gemini-modal').style.display = 'flex';
+}
+/**
+ * Closes the Gemini modal.
+ */
+function closeGeminiModal() {
+    document.getElementById('gemini-modal').style.display = 'none';
+}
+/**
+ * Generic function to call the Gemini API.
+ * @param {string} prompt - The prompt to send to the model.
+ * @param {boolean} useJson - Whether to request a JSON response.
+ * @param {object|null} schema - The JSON schema for the response, if useJson is true.
+ * @returns {Promise<string>} - The text response from the API.
+ */
+async function callGeminiAPI(prompt, useJson = false, schema = null) {
+    let userApiKey = document.getElementById('api-key-input').value.trim();
+    const defaultApiKey = "AIzaSyC7rMWhotrv2jizIYrzoDNVpDDLmkA"; // Fallback key
+    let apiKey = userApiKey ? userApiKey : defaultApiKey; 
+    
+    const model = "gemini-2.0-flash";
+    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
+    
+    const payload = {
+        contents: [{ role: "user", parts: [{ text: prompt }] }]
+    };
+    if (useJson && schema) {
+        payload.generationConfig = {
+            responseMimeType: "application/json",
+            responseSchema: schema,
+        };
+    }
+    log(`[GEMINI] Calling API. Using ${userApiKey ? 'user-provided' : 'default'} key.`);
+    log(`[GEMINI] Payload (first 200 chars): ${JSON.stringify(payload).substring(0,200)}...`);
+    try {
+        const response = await fetch(apiUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+        const responseText = await response.text();
+        log(`[GEMINI] Raw response: ${responseText}`);
+        if (!response.ok) {
+            let errorDetail = responseText;
+            try {
+                const errorJson = JSON.parse(responseText);
+                errorDetail = errorJson.error.message || responseText;
+            } catch (e) {
+                // Not a JSON error, use the raw text
+            }
+            throw new Error(`API request failed with status ${response.status}: ${errorDetail}`);
+        }
+        const result = JSON.parse(responseText);
+        
+        if (result.candidates && result.candidates.length > 0 && result.candidates[0].content?.parts?.length > 0) {
+            return result.candidates[0].content.parts[0].text;
+        } else {
+            throw new Error("Respuesta inesperada de la API o contenido vacío.");
+        }
+    } catch (error) {
+        console.error("Error calling Gemini API:", error);
+        log(`[GEMINI] ERROR: ${error.message}`);
+        return `Error al contactar la IA: ${error.message}`;
+    }
+}
+/**
+ * V38 CHANGE: Builds a much more comprehensive context string from the model data.
+ */
+function buildFullModelContext() {
+    let context = "### CONTEXTO DEL MODELO FINANCIERO 'HOMBRE VIGENTE' ###\n\n";
+    // Helper to format a section
+    const formatSection = (title, dataObject) => {
+        let sectionContent = `#### ${title} ####\n`;
+        sectionContent += "```json\n" + JSON.stringify(dataObject, (key, value) => {
+            if (key === 'get maxHoursPerMonth') return undefined; 
+            return value;
+        }, 2) + "\n```\n\n";
+        return sectionContent;
+    };
+    context += formatSection("Supuestos Generales y de Marketing", {
+        general: modelData.general,
+        marketing: modelData.marketing,
+        marketingChannels: modelData.marketingChannels,
+        expansionPlan: modelData.expansionPlan
+    });
+    context += formatSection("Supuestos de Clientes y LTV", {
+        customerArchetypes: modelData.customerArchetypes,
+    });
+    
+    context += formatSection("Supuestos de Pricing, Servicios y Productos", {
+        pricing: modelData.pricing,
+        productsRevenue: modelData.productsRevenue
+    });
+    context += formatSection("Supuestos de Costos y Capital", {
+        opexSucursal: modelData.opexSucursal,
+        opexCorporativo: modelData.opexCorporativo,
+        capexSucursal: modelData.capexSucursal,
+        capexTecnologico: modelData.capexTecnologico,
+        capitalStructure: modelData.capitalStructure
+    });
+    
+    context += formatSection("Supuestos de IA y Operaciones", {
+        aiDefaults: modelData.aiDefaults,
+        personaVigenteAI: modelData.personaVigenteAI,
+        optiVigenteAI: modelData.optiVigenteAI,
+        capacity: {
+            treatmentRooms: modelData.capacity.treatmentRooms,
+            dailyOperatingHours: modelData.capacity.dailyOperatingHours,
+            daysOpenPerMonth: modelData.capacity.daysOpenPerMonth,
+            targetUtilization: modelData.capacity.targetUtilization,
+            maxSurgeriesPerMonth: modelData.capacity.maxSurgeriesPerMonth
+        }
+    });
+    context += "#### Resultados Financieros Clave (Anual) ####\n";
+    if (financialResults.pl.length > 0) {
+        financialResults.pl.forEach((year, i) => {
+            context += `Año ${i+1}: Ingresos=${formatCurrency(year.totalRevenue)}, EBITDA=${formatCurrency(year.ebitda)}, Utilidad Neta=${formatCurrency(year.netIncome)}\n`;
+        });
+    }
+     if (financialResults.kpis.length > 4) {
+        const kpisY5 = financialResults.kpis[4];
+        context += `KPIs Finales (Año 5): Sucursales=${kpisY5.activeSucursales}, Clientes=${Math.round(kpisY5.totalActiveCustomers)}, LTV:CAC General=${kpisY5.ltv_cac_ratio.toFixed(1)}x\n`;
+     }
+    
+    return context;
+}
+/**
+ * Opens the strategic copilot modal.
+ */
+function openCopilotModal() {
+    const modalContent = `
+        <p class="text-slate-400 mb-4">Haz una pregunta sobre el estado actual del modelo. Por ejemplo: "Sugiere 3 iniciativas para mejorar el EBITDA del año 3" o "¿Por qué cae el número de clientes en el año 3?".</p>
+        <textarea id="copilot-prompt" class="w-full h-24 p-2 bg-gray-800 border border-gray-600 rounded-md text-white" placeholder="Escribe tu pregunta aquí..."></textarea>
+        <div class="text-right mt-4">
+            <button onclick="submitCopilotQuery()" class="bg-purple-600 hover:bg-purple-500 text-white px-4 py-2 rounded-lg font-medium">Enviar Pregunta     ✨    </button>
+        </div>
+        <div id="copilot-response" class="mt-4 p-4 bg-gray-900 rounded-md" style="display:none;"></div>
+    `;
+    showGeminiModal('Copiloto Estratégico', modalContent);
+}
+/**
+ * Submits the user's query from the copilot modal to the Gemini API.
+ */
+async function submitCopilotQuery() {
+    const userQuery = document.getElementById('copilot-prompt').value;
+    if (!userQuery) {
+        alert("Por favor, escribe una pregunta.");
+        return;
+    }
+    const responseContainer = document.getElementById('copilot-response');
+    responseContainer.style.display = 'block';
+    responseContainer.innerHTML = '<div class="loader"></div>';
+    const modelContext = buildFullModelContext();
+    const fullPrompt = `Como un analista financiero experto (CFA) con profundo conocimiento del negocio, analiza la siguiente data y responde a la pregunta del usuario. Conecta los puntos entre las asunciones (modelData) y los resultados (financialResults) para dar una respuesta detallada y con causa-raíz.
+${modelContext}
+PREGUNTA DEL USUARIO:
+"${userQuery}"
+Responde en español, usando un tono profesional y directo. Utiliza markdown básico (negritas con **, listas con -) para formatear tu respuesta.`;
+    const response = await callGeminiAPI(fullPrompt);
+    let htmlResponse = response.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>'); // Bold
+    htmlResponse = htmlResponse.replace(/\n/g, '<br>'); // Newlines
+    responseContainer.innerHTML = htmlResponse;
+}
+/**
+ * Generates an executive summary of the P&L using the Gemini API.
+ */
+async function generateExecutiveSummary() {
+    showGeminiModal('Generando Resumen Ejecutivo...', '<div class="loader"></div>');
+    const modelContext = buildFullModelContext();
+    const prompt = `Actúa como un analista financiero senior preparando un reporte para la junta directiva de 'Hombre Vigente'. Basado en los siguientes datos del modelo, escribe un resumen ejecutivo conciso.
+Enfócate en:
+1. La trayectoria de crecimiento de los ingresos y sus drivers.
+2. La evolución de la rentabilidad (márgenes y EBITDA) y sus causas.
+3. Los puntos clave o inflexiones (ej. cuándo se vuelve rentable y por qué).
+4. Un área potencial de riesgo u oportunidad que se desprenda de los números.
+DATOS DEL MODELO:
+${modelContext}
+El resumen debe ser profesional, claro y en español.`;
+    const summary = await callGeminiAPI(prompt);
+    document.getElementById('gemini-modal-title').textContent = 'Resumen Ejecutivo';
+    document.getElementById('gemini-modal-body').innerHTML = summary.replace(/\n/g, '<br>');
+}
+/**
+ * Asks Gemini to suggest new services based on current data, requesting a structured JSON response.
+ */
+async function suggestNewServices() {
+    showGeminiModal('Buscando Oportunidades de Crecimiento...', '<div class="loader"></div>');
+    const serviceNames = modelData.pricing.services.map(s => s.name).join(', ');
+    let archetypeDescriptions = '';
+    for (const key in modelData.customerArchetypes) {
+        archetypeDescriptions += `- ${key}: ${modelData.customerArchetypes[key].description}\n`;
+    }
+    const prompt = `Eres un estratega de negocio para una clínica de estética y bienestar masculino llamada 'Hombre Vigente'. Basado en nuestros arquetipos de cliente y catálogo de servicios actuales, sugiere 3 servicios o paquetes de servicios nuevos, innovadores y sinérgicos.
+Nuestros arquetipos de cliente son:
+${archetypeDescriptions}
+Nuestro catálogo de servicios actual incluye: ${serviceNames}.
+Para cada sugerencia, proporciona un nombre, el arquetipo de cliente principal al que se dirige, un precio sugerido en MXN y una justificación breve y convincente.`;
+    const schema = {
+        type: "ARRAY",
+        items: {
+            type: "OBJECT",
+            properties: {
+                "serviceName": { "type": "STRING", "description": "Nombre del nuevo servicio o paquete." },
+                "targetArchetype": { "type": "STRING", "description": "El arquetipo de cliente principal (ej. 'carlos', 'eduardo')." },
+                "suggestedPrice": { "type": "NUMBER", "description": "Precio sugerido en MXN." },
+                "justification": { "type": "STRING", "description": "Justificación de por qué es una buena idea." }
+            },
+            required: ["serviceName", "targetArchetype", "suggestedPrice", "justification"]
+        }
+    };
+    const responseText = await callGeminiAPI(prompt, true, schema);
+    
+    try {
+        const suggestions = JSON.parse(responseText);
+        let htmlOutput = '';
+        suggestions.forEach(s => {
+            htmlOutput += `
+                <div class="mb-4 p-4 border border-gray-600 rounded-lg">
+                    <h5 class="text-blue-400">${s.serviceName}</h5>
+                    <p><strong>Público Objetivo:</strong> ${s.targetArchetype}</p>
+                    <p><strong>Precio Sugerido:</strong> ${formatCurrency(s.suggestedPrice)}</p>
+                    <p><strong>Justificación:</strong> ${s.justification}</p>
+                </div>
+            `;
+        });
+        document.getElementById('gemini-modal-title').textContent = 'Sugerencias de Nuevos Servicios';
+        document.getElementById('gemini-modal-body').innerHTML = htmlOutput;
+    } catch (e) {
+        console.error("Error parsing JSON from Gemini:", e);
+        document.getElementById('gemini-modal-body').innerHTML = `Hubo un error al procesar las sugerencias de la IA. <br><br>Respuesta recibida:<br>${responseText}`;
+    }
+}
+// ===================================================================
+// ===== INITIALIZATION ==============================================
+// ===================================================================
 document.addEventListener('DOMContentLoaded', function() {
-    log('       🚀        STARTING HOMBRE VIGENTE FINANCIAL MODEL');
+    log('           🚀            STARTING HOMBRE VIGENTE FINANCIAL MODEL V50.6');
     try {
         setupTabs();
         setupControls();
         setupExitMultipleSlider();
         initializeCharts();
         forceCalculate(); // Initial calculation with the new base scenario
-        log('       🎉        APPLICATION READY');
+        log('           🎉            APPLICATION READY');
     } catch (error) {
-        log(`       ❌        CRITICAL ERROR DURING INITIALIZATION: ${error.message}`);
+        log(`           ❌            CRITICAL ERROR DURING INITIALIZATION: ${error.message}`);
         console.error(error);
     }
 });
