@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Modelo Financiero - Hombre Vigente V50.7</title>
+<title>Modelo Financiero - Hombre Vigente V51.0</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -303,6 +303,28 @@ input[type="number"]:focus, input[type="text"]:focus, select:focus {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
 }
+/* V51.0 Specific Styles for IA Controls */
+.ia-control-item {
+    padding-bottom: 0.75rem;
+    margin-bottom: 0.75rem;
+    border-bottom: 1px solid #374151;
+}
+.ia-control-item:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+.ia-control-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.25rem;
+}
+.ia-control-description {
+    font-size: 0.8rem;
+    color: #9ca3af;
+    padding-right: 1rem;
+}
 </style>
 </head>
 <body>
@@ -331,7 +353,7 @@ input[type="number"]:focus, input[type="text"]:focus, select:focus {
     <header class="mb-4 text-center bg-transparent rounded-xl p-6">
         <h1 class="text-4xl lg:text-5xl font-black text-white leading-tight tracking-tighter mb-2">Modelo Financiero - <span class="highlight-text">Hombre Vigente</span></h1>
         <p class="text-xl text-slate-400 mt-2">Ecosistema Integral - IA NATIVE</p>
-        <p class="text-lg text-slate-500 mt-1">V50.7 - El Simulador de Sala de Juntas</p>
+        <p class="text-lg text-slate-500 mt-1">V51.0 - Strategic Cockpit</p>
         <div class="flex justify-center items-center gap-4 mt-4">
             <button onclick="toggleDebug()" class="bg-gray-700 hover:bg-gray-600 text-white px-4 py-2 rounded-lg font-medium transition duration-300 inline-flex items-center gap-2">
                 <i data-lucide="bug" class="w-5 h-5"></i> Debug
@@ -351,17 +373,19 @@ input[type="number"]:focus, input[type="text"]:focus, select:focus {
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
         <!-- FILA 1 -->
         <div class="card">
-            <h3 class="text-xl font-semibold mb-4 text-white">         💰          Capital Structure</h3>
+            <h3 class="text-xl font-semibold mb-4 text-white">          💰           Capital Structure</h3>
             <div class="grid grid-cols-2 gap-4">
                 <div>Equity Invested: <span id="equity-invested" class="font-bold text-blue-400">$0M</span></div>
+                <div class="text-sm text-slate-400">Seed: <span id="equity-seed" class="font-medium text-slate-300">$0M</span></div>
                 <div>Break-Even: <span id="break-even-month" class="font-bold text-emerald-400">N/A</span></div>
+                <div class="text-sm text-slate-400">Serie A: <span id="equity-series-a" class="font-medium text-slate-300">$0M</span></div>
                 <div>Debt Used: <span id="debt-used" class="font-bold text-amber-400">$0M</span></div>
                 <div>Self-Financed: <span id="self-financed" class="font-bold text-emerald-400">$0M</span></div>
             </div>
         </div>
         
         <div class="card">
-            <h3 class="text-xl font-semibold mb-4 text-white">         🎯          Investment Returns</h3>
+            <h3 class="text-xl font-semibold mb-4 text-white">          🎯           Investment Returns</h3>
             <div class="mb-4">
                 <label>Exit Multiple: <input type="range" id="exit-multiple-slider" min="6" max="10" step="0.1" value="8" class="input-slider"></label>
                 <span id="exit-multiple-display" class="font-bold text-blue-400">8.0x</span>
@@ -377,7 +401,7 @@ input[type="number"]:focus, input[type="text"]:focus, select:focus {
     <!-- SEGUNDA FILA -->
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
         <div class="card">
-            <h3 class="text-xl font-semibold mb-4 text-white">         🏢          Growth & Scale</h3>
+            <h3 class="text-xl font-semibold mb-4 text-white">          🏢           Growth & Scale</h3>
             <div class="grid grid-cols-2 gap-4 text-sm">
                 <div>Locations Y5: <span id="locations-y5" class="font-bold text-blue-400">0</span></div>
                 <div id="customers-y5-wrapper" data-tooltip="">Customers Y5: <span id="customers-y5" class="font-bold text-sky-400">0</span></div>
@@ -389,7 +413,7 @@ input[type="number"]:focus, input[type="text"]:focus, select:focus {
         </div>
         
         <div class="card">
-            <h3 class="text-xl font-semibold mb-4 text-white">         🤖          AI & Operations</h3>
+            <h3 class="text-xl font-semibold mb-4 text-white">          🤖           AI & Operations</h3>
             <div class="grid grid-cols-2 gap-4">
                 <div data-tooltip="Ingresos totales del Año 5 divididos entre el número de sucursales al final del periodo.">Rev./Sucursal Y5: <span id="revenue-per-location" class="font-bold text-emerald-400">$0M</span></div>
                 <div>Cross-sell Boost: <span id="cross-sell-boost" class="font-bold text-sky-400">+0%</span></div>
@@ -410,38 +434,46 @@ input[type="number"]:focus, input[type="text"]:focus, select:focus {
     </div>
     <!-- Tab Content: Control -->
     <div id="content-control" class="content-section active">
-        <!--  🔥  UI REORGANIZATION V50 -->
+        <!--   🔥   UI REORGANIZATION V51.0 -->
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <!-- COLUMNA 1: Estrategia de Alto Nivel -->
+            <!-- COLUMNA 1: Estrategia y Crecimiento -->
             <div class="space-y-6">
                 <div class="card">
-                    <h4 class="font-semibold text-lg mb-4 text-white"> 📊  Estrategia de Alto Nivel</h4>
-                    <div id="estrategia-controls" class="space-y-4"></div>
+                    <h4 class="font-semibold text-lg mb-4 text-white">📈 Motores de Crecimiento y Escenarios</h4>
+                    <div id="growth-engine-controls" class="space-y-4"></div>
                 </div>
                  <div class="card">
-                    <h4 class="font-semibold text-lg mb-4 text-white"> 🤖  IA Native Controls</h4>
-                    <div id="ai-native-controls" class="space-y-4"></div>
+                    <h4 class="font-semibold text-lg mb-4 text-white">💰 Estrategia de Capital</h4>
+                    <div id="capital-strategy-controls" class="space-y-4"></div>
                 </div>
             </div>
-            <!-- COLUMNA 2: Operaciones y Finanzas -->
+            <!-- COLUMNA 2: Operaciones y Monetización -->
             <div class="space-y-6">
                 <div class="card">
-                    <h4 class="font-semibold text-lg mb-4 text-white"> ⚙️  Operaciones y CAPEX</h4>
-                    <div id="operaciones-controls" class="space-y-4"></div>
+                    <h4 class="font-semibold text-lg mb-4 text-white">⚙️ Operaciones y CAPEX</h4>
+                    <div id="operations-controls" class="space-y-4"></div>
                      <div class="mt-4 pt-4 border-t border-gray-700">
                         <div class="text-sm font-medium text-slate-300">CAPEX / Sucursal: <span id="capex-per-location-display" class="font-bold text-amber-400">$0</span></div>
                     </div>
                 </div>
                  <div class="card">
-                    <h4 class="font-semibold text-lg mb-4 text-white"> 💵  Monetización y Costos</h4>
-                    <div id="monetizacion-controls" class="space-y-4"></div>
+                    <h4 class="font-semibold text-lg mb-4 text-white">💵 Monetización</h4>
+                    <div id="monetization-controls" class="space-y-4"></div>
                 </div>
             </div>
-            <!-- COLUMNA 3: Calibración y Stress-Testing -->
+            <!-- COLUMNA 3: Dinámicas de Cliente y Supuestos Base -->
             <div class="space-y-6">
                 <div class="card">
-                    <h4 class="font-semibold text-lg mb-4 text-white"> 🎛️  Calibración y Stress-Testing</h4>
-                    <div id="calibracion-controls" class="space-y-4"></div>
+                    <h4 class="font-semibold text-lg mb-4 text-white">📈 Dinámicas del Cliente</h4>
+                    <div id="customer-dynamics-controls" class="space-y-4"></div>
+                </div>
+                <div class="card">
+                    <h4 class="font-semibold text-lg mb-4 text-white">🎛️ Supuestos Base del Negocio</h4>
+                    <div id="assumptions-controls" class="space-y-4"></div>
+                </div>
+                <div class="card">
+                    <h4 class="font-semibold text-lg mb-4 text-white">🤖 IA Native Controls</h4>
+                    <div id="ai-native-controls" class="space-y-4"></div>
                 </div>
             </div>
         </div>
@@ -459,7 +491,7 @@ input[type="number"]:focus, input[type="text"]:focus, select:focus {
                 <div class="flex justify-between items-center mb-4">
                      <h3 class="text-xl font-semibold text-white">Estado de Resultados (P&L)</h3>
                      <button onclick="generateExecutiveSummary()" class="bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2 rounded-lg font-medium transition duration-300 inline-flex items-center gap-2 text-sm">
-                        <i data-lucide="file-text" class="w-4 h-4"></i> Generar Resumen Ejecutivo     ✨
+                        <i data-lucide="file-text" class="w-4 h-4"></i> Generar Resumen Ejecutivo      ✨
                     </button>
                 </div>
                 <div class="overflow-x-auto">
@@ -555,14 +587,80 @@ let toggleControls = {
   PersonaVigenteAI: true,
   bnplMarketingToggle: true 
 };
-// Injected modelData from internal documents - V50.7 CALIBRATION
+
+// V50.9: DYNAMIC CUSTOMER JOURNEY MATRICES
+const customerJourneyInitial = {
+    carlos: {
+        "Ajuste Barba y Cejas": 0.90, "Corte de Pelo": 0.85, "Manicure Natural": 0.70, "Pedicure Natural": 0.40, "Reducción Canas": 0.60, "Tinte Natural": 0.25, "Rebaje de Vello Corporal": 0.30, "Masajes Descontracturantes": 0.20,
+        "Limpieza Facial Profunda": 0.45, "Limpieza Ultrasonido": 0.35, "PRP Dermapen": 0.03, "HIFU": 0.15, "RF Microneedling": 0.08, "Láser CO2": 0.02,
+        "Botox": 0.45, "Fillers": 0.06, "Sculptra": 0.03,
+        "Lifting Hilos PDO": 0.01, "Liposucción Papada": 0.01, "Bichectomía": 0.01, "Blefaroplastia": 0.02, "Lipofilling": 0.01,
+        "Limpieza Dental": 0.75, "Blanqueamiento LED": 0.15, "Depilación Láser": 0.60, "Bronceado UVA": 0.08
+    },
+    eduardo: {
+        "Ajuste Barba y Cejas": 0.80, "Corte de Pelo": 0.90, "Manicure Natural": 0.30, "Pedicure Natural": 0.15, "Reducción Canas": 0.15, "Tinte Natural": 0.15, "Rebaje de Vello Corporal": 0.15, "Masajes Descontracturantes": 0.25,
+        "Limpieza Facial Profunda": 0.55, "Limpieza Ultrasonido": 0.30, "PRP Dermapen": 0.01, "HIFU": 0.02, "RF Microneedling": 0.02, "Láser CO2": 0.0,
+        "Botox": 0.08, "Fillers": 0.0, "Sculptra": 0.0,
+        "Lifting Hilos PDO": 0.0, "Liposucción Papada": 0.0, "Bichectomía": 0.0, "Blefaroplastia": 0.0, "Lipofilling": 0.0,
+        "Limpieza Dental": 0.35, "Blanqueamiento LED": 0.05, "Depilación Láser": 0.30, "Bronceado UVA": 0.02
+    },
+    mantenimiento: {
+        "Ajuste Barba y Cejas": 1.0, "Corte de Pelo": 1.0, "Manicure Natural": 0.50, "Pedicure Natural": 0.30, "Reducción Canas": 0.30, "Tinte Natural": 0.20, "Rebaje de Vello Corporal": 0.20, "Masajes Descontracturantes": 0.20,
+        "Limpieza Facial Profunda": 0.40, "Limpieza Ultrasonido": 0.25, "PRP Dermapen": 0.0, "HIFU": 0.01, "RF Microneedling": 0.0, "Láser CO2": 0.0,
+        "Botox": 0.05, "Fillers": 0.0, "Sculptra": 0.0,
+        "Lifting Hilos PDO": 0.0, "Liposucción Papada": 0.0, "Bichectomía": 0.0, "Blefaroplastia": 0.0, "Lipofilling": 0.0,
+        "Limpieza Dental": 0.50, "Blanqueamiento LED": 0.03, "Depilación Láser": 0.20, "Bronceado UVA": 0.05
+    },
+    transaccional: {
+        "Ajuste Barba y Cejas": 0.70, "Corte de Pelo": 0.80, "Manicure Natural": 0.25, "Pedicure Natural": 0.10, "Reducción Canas": 0.10, "Tinte Natural": 0.05, "Rebaje de Vello Corporal": 0.10, "Masajes Descontracturantes": 0.15,
+        "Limpieza Facial Profunda": 0.20, "Limpieza Ultrasonido": 0.20, "PRP Dermapen": 0.0, "HIFU": 0.0, "RF Microneedling": 0.0, "Láser CO2": 0.0,
+        "Botox": 0.0, "Fillers": 0.0, "Sculptra": 0.0,
+        "Lifting Hilos PDO": 0.0, "Liposucción Papada": 0.0, "Bichectomía": 0.0, "Blefaroplastia": 0.0, "Lipofilling": 0.0,
+        "Limpieza Dental": 0.15, "Blanqueamiento LED": 0.0, "Depilación Láser": 0.05, "Bronceado UVA": 0.02
+    }
+};
+
+const customerJourneyMature = {
+    carlos: { // Premium
+        "Ajuste Barba y Cejas": 0.95, "Corte de Pelo": 0.95, "Manicure Natural": 0.70, "Pedicure Natural": 0.40, "Reducción Canas": 0.60, "Tinte Natural": 0.25, "Rebaje de Vello Corporal": 0.30, "Masajes Descontracturantes": 0.30,
+        "Limpieza Facial Profunda": 0.70, "Limpieza Ultrasonido": 0.35, "PRP Dermapen": 0.08, "HIFU": 0.25, "RF Microneedling": 0.08, "Láser CO2": 0.02,
+        "Botox": 0.60, "Fillers": 0.06, "Sculptra": 0.03,
+        "Lifting Hilos PDO": 0.03, "Liposucción Papada": 0.03, "Bichectomía": 0.01, "Blefaroplastia": 0.02, "Lipofilling": 0.01,
+        "Limpieza Dental": 0.75, "Blanqueamiento LED": 0.25, "Depilación Láser": 0.80, "Bronceado UVA": 0.08
+    },
+    eduardo: { // Evolves into "Aspiracional"
+        "Ajuste Barba y Cejas": 0.75, "Corte de Pelo": 0.85, "Manicure Natural": 0.30, "Pedicure Natural": 0.15, "Reducción Canas": 0.15, "Tinte Natural": 0.15, "Rebaje de Vello Corporal": 0.15, "Masajes Descontracturantes": 0.20,
+        "Limpieza Facial Profunda": 0.55, "Limpieza Ultrasonido": 0.30, "PRP Dermapen": 0.02, "HIFU": 0.08, "RF Microneedling": 0.02, "Láser CO2": 0.0,
+        "Botox": 0.12, "Fillers": 0.0, "Sculptra": 0.0,
+        "Lifting Hilos PDO": 0.0, "Liposucción Papada": 0.0, "Bichectomía": 0.0, "Blefaroplastia": 0.0, "Lipofilling": 0.0,
+        "Limpieza Dental": 0.35, "Blanqueamiento LED": 0.08, "Depilación Láser": 0.40, "Bronceado UVA": 0.02
+    },
+    mantenimiento: { // Evolves into "Performance"
+        "Ajuste Barba y Cejas": 1.0, "Corte de Pelo": 1.0, "Manicure Natural": 0.50, "Pedicure Natural": 0.30, "Reducción Canas": 0.30, "Tinte Natural": 0.20, "Rebaje de Vello Corporal": 0.20, "Masajes Descontracturantes": 0.35,
+        "Limpieza Facial Profunda": 0.85, "Limpieza Ultrasonido": 0.25, "PRP Dermapen": 0.15, "HIFU": 0.30, "RF Microneedling": 0.0, "Láser CO2": 0.0,
+        "Botox": 0.45, "Fillers": 0.0, "Sculptra": 0.0,
+        "Lifting Hilos PDO": 0.01, "Liposucción Papada": 0.02, "Bichectomía": 0.0, "Blefaroplastia": 0.0, "Lipofilling": 0.0,
+        "Limpieza Dental": 0.50, "Blanqueamiento LED": 0.25, "Depilación Láser": 0.70, "Bronceado UVA": 0.05
+    },
+    transaccional: { // Remains the same, as they don't mature, they convert or churn
+        "Ajuste Barba y Cejas": 0.70, "Corte de Pelo": 0.80, "Manicure Natural": 0.25, "Pedicure Natural": 0.10, "Reducción Canas": 0.10, "Tinte Natural": 0.05, "Rebaje de Vello Corporal": 0.10, "Masajes Descontracturantes": 0.15,
+        "Limpieza Facial Profunda": 0.20, "Limpieza Ultrasonido": 0.20, "PRP Dermapen": 0.0, "HIFU": 0.0, "RF Microneedling": 0.0, "Láser CO2": 0.0,
+        "Botox": 0.0, "Fillers": 0.0, "Sculptra": 0.0,
+        "Lifting Hilos PDO": 0.0, "Liposucción Papada": 0.0, "Bichectomía": 0.0, "Blefaroplastia": 0.0, "Lipofilling": 0.0,
+        "Limpieza Dental": 0.15, "Blanqueamiento LED": 0.0, "Depilación Láser": 0.05, "Bronceado UVA": 0.02
+    }
+};
+
+// Injected modelData from internal documents - V51.0 CALIBRATION
 const baseModelData = {
     general: { currency: "MXN", projectionTimeline: { unit: "months", duration: 60 }, scenario: "base" },
     realismLevers: {
         funnelConversionRate: 0.70,
     },
     customerBehavior: {
-        realismFactor: 1.0
+        realismFactor: 1.0,
+        cohortMaturityMonths: 12, 
+        adherenceMultipliers: { ultra: 1.0, high: 1.0, premium: 1.0, luxury: 1.0 }
     },
     adherenceMatrix: {
         carlos: { ultra: 0.90, high: 0.75, premium: 0.60, luxury: 0.40, surgery: 0.95 },
@@ -647,52 +745,6 @@ const baseModelData = {
             marketingEnabled: true,
             revenueUpliftMultiplier: 1.25,
             minPriceThreshold: 2500 
-        }
-    },
-    customerJourney: {
-        carlos: {
-            "Corte de Pelo": 0.85, "Ajuste Barba y Cejas": 0.90, "Manicure Natural": 0.70,
-            "Reducción Canas": 0.60, "Limpieza Dental": 0.75,
-            "Limpieza Facial Profunda": 0.45, "Masajes Descontracturantes": 0.20, "Limpieza Ultrasonido": 0.35,
-            "Depilación Láser": 0.50, "Pedicure Natural": 0.40, "Tinte Natural": 0.25,
-            "Rebaje de Vello Corporal": 0.30,
-            "Botox": 0.40, "HIFU": 0.12, "RF Microneedling": 0.08, "Fillers": 0.06,
-            "PRP Dermapen": 0.03, "Blanqueamiento LED": 0.15,
-            "Láser CO2": 0.02, "Sculptra": 0.03, "Lifting Hilos PDO": 0.01, "Bronceado UVA": 0.08,
-            "Liposucción Papada": 0.01, "Bichectomía": 0.01, "Blefaroplastia": 0.02, "Lipofilling": 0.01
-        },
-        eduardo: {
-            "Corte de Pelo": 0.90, "Ajuste Barba y Cejas": 0.80, "Manicure Natural": 0.40,
-            "Reducción Canas": 0.15, "Limpieza Dental": 0.35,
-            "Limpieza Facial Profunda": 0.50, "Masajes Descontracturantes": 0.25, "Limpieza Ultrasonido": 0.30,
-            "Depilación Láser": 0.25, "Pedicure Natural": 0.20, "Tinte Natural": 0.15,
-            "Rebaje de Vello Corporal": 0.15,
-            "Botox": 0.08, "HIFU": 0.02, "RF Microneedling": 0.02, "Fillers": 0.0,
-            "PRP Dermapen": 0.01, "Blanqueamiento LED": 0.05,
-            "Láser CO2": 0.0, "Sculptra": 0.0, "Lifting Hilos PDO": 0.0, "Bronceado UVA": 0.02,
-            "Liposucción Papada": 0.0, "Bichectomía": 0.0, "Blefaroplastia": 0.0, "Lipofilling": 0.0
-        },
-        mantenimiento: {
-            "Corte de Pelo": 1.0, "Ajuste Barba y Cejas": 1.0, "Manicure Natural": 0.50,
-            "Reducción Canas": 0.30, "Limpieza Dental": 0.40,
-            "Limpieza Facial Profunda": 0.40, "Masajes Descontracturantes": 0.20, "Limpieza Ultrasonido": 0.25,
-            "Depilación Láser": 0.15, "Pedicure Natural": 0.30, "Tinte Natural": 0.20,
-            "Rebaje de Vello Corporal": 0.20,
-            "Botox": 0.02, "HIFU": 0.01, "RF Microneedling": 0.0, "Fillers": 0.0,
-            "PRP Dermapen": 0.0, "Blanqueamiento LED": 0.03,
-            "Láser CO2": 0.0, "Sculptra": 0.0, "Lifting Hilos PDO": 0.0, "Bronceado UVA": 0.05,
-            "Liposucción Papada": 0.0, "Bichectomía": 0.0, "Blefaroplastia": 0.0, "Lipofilling": 0.0
-        },
-        transaccional: {
-            "Corte de Pelo": 0.80, "Ajuste Barba y Cejas": 0.70, "Manicure Natural": 0.25,
-            "Reducción Canas": 0.10, "Limpieza Dental": 0.15,
-            "Limpieza Facial Profunda": 0.20, "Masajes Descontracturantes": 0.15, "Limpieza Ultrasonido": 0.20,
-            "Depilación Láser": 0.05, "Pedicure Natural": 0.10, "Tinte Natural": 0.05,
-            "Rebaje de Vello Corporal": 0.10,
-            "Botox": 0.0, "HIFU": 0.0, "RF Microneedling": 0.0, "Fillers": 0.0,
-            "PRP Dermapen": 0.0, "Blanqueamiento LED": 0.0,
-            "Láser CO2": 0.0, "Sculptra": 0.0, "Lifting Hilos PDO": 0.0, "Bronceado UVA": 0.02,
-            "Liposucción Papada": 0.0, "Bichectomía": 0.0, "Blefaroplastia": 0.0, "Lipofilling": 0.0
         }
     },
     expansionPlan: {
@@ -839,9 +891,9 @@ const scenarios = {
 };
 // Injected controlsConfig for Beauty Tech
 const controlsConfig = {
-    estrategia: [
-        { id: 'scenario', label: 'Escenarios Estratégicos', type: 'scenario', tooltip: 'Selecciona un preset de supuestos (Pesimista, Base, Optimista) que ajustará múltiples palancas a la vez. Puedes refinar cada palanca individualmente después.' },
-        { id: 'sustainBudgetPerLocation', label: 'Inversión Marketing Mensual', min: 15000, max: 35000, step: 1000, type: 'range', format: val => formatCurrency(val, true), tooltip: 'Presupuesto mensual de marketing por sucursal. Ajusta el ritmo de adquisición de clientes.' },
+    growth_engine: [
+        { id: 'scenario', label: 'Escenarios Estratégicos', type: 'scenario', tooltip: 'Selecciona un preset de supuestos (Pesimista, Base, Optimista) que ajustará múltiples palancas a la vez para simular diferentes condiciones de mercado.' },
+        { id: 'sustainBudgetPerLocation', label: 'Inversión Marketing Mensual', min: 15000, max: 35000, step: 1000, type: 'range', format: val => formatCurrency(val, true), tooltip: 'Presupuesto mensual de marketing por sucursal. Ajusta el ritmo de adquisición de clientes y el CAC.' },
         { 
             id: 'strategicFocus', 
             label: 'Foco Estratégico Mkt', 
@@ -856,9 +908,12 @@ const controlsConfig = {
         },
         { id: 'wordOfMouthMultiplierEduardo', label: 'Potencial Viral (Boca a Boca)', min: 1.05, max: 1.50, step: 0.01, type: 'range', format: val => val.toFixed(2) + 'x', tooltip: 'Multiplicador de crecimiento orgánico. Cada cliente pagado trae consigo clientes adicionales por recomendación.' },
     ],
-    operaciones: [
-        { id: 'seriesA', label: 'Capital Serie A', min: 5000000, max: 50000000, step: 1000000, type: 'number', format: val => formatCurrency(val, true), tooltip: 'Capital Serie A para arranque y expansión inicial.' },
-        { id: 'ventureDebtRate', label: 'Tasa Venture Debt', min: 0.12, max: 0.22, step: 0.005, type: 'range', format: val => (val * 100).toFixed(1) + '%', tooltip: 'Tasa de interés para la línea de Venture Debt.' },
+    capital_strategy: [
+        { id: 'seedCapital', label: 'Capital Seed', min: 8000000, max: 17000000, step: 500000, type: 'range', format: val => `$${(val/1000).toLocaleString()}K`, tooltip: 'Capital inicial para lanzar la primera clínica, desarrollar el MVP tecnológico y cubrir los gastos operativos iniciales.' },
+        { id: 'seriesACapital', label: 'Capital Serie A', min: 10000000, max: 30000000, step: 1000000, type: 'range', format: val => `$${(val/1000).toLocaleString()}K`, tooltip: 'Capital de crecimiento para financiar la expansión nacional y la evolución del stack tecnológico. Se levanta en el mes 12.' },
+        { id: 'ventureDebtRate', label: 'Tasa Venture Debt', min: 0.12, max: 0.22, step: 0.005, type: 'range', format: val => (val * 100).toFixed(1) + '%', tooltip: 'Tasa de interés para la línea de Venture Debt, disponible a partir del mes 18 como opción de financiamiento no dilutivo.' },
+    ],
+    operations: [
         { id: 'equipmentStrategy', label: 'Estrategia de Equipo', type: 'select', options: ['nuevo', 'reacondicionado'], tooltip: 'Elegir entre equipo nuevo (mayor CAPEX, mayor vida útil) o reacondicionado (menor CAPEX inicial).' },
         { id: 'clinicSizeM2', label: 'Tamaño Clínica (m²)', min: 150, max: 400, step: 10, type: 'number', format: val => `${val} m²`, tooltip: 'Metros cuadrados para el cálculo del CAPEX de remodelación.' },
         { id: 'remodelCostPerM2', label: 'Costo Remodelación ($/m²)', min: 12000, max: 25000, step: 500, type: 'number', format: val => formatCurrency(val, true), tooltip: 'Costo de adecuación por metro cuadrado.' },
@@ -883,31 +938,31 @@ const controlsConfig = {
         description: "Habilita el cross-sell y upsell personalizado, aumentando el ingreso promedio por cliente."
       }
     },
-    monetizacion: [
+    monetization: [
         { id: 'membershipPriceAccess', label: 'Precio Membresía Access', min: 800, max: 2000, step: 100, type: 'range', format: val => formatCurrency(val, true), tooltip: 'Precio mensual de la membresía de entrada para arquetipos Eduardo y Mantenimiento.' },
         { id: 'membershipAdoptionAccess', label: 'Adopción Membresía Access', min: 0.20, max: 0.50, step: 0.01, type: 'range', format: val => (val * 100).toFixed(0) + '%', tooltip: 'Porcentaje de clientes elegibles que adoptan la membresía Access.' },
         { id: 'membershipPriceElite', label: 'Precio Membresía Elite', min: 2500, max: 5000, step: 100, type: 'range', format: val => formatCurrency(val, true), tooltip: 'Precio mensual de la membresía premium para el arquetipo Carlos.' },
         { id: 'membershipAdoptionElite', label: 'Adopción Membresía Elite', min: 0.10, max: 0.40, step: 0.01, type: 'range', format: val => (val * 100).toFixed(0) + '%', tooltip: 'Porcentaje de Carlos que adoptan la membresía Elite.' },
         { id: 'dtcSpend', label: 'Gasto en Productos (DTC)/Cliente', min: 50, max: 400, step: 10, type: 'range', format: val => formatCurrency(val, true), tooltip: 'Gasto promedio mensual por cliente activo en productos de cuidado en casa.' },
-        { id: 'bnplMarketingToggle', label: 'BNPL en Marketing (Atracción)', type: 'toggle', tooltip: 'Activa/Desactiva la comunicación de BNPL en campañas de marketing para aumentar la conversión inicial.' },
         { id: 'bnplUplift', label: 'Uplift por BNPL en Clínica (Upsale)', min: 1.0, max: 1.5, step: 0.01, type: 'range', format: val => `+${((val - 1) * 100).toFixed(0)}%`, tooltip: 'Multiplicador de ingresos en servicios caros gracias a las facilidades de pago (BNPL) ofrecidas en la clínica.' },
         { id: 'specialistRevenueShare', label: 'Revenue Share Especialistas', min: 0.40, max: 0.60, step: 0.01, type: 'range', format: val => (val * 100).toFixed(0) + '%', tooltip: 'Porcentaje de los ingresos por servicios que se paga a los especialistas. Impacta directamente el margen bruto.' },
     ],
-    calibracion: [
+    customer_dynamics: [
+        { id: 'realismFactor', label: 'Factor de Realismo General', min: 0.6, max: 1.0, step: 0.05, type: 'range', format: val => (val * 100).toFixed(0) + '%', tooltip: 'Ajusta el optimismo del mercado. Afecta la probabilidad de que un cliente adopte un servicio por primera vez.' },
+        { id: 'cohortMaturityMonths', label: 'Madurez de Cliente (Meses)', min: 6, max: 24, step: 1, type: 'range', format: val => `${val} meses`, tooltip: 'Número de meses para que una cohorte de clientes se considere "madura" y adopte comportamientos de mayor valor y consumo clínico.' },
+        { id: 'adherenceUltra', label: 'Adherencia (Esenciales)', min: 0.8, max: 1.2, step: 0.05, type: 'range', format: val => val.toFixed(2) + 'x', tooltip: 'Multiplicador sobre la adherencia base para servicios de alta frecuencia y hábito, como cortes de pelo y barba. El pilar de la recurrencia.' },
+        { id: 'adherenceHigh', label: 'Adherencia (Mantenimiento)', min: 0.8, max: 1.2, step: 0.05, type: 'range', format: val => val.toFixed(2) + 'x', tooltip: 'Multiplicador sobre la adherencia base para servicios de bienestar recurrentes, como limpiezas faciales y masajes. El motor de la rutina.' },
+        { id: 'adherencePremium', label: 'Adherencia (Inversión)', min: 0.8, max: 1.2, step: 0.05, type: 'range', format: val => val.toFixed(2) + 'x', tooltip: 'Multiplicador sobre la adherencia base para tratamientos de alto impacto que requieren una decisión de inversión, como Botox o HIFU.' },
+        { id: 'adherenceLuxury', label: 'Adherencia (Aspiracional)', min: 0.8, max: 1.2, step: 0.05, type: 'range', format: val => val.toFixed(2) + 'x', tooltip: 'Multiplicador sobre la adherencia base para servicios exclusivos o de lujo, como procedimientos avanzados o cirugías.' },
+    ],
+    assumptions: [
         { id: 'treatmentRooms', label: 'Salas de Tratamiento / Sucursal', min: 3, max: 8, step: 1, type: 'range', format: val => `${val} salas`, tooltip: 'Número de salas de tratamiento por clínica. Define la capacidad de servicio y el CAPEX.' },
-        { id: 'targetUtilization', label: 'Utilización Target', min: 0.60, max: 0.85, step: 0.01, type: 'range', format: val => (val * 100).toFixed(0) + '%', tooltip: 'Target de ocupación de salas. Una decisión estratégica clave.' },
-        { id: 'funnelConversionRate', label: 'Tasa Conversión (Lead a Cliente)', min: 0.50, max: 0.90, step: 0.01, type: 'range', format: val => (val * 100).toFixed(0) + '%', tooltip: 'Porcentaje de clientes adquiridos que efectivamente inician tratamiento.' },
-        { id: 'adherenceUltra', label: 'Adherencia - Servicios Ultra', min: 0.70, max: 0.95, step: 0.01, type: 'range', format: val => (val * 100).toFixed(0) + '%', tooltip: 'Adherencia para servicios esenciales (corte, barba, higiene).' },
-        { id: 'adherenceHigh', label: 'Adherencia - Servicios High', min: 0.50, max: 0.85, step: 0.01, type: 'range', format: val => (val * 100).toFixed(0) + '%', tooltip: 'Adherencia para servicios de mantenimiento (faciales, masajes).' },
-        { id: 'adherencePremium', label: 'Adherencia - Servicios Premium', min: 0.30, max: 0.70, step: 0.01, type: 'range', format: val => (val * 100).toFixed(0) + '%', tooltip: 'Adherencia para servicios de inversión (botox, treatments).' },
-        { id: 'adherenceLuxury', label: 'Adherencia - Servicios Luxury', min: 0.10, max: 0.50, step: 0.01, type: 'range', format: val => (val * 100).toFixed(0) + '%', tooltip: 'Adherencia para servicios aspiracionales (procedimientos avanzados).' },
+        { id: 'targetUtilization', label: 'Utilización Target', min: 0.60, max: 0.85, step: 0.01, type: 'range', format: val => (val * 100).toFixed(0) + '%', tooltip: 'Target de ocupación de salas. Una decisión estratégica clave que balancea ingresos y calidad del servicio.' },
+        { id: 'funnelConversionRate', label: 'Tasa Conversión (Lead a Cliente)', min: 0.50, max: 0.90, step: 0.01, type: 'range', format: val => (val * 100).toFixed(0) + '%', tooltip: 'Porcentaje de clientes potenciales (leads) que efectivamente se convierten en clientes de pago.' },
         { id: 'churnRateCarlos', label: 'Churn Anual - Carlos', min: 0.15, max: 0.35, step: 0.01, type: 'range', format: val => (val * 100).toFixed(0) + '%', tooltip: 'Tasa de abandono anual para el arquetipo de mayor valor.' },
         { id: 'churnRateEduardo', label: 'Churn Anual - Eduardo', min: 0.25, max: 0.50, step: 0.01, type: 'range', format: val => (val * 100).toFixed(0) + '%', tooltip: 'Tasa de abandono anual para el arquetipo de volumen.' },
         { id: 'churnRateMantenimiento', label: 'Churn Anual - Mantenimiento', min: 0.30, max: 0.60, step: 0.01, type: 'range', format: val => (val * 100).toFixed(0) + '%', tooltip: 'Tasa de abandono anual para el arquetipo de mantenimiento.' },
-        // V50.6 ADDITIONS
         { id: 'churnRateTransaccional', label: 'Churn Anual - Transaccional', min: 0.50, max: 0.90, step: 0.01, type: 'range', format: val => (val * 100).toFixed(0) + '%', tooltip: 'Tasa de abandono para el cliente más volátil, clave para el modelo de conversión.' },
-        { id: 'premiumServiceDiscount', label: 'Descuento Servicios Premium', min: 0, max: 0.40, step: 0.05, type: 'range', format: val => (val * 100).toFixed(0) + '%', tooltip: 'Descuento aplicado a Botox, HIFU, Fillers para calibrar vs mercado LATAM. 0% = precios actuales, 30% = más competitivo.' },
-        { id: 'realismFactor', label: 'Factor de Realismo General', min: 0.6, max: 1.0, step: 0.05, type: 'range', format: val => (val * 100).toFixed(0) + '%', tooltip: 'Aplica factor de conservadurismo a comportamiento de clientes. 100% = optimista, 80% = realista, 60% = conservador.' },
     ]
 };
 let financialResults = { pl: [], cf: [], bs: [], kpis: [], tirEquity: 0, detailedPL: [] };
@@ -944,18 +999,17 @@ function getDynamicChurn(archetype, cohortAgeMonths) {
     return Math.min(baseChurn * ageMultiplier, 0.95); // Cap máximo 95%
 }
 /**
- * 🔥  V50.3 REPLACEMENT: Calculates the average service hours a new customer will consume using the adherence matrix.
+ * 🔥   V50.3 REPLACEMENT: Calculates the average service hours a new customer will consume using the adherence matrix.
  */
 function getAvgHoursPerNewCustomer(modelData) {
     let totalHours = 0;
     let totalPercentage = 0;
-    const { customerArchetypes, customerJourney, pricing, adherenceMatrix, customerBehavior } = modelData;
+    const { customerArchetypes, pricing, adherenceMatrix, customerBehavior } = modelData;
     const realismFactor = customerBehavior?.realismFactor || 1.0;
-
     for (const archetype in customerArchetypes) {
         if (archetype === 'transaccional') continue; // Exclude walk-ins from paid acquisition calc
         const archData = customerArchetypes[archetype];
-        const journey = customerJourney[archetype];
+        const journey = customerJourneyInitial[archetype]; // Use initial journey for new customers
         let hoursForArchetype = 0;
         for (const serviceName in journey) {
             const adoptionRate = journey[serviceName] * realismFactor;
@@ -979,15 +1033,15 @@ function getAvgHoursPerNewCustomer(modelData) {
  */
 function runMonthlySimulation(modelData, previousMonthState, month) {
     // --- I. SETUP AND LEVERS ---
-    const { aiDefaults, customerArchetypes, marketing, marketingChannels, pricing, customerJourney, expansionPlan, capacity, locationRampUp, productsRevenue, customerBehavior } = modelData;
+    const { aiDefaults, customerArchetypes, marketing, marketingChannels, pricing, expansionPlan, capacity, locationRampUp, productsRevenue, customerBehavior } = modelData;
     const efficiencyUplift = toggleControls.OptiVigenteAI ? (aiDefaults?.efficiencyUplift ?? 1.0) : 1.0;
     const CACReduction = toggleControls.MarketingVigenteAI ? (aiDefaults?.CACReduction ?? 0.0) : 0.0;
     const aiPersonalizationUplift = toggleControls.PersonaVigenteAI ? (aiDefaults?.aiPersonalizationUplift ?? 0.0) : 0.0;
     const crossSellBoost = toggleControls.PersonaVigenteAI ? (aiDefaults?.crossSellBoost ?? 0.0) : 0.0;
-    // V50.6 ADDITIONS
     const realismFactor = customerBehavior?.realismFactor || 1.0;
     const premiumDiscount = pricing?.premiumServiceDiscount || 0.0;
-    
+    const cohortMaturityMonths = customerBehavior?.cohortMaturityMonths || 12;
+
     const nextMonthCohorts = {};
     
     // --- II. CUSTOMER RETENTION & CONVERSION (COHORT-BASED) ---
@@ -1049,17 +1103,20 @@ function runMonthlySimulation(modelData, previousMonthState, month) {
     const baseCapacityPerLocation = capacity.treatmentRooms * capacity.dailyOperatingHours * capacity.daysOpenPerMonth;
     const totalCapacityAllLocations = baseCapacityPerLocation * activeSucursales;
     const totalAvailableHours = totalCapacityAllLocations * capacity.targetUtilization * efficiencyUplift;
+    
     // --- IV. DYNAMIC CUSTOMER ACQUISITION (V49 LOGIC) ---
     let hoursConsumedByExisting = 0;
     for (const cohortMonth in nextMonthCohorts) {
+        const cohortAgeMonths = month - parseInt(cohortMonth);
+        const journeyToUse = cohortAgeMonths < cohortMaturityMonths ? customerJourneyInitial : customerJourneyMature;
         for (const archetype in nextMonthCohorts[cohortMonth]) {
             const customersInCohort = nextMonthCohorts[cohortMonth][archetype];
-            const journey = customerJourney[archetype];
+            const journey = journeyToUse[archetype];
             for(const serviceName in journey) {
                 const service = pricing.services.find(s => s.name === serviceName);
                 if(service && service.repurchaseCycleMonths > 0) {
                     const adherenceTier = service.adherenceTier || 'high';
-                    const adherenceFactor = modelData.adherenceMatrix[archetype]?.[adherenceTier] || 0.75;
+                    const adherenceFactor = (modelData.adherenceMatrix[archetype]?.[adherenceTier] || 0.75) * (modelData.customerBehavior.adherenceMultipliers[adherenceTier] || 1.0);
                     const monthlyFrequency = (1 / service.repurchaseCycleMonths) * adherenceFactor;
                     hoursConsumedByExisting += customersInCohort * (journey[serviceName] * realismFactor) * monthlyFrequency * service.avgDurationHours;
                 }
@@ -1089,7 +1146,6 @@ function runMonthlySimulation(modelData, previousMonthState, month) {
     if (modelData.pricing.bnpl.marketingEnabled) {
         effectiveConversionRate *= 1.15;
     }
-
     for (const archetype in customerArchetypes) {
         if (archetype === 'transaccional') continue;
         const funnel = marketingChannels[`${archetype}Funnel`];
@@ -1106,7 +1162,7 @@ function runMonthlySimulation(modelData, previousMonthState, month) {
     const walkIns = (marketing.walkInsPerLocationPerMonth || 0) * activeSucursales;
     newCustomers.transaccional = { total: walkIns, paid: 0, organic: walkIns };
     if (totalDesiredNewCustomers > maxNewCustomersFromCapacity) {
-        log(` 📈  M${month}: Crecimiento limitado por capacidad. Deseados: ${Math.round(totalDesiredNewCustomers)}, Permitidos: ${maxNewCustomersFromCapacity}`);
+        log(`  📈   M${month}: Crecimiento limitado por capacidad. Deseados: ${Math.round(totalDesiredNewCustomers)}, Permitidos: ${maxNewCustomersFromCapacity}`);
         const scaleFactor = totalDesiredNewCustomers > 0 ? maxNewCustomersFromCapacity / totalDesiredNewCustomers : 0;
         for (const archetype in desiredNewCustomers) {
             newCustomers[archetype] = {
@@ -1133,11 +1189,9 @@ function runMonthlySimulation(modelData, previousMonthState, month) {
     const activeSucursalesForRevenue = activeSucursales > 0 ? activeSucursales : 1;
     const activeCustomers = {};
     let totalActiveCustomers = 0;
-    // V50.7 ADDITION: Initialize breakdown objects
     const tierBreakdown = { premium: 0, surgery: 0, mid: 0, basic: 0 };
     const serviceBreakdown = {};
     pricing.services.forEach(s => serviceBreakdown[s.name] = 0);
-
     for (const cohortMonth in nextMonthCohorts) {
         for (const archetype in nextMonthCohorts[cohortMonth]) {
             activeCustomers[archetype] = (activeCustomers[archetype] || 0) + nextMonthCohorts[cohortMonth][archetype];
@@ -1154,9 +1208,16 @@ function runMonthlySimulation(modelData, previousMonthState, month) {
         
         for (const service of pricing.services) {
             let customersUsingThisService = 0;
-            for (const archetype in activeCustomers) {
-                const adoptionRateForService = (customerJourney[archetype]?.[service.name] || 0) * realismFactor;
-                customersUsingThisService += (activeCustomers[archetype] / activeSucursalesForRevenue) * adoptionRateForService;
+            // V50.9: Iterate through cohorts to apply correct journey
+            for (const cohortMonth in nextMonthCohorts) {
+                const cohortAgeMonths = month - parseInt(cohortMonth);
+                const journeyToUse = cohortAgeMonths < cohortMaturityMonths ? customerJourneyInitial : customerJourneyMature;
+
+                for (const archetype in nextMonthCohorts[cohortMonth]) {
+                    const customersInCohort = nextMonthCohorts[cohortMonth][archetype];
+                    let adoptionRateForService = (journeyToUse[archetype]?.[service.name] || 0) * realismFactor;
+                    customersUsingThisService += (customersInCohort / activeSucursalesForRevenue) * adoptionRateForService;
+                }
             }
 
             if (customersUsingThisService > 0 && service.repurchaseCycleMonths > 0) {
@@ -1164,10 +1225,10 @@ function runMonthlySimulation(modelData, previousMonthState, month) {
                 let totalWeight = 0;
                 for (const archetype in activeCustomers) {
                     const customerCount = activeCustomers[archetype] || 0;
-                    const adoptionRateForService = (customerJourney[archetype]?.[service.name] || 0) * realismFactor;
+                    const adoptionRateForService = (customerJourneyInitial[archetype]?.[service.name] || 0) * realismFactor; // Use initial for simplicity here
                     if (customerCount > 0 && adoptionRateForService > 0) {
                         const adherenceTier = service.adherenceTier || 'high';
-                        const adherenceFactor = modelData.adherenceMatrix[archetype]?.[adherenceTier] || 0.75;
+                        const adherenceFactor = (modelData.adherenceMatrix[archetype]?.[adherenceTier] || 0.75) * (modelData.customerBehavior.adherenceMultipliers[adherenceTier] || 1.0);
                         const weight = customerCount * adoptionRateForService;
                         weightedAdherence += adherenceFactor * weight;
                         totalWeight += weight;
@@ -1180,16 +1241,14 @@ function runMonthlySimulation(modelData, previousMonthState, month) {
                 if (['Botox', 'HIFU', 'Fillers', 'RF Microneedling'].includes(service.name)) {
                     servicePrice *= (1 - premiumDiscount);
                 }
-
                 if (pricing.bnpl.enabled && servicePrice > pricing.bnpl.minPriceThreshold) {
                     servicePrice *= pricing.bnpl.revenueUpliftMultiplier;
                 }
-
                 for (const archetype in activeCustomers) {
                     const membershipTier = (archetype === 'carlos') ? 'elite' : 'access';
                     const membership = pricing.membership[membershipTier];
                     if (membership && membership.targetArchetype.includes(archetype)) {
-                         const adoptionRateForService = (customerJourney[archetype]?.[service.name] || 0) * realismFactor;
+                         const adoptionRateForService = (customerJourneyInitial[archetype]?.[service.name] || 0) * realismFactor;
                          const membersConsuming = (activeCustomers[archetype] / activeSucursalesForRevenue) * adoptionRateForService * membership.adoptionRate;
                          if (membersConsuming > 0) {
                              const discountAmount = servicePrice * membership.discountRate;
@@ -1197,12 +1256,10 @@ function runMonthlySimulation(modelData, previousMonthState, month) {
                          }
                     }
                 }
-
                 const currentServiceRevenue = (customersUsingThisService * monthlyFrequency * servicePrice) * rampUpFactor;
                 totalServiceRevenueFromLocations += currentServiceRevenue;
                 totalSessionHours += (customersUsingThisService * monthlyFrequency * service.avgDurationHours) * rampUpFactor;
-
-                // V50.7 ADDITION: Aggregate revenue into breakdowns
+                
                 if(tierBreakdown[service.tier] !== undefined) {
                     tierBreakdown[service.tier] += currentServiceRevenue;
                 }
@@ -1231,7 +1288,7 @@ function runMonthlySimulation(modelData, previousMonthState, month) {
     }
     const maxMembershipRevenue = (serviceRevenue - totalDiscounts) * 0.4;
     if (membershipRevenue > maxMembershipRevenue) {
-        log(` ⚠️  Membresías limitadas: ${formatCurrency(membershipRevenue)} → ${formatCurrency(maxMembershipRevenue)}`);
+        log(`  ⚠️   Membresías limitadas: ${formatCurrency(membershipRevenue)} → ${formatCurrency(maxMembershipRevenue)}`);
         membershipRevenue = maxMembershipRevenue;
     }
     
@@ -1241,7 +1298,7 @@ function runMonthlySimulation(modelData, previousMonthState, month) {
     }
     
     let totalGrossRevenue = serviceRevenue + membershipRevenue + productRevenue;
-    log(` 💰  Revenue breakdown M${month}: Servicios=${formatCurrency(serviceRevenue)} | Membresías=${formatCurrency(membershipRevenue)} | Descuentos=${formatCurrency(totalDiscounts)}`);
+    log(`  💰   Revenue breakdown M${month}: Servicios=${formatCurrency(serviceRevenue)} | Membresías=${formatCurrency(membershipRevenue)} | Descuentos=${formatCurrency(totalDiscounts)}`);
     let capacityUtilization = totalAvailableHours > 0 ? totalSessionHours / totalAvailableHours : 0;
     
     return {
@@ -1252,7 +1309,7 @@ function runMonthlySimulation(modelData, previousMonthState, month) {
             total: totalGrossRevenue - totalDiscounts, gross: totalGrossRevenue, discounts: totalDiscounts, 
             services: serviceRevenue, memberships: membershipRevenue, products: productRevenue, 
             crossSell: serviceRevenue * (aiPersonalizationUplift + crossSellBoost),
-            byTier: tierBreakdown, byService: serviceBreakdown // V50.7 ADDITION
+            byTier: tierBreakdown, byService: serviceBreakdown
         },
         operations: { totalSessionHours, capacityUtilization }
     };
@@ -1386,8 +1443,8 @@ function assembleFinancialStatements(modelData, monthlyRevenue, monthlyCosts, pr
             products: monthlyRevenue.revenue.products, 
             memberships: monthlyRevenue.revenue.memberships, 
             crossSell: monthlyRevenue.revenue.crossSell,
-            byTier: monthlyRevenue.revenue.byTier, // V50.7 ADDITION
-            byService: monthlyRevenue.revenue.byService // V50.7 ADDITION
+            byTier: monthlyRevenue.revenue.byTier,
+            byService: monthlyRevenue.revenue.byService
         },
         cogs: { 
             total: 0, 
@@ -1415,7 +1472,7 @@ function assembleFinancialStatements(modelData, monthlyRevenue, monthlyCosts, pr
         for (const service of modelData.pricing.services) {
             let customersUsingThisService = 0;
             for (const archetype in currentState.activeCustomers) {
-                const adoptionRate = (modelData.customerJourney[archetype]?.[service.name] || 0) * (modelData.customerBehavior?.realismFactor || 1.0);
+                const adoptionRate = (customerJourneyInitial[archetype]?.[service.name] || 0) * (modelData.customerBehavior?.realismFactor || 1.0);
                 customersUsingThisService += currentState.activeCustomers[archetype] * adoptionRate;
             }
             if (customersUsingThisService > 0 && service.repurchaseCycleMonths > 0) {
@@ -1423,10 +1480,10 @@ function assembleFinancialStatements(modelData, monthlyRevenue, monthlyCosts, pr
                 let totalWeight = 0;
                 for (const archetype in currentState.activeCustomers) {
                     const customerCount = currentState.activeCustomers[archetype] || 0;
-                    const adoptionRate = (modelData.customerJourney[archetype]?.[service.name] || 0) * (modelData.customerBehavior?.realismFactor || 1.0);
+                    const adoptionRate = (customerJourneyInitial[archetype]?.[service.name] || 0) * (modelData.customerBehavior?.realismFactor || 1.0);
                     if (customerCount > 0 && adoptionRate > 0) {
                         const adherenceTier = service.adherenceTier || 'high';
-                        const adherenceFactor = modelData.adherenceMatrix[archetype]?.[adherenceTier] || 0.75;
+                        const adherenceFactor = (modelData.adherenceMatrix[archetype]?.[adherenceTier] || 0.75) * (modelData.customerBehavior.adherenceMultipliers[adherenceTier] || 1.0);
                         const weight = customerCount * adoptionRate;
                         weightedAdherence += adherenceFactor * weight;
                         totalWeight += weight;
@@ -1450,7 +1507,7 @@ function assembleFinancialStatements(modelData, monthlyRevenue, monthlyCosts, pr
                     medicalServicesRevenue += finalShare;
                     
                     if (calculatedShare > maxRevenueShare) {
-                        log(` ⚠️  Revenue share limitado en ${service.name}: ${formatCurrency(calculatedShare)} → ${formatCurrency(finalShare)}`);
+                        log(`  ⚠️   Revenue share limitado en ${service.name}: ${formatCurrency(calculatedShare)} → ${formatCurrency(finalShare)}`);
                     }
                 }
             }
@@ -1467,18 +1524,18 @@ function assembleFinancialStatements(modelData, monthlyRevenue, monthlyCosts, pr
     
     const maxMedicalRevenue = monthlyCosts.opex.personnel * 0.6;
     if (medicalServicesRevenue > maxMedicalRevenue) {
-        log(` ⚠️  Revenue share excede límite personal: ${formatCurrency(medicalServicesRevenue)} → ${formatCurrency(maxMedicalRevenue)}`);
+        log(`  ⚠️   Revenue share excede límite personal: ${formatCurrency(medicalServicesRevenue)} → ${formatCurrency(maxMedicalRevenue)}`);
         medicalServicesRevenue = maxMedicalRevenue;
     }
     detailedPL.opex.personnel.variable = medicalServicesRevenue;
     detailedPL.opex.personnel.fixed = Math.max(0, monthlyCosts.opex.personnel - medicalServicesRevenue);
     if (detailedPL.opex.personnel.fixed < 0) {
-        log(` 🚨  CRITICAL: Salarios fijos negativos detectados y corregidos`);
+        log(`  🚨   CRITICAL: Salarios fijos negativos detectados y corregidos`);
         detailedPL.opex.personnel.fixed = monthlyCosts.opex.personnel * 0.4;
         detailedPL.opex.personnel.variable = monthlyCosts.opex.personnel * 0.6;
     }
     
-    log(` 👥  Personal M${month}: Fijo=${formatCurrency(detailedPL.opex.personnel.fixed)} | Variable=${formatCurrency(detailedPL.opex.personnel.variable)} | Total=${formatCurrency(monthlyCosts.opex.personnel)}`);
+    log(`  👥   Personal M${month}: Fijo=${formatCurrency(detailedPL.opex.personnel.fixed)} | Variable=${formatCurrency(detailedPL.opex.personnel.variable)} | Total=${formatCurrency(monthlyCosts.opex.personnel)}`);
     pnl.grossProfit = pnl.revenue - pnl.cogs;
     pnl.opex = monthlyCosts.opex.total + medicalServicesRevenue;
     pnl.ebitda = pnl.grossProfit - pnl.opex;
@@ -1568,7 +1625,7 @@ function assembleFinancialStatements(modelData, monthlyRevenue, monthlyCosts, pr
  * Main orchestrator of the financial model.
  */
 function calculateFinancials() {
-    log('  🚀   ModelCalc v50.7 (Boardroom Simulator) STARTING');
+    log('   🚀    ModelCalc v51.0 (Strategic Cockpit) STARTING');
     try {
         financialResults = { pl: [], cf: [], bs: [], kpis: [], tirEquity: 0, detailedPL: [], breakEvenMonth: null };
         modelData.capitalStructure.debtFacilities.forEach(f => f.amountDrawn = 0);
@@ -1635,7 +1692,6 @@ function calculateFinancials() {
             annualPL.ebitdaMargin = annualPL.totalRevenue > 0 ? (annualPL.ebitda / annualPL.totalRevenue) : 0;
             financialResults.pl.push(annualPL);
             
-            // V50.7 ADDITION: Aggregate detailed breakdowns annually
             const annualDetailedPL = { 
                 revenue: { 
                     services: yearMonthsData.reduce((s, m) => s + m.detailedPL.revenue.services, 0),
@@ -1671,7 +1727,6 @@ function calculateFinancials() {
                     annualDetailedPL.revenue.byService[service] = (annualDetailedPL.revenue.byService[service] || 0) + monthData.detailedPL.revenue.byService[service];
                 }
             });
-
             financialResults.detailedPL.push(annualDetailedPL);
             
             const cfo = yearMonthsData.reduce((sum, m) => sum + m.cashFlow.fromOperations, 0);
@@ -1694,10 +1749,10 @@ function calculateFinancials() {
             });
         }
         
-        log('  ✅   ModelCalc v50.7 COMPLETED');
+        log('   ✅    ModelCalc v51.0 COMPLETED');
         return true;
     } catch (error) {
-        log(`  ❌   ERROR in ModelCalc: ${error.message}`);
+        log(`   ❌    ERROR in ModelCalc: ${error.message}`);
         console.error(error);
         return false;
     }
@@ -1818,12 +1873,12 @@ function countActiveAIAgents() {
     if (toggleControls.OptiVigenteAI) count++;
     if (toggleControls.MarketingVigenteAI) count++;
     if (toggleControls.PersonaVigenteAI) count++;
-    count += 3; // Simulating other base agents
+    // count += 3; // Simulating other base agents
     return count;
 }
-//  🔥  V50.1 HELPER: Calculates Gross Margin for an archetype
+//   🔥   V50.1 HELPER: Calculates Gross Margin for an archetype
 function calculateGrossMarginPerCustomer(modelData, archetypeKey) {
-    const journey = modelData.customerJourney[archetypeKey];
+    const journey = customerJourneyInitial[archetypeKey]; // Use initial for this calculation
     if (!journey) return 0;
     let annualRevenue = 0;
     let annualCogs = 0;
@@ -1840,7 +1895,7 @@ function calculateGrossMarginPerCustomer(modelData, archetypeKey) {
     }
     return annualRevenue - annualCogs;
 }
-//  🔥  V50.1 REBUILT: Calculates a true LTV based on Gross Margin and Churn
+//   🔥   V50.1 REBUILT: Calculates a true LTV based on Gross Margin and Churn
 function calculateBlendedLtvCac(modelData, yearMonthsData) {
     let totalWeightedGrossMargin = 0;
     let totalWeightedChurn = 0;
@@ -1874,7 +1929,7 @@ function calculateBlendedLtvCac(modelData, yearMonthsData) {
         `  - Tasa de Churn Anual Ponderada: ${(totalWeightedChurn * 100).toFixed(1)}%\n` +
         `CAC Real (Pagados): ${formatCurrency(blendedCAC)}`;
     
-    log(`  🔍  LTV DEBUG: Blended GM: ${formatCurrency(totalWeightedGrossMargin)}, Blended Churn: ${totalWeightedChurn.toFixed(2)}, Calculated LTV: ${formatCurrency(blendedLTV)}`);
+    log(`   🔍   LTV DEBUG: Blended GM: ${formatCurrency(totalWeightedGrossMargin)}, Blended Churn: ${totalWeightedChurn.toFixed(2)}, Calculated LTV: ${formatCurrency(blendedLTV)}`);
     return { ratio, breakdown, ltv: blendedLTV, cac: blendedCAC };
 }
 function formatCustomerBreakdown(breakdown) {
@@ -1899,10 +1954,10 @@ function updateUnitEconomics() {
     }
 }
 function updateUI() {
-    log('           🔄            Updating Dashboard Interface...');
+    log('            🔄             Updating Dashboard Interface...');
     try {
         if (!financialResults.pl || financialResults.pl.length < 5) {
-             log('           ⚠️            Financial results not ready for UI update.');
+             log('            ⚠️             Financial results not ready for UI update.');
              return;
         }
         
@@ -1911,7 +1966,9 @@ function updateUI() {
         const currentMultiple = parseFloat(document.getElementById('exit-multiple-slider').value);
         
         const totalDebtUsed = modelData.capitalStructure.debtFacilities.reduce((sum, facility) => sum + facility.amountDrawn, 0);
-        const equityInvested = modelData.capitalStructure.equityRounds.reduce((sum, r) => sum + r.amount, 0);
+        const seedAmount = modelData.capitalStructure.equityRounds[0].amount;
+        const seriesAAmount = modelData.capitalStructure.equityRounds[1].amount;
+        const equityInvested = seedAmount + seriesAAmount;
         const selfFinanced = financialResults.cf.reduce((sum, year) => sum + Math.max(0, year.cfo), 0);
         const locationsY5 = financialResults.kpis[4].activeSucursales;
         const customersY5 = financialResults.kpis[4].totalActiveCustomers;
@@ -1923,6 +1980,8 @@ function updateUI() {
         const ltvY5 = financialResults.kpis[4].ltv;
         const cacY5 = financialResults.kpis[4].cac;
         document.getElementById('equity-invested').textContent = formatCurrency(equityInvested);
+        document.getElementById('equity-seed').textContent = formatCurrency(seedAmount);
+        document.getElementById('equity-series-a').textContent = formatCurrency(seriesAAmount);
         document.getElementById('break-even-month').textContent = financialResults.breakEvenMonth ? `Mes ${financialResults.breakEvenMonth}` : 'N/A';
         document.getElementById('debt-used').textContent = formatCurrency(totalDebtUsed);
         document.getElementById('self-financed').textContent = formatCurrency(selfFinanced);
@@ -1945,14 +2004,14 @@ function updateUI() {
         document.getElementById('utilization-actual').textContent = (modelData.capacity.targetUtilization * 100).toFixed(0) + '%';
         document.getElementById('revenue-per-customer').textContent = formatCurrency(revenuePerCustomer);
         document.getElementById('specialist-earnings').textContent = formatCurrency(calculateSpecialistMonthlyEarnings());
-        document.getElementById('agents-active').textContent = countActiveAIAgents() + '/6';
+        document.getElementById('agents-active').textContent = countActiveAIAgents() + '/3';
         
         updateUnitEconomics();
         updateTables();
         updateCharts();
-        log('           ✅            Dashboard UI Update completed.');
+        log('            ✅             Dashboard UI Update completed.');
     } catch (error) {
-        log(`           ❌            Error in updateUI: ${error.message}`);
+        log(`            ❌             Error in updateUI: ${error.message}`);
         console.error(error);
     }
 }
@@ -2006,13 +2065,11 @@ function updatePLTable() {
     createRow({ parentId: 'services-revenue', id: 'surgery-tier', label: 'Surgery Services', values: financialResults.detailedPL.map(y => y.revenue.byTier.surgery), isSubSub: true });
     createRow({ parentId: 'services-revenue', id: 'mid-tier', label: 'Mid-Tier Services', values: financialResults.detailedPL.map(y => y.revenue.byTier.mid), isSubSub: true });
     createRow({ parentId: 'services-revenue', id: 'basic-tier', label: 'Basic Services', values: financialResults.detailedPL.map(y => y.revenue.byTier.basic), isSubSub: true });
-
     createRow({ parentId: 'revenue', label: 'Ingresos Membresías', values: financialResults.detailedPL.map(y => y.revenue.memberships), isSub: true });
     createRow({ parentId: 'revenue', label: 'Ingresos Productos (DTC)', values: financialResults.detailedPL.map(y => y.revenue.products), isSub: true });
     
     createRow({ label: '(-) Descuentos (Club)', values: financialResults.pl.map(y => -y.discounts) });
     createRow({ label: 'Ingresos Netos', values: financialResults.pl.map(y => y.totalRevenue), isNetRevenue: true, isTotal: true });
-
     createRow({ id: 'cogs', label: 'COGS', values: financialResults.pl.map(y => y.cogs), isExpandable: true });
     createRow({ parentId: 'cogs', label: 'COGS - Energía Equipos', values: financialResults.detailedPL.map(y => y.cogs.energy), isSub: true });
     createRow({ parentId: 'cogs', label: 'COGS - Insumos Servicios', values: financialResults.detailedPL.map(y => y.cogs.supplies), isSub: true });
@@ -2038,7 +2095,6 @@ function updatePLTable() {
     createRow({ label: 'EBIT', values: financialResults.pl.map(y => y.ebitda - y.depreciation), isTotal: true });
     createRow({ label: 'Gastos por Intereses', values: financialResults.pl.map(y => y.interestExpense) });
     createRow({ label: 'Utilidad Neta', values: financialResults.pl.map(y => y.netIncome), isTotal: true });
-
     tbody.querySelectorAll('.expandable').forEach(row => {
         row.addEventListener('click', (e) => {
             e.stopPropagation();
@@ -2151,9 +2207,9 @@ function updateBalanceSheetTable() {
         const lastBS = financialResults.bs[financialResults.bs.length - 1];
         const balanceDiff = lastBS.totalAssets - lastBS.totalLiabilitiesAndEquity;
         if (Math.abs(balanceDiff) < BALANCE_TOLERANCE) {
-            validationDiv.innerHTML = '<span class="text-green-400">  ✅   Balance Validado</span>';
+            validationDiv.innerHTML = '<span class="text-green-400">   ✅    Balance Validado</span>';
         } else {
-            validationDiv.innerHTML = `<span class="text-red-400">  ❌   Error de Balance: ${formatCurrency(balanceDiff)}</span>`;
+            validationDiv.innerHTML = `<span class="text-red-400">   ❌    Error de Balance: ${formatCurrency(balanceDiff)}</span>`;
         }
     }
 }
@@ -2209,11 +2265,11 @@ function updateCharts() {
     charts.cashflow.update();
 }
 function forceCalculate() {
-    log('           🔄            Manual recalculation requested.');
+    log('            🔄             Manual recalculation requested.');
     if (calculateFinancials()) {
         updateUI();
     } else {
-        log('           ❌            Manual recalculation failed.');
+        log('            ❌             Manual recalculation failed.');
     }
 }
 function getModelValue(pathParts) {
@@ -2350,43 +2406,35 @@ function createNumberControl(config, container) {
 }
 function createToggleControl(config, container, controlId) {
     const div = document.createElement('div');
-    div.className = 'grid grid-cols-2 gap-4 items-center';
-    
+    div.className = 'ia-control-item';
+
+    const header = document.createElement('div');
+    header.className = 'ia-control-header';
+
     const label = document.createElement('label');
+    label.htmlFor = controlId;
     label.className = "text-sm font-medium text-slate-300";
-    if (config.tooltip || config.description) label.setAttribute('data-tooltip', config.tooltip || config.description);
     label.textContent = config.label;
-    div.appendChild(label);
-    
-    const toggleContainer = document.createElement('div');
-    toggleContainer.className = 'flex items-center justify-end gap-2';
-    
+
     const checkbox = document.createElement('input');
     checkbox.type = 'checkbox';
     checkbox.id = controlId;
     checkbox.checked = toggleControls[controlId];
     checkbox.className = 'w-5 h-5 text-blue-600 bg-gray-700 border-gray-600 rounded focus:ring-blue-500';
     
-    const statusText = document.createElement('span');
-    statusText.className = checkbox.checked ? 'font-bold text-green-400' : 'font-bold text-red-400';
-    statusText.textContent = checkbox.checked ? 'ENABLED' : 'DISABLED';
-    
-    toggleContainer.appendChild(checkbox);
-    toggleContainer.appendChild(statusText);
-    div.appendChild(toggleContainer);
-    container.appendChild(div);
-    checkbox.addEventListener('change', function() {
-        const isEnabled = this.checked;
-        toggleControls[controlId] = isEnabled;
-        
-        // V50.3 Special logic for bnplMarketingToggle
-        if (controlId === 'bnplMarketingToggle') {
-            modelData.pricing.bnpl.marketingEnabled = isEnabled;
-        }
+    header.appendChild(label);
+    header.appendChild(checkbox);
 
-        statusText.textContent = isEnabled ? 'ENABLED' : 'DISABLED';
-        statusText.className = isEnabled ? 'font-bold text-green-400' : 'font-bold text-red-400';
-        
+    const description = document.createElement('p');
+    description.className = 'ia-control-description';
+    description.textContent = config.description;
+
+    div.appendChild(header);
+    div.appendChild(description);
+    container.appendChild(div);
+
+    checkbox.addEventListener('change', function() {
+        toggleControls[controlId] = this.checked;
         forceCalculate();
     });
 }
@@ -2424,18 +2472,25 @@ function setupControlGroup(groupKey, containerId) {
     const container = document.getElementById(containerId);
     if (!container) return;
     container.innerHTML = '';
-    const groupConfig = controlsConfig[groupKey] || {};
-    
+    const groupConfig = controlsConfig[groupKey];
+
     if (groupKey === 'IA_Native_Controls') {
+        // Handle IA_Native_Controls as an object
         for (const controlId in groupConfig) {
             const config = groupConfig[controlId];
             createToggleControl(config, container, controlId);
         }
     } else {
+        // Handle other control groups as arrays
+        if (!Array.isArray(groupConfig)) {
+            console.error(`Expected array for ${groupKey}, but got:`, typeof groupConfig);
+            return;
+        }
+        
         groupConfig.forEach(config => {
-            // V50.6 FIX: Added all path mappings
             const pathMapping = {
-                'seriesA': 'capitalStructure.equityRounds.1.amount',
+                'seedCapital': 'capitalStructure.equityRounds.0.amount',
+                'seriesACapital': 'capitalStructure.equityRounds.1.amount',
                 'ventureDebtRate': 'capitalStructure.debtFacilities.0.interestRate',
                 'equipmentStrategy': 'capexSucursal.equipmentStrategy',
                 'clinicSizeM2': 'capexSucursal.clinicSizeM2',
@@ -2445,10 +2500,10 @@ function setupControlGroup(groupKey, containerId) {
                 'wordOfMouthMultiplierEduardo': 'marketingChannels.eduardoFunnel.wordOfMouthMultiplier',
                 'targetUtilization': 'capacity.targetUtilization',
                 'funnelConversionRate': 'realismLevers.funnelConversionRate',
-                'adherenceUltra': 'adherenceMatrix.eduardo.ultra',
-                'adherenceHigh': 'adherenceMatrix.eduardo.high',
-                'adherencePremium': 'adherenceMatrix.eduardo.premium',
-                'adherenceLuxury': 'adherenceMatrix.eduardo.luxury',
+                'adherenceUltra': 'customerBehavior.adherenceMultipliers.ultra',
+                'adherenceHigh': 'customerBehavior.adherenceMultipliers.high',
+                'adherencePremium': 'customerBehavior.adherenceMultipliers.premium',
+                'adherenceLuxury': 'customerBehavior.adherenceMultipliers.luxury',
                 'churnRateCarlos': 'customerArchetypes.carlos.churnRate',
                 'churnRateEduardo': 'customerArchetypes.eduardo.churnRate',
                 'churnRateMantenimiento': 'customerArchetypes.mantenimiento.churnRate',
@@ -2461,8 +2516,8 @@ function setupControlGroup(groupKey, containerId) {
                 'dtcSpend': 'productsRevenue.avgSpendPerCustomerPerMonth',
                 'bnplUplift': 'pricing.bnpl.revenueUpliftMultiplier',
                 'specialistRevenueShare': 'opexSucursal.labor.medicoEsteticista.revenueShare',
-                'premiumServiceDiscount': 'pricing.premiumServiceDiscount',
-                'realismFactor': 'customerBehavior.realismFactor'
+                'realismFactor': 'customerBehavior.realismFactor',
+                'cohortMaturityMonths': 'customerBehavior.cohortMaturityMonths'
             };
             
             config.path = pathMapping[config.id] || config.id;
@@ -2493,18 +2548,20 @@ function applyScenario(scenarioName) {
     const scenarioConfig = scenarios[scenarioName];
     modelData = mergeDeep(JSON.parse(JSON.stringify(baseModelData)), scenarioConfig);
     
-    log(`           📊            Escenario "${scenarioName}" aplicado.`);
+    log(`            📊             Escenario "${scenarioName}" aplicado.`);
     
     // Update sliders to reflect the new modelData
     setupControls();
     forceCalculate();
 }
 function setupControls() {
-    setupControlGroup('estrategia', 'estrategia-controls');
-    setupControlGroup('operaciones', 'operaciones-controls');
+    setupControlGroup('growth_engine', 'growth-engine-controls');
+    setupControlGroup('capital_strategy', 'capital-strategy-controls');
+    setupControlGroup('operations', 'operations-controls');
+    setupControlGroup('monetization', 'monetization-controls');
+    setupControlGroup('customer_dynamics', 'customer-dynamics-controls');
+    setupControlGroup('assumptions', 'assumptions-controls');
     setupControlGroup('IA_Native_Controls', 'ai-native-controls');
-    setupControlGroup('monetizacion', 'monetizacion-controls');
-    setupControlGroup('calibracion', 'calibracion-controls');
 }
 function setupExitMultipleSlider() {
     const slider = document.getElementById('exit-multiple-slider');
@@ -2692,7 +2749,7 @@ function openCopilotModal() {
         <p class="text-slate-400 mb-4">Haz una pregunta sobre el estado actual del modelo. Por ejemplo: "Sugiere 3 iniciativas para mejorar el EBITDA del año 3" o "¿Por qué cae el número de clientes en el año 3?".</p>
         <textarea id="copilot-prompt" class="w-full h-24 p-2 bg-gray-800 border border-gray-600 rounded-md text-white" placeholder="Escribe tu pregunta aquí..."></textarea>
         <div class="text-right mt-4">
-            <button onclick="submitCopilotQuery()" class="bg-purple-600 hover:bg-purple-500 text-white px-4 py-2 rounded-lg font-medium">Enviar Pregunta     ✨    </button>
+            <button onclick="submitCopilotQuery()" class="bg-purple-600 hover:bg-purple-500 text-white px-4 py-2 rounded-lg font-medium">Enviar Pregunta      ✨     </button>
         </div>
         <div id="copilot-response" class="mt-4 p-4 bg-gray-900 rounded-md" style="display:none;"></div>
     `;
@@ -2794,16 +2851,16 @@ Para cada sugerencia, proporciona un nombre, el arquetipo de cliente principal a
 // ===== INITIALIZATION ==============================================
 // ===================================================================
 document.addEventListener('DOMContentLoaded', function() {
-    log('           🚀            STARTING HOMBRE VIGENTE FINANCIAL MODEL V50.6');
+    log('            🚀             STARTING HOMBRE VIGENTE FINANCIAL MODEL V51.0');
     try {
         setupTabs();
         setupControls();
         setupExitMultipleSlider();
         initializeCharts();
         forceCalculate(); // Initial calculation with the new base scenario
-        log('           🎉            APPLICATION READY');
+        log('            🎉             APPLICATION READY');
     } catch (error) {
-        log(`           ❌            CRITICAL ERROR DURING INITIALIZATION: ${error.message}`);
+        log(`            ❌             CRITICAL ERROR DURING INITIALIZATION: ${error.message}`);
         console.error(error);
     }
 });
