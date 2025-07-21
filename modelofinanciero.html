@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Modelo Financiero - Hombre Vigente V51.0</title>
+<title>Modelo Financiero - Hombre Vigente V53.0</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -325,9 +325,53 @@ input[type="number"]:focus, input[type="text"]:focus, select:focus {
     color: #9ca3af;
     padding-right: 1rem;
 }
+/* V52.0 Strategic Alerts */
+#strategic-alerts-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 2000;
+    width: 350px;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+.strategic-alert {
+    background-color: #1f2937;
+    color: #f9fafb;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    border-left: 4px solid;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+    opacity: 0;
+    transform: translateX(100%);
+    transition: all 0.5s ease-in-out;
+}
+.strategic-alert.show {
+    opacity: 1;
+    transform: translateX(0);
+}
+.strategic-alert.warning { border-color: #f59e0b; } /* amber-500 */
+.strategic-alert.critical { border-color: #ef4444; } /* red-500 */
+.strategic-alert.info { border-color: #3b82f6; } /* blue-500 */
+
+.strategic-alert-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+.strategic-alert-body {
+    font-size: 0.9rem;
+    color: #d1d5db; /* gray-300 */
+}
 </style>
 </head>
 <body>
+<!-- V52.0: Strategic Alerts Container -->
+<div id="strategic-alerts-container"></div>
+
 <!-- Debug Panel -->
 <div id="debug-info" class="debug-info" style="display:none; position: fixed; top: 10px; right: 10px; z-index: 1050; padding: 10px; max-height: 400px; overflow-y: auto;">
     <div id="debug-content"></div>
@@ -353,7 +397,7 @@ input[type="number"]:focus, input[type="text"]:focus, select:focus {
     <header class="mb-4 text-center bg-transparent rounded-xl p-6">
         <h1 class="text-4xl lg:text-5xl font-black text-white leading-tight tracking-tighter mb-2">Modelo Financiero - <span class="highlight-text">Hombre Vigente</span></h1>
         <p class="text-xl text-slate-400 mt-2">Ecosistema Integral - IA NATIVE</p>
-        <p class="text-lg text-slate-500 mt-1">V51.0 - Cockpit Estratégico</p>
+        <p class="text-lg text-slate-500 mt-1">V53.0 - Base Calibrado</p>
         <div class="flex justify-center items-center gap-4 mt-4">
             <button onclick="toggleDebug()" class="bg-gray-700 hover:bg-gray-600 text-white px-4 py-2 rounded-lg font-medium transition duration-300 inline-flex items-center gap-2">
                 <i data-lucide="bug" class="w-5 h-5"></i> Debug
@@ -452,9 +496,9 @@ input[type="number"]:focus, input[type="text"]:focus, select:focus {
                 <div class="card">
                     <h4 class="font-semibold text-lg mb-4 text-white"> ⚙️  Operaciones y CAPEX</h4>
                     <div id="operations-controls" class="space-y-4"></div>
-                     <div class="mt-4 pt-4 border-t border-gray-700">
-                        <div class="text-sm font-medium text-slate-300">CAPEX / Sucursal: <span id="capex-per-location-display" class="font-bold text-amber-400">$0</span></div>
-                    </div>
+                     <div id="capex-breakdown" class="mt-4 pt-4 border-t border-gray-700 space-y-2 text-sm">
+                        <!-- V53.0: CAPEX Breakdown will be injected here -->
+                     </div>
                 </div>
                  <div class="card">
                     <h4 class="font-semibold text-lg mb-4 text-white"> 💵  Monetización</h4>
@@ -648,14 +692,14 @@ const customerJourneyMature = {
         "Limpieza Dental": 0.15, "Blanqueamiento LED": 0.0, "Depilación Láser": 0.05, "Bronceado UVA": 0.02
     }
 };
-// Injected modelData from internal documents - V51.0 CALIBRATION
+// V53.0: CALIBRATED BASE SCENARIO
 const baseModelData = {
     general: { currency: "MXN", projectionTimeline: { unit: "months", duration: 60 }, scenario: "base" },
     realismLevers: {
-        funnelConversionRate: 0.70,
+        funnelConversionRate: 0.50, // Adjusted
     },
     customerBehavior: {
-        realismFactor: 1.0,
+        realismFactor: 0.85, // Adjusted
         cohortMaturityMonths: 12, 
         adherenceMultipliers: { ultra: 1.0, high: 1.0, premium: 1.0, luxury: 1.0 }
     },
@@ -674,17 +718,17 @@ const baseModelData = {
         crossSellBoost: 0.08
     },
     customerArchetypes: { 
-        carlos: { description: "Rejuvenecedor Premium 35-50", percentage: 0.08, ltv: 32085, cacTarget: 2510, churnRate: 0.20 }, 
-        eduardo: { description: "Novato Estético 25-40", percentage: 0.42, ltv: 26300, cacTarget: 750, churnRate: 0.35 }, 
+        carlos: { description: "Rejuvenecedor Premium 35-50", percentage: 0.08, ltv: 32085, cacTarget: 2510, churnRate: 0.25 }, // Adjusted
+        eduardo: { description: "Novato Estético 25-40", percentage: 0.42, ltv: 26300, cacTarget: 750, churnRate: 0.45 }, // Adjusted
         transaccional: { 
             description: "Cazador Ofertas", 
             percentage: 0.22, 
             ltv: 7980, 
             cacTarget: 400, 
-            churnRate: 0.70,
+            churnRate: 0.75, // Adjusted
             conversionTo: { archetype: 'mantenimiento', rate: 0.20 },
         },
-        mantenimiento: { description: "Grooming Regular", percentage: 0.28, ltv: 32980, cacTarget: 450, churnRate: 0.40 } 
+        mantenimiento: { description: "Grooming Regular", percentage: 0.28, ltv: 32980, cacTarget: 450, churnRate: 0.45 } // Adjusted
     },
     marketing: {
         launchStrategy: {
@@ -694,7 +738,7 @@ const baseModelData = {
             plazaLaunchBudget: 2840000,
             sucursalLaunchBudget: 750000
         },
-        sustainBudgetPerLocation: 20000, 
+        sustainBudgetPerLocation: 25000, // Adjusted
         walkInsPerLocationPerMonth: 50 
     },
     marketingChannels: {
@@ -830,7 +874,7 @@ const baseModelData = {
             { round: "Series A", amount: 30000000, month: 12, equityDilution: 0.40 }
         ],
         debtFacilities: [
-            { label: "Venture Debt", availableFromMonth: 18, maxAmount: 50000000, interestRate: 0.16, termYears: 4, amountDrawn: 0 },
+            { label: "Venture Debt", availableFromMonth: 18, maxAmount: 50000000, interestRate: 0.20, termYears: 4, amountDrawn: 0 }, // Adjusted
             { label: "Growth Debt", availableFromMonth: 30, maxAmount: 75000000, interestRate: 0.14, termYears: 5, amountDrawn: 0 }
         ]
     },
@@ -854,7 +898,7 @@ const baseModelData = {
     },
     marketingVigente: {
         enabled: true,
-        strategicFocus: 0.5, 
+        strategicFocus: 0.4, // Adjusted
         dynamicCACOptimization: { 
             learningPeriod: 6,
             cacReductionRate: 0.02,
@@ -870,20 +914,28 @@ const baseModelData = {
     }
 };
 let modelData = JSON.parse(JSON.stringify(baseModelData)); // Working copy
+// V53.0: Updated Scenarios
 const scenarios = {
     pessimistic: {
-        marketing: { sustainBudgetPerLocation: 15000 },
-        realismLevers: { funnelConversionRate: 0.60 },
-        customerArchetypes: { carlos: { churnRate: 0.30 }, eduardo: { churnRate: 0.45 }, mantenimiento: { churnRate: 0.55 } },
-        capacity: { targetUtilization: 0.40 }
+        realismLevers: { funnelConversionRate: 0.40 },
+        customerArchetypes: { 
+            carlos: { churnRate: baseModelData.customerArchetypes.carlos.churnRate * 1.1 }, 
+            eduardo: { churnRate: baseModelData.customerArchetypes.eduardo.churnRate * 1.1 },
+            mantenimiento: { churnRate: baseModelData.customerArchetypes.mantenimiento.churnRate * 1.1 },
+            transaccional: { churnRate: baseModelData.customerArchetypes.transaccional.churnRate * 1.1 }
+        },
+        capacity: { targetUtilization: 0.50 }
     },
-    base: {},
+    base: {}, // Base is now just a reset to the calibrated baseModelData
     optimistic: {
-        marketing: { sustainBudgetPerLocation: 30000 },
-        marketingChannels: { eduardoFunnel: { wordOfMouthMultiplier: 1.45 } },
-        realismLevers: { funnelConversionRate: 0.80 },
-        customerArchetypes: { carlos: { churnRate: 0.18 }, eduardo: { churnRate: 0.30 }, mantenimiento: { churnRate: 0.35 } },
-        capacity: { targetUtilization: 0.80 }
+        realismLevers: { funnelConversionRate: 0.70 },
+        customerArchetypes: { 
+            carlos: { churnRate: baseModelData.customerArchetypes.carlos.churnRate * 0.9 }, 
+            eduardo: { churnRate: baseModelData.customerArchetypes.eduardo.churnRate * 0.9 },
+            mantenimiento: { churnRate: baseModelData.customerArchetypes.mantenimiento.churnRate * 0.9 },
+            transaccional: { churnRate: baseModelData.customerArchetypes.transaccional.churnRate * 0.9 }
+        },
+        capacity: { targetUtilization: 0.70 }
     }
 };
 // Injected controlsConfig for Beauty Tech
@@ -901,7 +953,7 @@ const controlsConfig = {
                 const adquisicion = 100 - rentabilidad;
                 return `${adquisicion}% Adq. / ${rentabilidad}% Rent.`;
             }, 
-            tooltip: 'Define la asignación del presupuesto de marketing. 0% = Foco en Adquisición (Volumen, arquetipos de entrada), 100% = Foco en Rentabilidad (Clientes Premium, arquetipo Carlos).' 
+            tooltip: 'Define la asignación del presupuesto de marketing. 0% = 100% Foco en Adquisición (Volumen), 100% = 100% Foco en Rentabilidad (Clientes Premium).' 
         },
         { id: 'wordOfMouthMultiplierEduardo', label: 'Potencial Viral (Boca a Boca)', min: 1.05, max: 1.50, step: 0.01, type: 'range', format: val => val.toFixed(2) + 'x', tooltip: 'Multiplicador de crecimiento orgánico. Cada cliente pagado trae consigo clientes adicionales por recomendación.' },
     ],
@@ -955,7 +1007,7 @@ const controlsConfig = {
     assumptions: [
         { id: 'treatmentRooms', label: 'Salas de Tratamiento / Sucursal', min: 3, max: 8, step: 1, type: 'range', format: val => `${val} salas`, tooltip: 'Número de salas de tratamiento por clínica. Define la capacidad de servicio y el CAPEX.' },
         { id: 'targetUtilization', label: 'Utilización Objetivo', min: 0.40, max: 0.80, step: 0.01, type: 'range', format: val => (val * 100).toFixed(0) + '%', tooltip: 'Target de ocupación de salas. Una decisión estratégica clave que balancea ingresos y calidad del servicio.' },
-        { id: 'funnelConversionRate', label: 'Tasa Conversión (Lead a Cliente)', min: 0.50, max: 0.90, step: 0.01, type: 'range', format: val => (val * 100).toFixed(0) + '%', tooltip: 'Porcentaje de clientes potenciales (leads) que efectivamente se convierten en clientes de pago.' },
+        { id: 'funnelConversionRate', label: 'Tasa Conversión (Lead a Cliente)', min: 0.40, max: 1.0, step: 0.01, type: 'range', format: val => (val * 100).toFixed(0) + '%', tooltip: 'Porcentaje de clientes potenciales (leads) que efectivamente se convierten en clientes de pago.' },
         { id: 'churnRateCarlos', label: 'Churn Anual - Carlos', min: 0.15, max: 0.35, step: 0.01, type: 'range', format: val => (val * 100).toFixed(0) + '%', tooltip: 'Tasa de abandono anual para el arquetipo de mayor valor.' },
         { id: 'churnRateEduardo', label: 'Churn Anual - Eduardo', min: 0.25, max: 0.50, step: 0.01, type: 'range', format: val => (val * 100).toFixed(0) + '%', tooltip: 'Tasa de abandono anual para el arquetipo de volumen.' },
         { id: 'churnRateMantenimiento', label: 'Churn Anual - Mantenimiento', min: 0.30, max: 0.60, step: 0.01, type: 'range', format: val => (val * 100).toFixed(0) + '%', tooltip: 'Tasa de abandono anual para el arquetipo de mantenimiento.' },
@@ -1619,7 +1671,7 @@ function assembleFinancialStatements(modelData, monthlyRevenue, monthlyCosts, pr
  * Main orchestrator of the financial model.
  */
 function calculateFinancials() {
-    log('    🚀     ModelCalc v51.0 (Cockpit Estratégico) INICIANDO');
+    log('    🚀     ModelCalc v52.0 (Cockpit Estratégico Proactivo) INICIANDO');
     try {
         financialResults = { pl: [], cf: [], bs: [], kpis: [], tirEquity: 0, detailedPL: [], breakEvenMonth: null };
         modelData.capitalStructure.debtFacilities.forEach(f => f.amountDrawn = 0);
@@ -1743,7 +1795,7 @@ function calculateFinancials() {
             });
         }
         
-        log('    ✅     ModelCalc v51.0 COMPLETADO');
+        log('    ✅     ModelCalc v52.0 COMPLETADO');
         return true;
     } catch (error) {
         log(`    ❌     ERROR en ModelCalc: ${error.message}`);
@@ -1833,17 +1885,18 @@ function buildEquityCashFlows() {
     
     return cashFlows;
 }
-function calculateTIRForMultiple(multiple) {
-    const equityInvested = modelData.capitalStructure.equityRounds.reduce((sum, r) => sum + r.amount, 0);
-    if (equityInvested === 0) return 0;
+function calculateTIRForMultiple(multiple, results = financialResults) {
+    const equityInvested = baseModelData.capitalStructure.equityRounds.reduce((s, r) => s + r.amount, 0);
+    if (equityInvested === 0 || !results || !results.cf || results.cf.length < 5) return 0;
+    
     const cashFlows = [ -equityInvested ];
     for (let i = 0; i < 4; i++) {
-        cashFlows.push(financialResults.cf[i].cfo);
+        cashFlows.push(results.cf[i].cfo);
     }
-    const terminalValue = financialResults.pl[4].ebitda * multiple;
-    const debtRemaining = financialResults.bs[4].debt.total;
+    const terminalValue = results.pl[4].ebitda * multiple;
+    const debtRemaining = results.bs[4].debt.total;
     const terminalEquityValue = terminalValue - debtRemaining;
-    cashFlows.push(financialResults.cf[4].cfo + terminalEquityValue);
+    cashFlows.push(results.cf[4].cfo + terminalEquityValue);
     
     return calculateIRR(cashFlows);
 }
@@ -1933,7 +1986,7 @@ function formatCustomerBreakdown(breakdown) {
     }
     return tooltipText.trim();
 }
-// V50.2 HELPER: Calculate and update the Unit Economics display
+// V53.0: Updated to show CAPEX breakdown
 function updateUnitEconomics() {
     const { capexSucursal } = modelData;
     const remodelCost = capexSucursal.remodelCostPerM2 * capexSucursal.clinicSizeM2;
@@ -1942,9 +1995,14 @@ function updateUnitEconomics() {
         return sum + price;
     }, 0);
     const totalCapex = remodelCost + equipmentCost;
-    const display = document.getElementById('capex-per-location-display');
-    if (display) {
-        display.textContent = formatCurrency(totalCapex);
+    
+    const breakdownContainer = document.getElementById('capex-breakdown');
+    if (breakdownContainer) {
+        breakdownContainer.innerHTML = `
+            <div class="flex justify-between text-slate-400"><span>+ Costo Remodelación:</span> <span>${formatCurrency(remodelCost)}</span></div>
+            <div class="flex justify-between text-slate-400"><span>+ Costo Equipo (${capexSucursal.equipmentStrategy}):</span> <span>${formatCurrency(equipmentCost)}</span></div>
+            <div class="flex justify-between text-slate-300 font-bold mt-1"><span>= CAPEX / Sucursal:</span> <span class="text-amber-400">${formatCurrency(totalCapex)}</span></div>
+        `;
     }
 }
 function updateUI() {
@@ -2003,6 +2061,7 @@ function updateUI() {
         updateUnitEconomics();
         updateTables();
         updateCharts();
+        checkStrategicAlerts(); // V52.0: Check for alerts after UI update
         log('             ✅              Actualización de la UI del Dashboard completada.');
     } catch (error) {
         log(`             ❌              Error en updateUI: ${error.message}`);
@@ -2266,9 +2325,9 @@ function forceCalculate() {
         log('             ❌              Falló el recálculo manual.');
     }
 }
-function getModelValue(pathParts) {
+function getModelValue(pathParts, data = modelData) {
     try {
-        let currentValue = modelData;
+        let currentValue = data;
         for (const part of pathParts) {
             if (currentValue && !isNaN(part)) { currentValue = currentValue[parseInt(part)]; } 
             else if (currentValue && currentValue[part] !== undefined) { currentValue = currentValue[part]; } 
@@ -2280,9 +2339,9 @@ function getModelValue(pathParts) {
         return null;
     }
 }
-function updateModelValue(pathParts, value) {
+function updateModelValue(pathParts, value, data = modelData) {
     try {
-        let modelRef = modelData;
+        let modelRef = data;
         const lastKey = pathParts[pathParts.length - 1];
         
         for (let i = 0; i < pathParts.length - 1; i++) {
@@ -2430,6 +2489,12 @@ function createScenarioSwitcher(config, container){
     const switcher = document.createElement('div');
     switcher.className = 'scenario-switcher';
     
+    const scenarioTooltips = {
+        pessimistic: "Escenario Pesimista:\n- Tasa de Conversión: 40%\n- Churn: +10%\n- Utilización: 50%",
+        base: "Escenario Base:\n- Carga los supuestos calibrados y realistas del modelo.",
+        optimistic: "Escenario Optimista:\n- Tasa de Conversión: 70%\n- Churn: -10%\n- Utilización: 70%"
+    };
+
     ['pessimistic', 'base', 'optimistic'].forEach(scenarioName => {
         const input = document.createElement('input');
         input.type = 'radio';
@@ -2443,6 +2508,7 @@ function createScenarioSwitcher(config, container){
         const label = document.createElement('label');
         label.htmlFor = `scenario-${scenarioName}`;
         label.textContent = scenarioName.charAt(0).toUpperCase() + scenarioName.slice(1);
+        label.setAttribute('data-tooltip', scenarioTooltips[scenarioName]);
         
         switcher.appendChild(input);
         switcher.appendChild(label);
@@ -2532,8 +2598,13 @@ function applyScenario(scenarioName) {
         return output;
     }
     
-    const scenarioConfig = scenarios[scenarioName];
-    modelData = mergeDeep(JSON.parse(JSON.stringify(baseModelData)), scenarioConfig);
+    // V53.0: Base scenario is a full reset.
+    if (scenarioName === 'base') {
+        modelData = JSON.parse(JSON.stringify(baseModelData));
+    } else {
+        const scenarioConfig = scenarios[scenarioName];
+        modelData = mergeDeep(JSON.parse(JSON.stringify(baseModelData)), scenarioConfig);
+    }
     
     log(`             📊              Escenario "${scenarioName}" aplicado.`);
     
@@ -2594,35 +2665,35 @@ function setupTabs() {
     });
 }
 // ===================================================================
-// ===== GEMINI API INTEGRATION ======================================
+// ===== GEMINI API INTEGRATION (V52.0 Proactive Copilot) =========
 // ===================================================================
+
 /**
- * Shows the Gemini modal and sets its title and content.
- * @param {string} title - The title for the modal header.
- * @param {string} content - The HTML content for the modal body.
+ * Muestra el modal de Gemini y establece su título y contenido.
+ * @param {string} title - El título para el encabezado del modal.
+ * @param {string} content - El contenido HTML para el cuerpo del modal.
  */
 function showGeminiModal(title, content) {
     document.getElementById('gemini-modal-title').textContent = title;
     document.getElementById('gemini-modal-body').innerHTML = content;
     document.getElementById('gemini-modal').style.display = 'flex';
 }
+
 /**
- * Closes the Gemini modal.
+ * Cierra el modal de Gemini.
  */
 function closeGeminiModal() {
     document.getElementById('gemini-modal').style.display = 'none';
 }
+
 /**
- * Generic function to call the Gemini API.
- * @param {string} prompt - The prompt to send to the model.
- * @param {boolean} useJson - Whether to request a JSON response.
- * @param {object|null} schema - The JSON schema for the response, if useJson is true.
- * @returns {Promise<string>} - The text response from the API.
+ * Función genérica para llamar a la API de Gemini.
+ * @param {string} prompt - El prompt a enviar al modelo.
+ * @returns {Promise<string>} - La respuesta de texto de la API.
  */
-async function callGeminiAPI(prompt, useJson = false, schema = null) {
+async function callGeminiAPI(prompt) {
     let userApiKey = document.getElementById('api-key-input').value.trim();
-    const defaultApiKey = ""; // Fallback key - Intentionally left blank for security
-    let apiKey = userApiKey ? userApiKey : defaultApiKey; 
+    const apiKey = userApiKey || ""; // Dejar en blanco si no hay clave de usuario
     
     const model = "gemini-1.5-flash";
     const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
@@ -2630,14 +2701,9 @@ async function callGeminiAPI(prompt, useJson = false, schema = null) {
     const payload = {
         contents: [{ role: "user", parts: [{ text: prompt }] }]
     };
-    if (useJson && schema) {
-        payload.generationConfig = {
-            responseMimeType: "application/json",
-            responseSchema: schema,
-        };
-    }
+
     log(`[GEMINI] Llamando a la API. Usando clave ${userApiKey ? 'proporcionada por el usuario' : 'por defecto'}.`);
-    log(`[GEMINI] Payload (primeros 200 caracteres): ${JSON.stringify(payload).substring(0,200)}...`);
+    
     try {
         const response = await fetch(apiUrl, {
             method: 'POST',
@@ -2645,14 +2711,13 @@ async function callGeminiAPI(prompt, useJson = false, schema = null) {
             body: JSON.stringify(payload)
         });
         const responseText = await response.text();
-        log(`[GEMINI] Respuesta cruda: ${responseText}`);
         if (!response.ok) {
             let errorDetail = responseText;
             try {
                 const errorJson = JSON.parse(responseText);
                 errorDetail = errorJson.error.message || responseText;
             } catch (e) {
-                // Not a JSON error, use the raw text
+                // No es un error JSON, usar el texto crudo
             }
             throw new Error(`La solicitud a la API falló con el estado ${response.status}: ${errorDetail}`);
         }
@@ -2669,176 +2734,331 @@ async function callGeminiAPI(prompt, useJson = false, schema = null) {
         return `Error al contactar la IA: ${error.message}`;
     }
 }
+
 /**
- * V38 CHANGE: Builds a much more comprehensive context string from the model data.
+ * Construye una cadena de contexto completa a partir de los datos del modelo.
  */
 function buildFullModelContext() {
     let context = "### CONTEXTO DEL MODELO FINANCIERO 'HOMBRE VIGENTE' ###\n\n";
-    // Helper to format a section
-    const formatSection = (title, dataObject) => {
-        let sectionContent = `#### ${title} ####\n`;
-        sectionContent += "```json\n" + JSON.stringify(dataObject, (key, value) => {
-            if (key === 'get maxHoursPerMonth') return undefined; 
-            return value;
-        }, 2) + "\n```\n\n";
-        return sectionContent;
-    };
-    context += formatSection("Supuestos Generales y de Marketing", {
+    const formatSection = (title, dataObject) => `#### ${title} ####\n\`\`\`json\n${JSON.stringify(dataObject, (key, value) => key === 'get maxHoursPerMonth' ? undefined : value, 2)}\n\`\`\`\n\n`;
+    
+    context += formatSection("Supuestos Clave", {
         general: modelData.general,
         marketing: modelData.marketing,
-        marketingChannels: modelData.marketingChannels,
-        expansionPlan: modelData.expansionPlan
-    });
-    context += formatSection("Supuestos de Clientes y LTV", {
+        expansionPlan: modelData.expansionPlan,
         customerArchetypes: modelData.customerArchetypes,
+        capacity: modelData.capacity
     });
     
-    context += formatSection("Supuestos de Pricing, Servicios y Productos", {
-        pricing: modelData.pricing,
-        productsRevenue: modelData.productsRevenue
-    });
-    context += formatSection("Supuestos de Costos y Capital", {
-        opexSucursal: modelData.opexSucursal,
-        opexCorporativo: modelData.opexCorporativo,
-        capexSucursal: modelData.capexSucursal,
-        capexTecnologico: modelData.capexTecnologico,
-        capitalStructure: modelData.capitalStructure
-    });
-    
-    context += formatSection("Supuestos de IA y Operaciones", {
-        aiDefaults: modelData.aiDefaults,
-        capacity: {
-            treatmentRooms: modelData.capacity.treatmentRooms,
-            dailyOperatingHours: modelData.capacity.dailyOperatingHours,
-            daysOpenPerMonth: modelData.capacity.daysOpenPerMonth,
-            targetUtilization: modelData.capacity.targetUtilization,
-            maxSurgeriesPerMonth: modelData.capacity.maxSurgeriesPerMonth
-        }
-    });
-    context += "#### Resultados Financieros Clave (Anual) ####\n";
+    context += "#### Resultados Financieros Anuales Clave ####\n";
     if (financialResults.pl.length > 0) {
         financialResults.pl.forEach((year, i) => {
             context += `Año ${i+1}: Ingresos=${formatCurrency(year.totalRevenue)}, EBITDA=${formatCurrency(year.ebitda)}, Utilidad Neta=${formatCurrency(year.netIncome)}\n`;
         });
     }
-     if (financialResults.kpis.length > 4) {
+    if (financialResults.kpis.length > 4) {
         const kpisY5 = financialResults.kpis[4];
-        context += `KPIs Finales (Año 5): Sucursales=${kpisY5.activeSucursales}, Clientes=${Math.round(kpisY5.totalActiveCustomers)}, LTV:CAC General=${kpisY5.ltv_cac_ratio.toFixed(1)}x\n`;
-     }
+        context += `KPIs Finales (Año 5): Sucursales=${kpisY5.activeSucursales}, Clientes=${Math.round(kpisY5.totalActiveCustomers)}, LTV:CAC=${kpisY5.ltv_cac_ratio.toFixed(1)}x\n`;
+    }
     
     return context;
 }
+
 /**
- * Opens the strategic copilot modal.
+ * V52.0: Nueva interfaz del Copiloto Proactivo
  */
 function openCopilotModal() {
     const modalContent = `
-        <p class="text-slate-400 mb-4">Haz una pregunta sobre el estado actual del modelo. Por ejemplo: "Sugiere 3 iniciativas para mejorar el EBITDA del año 3" o "¿Por qué cae el número de clientes en el año 3?".</p>
-        <textarea id="copilot-prompt" class="w-full h-24 p-2 bg-gray-800 border border-gray-600 rounded-md text-white" placeholder="Escribe tu pregunta aquí..."></textarea>
-        <div class="text-right mt-4">
-            <button onclick="submitCopilotQuery()" class="bg-purple-600 hover:bg-purple-500 text-white px-4 py-2 rounded-lg font-medium">Enviar Pregunta       ✨      </button>
+        <div class="flex flex-col space-y-4">
+            <button onclick="showDefaultCopilotView()" class="w-full text-left p-3 bg-gray-700 hover:bg-gray-600 rounded-lg transition-colors">
+                <h5 class="font-bold text-white">Análisis de Escenario Actual</h5>
+                <p class="text-sm text-slate-400">Haz una pregunta abierta sobre los resultados actuales.</p>
+            </button>
+            <button onclick="showGoalSeekView()" class="w-full text-left p-3 bg-gray-700 hover:bg-gray-600 rounded-lg transition-colors">
+                <h5 class="font-bold text-white">Búsqueda de Objetivos</h5>
+                <p class="text-sm text-slate-400">Pide a la IA que te sugiera cómo alcanzar una meta específica.</p>
+            </button>
+            <button onclick="runScenarioComparison()" class="w-full text-left p-3 bg-gray-700 hover:bg-gray-600 rounded-lg transition-colors">
+                <h5 class="font-bold text-white">Comparar Escenarios</h5>
+                <p class="text-sm text-slate-400">Genera un análisis comparativo de los escenarios pesimista, base y optimista.</p>
+            </button>
         </div>
-        <div id="copilot-response" class="mt-4 p-4 bg-gray-900 rounded-md" style="display:none;"></div>
+        <div id="copilot-dynamic-content" class="mt-6"></div>
     `;
     showGeminiModal('Copiloto Estratégico', modalContent);
 }
-/**
- * Submits the user's query from the copilot modal to the Gemini API.
- */
+
+function showDefaultCopilotView() {
+    document.getElementById('copilot-dynamic-content').innerHTML = `
+        <p class="text-slate-400 mb-4">Haz una pregunta sobre el estado actual del modelo. Por ejemplo: "Sugiere 3 iniciativas para mejorar el EBITDA del año 3" o "¿Por qué cae el número de clientes en el año 3?".</p>
+        <textarea id="copilot-prompt" class="w-full h-24 p-2 bg-gray-800 border border-gray-600 rounded-md text-white" placeholder="Escribe tu pregunta aquí..."></textarea>
+        <div class="text-right mt-4">
+            <button onclick="submitCopilotQuery()" class="bg-purple-600 hover:bg-purple-500 text-white px-4 py-2 rounded-lg font-medium">Enviar Pregunta ✨</button>
+        </div>
+        <div id="copilot-response" class="mt-4 p-4 bg-gray-900 rounded-md" style="display:none;"></div>
+    `;
+}
+
 async function submitCopilotQuery() {
     const userQuery = document.getElementById('copilot-prompt').value;
-    if (!userQuery) {
-        alert("Por favor, escribe una pregunta.");
-        return;
-    }
+    if (!userQuery) return;
     const responseContainer = document.getElementById('copilot-response');
     responseContainer.style.display = 'block';
     responseContainer.innerHTML = '<div class="loader"></div>';
     const modelContext = buildFullModelContext();
-    const fullPrompt = `Como un analista financiero experto (CFA) con profundo conocimiento del negocio, analiza la siguiente data y responde a la pregunta del usuario. Conecta los puntos entre las asunciones (modelData) y los resultados (financialResults) para dar una respuesta detallada y con causa-raíz.
+    const fullPrompt = `Como un analista financiero experto (CFA), analiza la siguiente data y responde a la pregunta del usuario. Conecta los puntos entre los supuestos y los resultados para dar una respuesta detallada y con causa-raíz.
 ${modelContext}
 PREGUNTA DEL USUARIO:
 "${userQuery}"
-Responde en español, usando un tono profesional y directo. Utiliza markdown básico (negritas con **, listas con -) para formatear tu respuesta.`;
+Responde en español, usando un tono profesional y directo. Utiliza markdown básico (negritas con **, listas con -).`;
     const response = await callGeminiAPI(fullPrompt);
-    let htmlResponse = response.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>'); // Bold
-    htmlResponse = htmlResponse.replace(/\n/g, '<br>'); // Newlines
-    responseContainer.innerHTML = htmlResponse;
+    responseContainer.innerHTML = response.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\n/g, '<br>');
 }
+
 /**
- * Generates an executive summary of the P&L using the Gemini API.
+ * V52.0: Ejecuta el análisis comparativo de escenarios.
  */
-async function generateExecutiveSummary() {
-    showGeminiModal('Generando Resumen Ejecutivo...', '<div class="loader"></div>');
-    const modelContext = buildFullModelContext();
-    const prompt = `Actúa como un analista financiero senior preparando un reporte para la junta directiva de 'Hombre Vigente'. Basado en los siguientes datos del modelo, escribe un resumen ejecutivo conciso.
-Enfócate en:
-1. La trayectoria de crecimiento de los ingresos y sus drivers.
-2. La evolución de la rentabilidad (márgenes y EBITDA) y sus causas.
-3. Los puntos clave o inflexiones (ej. cuándo se vuelve rentable y por qué).
-4. Un área potencial de riesgo u oportunidad que se desprenda de los números.
-DATOS DEL MODELO:
-${modelContext}
-El resumen debe ser profesional, claro y en español.`;
-    const summary = await callGeminiAPI(prompt);
-    document.getElementById('gemini-modal-title').textContent = 'Resumen Ejecutivo';
-    document.getElementById('gemini-modal-body').innerHTML = summary.replace(/\n/g, '<br>');
-}
-/**
- * Asks Gemini to suggest new services based on current data, requesting a structured JSON response.
- */
-async function suggestNewServices() {
-    showGeminiModal('Buscando Oportunidades de Crecimiento...', '<div class="loader"></div>');
-    const serviceNames = modelData.pricing.services.map(s => s.name).join(', ');
-    let archetypeDescriptions = '';
-    for (const key in modelData.customerArchetypes) {
-        archetypeDescriptions += `- ${key}: ${modelData.customerArchetypes[key].description}\n`;
+async function runScenarioComparison() {
+    const dynamicContent = document.getElementById('copilot-dynamic-content');
+    dynamicContent.innerHTML = '<div class="loader"></div><p class="text-center text-slate-400">Analizando escenarios, por favor espera...</p>';
+
+    const scenariosToRun = ['pessimistic', 'base', 'optimistic'];
+    let comparisonData = {};
+
+    for (const scenario of scenariosToRun) {
+        const tempModelData = mergeDeep(JSON.parse(JSON.stringify(baseModelData)), scenarios[scenario]);
+        const results = await calculateScenarioData(tempModelData);
+        comparisonData[scenario] = {
+            EBITDA_Y5: results.pl[4].ebitda,
+            Clientes_Y5: results.kpis[4].totalActiveCustomers,
+            TIR: calculateTIRForMultiple(8.0, results), // Assuming 8x multiple
+            LTV_CAC: results.kpis[4].ltv_cac_ratio
+        };
     }
-    const prompt = `Eres un estratega de negocio para una clínica de estética y bienestar masculino llamada 'Hombre Vigente'. Basado en nuestros arquetipos de cliente y catálogo de servicios actuales, sugiere 3 servicios o paquetes de servicios nuevos, innovadores y sinérgicos.
-Nuestros arquetipos de cliente son:
-${archetypeDescriptions}
-Nuestro catálogo de servicios actual incluye: ${serviceNames}.
-Para cada sugerencia, proporciona un nombre, el arquetipo de cliente principal al que se dirige, un precio sugerido en MXN y una justificación breve y convincente.`;
-    const schema = {
-        type: "ARRAY",
-        items: {
-            type: "OBJECT",
-            properties: {
-                "serviceName": { "type": "STRING", "description": "Nombre del nuevo servicio o paquete." },
-                "targetArchetype": { "type": "STRING", "description": "El arquetipo de cliente principal (ej. 'carlos', 'eduardo')." },
-                "suggestedPrice": { "type": "NUMBER", "description": "Precio sugerido en MXN." },
-                "justification": { "type": "STRING", "description": "Justificación de por qué es una buena idea." }
-            },
-            required: ["serviceName", "targetArchetype", "suggestedPrice", "justification"]
-        }
-    };
-    const responseText = await callGeminiAPI(prompt, true, schema);
+
+    let markdownTable = `| Métrica Clave | Pesimista | Base | Optimista |\n`;
+    markdownTable += `|:---|---:|---:|---:|\n`;
+    markdownTable += `| EBITDA Año 5 | ${formatCurrency(comparisonData.pessimistic.EBITDA_Y5)} | ${formatCurrency(comparisonData.base.EBITDA_Y5)} | ${formatCurrency(comparisonData.optimistic.EBITDA_Y5)} |\n`;
+    markdownTable += `| Clientes Año 5 | ${Math.round(comparisonData.pessimistic.Clientes_Y5).toLocaleString()} | ${Math.round(comparisonData.base.Clientes_Y5).toLocaleString()} | ${Math.round(comparisonData.optimistic.Clientes_Y5).toLocaleString()} |\n`;
+    markdownTable += `| TIR Implícita | ${comparisonData.pessimistic.TIR.toFixed(1)}% | ${comparisonData.base.TIR.toFixed(1)}% | ${comparisonData.optimistic.TIR.toFixed(1)}% |\n`;
+    markdownTable += `| Ratio LTV:CAC | ${comparisonData.pessimistic.LTV_CAC.toFixed(1)}x | ${comparisonData.base.LTV_CAC.toFixed(1)}x | ${comparisonData.optimistic.LTV_CAC.toFixed(1)}x |\n`;
+
+    const prompt = `Como estratega de negocios, analiza la siguiente tabla comparativa de escenarios para 'Hombre Vigente'. Escribe una conclusión concisa (máximo 3 párrafos) que identifique la palanca de negocio más sensible y dé una recomendación estratégica clave.\n\n${markdownTable}`;
     
-    try {
-        const suggestions = JSON.parse(responseText);
-        let htmlOutput = '';
-        suggestions.forEach(s => {
-            htmlOutput += `
-                <div class="mb-4 p-4 border border-gray-600 rounded-lg">
-                    <h5 class="text-blue-400">${s.serviceName}</h5>
-                    <p><strong>Público Objetivo:</strong> ${s.targetArchetype}</p>
-                    <p><strong>Precio Sugerido:</strong> ${formatCurrency(s.suggestedPrice)}</p>
-                    <p><strong>Justificación:</strong> ${s.justification}</p>
-                </div>
-            `;
+    const analysis = await callGeminiAPI(prompt);
+    dynamicContent.innerHTML = `
+        <h5 class="font-bold text-white mb-2">Análisis Comparativo de Escenarios</h5>
+        <div class="text-sm">${markdownTable.replace(/\|/g, ' | ').replace(/\n/g, '<br>')}</div>
+        <h5 class="font-bold text-white mt-6 mb-2">Conclusión Estratégica</h5>
+        <div class="p-4 bg-gray-900 rounded-md">${analysis.replace(/\n/g, '<br>')}</div>
+    `;
+}
+
+/**
+ * V52.0: Muestra la UI para la búsqueda de objetivos.
+ */
+function showGoalSeekView() {
+     document.getElementById('copilot-dynamic-content').innerHTML = `
+        <h5 class="font-bold text-white mb-2">Búsqueda de Objetivos</h5>
+        <p class="text-slate-400 mb-4">Selecciona una métrica y define tu objetivo. El copiloto sugerirá las palancas más efectivas para alcanzarlo.</p>
+        <div class="flex items-center space-x-4">
+            <select id="goal-kpi-select" class="flex-1 p-2 bg-gray-800 border border-gray-600 rounded-md text-white">
+                <option value="ebitda_y5">EBITDA Año 5</option>
+                <option value="tir">TIR Implícita</option>
+                <option value="money_multiple">Múltiplo de Dinero</option>
+            </select>
+            <input type="number" id="goal-value-input" class="w-32 p-2 bg-gray-800 border border-gray-600 rounded-md text-white" placeholder="Valor">
+            <button onclick="runGoalSeekingAnalysis()" class="bg-purple-600 hover:bg-purple-500 text-white px-4 py-2 rounded-lg font-medium">Analizar</button>
+        </div>
+        <div id="copilot-response" class="mt-4 p-4 bg-gray-900 rounded-md" style="display:none;"></div>
+    `;
+}
+
+/**
+ * V52.0: Ejecuta el análisis de búsqueda de objetivos.
+ */
+async function runGoalSeekingAnalysis() {
+    const kpi = document.getElementById('goal-kpi-select').value;
+    const targetValue = parseFloat(document.getElementById('goal-value-input').value);
+    if (isNaN(targetValue)) return;
+
+    const responseContainer = document.getElementById('copilot-response');
+    responseContainer.style.display = 'block';
+    responseContainer.innerHTML = '<div class="loader"></div><p class="text-center text-slate-400">Simulando estrategias, por favor espera...</p>';
+    
+    const levers = [
+        { name: "Aumentar Tasa de Conversión", path: 'realismLevers.funnelConversionRate', change: 0.10 },
+        { name: "Mejorar Retención (reducir Churn)", path: 'customerArchetypes.eduardo.churnRate', change: -0.10 },
+        { name: "Incrementar Inversión en Marketing", path: 'marketing.sustainBudgetPerLocation', change: 5000 },
+        { name: "Optimizar Utilización de Clínicas", path: 'capacity.targetUtilization', change: 0.10 }
+    ];
+
+    let impacts = [];
+    const baseResults = await calculateScenarioData(modelData);
+    const baseValue = getKpiValue(kpi, baseResults);
+
+    for (const lever of levers) {
+        const tempModelData = JSON.parse(JSON.stringify(modelData));
+        const originalValue = getModelValue(lever.path.split('.'), tempModelData);
+        updateModelValue(lever.path.split('.'), originalValue + lever.change, tempModelData);
+        const newResults = await calculateScenarioData(tempModelData);
+        const newValue = getKpiValue(kpi, newResults);
+        impacts.push({ name: lever.name, impact: newValue - baseValue });
+    }
+
+    impacts.sort((a, b) => b.impact - a.impact);
+
+    const prompt = `Como estratega de negocios, analiza las siguientes palancas y su impacto para alcanzar el objetivo de ${kpi} = ${targetValue}. El valor actual es ${baseValue.toFixed(2)}.
+    - ${impacts[0].name}: Impacto de ${impacts[0].impact.toFixed(2)}
+    - ${impacts[1].name}: Impacto de ${impacts[1].impact.toFixed(2)}
+    - ${impacts[2].name}: Impacto de ${impacts[2].impact.toFixed(2)}
+    
+    Basado en esto, escribe una recomendación estratégica en 2-3 párrafos sobre cuál palanca o combinación de palancas es la mejor opción, considerando tanto el impacto como la viabilidad en el mundo real.`;
+
+    const analysis = await callGeminiAPI(prompt);
+    responseContainer.innerHTML = analysis.replace(/\n/g, '<br>');
+}
+
+// ===================================================================
+// ===== V52.0 HELPER FUNCTIONS ======================================
+// ===================================================================
+
+/**
+ * V52.0: Calcula los resultados de un escenario sin actualizar la UI principal.
+ * @param {object} scenarioModelData - El objeto modelData para el escenario a calcular.
+ * @returns {Promise<object>} - Un objeto con los resultados financieros.
+ */
+async function calculateScenarioData(scenarioModelData) {
+    // Esta es una versión simplificada y síncrona para la demo.
+    // Una implementación real podría usar un Web Worker para no bloquear el hilo principal.
+    let results = { pl: [], cf: [], bs: [], kpis: [] };
+    let previousMonthState = {
+        month: 0, customerCohorts: {}, activeLocations: [], launchedMarkets: new Set(), activeSucursales: 0, 
+        balanceSheet: { cash: 0, fixedAssets: 0, techAssets: 0, debt: { total: 0 }, equity: 0 }
+    };
+    const seedRound = scenarioModelData.capitalStructure.equityRounds.find(r => r.month === 0);
+    if (seedRound) {
+        previousMonthState.balanceSheet.cash = seedRound.amount;
+        previousMonthState.balanceSheet.equity = seedRound.amount;
+    }
+    
+    let monthlyResults = [];
+    for (let month = 1; month <= 60; month++) {
+        const revenueState = runMonthlySimulation(scenarioModelData, previousMonthState, month);
+        const costState = calculateMonthlyCosts(scenarioModelData, revenueState, 0, previousMonthState); 
+        const fullState = assembleFinancialStatements(scenarioModelData, revenueState, costState, previousMonthState, month);
+        monthlyResults.push(fullState);
+        previousMonthState = fullState;
+    }
+
+    for (let year = 1; year <= 5; year++) {
+        const yearMonthsData = monthlyResults.slice((year - 1) * 12, year * 12);
+        const annualPL = {
+            totalRevenue: yearMonthsData.reduce((s, m) => s + m.pnl.revenue, 0),
+            cogs: yearMonthsData.reduce((s, m) => s + m.pnl.cogs, 0),
+            opex: yearMonthsData.reduce((s, m) => s + m.pnl.opex, 0),
+        };
+        annualPL.ebitda = annualPL.totalRevenue - annualPL.cogs - annualPL.opex;
+        results.pl.push(annualPL);
+        
+        const cfo = yearMonthsData.reduce((s, m) => s + m.cashFlow.fromOperations, 0);
+        results.cf.push({ cfo });
+
+        const lastMonth = yearMonthsData[yearMonthsData.length - 1];
+        results.bs.push(lastMonth.balanceSheet);
+        const { ratio, breakdown, ltv, cac } = calculateBlendedLtvCac(scenarioModelData, yearMonthsData);
+        results.kpis.push({
+            totalActiveCustomers: lastMonth.totalActiveCustomers,
+            ltv_cac_ratio: ratio
         });
-        document.getElementById('gemini-modal-title').textContent = 'Sugerencias de Nuevos Servicios';
-        document.getElementById('gemini-modal-body').innerHTML = htmlOutput;
-    } catch (e) {
-        console.error("Error al analizar JSON de Gemini:", e);
-        document.getElementById('gemini-modal-body').innerHTML = `Hubo un error al procesar las sugerencias de la IA. <br><br>Respuesta recibida:<br>${responseText}`;
+    }
+    return results;
+}
+
+function getKpiValue(kpi, results) {
+    switch(kpi) {
+        case 'ebitda_y5': return results.pl[4].ebitda;
+        case 'tir': return calculateTIRForMultiple(8.0, results);
+        case 'money_multiple': {
+            const equityInvested = baseModelData.capitalStructure.equityRounds.reduce((s, r) => s + r.amount, 0);
+            const equityValue = (results.pl[4].ebitda * 8.0) - results.bs[4].debt.total;
+            return equityInvested > 0 ? equityValue / equityInvested : 0;
+        }
+        default: return 0;
+    }
+}
+
+function mergeDeep(target, source) {
+    const isObject = item => item && typeof item === 'object' && !Array.isArray(item);
+    let output = { ...target };
+    if (isObject(target) && isObject(source)) {
+        Object.keys(source).forEach(key => {
+            if (isObject(source[key]) && key in target && isObject(target[key])) {
+                output[key] = mergeDeep(target[key], source[key]);
+            } else {
+                Object.assign(output, { [key]: source[key] });
+            }
+        });
+    }
+    return output;
+}
+
+function displayAlert(message, type = 'info', duration = 5000) {
+    const container = document.getElementById('strategic-alerts-container');
+    const alert = document.createElement('div');
+    alert.className = `strategic-alert ${type}`;
+    
+    let icon = '';
+    let title = '';
+    switch(type) {
+        case 'warning': icon = 'alert-triangle'; title = 'Alerta Estratégica'; break;
+        case 'critical': icon = 'alert-octagon'; title = 'Riesgo Crítico'; break;
+        default: icon = 'info'; title = 'Observación'; break;
+    }
+
+    alert.innerHTML = `
+        <div class="strategic-alert-header">
+            <span><i data-lucide="${icon}" class="inline-block w-5 h-5 mr-2"></i> ${title}</span>
+            <button onclick="this.parentElement.parentElement.remove()">&times;</button>
+        </div>
+        <div class="strategic-alert-body">${message}</div>
+    `;
+    
+    container.appendChild(alert);
+    lucide.createIcons();
+    
+    setTimeout(() => {
+        alert.classList.add('show');
+    }, 10);
+
+    setTimeout(() => {
+        alert.classList.remove('show');
+        setTimeout(() => alert.remove(), 500);
+    }, duration);
+}
+
+function checkStrategicAlerts() {
+    if (!financialResults || !financialResults.kpis.length) return;
+
+    const ltvCacRatio = financialResults.kpis[4].ltv_cac_ratio;
+    if (ltvCacRatio < 3.0) {
+        displayAlert(`El ratio LTV:CAC es de ${ltvCacRatio.toFixed(1)}x, por debajo del umbral de 3x. La adquisición de clientes no es rentable.`, 'critical');
+    }
+
+    if (financialResults.breakEvenMonth > 36) {
+        displayAlert(`El punto de equilibrio se proyecta en el mes ${financialResults.breakEvenMonth}, superando el objetivo de 36 meses.`, 'warning');
+    }
+    
+    const hasNegativeCash = financialResults.bs.some(year => year.cash < 0);
+    if (hasNegativeCash) {
+        displayAlert('El modelo proyecta un flujo de caja negativo en algún punto. Se necesita más capital o una reducción de costos para mantener la operación.', 'critical');
     }
 }
 // ===================================================================
 // ===== INITIALIZATION ==============================================
 // ===================================================================
 document.addEventListener('DOMContentLoaded', function() {
-    log('             🚀              INICIANDO MODELO FINANCIERO HOMBRE VIGENTE V51.0');
+    log('             🚀              INICIANDO MODELO FINANCIERO HOMBRE VIGENTE V52.0');
     try {
         setupTabs();
         setupControls();
