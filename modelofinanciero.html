@@ -353,7 +353,7 @@ input[type="number"]:focus, input[type="text"]:focus, select:focus {
     <header class="mb-4 text-center bg-transparent rounded-xl p-6">
         <h1 class="text-4xl lg:text-5xl font-black text-white leading-tight tracking-tighter mb-2">Modelo Financiero - <span class="highlight-text">Hombre Vigente</span></h1>
         <p class="text-xl text-slate-400 mt-2">Ecosistema Integral - IA NATIVE</p>
-        <p class="text-lg text-slate-500 mt-1">V51.0 - Strategic Cockpit</p>
+        <p class="text-lg text-slate-500 mt-1">V51.0 - Cockpit Estratégico</p>
         <div class="flex justify-center items-center gap-4 mt-4">
             <button onclick="toggleDebug()" class="bg-gray-700 hover:bg-gray-600 text-white px-4 py-2 rounded-lg font-medium transition duration-300 inline-flex items-center gap-2">
                 <i data-lucide="bug" class="w-5 h-5"></i> Debug
@@ -373,54 +373,54 @@ input[type="number"]:focus, input[type="text"]:focus, select:focus {
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
         <!-- FILA 1 -->
         <div class="card">
-            <h3 class="text-xl font-semibold mb-4 text-white">          💰           Capital Structure</h3>
+            <h3 class="text-xl font-semibold mb-4 text-white">           💰            Estructura de Capital</h3>
             <div class="grid grid-cols-2 gap-4">
-                <div>Equity Invested: <span id="equity-invested" class="font-bold text-blue-400">$0M</span></div>
+                <div>Equity Invertido: <span id="equity-invested" class="font-bold text-blue-400">$0M</span></div>
                 <div class="text-sm text-slate-400">Seed: <span id="equity-seed" class="font-medium text-slate-300">$0M</span></div>
-                <div>Break-Even: <span id="break-even-month" class="font-bold text-emerald-400">N/A</span></div>
+                <div>Punto de Equilibrio: <span id="break-even-month" class="font-bold text-emerald-400">N/A</span></div>
                 <div class="text-sm text-slate-400">Serie A: <span id="equity-series-a" class="font-medium text-slate-300">$0M</span></div>
-                <div>Debt Used: <span id="debt-used" class="font-bold text-amber-400">$0M</span></div>
-                <div>Self-Financed: <span id="self-financed" class="font-bold text-emerald-400">$0M</span></div>
+                <div>Deuda Utilizada: <span id="debt-used" class="font-bold text-amber-400">$0M</span></div>
+                <div>Autofinanciado: <span id="self-financed" class="font-bold text-emerald-400">$0M</span></div>
             </div>
         </div>
         
         <div class="card">
-            <h3 class="text-xl font-semibold mb-4 text-white">          🎯           Investment Returns</h3>
+            <h3 class="text-xl font-semibold mb-4 text-white">           🎯            Retornos de Inversión</h3>
             <div class="mb-4">
-                <label>Exit Multiple: <input type="range" id="exit-multiple-slider" min="6" max="10" step="0.1" value="8" class="input-slider"></label>
+                <label>Múltiplo de Salida: <input type="range" id="exit-multiple-slider" min="6" max="10" step="0.1" value="8" class="input-slider"></label>
                 <span id="exit-multiple-display" class="font-bold text-blue-400">8.0x</span>
             </div>
             <div class="grid grid-cols-2 gap-4">
-                <div>Exit Valuation: <span id="exit-valuation" class="font-bold text-amber-400">$0B</span></div>
-                <div>Money Multiple: <span id="money-multiple" class="font-bold text-blue-400">0x</span></div>
-                <div>EBITDA Y5: <span id="ebitda-year5-dash" class="font-bold text-emerald-400">$0M</span></div>
-                <div>Implied TIR: <span id="implied-tir" class="font-bold text-sky-400">0%</span></div>
+                <div>Valor de Salida: <span id="exit-valuation" class="font-bold text-amber-400">$0B</span></div>
+                <div>Múltiplo de Dinero: <span id="money-multiple" class="font-bold text-blue-400">0x</span></div>
+                <div>EBITDA Año 5: <span id="ebitda-year5-dash" class="font-bold text-emerald-400">$0M</span></div>
+                <div>TIR Implícita: <span id="implied-tir" class="font-bold text-sky-400">0%</span></div>
             </div>
         </div>
     </div>
     <!-- SEGUNDA FILA -->
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
         <div class="card">
-            <h3 class="text-xl font-semibold mb-4 text-white">          🏢           Growth & Scale</h3>
+            <h3 class="text-xl font-semibold mb-4 text-white">           🏢            Crecimiento y Escala</h3>
             <div class="grid grid-cols-2 gap-4 text-sm">
-                <div>Locations Y5: <span id="locations-y5" class="font-bold text-blue-400">0</span></div>
-                <div id="customers-y5-wrapper" data-tooltip="">Customers Y5: <span id="customers-y5" class="font-bold text-sky-400">0</span></div>
-                <div data-tooltip="" id="ltv-cac-tooltip-wrapper">LTV:CAC Ratio: <span id="ltv-cac-ratio" class="font-bold text-emerald-400">0x</span></div>
-                <div>Customer Density: <span id="customer-density" class="font-bold text-blue-400">0</span>/loc</div>
-                <div>LTV (Paid): <span id="ltv-value" class="font-bold text-blue-400">$0</span></div>
-                <div>CAC (Paid): <span id="cac-value" class="font-bold text-blue-400">$0</span></div>
+                <div>Sucursales Año 5: <span id="locations-y5" class="font-bold text-blue-400">0</span></div>
+                <div id="customers-y5-wrapper" data-tooltip="">Clientes Año 5: <span id="customers-y5" class="font-bold text-sky-400">0</span></div>
+                <div data-tooltip="" id="ltv-cac-tooltip-wrapper">Ratio LTV:CAC: <span id="ltv-cac-ratio" class="font-bold text-emerald-400">0x</span></div>
+                <div>Densidad Clientes: <span id="customer-density" class="font-bold text-blue-400">0</span>/sucursal</div>
+                <div>LTV (Pagado): <span id="ltv-value" class="font-bold text-blue-400">$0</span></div>
+                <div>CAC (Pagado): <span id="cac-value" class="font-bold text-blue-400">$0</span></div>
             </div>
         </div>
         
         <div class="card">
-            <h3 class="text-xl font-semibold mb-4 text-white">          🤖           AI & Operations</h3>
+            <h3 class="text-xl font-semibold mb-4 text-white">           🤖            IA y Operaciones</h3>
             <div class="grid grid-cols-2 gap-4">
-                <div data-tooltip="Ingresos totales del Año 5 divididos entre el número de sucursales al final del periodo.">Rev./Sucursal Y5: <span id="revenue-per-location" class="font-bold text-emerald-400">$0M</span></div>
-                <div>Cross-sell Boost: <span id="cross-sell-boost" class="font-bold text-sky-400">+0%</span></div>
-                <div>Utilization: <span id="utilization-actual" class="font-bold text-blue-400">0%</span></div>
-                <div>Revenue/Customer: <span id="revenue-per-customer" class="font-bold text-blue-400">$0K</span></div>
-                <div>Specialist Earnings: <span id="specialist-earnings" class="font-bold text-emerald-400">$0K</span></div>
-                <div>AI Agents: <span id="agents-active" class="font-bold text-blue-400">0/6</span></div>
+                <div data-tooltip="Ingresos totales del Año 5 divididos entre el número de sucursales al final del periodo.">Ingreso/Sucursal A5: <span id="revenue-per-location" class="font-bold text-emerald-400">$0M</span></div>
+                <div>Impulso Cross-sell: <span id="cross-sell-boost" class="font-bold text-sky-400">+0%</span></div>
+                <div>Utilización: <span id="utilization-actual" class="font-bold text-blue-400">0%</span></div>
+                <div>Ingreso/Cliente: <span id="revenue-per-customer" class="font-bold text-blue-400">$0K</span></div>
+                <div>Ganancia Especialista: <span id="specialist-earnings" class="font-bold text-emerald-400">$0K</span></div>
+                <div>Agentes IA Activos: <span id="agents-active" class="font-bold text-blue-400">0/6</span></div>
             </div>
         </div>
     </div>
@@ -434,45 +434,45 @@ input[type="number"]:focus, input[type="text"]:focus, select:focus {
     </div>
     <!-- Tab Content: Control -->
     <div id="content-control" class="content-section active">
-        <!--   🔥   UI REORGANIZATION V51.0 -->
+        <!--    🔥    UI REORGANIZATION V51.0 -->
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <!-- COLUMNA 1: Estrategia y Crecimiento -->
             <div class="space-y-6">
                 <div class="card">
-                    <h4 class="font-semibold text-lg mb-4 text-white">📈 Motores de Crecimiento y Escenarios</h4>
+                    <h4 class="font-semibold text-lg mb-4 text-white"> 📈  Motores de Crecimiento y Escenarios</h4>
                     <div id="growth-engine-controls" class="space-y-4"></div>
                 </div>
                  <div class="card">
-                    <h4 class="font-semibold text-lg mb-4 text-white">💰 Estrategia de Capital</h4>
+                    <h4 class="font-semibold text-lg mb-4 text-white"> 💰  Estrategia de Capital</h4>
                     <div id="capital-strategy-controls" class="space-y-4"></div>
                 </div>
             </div>
             <!-- COLUMNA 2: Operaciones y Monetización -->
             <div class="space-y-6">
                 <div class="card">
-                    <h4 class="font-semibold text-lg mb-4 text-white">⚙️ Operaciones y CAPEX</h4>
+                    <h4 class="font-semibold text-lg mb-4 text-white"> ⚙️  Operaciones y CAPEX</h4>
                     <div id="operations-controls" class="space-y-4"></div>
                      <div class="mt-4 pt-4 border-t border-gray-700">
                         <div class="text-sm font-medium text-slate-300">CAPEX / Sucursal: <span id="capex-per-location-display" class="font-bold text-amber-400">$0</span></div>
                     </div>
                 </div>
                  <div class="card">
-                    <h4 class="font-semibold text-lg mb-4 text-white">💵 Monetización</h4>
+                    <h4 class="font-semibold text-lg mb-4 text-white"> 💵  Monetización</h4>
                     <div id="monetization-controls" class="space-y-4"></div>
                 </div>
             </div>
             <!-- COLUMNA 3: Dinámicas de Cliente y Supuestos Base -->
             <div class="space-y-6">
                 <div class="card">
-                    <h4 class="font-semibold text-lg mb-4 text-white">📈 Dinámicas del Cliente</h4>
+                    <h4 class="font-semibold text-lg mb-4 text-white"> 📈  Dinámicas del Cliente</h4>
                     <div id="customer-dynamics-controls" class="space-y-4"></div>
                 </div>
                 <div class="card">
-                    <h4 class="font-semibold text-lg mb-4 text-white">🎛️ Supuestos Base del Negocio</h4>
+                    <h4 class="font-semibold text-lg mb-4 text-white"> 🎛️  Supuestos Base del Negocio</h4>
                     <div id="assumptions-controls" class="space-y-4"></div>
                 </div>
                 <div class="card">
-                    <h4 class="font-semibold text-lg mb-4 text-white">🤖 IA Native Controls</h4>
+                    <h4 class="font-semibold text-lg mb-4 text-white"> 🤖  Controles IA Nativa</h4>
                     <div id="ai-native-controls" class="space-y-4"></div>
                 </div>
             </div>
@@ -491,7 +491,7 @@ input[type="number"]:focus, input[type="text"]:focus, select:focus {
                 <div class="flex justify-between items-center mb-4">
                      <h3 class="text-xl font-semibold text-white">Estado de Resultados (P&L)</h3>
                      <button onclick="generateExecutiveSummary()" class="bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2 rounded-lg font-medium transition duration-300 inline-flex items-center gap-2 text-sm">
-                        <i data-lucide="file-text" class="w-4 h-4"></i> Generar Resumen Ejecutivo      ✨
+                        <i data-lucide="file-text" class="w-4 h-4"></i> Generar Resumen Ejecutivo       ✨
                     </button>
                 </div>
                 <div class="overflow-x-auto">
@@ -587,7 +587,6 @@ let toggleControls = {
   PersonaVigenteAI: true,
   bnplMarketingToggle: true 
 };
-
 // V50.9: DYNAMIC CUSTOMER JOURNEY MATRICES
 const customerJourneyInitial = {
     carlos: {
@@ -619,7 +618,6 @@ const customerJourneyInitial = {
         "Limpieza Dental": 0.15, "Blanqueamiento LED": 0.0, "Depilación Láser": 0.05, "Bronceado UVA": 0.02
     }
 };
-
 const customerJourneyMature = {
     carlos: { // Premium
         "Ajuste Barba y Cejas": 0.95, "Corte de Pelo": 0.95, "Manicure Natural": 0.70, "Pedicure Natural": 0.40, "Reducción Canas": 0.60, "Tinte Natural": 0.25, "Rebaje de Vello Corporal": 0.30, "Masajes Descontracturantes": 0.30,
@@ -650,7 +648,6 @@ const customerJourneyMature = {
         "Limpieza Dental": 0.15, "Blanqueamiento LED": 0.0, "Depilación Láser": 0.05, "Bronceado UVA": 0.02
     }
 };
-
 // Injected modelData from internal documents - V51.0 CALIBRATION
 const baseModelData = {
     general: { currency: "MXN", projectionTimeline: { unit: "months", duration: 60 }, scenario: "base" },
@@ -779,7 +776,7 @@ const baseModelData = {
         adminLocalMonthly: 10000
     },
     capacity: {
-        treatmentRooms: 5, dailyOperatingHours: 12, daysOpenPerMonth: 26, targetUtilization: 0.70,
+        treatmentRooms: 5, dailyOperatingHours: 12, daysOpenPerMonth: 26, targetUtilization: 0.60,
         activeSucursales: 1,
         surgicalSuite: 1,
         maxSurgeriesPerMonth: 10, 
@@ -878,7 +875,7 @@ const scenarios = {
         marketing: { sustainBudgetPerLocation: 15000 },
         realismLevers: { funnelConversionRate: 0.60 },
         customerArchetypes: { carlos: { churnRate: 0.30 }, eduardo: { churnRate: 0.45 }, mantenimiento: { churnRate: 0.55 } },
-        capacity: { targetUtilization: 0.65 }
+        capacity: { targetUtilization: 0.40 }
     },
     base: {},
     optimistic: {
@@ -886,7 +883,7 @@ const scenarios = {
         marketingChannels: { eduardoFunnel: { wordOfMouthMultiplier: 1.45 } },
         realismLevers: { funnelConversionRate: 0.80 },
         customerArchetypes: { carlos: { churnRate: 0.18 }, eduardo: { churnRate: 0.30 }, mantenimiento: { churnRate: 0.35 } },
-        capacity: { targetUtilization: 0.75 }
+        capacity: { targetUtilization: 0.80 }
     }
 };
 // Injected controlsConfig for Beauty Tech
@@ -909,7 +906,7 @@ const controlsConfig = {
         { id: 'wordOfMouthMultiplierEduardo', label: 'Potencial Viral (Boca a Boca)', min: 1.05, max: 1.50, step: 0.01, type: 'range', format: val => val.toFixed(2) + 'x', tooltip: 'Multiplicador de crecimiento orgánico. Cada cliente pagado trae consigo clientes adicionales por recomendación.' },
     ],
     capital_strategy: [
-        { id: 'seedCapital', label: 'Capital Seed', min: 8000000, max: 17000000, step: 500000, type: 'range', format: val => `$${(val/1000).toLocaleString()}K`, tooltip: 'Capital inicial para lanzar la primera clínica, desarrollar el MVP tecnológico y cubrir los gastos operativos iniciales.' },
+        { id: 'seedCapital', label: 'Capital Semilla', min: 8000000, max: 17000000, step: 500000, type: 'range', format: val => `$${(val/1000).toLocaleString()}K`, tooltip: 'Capital inicial para lanzar la primera clínica, desarrollar el MVP tecnológico y cubrir los gastos operativos iniciales.' },
         { id: 'seriesACapital', label: 'Capital Serie A', min: 10000000, max: 30000000, step: 1000000, type: 'range', format: val => `$${(val/1000).toLocaleString()}K`, tooltip: 'Capital de crecimiento para financiar la expansión nacional y la evolución del stack tecnológico. Se levanta en el mes 12.' },
         { id: 'ventureDebtRate', label: 'Tasa Venture Debt', min: 0.12, max: 0.22, step: 0.005, type: 'range', format: val => (val * 100).toFixed(1) + '%', tooltip: 'Tasa de interés para la línea de Venture Debt, disponible a partir del mes 18 como opción de financiamiento no dilutivo.' },
     ],
@@ -957,7 +954,7 @@ const controlsConfig = {
     ],
     assumptions: [
         { id: 'treatmentRooms', label: 'Salas de Tratamiento / Sucursal', min: 3, max: 8, step: 1, type: 'range', format: val => `${val} salas`, tooltip: 'Número de salas de tratamiento por clínica. Define la capacidad de servicio y el CAPEX.' },
-        { id: 'targetUtilization', label: 'Utilización Target', min: 0.60, max: 0.85, step: 0.01, type: 'range', format: val => (val * 100).toFixed(0) + '%', tooltip: 'Target de ocupación de salas. Una decisión estratégica clave que balancea ingresos y calidad del servicio.' },
+        { id: 'targetUtilization', label: 'Utilización Objetivo', min: 0.40, max: 0.80, step: 0.01, type: 'range', format: val => (val * 100).toFixed(0) + '%', tooltip: 'Target de ocupación de salas. Una decisión estratégica clave que balancea ingresos y calidad del servicio.' },
         { id: 'funnelConversionRate', label: 'Tasa Conversión (Lead a Cliente)', min: 0.50, max: 0.90, step: 0.01, type: 'range', format: val => (val * 100).toFixed(0) + '%', tooltip: 'Porcentaje de clientes potenciales (leads) que efectivamente se convierten en clientes de pago.' },
         { id: 'churnRateCarlos', label: 'Churn Anual - Carlos', min: 0.15, max: 0.35, step: 0.01, type: 'range', format: val => (val * 100).toFixed(0) + '%', tooltip: 'Tasa de abandono anual para el arquetipo de mayor valor.' },
         { id: 'churnRateEduardo', label: 'Churn Anual - Eduardo', min: 0.25, max: 0.50, step: 0.01, type: 'range', format: val => (val * 100).toFixed(0) + '%', tooltip: 'Tasa de abandono anual para el arquetipo de volumen.' },
@@ -999,7 +996,7 @@ function getDynamicChurn(archetype, cohortAgeMonths) {
     return Math.min(baseChurn * ageMultiplier, 0.95); // Cap máximo 95%
 }
 /**
- * 🔥   V50.3 REPLACEMENT: Calculates the average service hours a new customer will consume using the adherence matrix.
+ * 🔥    V50.3 REPLACEMENT: Calculates the average service hours a new customer will consume using the adherence matrix.
  */
 function getAvgHoursPerNewCustomer(modelData) {
     let totalHours = 0;
@@ -1041,7 +1038,6 @@ function runMonthlySimulation(modelData, previousMonthState, month) {
     const realismFactor = customerBehavior?.realismFactor || 1.0;
     const premiumDiscount = pricing?.premiumServiceDiscount || 0.0;
     const cohortMaturityMonths = customerBehavior?.cohortMaturityMonths || 12;
-
     const nextMonthCohorts = {};
     
     // --- II. CUSTOMER RETENTION & CONVERSION (COHORT-BASED) ---
@@ -1162,7 +1158,7 @@ function runMonthlySimulation(modelData, previousMonthState, month) {
     const walkIns = (marketing.walkInsPerLocationPerMonth || 0) * activeSucursales;
     newCustomers.transaccional = { total: walkIns, paid: 0, organic: walkIns };
     if (totalDesiredNewCustomers > maxNewCustomersFromCapacity) {
-        log(`  📈   M${month}: Crecimiento limitado por capacidad. Deseados: ${Math.round(totalDesiredNewCustomers)}, Permitidos: ${maxNewCustomersFromCapacity}`);
+        log(`   📈    M${month}: Crecimiento limitado por capacidad. Deseados: ${Math.round(totalDesiredNewCustomers)}, Permitidos: ${maxNewCustomersFromCapacity}`);
         const scaleFactor = totalDesiredNewCustomers > 0 ? maxNewCustomersFromCapacity / totalDesiredNewCustomers : 0;
         for (const archetype in desiredNewCustomers) {
             newCustomers[archetype] = {
@@ -1212,14 +1208,12 @@ function runMonthlySimulation(modelData, previousMonthState, month) {
             for (const cohortMonth in nextMonthCohorts) {
                 const cohortAgeMonths = month - parseInt(cohortMonth);
                 const journeyToUse = cohortAgeMonths < cohortMaturityMonths ? customerJourneyInitial : customerJourneyMature;
-
                 for (const archetype in nextMonthCohorts[cohortMonth]) {
                     const customersInCohort = nextMonthCohorts[cohortMonth][archetype];
                     let adoptionRateForService = (journeyToUse[archetype]?.[service.name] || 0) * realismFactor;
                     customersUsingThisService += (customersInCohort / activeSucursalesForRevenue) * adoptionRateForService;
                 }
             }
-
             if (customersUsingThisService > 0 && service.repurchaseCycleMonths > 0) {
                 let weightedAdherence = 0;
                 let totalWeight = 0;
@@ -1288,7 +1282,7 @@ function runMonthlySimulation(modelData, previousMonthState, month) {
     }
     const maxMembershipRevenue = (serviceRevenue - totalDiscounts) * 0.4;
     if (membershipRevenue > maxMembershipRevenue) {
-        log(`  ⚠️   Membresías limitadas: ${formatCurrency(membershipRevenue)} → ${formatCurrency(maxMembershipRevenue)}`);
+        log(`   ⚠️    Membresías limitadas: ${formatCurrency(membershipRevenue)} → ${formatCurrency(maxMembershipRevenue)}`);
         membershipRevenue = maxMembershipRevenue;
     }
     
@@ -1298,7 +1292,7 @@ function runMonthlySimulation(modelData, previousMonthState, month) {
     }
     
     let totalGrossRevenue = serviceRevenue + membershipRevenue + productRevenue;
-    log(`  💰   Revenue breakdown M${month}: Servicios=${formatCurrency(serviceRevenue)} | Membresías=${formatCurrency(membershipRevenue)} | Descuentos=${formatCurrency(totalDiscounts)}`);
+    log(`   💰    Revenue breakdown M${month}: Servicios=${formatCurrency(serviceRevenue)} | Membresías=${formatCurrency(membershipRevenue)} | Descuentos=${formatCurrency(totalDiscounts)}`);
     let capacityUtilization = totalAvailableHours > 0 ? totalSessionHours / totalAvailableHours : 0;
     
     return {
@@ -1507,7 +1501,7 @@ function assembleFinancialStatements(modelData, monthlyRevenue, monthlyCosts, pr
                     medicalServicesRevenue += finalShare;
                     
                     if (calculatedShare > maxRevenueShare) {
-                        log(`  ⚠️   Revenue share limitado en ${service.name}: ${formatCurrency(calculatedShare)} → ${formatCurrency(finalShare)}`);
+                        log(`   ⚠️    Revenue share limitado en ${service.name}: ${formatCurrency(calculatedShare)} → ${formatCurrency(finalShare)}`);
                     }
                 }
             }
@@ -1524,18 +1518,18 @@ function assembleFinancialStatements(modelData, monthlyRevenue, monthlyCosts, pr
     
     const maxMedicalRevenue = monthlyCosts.opex.personnel * 0.6;
     if (medicalServicesRevenue > maxMedicalRevenue) {
-        log(`  ⚠️   Revenue share excede límite personal: ${formatCurrency(medicalServicesRevenue)} → ${formatCurrency(maxMedicalRevenue)}`);
+        log(`   ⚠️    Revenue share excede límite personal: ${formatCurrency(medicalServicesRevenue)} → ${formatCurrency(maxMedicalRevenue)}`);
         medicalServicesRevenue = maxMedicalRevenue;
     }
     detailedPL.opex.personnel.variable = medicalServicesRevenue;
     detailedPL.opex.personnel.fixed = Math.max(0, monthlyCosts.opex.personnel - medicalServicesRevenue);
     if (detailedPL.opex.personnel.fixed < 0) {
-        log(`  🚨   CRITICAL: Salarios fijos negativos detectados y corregidos`);
+        log(`   🚨    CRITICAL: Salarios fijos negativos detectados y corregidos`);
         detailedPL.opex.personnel.fixed = monthlyCosts.opex.personnel * 0.4;
         detailedPL.opex.personnel.variable = monthlyCosts.opex.personnel * 0.6;
     }
     
-    log(`  👥   Personal M${month}: Fijo=${formatCurrency(detailedPL.opex.personnel.fixed)} | Variable=${formatCurrency(detailedPL.opex.personnel.variable)} | Total=${formatCurrency(monthlyCosts.opex.personnel)}`);
+    log(`   👥    Personal M${month}: Fijo=${formatCurrency(detailedPL.opex.personnel.fixed)} | Variable=${formatCurrency(detailedPL.opex.personnel.variable)} | Total=${formatCurrency(monthlyCosts.opex.personnel)}`);
     pnl.grossProfit = pnl.revenue - pnl.cogs;
     pnl.opex = monthlyCosts.opex.total + medicalServicesRevenue;
     pnl.ebitda = pnl.grossProfit - pnl.opex;
@@ -1625,7 +1619,7 @@ function assembleFinancialStatements(modelData, monthlyRevenue, monthlyCosts, pr
  * Main orchestrator of the financial model.
  */
 function calculateFinancials() {
-    log('   🚀    ModelCalc v51.0 (Strategic Cockpit) STARTING');
+    log('    🚀     ModelCalc v51.0 (Cockpit Estratégico) INICIANDO');
     try {
         financialResults = { pl: [], cf: [], bs: [], kpis: [], tirEquity: 0, detailedPL: [], breakEvenMonth: null };
         modelData.capitalStructure.debtFacilities.forEach(f => f.amountDrawn = 0);
@@ -1749,10 +1743,10 @@ function calculateFinancials() {
             });
         }
         
-        log('   ✅    ModelCalc v51.0 COMPLETED');
+        log('    ✅     ModelCalc v51.0 COMPLETADO');
         return true;
     } catch (error) {
-        log(`   ❌    ERROR in ModelCalc: ${error.message}`);
+        log(`    ❌     ERROR en ModelCalc: ${error.message}`);
         console.error(error);
         return false;
     }
@@ -1876,7 +1870,7 @@ function countActiveAIAgents() {
     // count += 3; // Simulating other base agents
     return count;
 }
-//   🔥   V50.1 HELPER: Calculates Gross Margin for an archetype
+//    🔥    V50.1 HELPER: Calculates Gross Margin for an archetype
 function calculateGrossMarginPerCustomer(modelData, archetypeKey) {
     const journey = customerJourneyInitial[archetypeKey]; // Use initial for this calculation
     if (!journey) return 0;
@@ -1895,7 +1889,7 @@ function calculateGrossMarginPerCustomer(modelData, archetypeKey) {
     }
     return annualRevenue - annualCogs;
 }
-//   🔥   V50.1 REBUILT: Calculates a true LTV based on Gross Margin and Churn
+//    🔥    V50.1 REBUILT: Calculates a true LTV based on Gross Margin and Churn
 function calculateBlendedLtvCac(modelData, yearMonthsData) {
     let totalWeightedGrossMargin = 0;
     let totalWeightedChurn = 0;
@@ -1929,7 +1923,7 @@ function calculateBlendedLtvCac(modelData, yearMonthsData) {
         `  - Tasa de Churn Anual Ponderada: ${(totalWeightedChurn * 100).toFixed(1)}%\n` +
         `CAC Real (Pagados): ${formatCurrency(blendedCAC)}`;
     
-    log(`   🔍   LTV DEBUG: Blended GM: ${formatCurrency(totalWeightedGrossMargin)}, Blended Churn: ${totalWeightedChurn.toFixed(2)}, Calculated LTV: ${formatCurrency(blendedLTV)}`);
+    log(`    🔍    LTV DEBUG: Blended GM: ${formatCurrency(totalWeightedGrossMargin)}, Blended Churn: ${totalWeightedChurn.toFixed(2)}, Calculated LTV: ${formatCurrency(blendedLTV)}`);
     return { ratio, breakdown, ltv: blendedLTV, cac: blendedCAC };
 }
 function formatCustomerBreakdown(breakdown) {
@@ -1954,10 +1948,10 @@ function updateUnitEconomics() {
     }
 }
 function updateUI() {
-    log('            🔄             Updating Dashboard Interface...');
+    log('             🔄              Actualizando Interfaz del Dashboard...');
     try {
         if (!financialResults.pl || financialResults.pl.length < 5) {
-             log('            ⚠️             Financial results not ready for UI update.');
+             log('             ⚠️              Resultados financieros no listos para la actualización de la UI.');
              return;
         }
         
@@ -2009,9 +2003,9 @@ function updateUI() {
         updateUnitEconomics();
         updateTables();
         updateCharts();
-        log('            ✅             Dashboard UI Update completed.');
+        log('             ✅              Actualización de la UI del Dashboard completada.');
     } catch (error) {
-        log(`            ❌             Error in updateUI: ${error.message}`);
+        log(`             ❌              Error en updateUI: ${error.message}`);
         console.error(error);
     }
 }
@@ -2061,10 +2055,10 @@ function updatePLTable() {
     createRow({ parentId: 'revenue', id: 'services-revenue', label: 'Ingresos por Servicios', values: financialResults.detailedPL.map(y => y.revenue.services), isSub: true, isExpandable: true });
     
     // TIER BREAKDOWN
-    createRow({ parentId: 'services-revenue', id: 'premium-tier', label: 'Premium Services', values: financialResults.detailedPL.map(y => y.revenue.byTier.premium), isSubSub: true });
-    createRow({ parentId: 'services-revenue', id: 'surgery-tier', label: 'Surgery Services', values: financialResults.detailedPL.map(y => y.revenue.byTier.surgery), isSubSub: true });
-    createRow({ parentId: 'services-revenue', id: 'mid-tier', label: 'Mid-Tier Services', values: financialResults.detailedPL.map(y => y.revenue.byTier.mid), isSubSub: true });
-    createRow({ parentId: 'services-revenue', id: 'basic-tier', label: 'Basic Services', values: financialResults.detailedPL.map(y => y.revenue.byTier.basic), isSubSub: true });
+    createRow({ parentId: 'services-revenue', id: 'premium-tier', label: 'Servicios Premium', values: financialResults.detailedPL.map(y => y.revenue.byTier.premium), isSubSub: true });
+    createRow({ parentId: 'services-revenue', id: 'surgery-tier', label: 'Servicios de Cirugía', values: financialResults.detailedPL.map(y => y.revenue.byTier.surgery), isSubSub: true });
+    createRow({ parentId: 'services-revenue', id: 'mid-tier', label: 'Servicios de Nivel Medio', values: financialResults.detailedPL.map(y => y.revenue.byTier.mid), isSubSub: true });
+    createRow({ parentId: 'services-revenue', id: 'basic-tier', label: 'Servicios Básicos', values: financialResults.detailedPL.map(y => y.revenue.byTier.basic), isSubSub: true });
     createRow({ parentId: 'revenue', label: 'Ingresos Membresías', values: financialResults.detailedPL.map(y => y.revenue.memberships), isSub: true });
     createRow({ parentId: 'revenue', label: 'Ingresos Productos (DTC)', values: financialResults.detailedPL.map(y => y.revenue.products), isSub: true });
     
@@ -2207,9 +2201,9 @@ function updateBalanceSheetTable() {
         const lastBS = financialResults.bs[financialResults.bs.length - 1];
         const balanceDiff = lastBS.totalAssets - lastBS.totalLiabilitiesAndEquity;
         if (Math.abs(balanceDiff) < BALANCE_TOLERANCE) {
-            validationDiv.innerHTML = '<span class="text-green-400">   ✅    Balance Validado</span>';
+            validationDiv.innerHTML = '<span class="text-green-400">    ✅     Balance Validado</span>';
         } else {
-            validationDiv.innerHTML = `<span class="text-red-400">   ❌    Error de Balance: ${formatCurrency(balanceDiff)}</span>`;
+            validationDiv.innerHTML = `<span class="text-red-400">    ❌     Error de Balance: ${formatCurrency(balanceDiff)}</span>`;
         }
     }
 }
@@ -2265,11 +2259,11 @@ function updateCharts() {
     charts.cashflow.update();
 }
 function forceCalculate() {
-    log('            🔄             Manual recalculation requested.');
+    log('             🔄              Recálculo manual solicitado.');
     if (calculateFinancials()) {
         updateUI();
     } else {
-        log('            ❌             Manual recalculation failed.');
+        log('             ❌              Falló el recálculo manual.');
     }
 }
 function getModelValue(pathParts) {
@@ -2278,11 +2272,11 @@ function getModelValue(pathParts) {
         for (const part of pathParts) {
             if (currentValue && !isNaN(part)) { currentValue = currentValue[parseInt(part)]; } 
             else if (currentValue && currentValue[part] !== undefined) { currentValue = currentValue[part]; } 
-            else { console.warn(`Path not found: ${pathParts.join('.')} at part: ${part}`); return null; }
+            else { console.warn(`Ruta no encontrada: ${pathParts.join('.')} en la parte: ${part}`); return null; }
         }
         return currentValue;
     } catch (error) {
-        console.error(`Error reading model value for path ${pathParts.join('.')}: ${error.message}`);
+        console.error(`Error al leer el valor del modelo para la ruta ${pathParts.join('.')}: ${error.message}`);
         return null;
     }
 }
@@ -2295,7 +2289,7 @@ function updateModelValue(pathParts, value) {
             const part = pathParts[i];
             if (modelRef && !isNaN(part)) { modelRef = modelRef[parseInt(part)]; } 
             else if (modelRef && modelRef[part] !== undefined) { modelRef = modelRef[part]; } 
-            else { console.error(`Path not found: ${pathParts.slice(0, i+1).join('.')}`); return false; }
+            else { console.error(`Ruta no encontrada: ${pathParts.slice(0, i+1).join('.')}`); return false; }
         }
         
         if (modelRef) {
@@ -2305,7 +2299,7 @@ function updateModelValue(pathParts, value) {
         }
         return false;
     } catch (error) {
-        console.error(`Error updating model value for path ${pathParts.join('.')}: ${error.message}`);
+        console.error(`Error al actualizar el valor del modelo para la ruta ${pathParts.join('.')}: ${error.message}`);
         return false;
     }
 }
@@ -2407,15 +2401,12 @@ function createNumberControl(config, container) {
 function createToggleControl(config, container, controlId) {
     const div = document.createElement('div');
     div.className = 'ia-control-item';
-
     const header = document.createElement('div');
     header.className = 'ia-control-header';
-
     const label = document.createElement('label');
     label.htmlFor = controlId;
     label.className = "text-sm font-medium text-slate-300";
     label.textContent = config.label;
-
     const checkbox = document.createElement('input');
     checkbox.type = 'checkbox';
     checkbox.id = controlId;
@@ -2424,15 +2415,12 @@ function createToggleControl(config, container, controlId) {
     
     header.appendChild(label);
     header.appendChild(checkbox);
-
     const description = document.createElement('p');
     description.className = 'ia-control-description';
     description.textContent = config.description;
-
     div.appendChild(header);
     div.appendChild(description);
     container.appendChild(div);
-
     checkbox.addEventListener('change', function() {
         toggleControls[controlId] = this.checked;
         forceCalculate();
@@ -2473,7 +2461,6 @@ function setupControlGroup(groupKey, containerId) {
     if (!container) return;
     container.innerHTML = '';
     const groupConfig = controlsConfig[groupKey];
-
     if (groupKey === 'IA_Native_Controls') {
         // Handle IA_Native_Controls as an object
         for (const controlId in groupConfig) {
@@ -2483,7 +2470,7 @@ function setupControlGroup(groupKey, containerId) {
     } else {
         // Handle other control groups as arrays
         if (!Array.isArray(groupConfig)) {
-            console.error(`Expected array for ${groupKey}, but got:`, typeof groupConfig);
+            console.error(`Se esperaba un array para ${groupKey}, pero se obtuvo:`, typeof groupConfig);
             return;
         }
         
@@ -2548,12 +2535,13 @@ function applyScenario(scenarioName) {
     const scenarioConfig = scenarios[scenarioName];
     modelData = mergeDeep(JSON.parse(JSON.stringify(baseModelData)), scenarioConfig);
     
-    log(`            📊             Escenario "${scenarioName}" aplicado.`);
+    log(`             📊              Escenario "${scenarioName}" aplicado.`);
     
     // Update sliders to reflect the new modelData
     setupControls();
     forceCalculate();
 }
+
 function setupControls() {
     setupControlGroup('growth_engine', 'growth-engine-controls');
     setupControlGroup('capital_strategy', 'capital-strategy-controls');
@@ -2563,6 +2551,7 @@ function setupControls() {
     setupControlGroup('assumptions', 'assumptions-controls');
     setupControlGroup('IA_Native_Controls', 'ai-native-controls');
 }
+
 function setupExitMultipleSlider() {
     const slider = document.getElementById('exit-multiple-slider');
     const display = document.getElementById('exit-multiple-display');
@@ -2632,10 +2621,10 @@ function closeGeminiModal() {
  */
 async function callGeminiAPI(prompt, useJson = false, schema = null) {
     let userApiKey = document.getElementById('api-key-input').value.trim();
-    const defaultApiKey = "AIzaSyC7rMWhotrv2jizIYrzoDNVpDDLmkA"; // Fallback key
+    const defaultApiKey = ""; // Fallback key - Intentionally left blank for security
     let apiKey = userApiKey ? userApiKey : defaultApiKey; 
     
-    const model = "gemini-2.0-flash";
+    const model = "gemini-1.5-flash";
     const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
     
     const payload = {
@@ -2647,8 +2636,8 @@ async function callGeminiAPI(prompt, useJson = false, schema = null) {
             responseSchema: schema,
         };
     }
-    log(`[GEMINI] Calling API. Using ${userApiKey ? 'user-provided' : 'default'} key.`);
-    log(`[GEMINI] Payload (first 200 chars): ${JSON.stringify(payload).substring(0,200)}...`);
+    log(`[GEMINI] Llamando a la API. Usando clave ${userApiKey ? 'proporcionada por el usuario' : 'por defecto'}.`);
+    log(`[GEMINI] Payload (primeros 200 caracteres): ${JSON.stringify(payload).substring(0,200)}...`);
     try {
         const response = await fetch(apiUrl, {
             method: 'POST',
@@ -2656,7 +2645,7 @@ async function callGeminiAPI(prompt, useJson = false, schema = null) {
             body: JSON.stringify(payload)
         });
         const responseText = await response.text();
-        log(`[GEMINI] Raw response: ${responseText}`);
+        log(`[GEMINI] Respuesta cruda: ${responseText}`);
         if (!response.ok) {
             let errorDetail = responseText;
             try {
@@ -2665,7 +2654,7 @@ async function callGeminiAPI(prompt, useJson = false, schema = null) {
             } catch (e) {
                 // Not a JSON error, use the raw text
             }
-            throw new Error(`API request failed with status ${response.status}: ${errorDetail}`);
+            throw new Error(`La solicitud a la API falló con el estado ${response.status}: ${errorDetail}`);
         }
         const result = JSON.parse(responseText);
         
@@ -2675,7 +2664,7 @@ async function callGeminiAPI(prompt, useJson = false, schema = null) {
             throw new Error("Respuesta inesperada de la API o contenido vacío.");
         }
     } catch (error) {
-        console.error("Error calling Gemini API:", error);
+        console.error("Error al llamar a la API de Gemini:", error);
         log(`[GEMINI] ERROR: ${error.message}`);
         return `Error al contactar la IA: ${error.message}`;
     }
@@ -2718,8 +2707,6 @@ function buildFullModelContext() {
     
     context += formatSection("Supuestos de IA y Operaciones", {
         aiDefaults: modelData.aiDefaults,
-        personaVigenteAI: modelData.personaVigenteAI,
-        optiVigenteAI: modelData.optiVigenteAI,
         capacity: {
             treatmentRooms: modelData.capacity.treatmentRooms,
             dailyOperatingHours: modelData.capacity.dailyOperatingHours,
@@ -2749,7 +2736,7 @@ function openCopilotModal() {
         <p class="text-slate-400 mb-4">Haz una pregunta sobre el estado actual del modelo. Por ejemplo: "Sugiere 3 iniciativas para mejorar el EBITDA del año 3" o "¿Por qué cae el número de clientes en el año 3?".</p>
         <textarea id="copilot-prompt" class="w-full h-24 p-2 bg-gray-800 border border-gray-600 rounded-md text-white" placeholder="Escribe tu pregunta aquí..."></textarea>
         <div class="text-right mt-4">
-            <button onclick="submitCopilotQuery()" class="bg-purple-600 hover:bg-purple-500 text-white px-4 py-2 rounded-lg font-medium">Enviar Pregunta      ✨     </button>
+            <button onclick="submitCopilotQuery()" class="bg-purple-600 hover:bg-purple-500 text-white px-4 py-2 rounded-lg font-medium">Enviar Pregunta       ✨      </button>
         </div>
         <div id="copilot-response" class="mt-4 p-4 bg-gray-900 rounded-md" style="display:none;"></div>
     `;
@@ -2843,7 +2830,7 @@ Para cada sugerencia, proporciona un nombre, el arquetipo de cliente principal a
         document.getElementById('gemini-modal-title').textContent = 'Sugerencias de Nuevos Servicios';
         document.getElementById('gemini-modal-body').innerHTML = htmlOutput;
     } catch (e) {
-        console.error("Error parsing JSON from Gemini:", e);
+        console.error("Error al analizar JSON de Gemini:", e);
         document.getElementById('gemini-modal-body').innerHTML = `Hubo un error al procesar las sugerencias de la IA. <br><br>Respuesta recibida:<br>${responseText}`;
     }
 }
@@ -2851,16 +2838,16 @@ Para cada sugerencia, proporciona un nombre, el arquetipo de cliente principal a
 // ===== INITIALIZATION ==============================================
 // ===================================================================
 document.addEventListener('DOMContentLoaded', function() {
-    log('            🚀             STARTING HOMBRE VIGENTE FINANCIAL MODEL V51.0');
+    log('             🚀              INICIANDO MODELO FINANCIERO HOMBRE VIGENTE V51.0');
     try {
         setupTabs();
         setupControls();
         setupExitMultipleSlider();
         initializeCharts();
         forceCalculate(); // Initial calculation with the new base scenario
-        log('            🎉             APPLICATION READY');
+        log('             🎉              APLICACIÓN LISTA');
     } catch (error) {
-        log(`            ❌             CRITICAL ERROR DURING INITIALIZATION: ${error.message}`);
+        log(`             ❌              ERROR CRÍTICO DURANTE LA INICIALIZACIÓN: ${error.message}`);
         console.error(error);
     }
 });
