@@ -1514,7 +1514,7 @@ function runMonthlySimulation(modelData, previousMonthState, month) {
         const budgetForArchetype = budgetAllocations[archetype] || 0;
         const effectiveCAC = funnel.cac * (1 - CACReduction);
         const paidCustomers = effectiveCAC > 0 ? Math.floor(budgetForArchetype / effectiveCAC) : 0;
-        const organicCustomers = Math.floor(paidCustomers * (funnel.wordOfMouthMultiplier - 1));
+        const organicCustomers = Math.max(0, Math.floor(paidCustomers * (funnel.wordOfMouthMultiplier - 1)));
         const totalAcquired = (paidCustomers + organicCustomers) * effectiveConversionRate;
         desiredNewCustomers[archetype] = { total: totalAcquired, paid: paidCustomers * effectiveConversionRate, organic: organicCustomers * effectiveConversionRate };
         totalDesiredNewCustomers += totalAcquired;
@@ -2146,7 +2146,18 @@ function log(message) {
 function updateDebugPanel() {
     const panel = document.getElementById('debug-content');
     if (panel) {
-        panel.innerHTML = debugLogs.map(log => `<div style="margin-bottom: 2px; font-size: 10px; border-bottom: 1px dotted #4b5563; padding-bottom: 2px;">${log}</div>`).join('');
+        // Clear previous content
+        panel.innerHTML = '';
+        // Create sanitized elements to prevent XSS
+        debugLogs.forEach(log => {
+            const logDiv = document.createElement('div');
+            logDiv.style.marginBottom = '2px';
+            logDiv.style.fontSize = '10px';
+            logDiv.style.borderBottom = '1px dotted #4b5563';
+            logDiv.style.paddingBottom = '2px';
+            logDiv.textContent = log; // Use textContent to prevent XSS
+            panel.appendChild(logDiv);
+        });
     }
 }
 function toggleDebug() {

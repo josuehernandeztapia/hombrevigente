@@ -989,7 +989,7 @@ function runMonthlySimulation(modelData, previousMonthState, month) {
         const effectiveCAC = funnel.cac * (1 - CACReduction);
         const paidCustomers = effectiveCAC > 0 ? Math.floor(budgetForArchetype / effectiveCAC) : 0;
         
-        const organicCustomers = Math.floor(paidCustomers * (funnel.wordOfMouthMultiplier -1));
+        const organicCustomers = Math.max(0, Math.floor(paidCustomers * (funnel.wordOfMouthMultiplier - 1)));
         newCustomers[archetype] = paidCustomers + organicCustomers;
     }
     
@@ -1609,7 +1609,18 @@ function log(message) {
 function updateDebugPanel() {
     const panel = document.getElementById('debug-content');
     if (panel) {
-        panel.innerHTML = debugLogs.map(log => `<div style="margin-bottom: 2px; font-size: 10px; border-bottom: 1px dotted #4b5563; padding-bottom: 2px;">${log}</div>`).join('');
+        // Clear previous content
+        panel.innerHTML = '';
+        // Create sanitized elements to prevent XSS
+        debugLogs.forEach(log => {
+            const logDiv = document.createElement('div');
+            logDiv.style.marginBottom = '2px';
+            logDiv.style.fontSize = '10px';
+            logDiv.style.borderBottom = '1px dotted #4b5563';
+            logDiv.style.paddingBottom = '2px';
+            logDiv.textContent = log; // Use textContent to prevent XSS
+            panel.appendChild(logDiv);
+        });
     }
 }
 function toggleDebug() {
@@ -2339,8 +2350,14 @@ function closeGeminiModal() {
  */
 async function callGeminiAPI(prompt, useJson = false, schema = null) {
     let userApiKey = document.getElementById('api-key-input').value.trim();
-    const defaultApiKey = "AIzaSyC7rMWhotrv2jizIYrzoDNVpDDLmkA"; // Fallback key
-    let apiKey = userApiKey ? userApiKey : defaultApiKey; 
+    
+    // Security fix: Never expose API keys in client-side code
+    if (!userApiKey) {
+        alert('Por favor, ingresa tu API key de Google Gemini para usar esta funcionalidad.');
+        return 'Error: API key requerida';
+    }
+    
+    let apiKey = userApiKey; 
     
     const model = "gemini-2.0-flash";
     const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
