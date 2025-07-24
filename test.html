@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Modelo Financiero - Hombre Vigente V54.1</title>
+<title>Modelo Financiero - Hombre Vigente V53.1</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -395,7 +395,7 @@ input[type="number"]:focus, input[type="text"]:focus, select:focus {
     <header class="mb-4 text-center bg-transparent rounded-xl p-6">
         <h1 class="text-4xl lg:text-5xl font-black text-white leading-tight tracking-tighter mb-2">Modelo Financiero - <span class="highlight-text">Hombre Vigente</span></h1>
         <p class="text-xl text-slate-400 mt-2">Ecosistema Integral - IA NATIVE</p>
-        <p class="text-lg text-slate-500 mt-1">V54.1 - Fundación Inteligente</p>
+        <p class="text-lg text-slate-500 mt-1">V53.1 - Anatomía Extendida</p>
         <div class="flex justify-center items-center gap-4 mt-4">
             <button onclick="toggleDebug()" class="bg-gray-700 hover:bg-gray-600 text-white px-4 py-2 rounded-lg font-medium transition duration-300 inline-flex items-center gap-2">
                 <i data-lucide="bug" class="w-5 h-5"></i> Debug
@@ -415,7 +415,7 @@ input[type="number"]:focus, input[type="text"]:focus, select:focus {
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
         <!-- FILA 1 -->
         <div class="card">
-            <h3 class="text-xl font-semibold mb-4 text-white">              💰               Estructura de Capital</h3>
+            <h3 class="text-xl font-semibold mb-4 text-white">               💰                Estructura de Capital</h3>
             <div class="grid grid-cols-2 gap-4">
                 <div>Equity Invertido: <span id="equity-invested" class="font-bold text-blue-400">$0M</span></div>
                 <div class="text-sm text-slate-400">Seed: <span id="equity-seed" class="font-medium text-slate-300">$0M</span></div>
@@ -427,7 +427,7 @@ input[type="number"]:focus, input[type="text"]:focus, select:focus {
         </div>
         
         <div class="card">
-            <h3 class="text-xl font-semibold mb-4 text-white">              🎯               Retornos de Inversión</h3>
+            <h3 class="text-xl font-semibold mb-4 text-white">               🎯                Retornos de Inversión</h3>
             <div class="mb-4">
                 <label>Múltiplo de Salida: <input type="range" id="exit-multiple-slider" min="6" max="10" step="0.1" value="8" class="input-slider"></label>
                 <span id="exit-multiple-display" class="font-bold text-blue-400">8.0x</span>
@@ -443,7 +443,7 @@ input[type="number"]:focus, input[type="text"]:focus, select:focus {
     <!-- SEGUNDA FILA -->
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
         <div class="card">
-            <h3 class="text-xl font-semibold mb-4 text-white">              🏢               Crecimiento y Escala</h3>
+            <h3 class="text-xl font-semibold mb-4 text-white">               🏢                Crecimiento y Escala</h3>
             <div class="grid grid-cols-2 gap-4 text-sm">
                 <div>Sucursales Año 5: <span id="locations-y5" class="font-bold text-blue-400">0</span></div>
                 <div id="customers-y5-wrapper" data-tooltip="">Clientes Año 5: <span id="customers-y5" class="font-bold text-sky-400">0</span></div>
@@ -455,7 +455,7 @@ input[type="number"]:focus, input[type="text"]:focus, select:focus {
         </div>
         
         <div class="card">
-            <h3 class="text-xl font-semibold mb-4 text-white">              🤖               IA y Operaciones</h3>
+            <h3 class="text-xl font-semibold mb-4 text-white">               🤖                IA y Operaciones</h3>
             <div class="grid grid-cols-2 gap-4">
                 <div data-tooltip="Ingresos totales del Año 5 divididos entre el número de sucursales al final del periodo.">Ingreso/Sucursal A5: <span id="revenue-per-location" class="font-bold text-emerald-400">$0M</span></div>
                 <div>Impulso Cross-sell: <span id="cross-sell-boost" class="font-bold text-sky-400">+0%</span></div>
@@ -478,45 +478,45 @@ input[type="number"]:focus, input[type="text"]:focus, select:focus {
     </div>
     <!-- Tab Content: Control -->
     <div id="content-control" class="content-section active">
-        <!--       🔥       UI REORGANIZATION V51.0 -->
+        <!--        🔥        UI REORGANIZATION V51.0 -->
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <!-- COLUMNA 1: Estrategia y Crecimiento -->
             <div class="space-y-6">
                 <div class="card">
-                    <h4 class="font-semibold text-lg mb-4 text-white">    📈     Motores de Crecimiento y Escenarios</h4>
+                    <h4 class="font-semibold text-lg mb-4 text-white">     📈      Motores de Crecimiento y Escenarios</h4>
                     <div id="growth-engine-controls" class="space-y-4"></div>
                 </div>
                  <div class="card">
-                    <h4 class="font-semibold text-lg mb-4 text-white">    💰     Estrategia de Capital</h4>
+                    <h4 class="font-semibold text-lg mb-4 text-white">     💰      Estrategia de Capital</h4>
                     <div id="capital-strategy-controls" class="space-y-4"></div>
                 </div>
             </div>
             <!-- COLUMNA 2: Operaciones y Monetización -->
             <div class="space-y-6">
                 <div class="card">
-                    <h4 class="font-semibold text-lg mb-4 text-white">    ⚙️     Operaciones y CAPEX</h4>
+                    <h4 class="font-semibold text-lg mb-4 text-white">     ⚙️      Operaciones y CAPEX</h4>
                     <div id="operations-controls" class="space-y-4"></div>
                      <div id="capex-breakdown" class="mt-4 pt-4 border-t border-gray-700 space-y-2 text-sm">
                         <!-- V53.0: CAPEX Breakdown will be injected here -->
                      </div>
                 </div>
                  <div class="card">
-                    <h4 class="font-semibold text-lg mb-4 text-white">    💵     Monetización</h4>
+                    <h4 class="font-semibold text-lg mb-4 text-white">     💵      Monetización</h4>
                     <div id="monetization-controls" class="space-y-4"></div>
                 </div>
             </div>
             <!-- COLUMNA 3: Dinámicas de Cliente y Supuestos Base -->
             <div class="space-y-6">
                 <div class="card">
-                    <h4 class="font-semibold text-lg mb-4 text-white">    📈     Dinámicas del Cliente</h4>
+                    <h4 class="font-semibold text-lg mb-4 text-white">     📈      Dinámicas del Cliente</h4>
                     <div id="customer-dynamics-controls" class="space-y-4"></div>
                 </div>
                 <div class="card">
-                    <h4 class="font-semibold text-lg mb-4 text-white">    🎛️     Supuestos Base del Negocio</h4>
+                    <h4 class="font-semibold text-lg mb-4 text-white">     🎛️      Supuestos Base del Negocio</h4>
                     <div id="assumptions-controls" class="space-y-4"></div>
                 </div>
                 <div class="card">
-                    <h4 class="font-semibold text-lg mb-4 text-white">    🤖     Controles IA Nativa</h4>
+                    <h4 class="font-semibold text-lg mb-4 text-white">     🤖      Controles IA Nativa</h4>
                     <div id="ai-native-controls" class="space-y-4"></div>
                 </div>
             </div>
@@ -535,7 +535,7 @@ input[type="number"]:focus, input[type="text"]:focus, select:focus {
                 <div class="flex justify-between items-center mb-4">
                      <h3 class="text-xl font-semibold text-white">Estado de Resultados (P&L)</h3>
                      <button onclick="generateExecutiveSummary()" class="bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2 rounded-lg font-medium transition duration-300 inline-flex items-center gap-2 text-sm">
-                        <i data-lucide="file-text" class="w-4 h-4"></i> Generar Resumen Ejecutivo          ✨
+                        <i data-lucide="file-text" class="w-4 h-4"></i> Generar Resumen Ejecutivo           ✨
                     </button>
                 </div>
                 <div class="overflow-x-auto">
@@ -619,8 +619,8 @@ input[type="number"]:focus, input[type="text"]:focus, select:focus {
     <div id="content-anatomia" class="content-section space-y-8">
     <!-- KILLER OPENING -->
     <div class="card bg-gradient-to-r from-red-900 to-orange-900 border-red-500">
-    <h2 class="text-3xl font-bold mb-4 text-white"> ⚡  Por Qué Estos Números Son Inevitables</h2>
-    <p class="text-xl text-orange-200 mb-4">"Señores, van a ver numbers que pensarán que están mal. LTV:CAC de <span id="anatomia-ltv-cac" class="font-bold text-yellow-400">0x</span>, TIR del <span id="anatomia-tir" class="font-bold text-yellow-400">0%</span>, múltiplo de <span id="anatomia-multiple" class="font-bold text-yellow-400">0x</span>. No están mal. Así se ve cuando creas una nueva categoría en lugar de competir en una existente."</p>
+    <h2 class="text-3xl font-bold mb-4 text-white">  ⚡   Por Qué Estos Números Son Inevitables</h2>
+    <p class="text-xl text-orange-200 mb-4">"Señores, van a ver números que pensarán que están mal. LTV:CAC de <span id="anatomia-ltv-cac" class="font-bold text-yellow-400">0x</span>, TIR del <span id="anatomia-tir" class="font-bold text-yellow-400">0%</span>, múltiplo de <span id="anatomia-multiple" class="font-bold text-yellow-400">0x</span>. No están mal. Así se ve cuando creas una nueva categoría en lugar de competir en una ya existente."</p>
     <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
     <div class="bg-black bg-opacity-30 p-4 rounded">
     <div class="text-2xl font-bold text-yellow-400" id="anatomia-customers-y5">0</div>
@@ -638,11 +638,11 @@ input[type="number"]:focus, input[type="text"]:focus, select:focus {
     </div>
     <!-- LA MÁQUINA DE CONVERSIÓN -->
     <div class="card">
-    <h3 class="text-2xl font-bold mb-6 text-white"> 🎯  La Máquina de Conversión: Cada Componente Destruye Una Barrera</h3>
+    <h3 class="text-2xl font-bold mb-6 text-white">  🎯   La Máquina de Conversión: Cada Componente Destruye Una Barrera</h3>
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
     <!-- BNPL -->
     <div class="bg-gradient-to-br from-green-900 to-emerald-900 p-6 rounded-lg border border-green-500">
-    <h4 class="font-bold text-green-300 mb-3"> 💳  BNPL: Conversion Multiplier</h4>
+    <h4 class="font-bold text-green-300 mb-3">  💳   BNPL: Conversion Multiplier</h4>
     <div class="text-4xl font-bold text-white mb-2">+<span id="anatomia-bnpl-uplift">25</span>%</div>
     <div class="text-sm text-green-200 mb-4">Ticket Uplift</div>
     <div class="bg-black bg-opacity-40 p-4 rounded">
@@ -657,7 +657,7 @@ input[type="number"]:focus, input[type="text"]:focus, select:focus {
     </div>
     <!-- THE CLUB -->
     <div class="bg-gradient-to-br from-purple-900 to-violet-900 p-6 rounded-lg border border-purple-500">
-    <h4 class="font-bold text-purple-300 mb-3"> 🏆  THE CLUB: Testosterone Psychology</h4>
+    <h4 class="font-bold text-purple-300 mb-3">  🏆   THE CLUB: Testosterone Psychology</h4>
     <div class="text-4xl font-bold text-white mb-2">+<span id="anatomia-club-effect">43.7</span>%</div>
     <div class="text-sm text-purple-200 mb-4">Willingness to Pay Premium</div>
     <div class="bg-black bg-opacity-40 p-4 rounded">
@@ -672,7 +672,7 @@ input[type="number"]:focus, input[type="text"]:focus, select:focus {
     </div>
     <!-- WORD OF MOUTH -->
     <div class="bg-gradient-to-br from-blue-900 to-cyan-900 p-6 rounded-lg border border-blue-500">
-    <h4 class="font-bold text-cyan-300 mb-3"> 🗣️  WoM: Viral Coefficient</h4>
+    <h4 class="font-bold text-cyan-300 mb-3">  🗣️   WoM: Viral Coefficient</h4>
     <div class="text-4xl font-bold text-white mb-2"><span id="anatomia-wom-multiplier">1.35</span>x</div>
     <div class="text-sm text-cyan-200 mb-4">Organic Multiplier</div>
     <div class="bg-black bg-opacity-40 p-4 rounded">
@@ -689,7 +689,7 @@ input[type="number"]:focus, input[type="text"]:focus, select:focus {
     </div>
     <!-- REVENUE SHARE -->
     <div class="card">
-    <h3 class="text-2xl font-bold mb-6 text-white"> 👨‍⚕️  Revenue Share: El Arsenal de Especialistas</h3>
+    <h3 class="text-2xl font-bold mb-6 text-white">  👨‍⚕️   Revenue Share: El Arsenal de Especialistas</h3>
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
     <div class="bg-gray-800 p-4 rounded-lg border-l-4 border-emerald-500">
     <div class="text-3xl font-bold text-emerald-400" id="anatomia-specialist-earnings">$90.5K</div>
@@ -708,15 +708,13 @@ input[type="number"]:focus, input[type="text"]:focus, select:focus {
     </div>
     </div>
     </div> <!-- cierra Revenue Share -->
-
     <!-- EL MOTOR DE RETENCIÓN -->
     <div class="card">
-    <h3 class="text-2xl font-bold mb-6 text-white">🔄 El Motor de Retención: Por Qué LTV Explota</h3>
-
+    <h3 class="text-2xl font-bold mb-6 text-white"> 🔄  El Motor de Retención: Por Qué LTV Explota</h3>
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
     <!-- DATA FLYWHEEL -->
     <div class="bg-gradient-to-br from-indigo-900 to-blue-900 p-6 rounded-lg border border-indigo-500">
-    <h4 class="font-bold text-indigo-300 mb-4">🧠 Data Flywheel: Collective Intelligence</h4>
+    <h4 class="font-bold text-indigo-300 mb-4"> 🧠  Data Flywheel: Collective Intelligence</h4>
     <div class="space-y-4">
     <div class="flex justify-between items-center">
     <span class="text-indigo-200">Precisión Diagnóstica:</span>
@@ -736,10 +734,9 @@ input[type="number"]:focus, input[type="text"]:focus, select:focus {
     <div class="text-xs text-indigo-100">Carlos's botox data en Monterrey optimiza Eduardo's first treatment plan en Querétaro. Cada cliente mejora el sistema para TODOS los futuros clientes. Switching cost = historial completo.</div>
     </div>
     </div>
-
     <!-- OPTIMIZATION MINDSET -->
     <div class="bg-gradient-to-br from-orange-900 to-red-900 p-6 rounded-lg border border-orange-500">
-    <h4 class="font-bold text-orange-300 mb-4">🎯 Optimization Mindset: 20+ Year LTV</h4>
+    <h4 class="font-bold text-orange-300 mb-4"> 🎯  Optimization Mindset: 20+ Year LTV</h4>
     <div class="space-y-4">
     <div class="flex justify-between items-center">
     <span class="text-orange-200">Age Range Expansion:</span>
@@ -756,16 +753,14 @@ input[type="number"]:focus, input[type="text"]:focus, select:focus {
     </div>
     <div class="bg-black bg-opacity-40 p-4 rounded mt-4">
     <div class="font-semibold text-orange-300 mb-2">The Psychology Shift:</div>
-    <div class="text-xs text-orange-100">"No dramatic changes, just optimization" = sustainable approach. 60-year-old executive: "No me voy a hacer cirugía" ❌ vs "Voy a optimizar mi presencia ejecutiva" ✅</div>
+    <div class="text-xs text-orange-100">"No dramatic changes, just optimization" = sustainable approach. 60-year-old executive: "No me voy a hacer cirugía"  ❌  vs "Voy a optimizar mi presencia ejecutiva"  ✅ </div>
     </div>
     </div>
     </div>
     </div>
-
     <!-- LA DEFENSIBILIDAD -->
     <div class="card">
-    <h3 class="text-2xl font-bold mb-6 text-white">🛡️ La Defensibilidad: Por Qué Es Inimitable</h3>
-
+    <h3 class="text-2xl font-bold mb-6 text-white"> 🛡️  La Defensibilidad: Por Qué Es Inimitable</h3>
     <div class="grid grid-cols-1 lg:grid-cols-4 gap-4">
     <div class="bg-gray-800 p-4 rounded-lg text-center border-l-4 border-red-500">
     <div class="text-3xl font-bold text-red-400 mb-2">36+</div>
@@ -795,7 +790,7 @@ input[type="number"]:focus, input[type="text"]:focus, select:focus {
     <div id="content-unit-economics" class="content-section space-y-6">
     <!-- HEADER -->
     <div class="card bg-gradient-to-r from-purple-900 to-pink-900 border-purple-500">
-    <h2 class="text-3xl font-bold mb-4 text-white"> 🎯  Unit Economics Justificados</h2>
+    <h2 class="text-3xl font-bold mb-4 text-white">  🎯   Unit Economics Justificados</h2>
     <p class="text-lg text-purple-200 mb-4">La matemática detrás de los números que parecen imposibles</p>
     <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
     <div class="bg-black bg-opacity-30 p-3 rounded text-center">
@@ -819,7 +814,7 @@ input[type="number"]:focus, input[type="text"]:focus, select:focus {
     <!-- CHARTS SECTION -->
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
     <div class="card">
-    <h4 class="text-lg font-semibold mb-3 text-white"> 📈  LTV:CAC Evolution: De Normal a Unicornio</h4>
+    <h4 class="text-lg font-semibold mb-3 text-white">  📈   LTV:CAC Evolution: De Normal a Unicornio</h4>
     <div style="height: 300px;"><canvas id="unit-ltv-evolution-chart"></canvas></div>
     <div class="mt-4 bg-gray-800 p-4 rounded">
     <div class="font-semibold text-blue-300 mb-2">Por Qué Evoluciona Así:</div>
@@ -827,7 +822,7 @@ input[type="number"]:focus, input[type="text"]:focus, select:focus {
     </div>
     </div>
     <div class="card">
-    <h4 class="text-lg font-semibold mb-3 text-white"> 👨‍⚕️  Revenue Share Impact</h4>
+    <h4 class="text-lg font-semibold mb-3 text-white">  👨‍⚕️   Revenue Share Impact</h4>
     <div style="height: 300px;"><canvas id="unit-talent-chart"></canvas></div>
     <div class="mt-4 bg-gray-800 p-4 rounded">
     <div class="font-semibold text-emerald-300 mb-2">Quality Premium:</div>
@@ -837,7 +832,7 @@ input[type="number"]:focus, input[type="text"]:focus, select:focus {
     </div>
     <!-- ARQUETIPO TABLE -->
     <div class="card">
-    <h3 class="text-2xl font-bold mb-4 text-white"> 📊  Unit Economics por Arquetipo</h3>
+    <h3 class="text-2xl font-bold mb-4 text-white">  📊   Unit Economics por Arquetipo</h3>
     <div class="overflow-x-auto">
     <table class="w-full text-sm">
     <thead>
@@ -878,6 +873,59 @@ input[type="number"]:focus, input[type="text"]:focus, select:focus {
     </tbody>
     </table>
     </div>
+    </div> <!-- cierra tabla arquetipo -->
+
+    <!-- ROW 2: REVENUE MULTIPLICATION & ARQUETIPO VISUAL -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+    <!-- REVENUE MULTIPLICATION ENGINE -->
+    <div class="card">
+    <h4 class="text-lg font-semibold mb-3 text-white">💰 Revenue Multiplication Engine</h4>
+    <div style="height: 300px;"><canvas id="unit-revenue-multiplication-chart"></canvas></div>
+    <div class="mt-4 bg-gray-800 p-4 rounded">
+    <div class="font-semibold text-green-300 mb-2">Cómo llegamos a $22K por cliente:</div>
+    <div class="text-xs text-gray-300 space-y-1">
+    <div>Base Service ($8K) + BNPL Uplift (+25%) + Membership MRR (+$3K) + Cross-sell IA (+8%) + WoM expansion (+35%)</div>
+    <div class="mt-2 font-bold text-green-400">= $22K average revenue per customer annually</div>
+    </div>
+    </div>
+    </div>
+
+    <!-- ARQUETIPO BREAKDOWN VISUAL -->
+    <div class="card">
+    <h4 class="text-lg font-semibold mb-3 text-white">🎯 Arquetipo Performance: The 8%/30% Rule</h4>
+    <div style="height: 300px;"><canvas id="unit-arquetipo-breakdown-chart"></canvas></div>
+    <div class="mt-4 bg-gray-800 p-4 rounded">
+    <div class="font-semibold text-yellow-300 mb-2">Premium Strategy Validated:</div>
+    <div class="text-xs text-gray-300">Carlos = 8% of customers but 30% of revenue. Eduardo = 42% customers, 45% revenue. Strategy: Hook with Eduardo, upsell to Carlos mindset.</div>
+    </div>
+    </div>
+
+    </div>
+
+    <!-- ROW 3: DATA FLYWHEEL & CAPITAL EFFICIENCY -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+    <!-- DATA FLYWHEEL NETWORK EFFECT -->
+    <div class="card">
+    <h4 class="text-lg font-semibold mb-3 text-white">🧠 Data Flywheel: Network Effect Visualization</h4>
+    <div style="height: 300px;"><canvas id="unit-data-flywheel-chart"></canvas></div>
+    <div class="mt-4 bg-gray-800 p-4 rounded">
+    <div class="font-semibold text-cyan-300 mb-2">Compounding Intelligence:</div>
+    <div class="text-xs text-gray-300">Each client adds data → System gets smarter → Better outcomes for all → Higher retention → More referrals → Stronger network effect</div>
+    </div>
+    </div>
+
+    <!-- CAPITAL EFFICIENCY: THE 65% TIR STORY -->
+    <div class="card">
+    <h4 class="text-lg font-semibold mb-3 text-white">💎 Capital Efficiency: The 65% TIR Breakdown</h4>
+    <div style="height: 300px;"><canvas id="unit-capital-efficiency-chart"></canvas></div>
+    <div class="mt-4 bg-gray-800 p-4 rounded">
+    <div class="font-semibold text-purple-300 mb-2">Investment → Exit Journey:</div>
+    <div class="text-xs text-gray-300">$38M external + $69.4M self-generated = $107.4M total capital → $403M exit valuation = 10.6x money multiple in 5 years = 65.4% IRR</div>
+    </div>
+    </div>
+
     </div>
     </div>
 </div>
@@ -1313,7 +1361,7 @@ function getDynamicChurn(archetype, cohortAgeMonths) {
     return Math.min(baseChurn * ageMultiplier, 0.95); // Cap máximo 95%
 }
 /**
- * 🔥       V50.3 REPLACEMENT: Calculates the average service hours a new customer will consume using the adherence matrix.
+ * 🔥        V50.3 REPLACEMENT: Calculates the average service hours a new customer will consume using the adherence matrix.
  */
 function getAvgHoursPerNewCustomer(modelData) {
     let totalHours = 0;
@@ -1475,7 +1523,7 @@ function runMonthlySimulation(modelData, previousMonthState, month) {
     const walkIns = (marketing.walkInsPerLocationPerMonth || 0) * activeSucursales;
     newCustomers.transaccional = { total: walkIns, paid: 0, organic: walkIns };
     if (totalDesiredNewCustomers > maxNewCustomersFromCapacity) {
-        log(`      📈       M${month}: Crecimiento limitado por capacidad. Deseados: ${Math.round(totalDesiredNewCustomers)}, Permitidos: ${maxNewCustomersFromCapacity}`);
+        log(`       📈        M${month}: Crecimiento limitado por capacidad. Deseados: ${Math.round(totalDesiredNewCustomers)}, Permitidos: ${maxNewCustomersFromCapacity}`);
         const scaleFactor = totalDesiredNewCustomers > 0 ? maxNewCustomersFromCapacity / totalDesiredNewCustomers : 0;
         for (const archetype in desiredNewCustomers) {
             newCustomers[archetype] = {
@@ -1599,7 +1647,7 @@ function runMonthlySimulation(modelData, previousMonthState, month) {
     }
     const maxMembershipRevenue = (serviceRevenue - totalDiscounts) * 0.4;
     if (membershipRevenue > maxMembershipRevenue) {
-        log(`      ⚠️       Membresías limitadas: ${formatCurrency(membershipRevenue)} → ${formatCurrency(maxMembershipRevenue)}`);
+        log(`       ⚠️        Membresías limitadas: ${formatCurrency(membershipRevenue)} → ${formatCurrency(maxMembershipRevenue)}`);
         membershipRevenue = maxMembershipRevenue;
     }
     
@@ -1609,7 +1657,7 @@ function runMonthlySimulation(modelData, previousMonthState, month) {
     }
     
     let totalGrossRevenue = serviceRevenue + membershipRevenue + productRevenue;
-    log(`      💰       Revenue breakdown M${month}: Servicios=${formatCurrency(serviceRevenue)} | Membresías=${formatCurrency(membershipRevenue)} | Descuentos=${formatCurrency(totalDiscounts)}`);
+    log(`       💰        Revenue breakdown M${month}: Servicios=${formatCurrency(serviceRevenue)} | Membresías=${formatCurrency(membershipRevenue)} | Descuentos=${formatCurrency(totalDiscounts)}`);
     let capacityUtilization = totalAvailableHours > 0 ? totalSessionHours / totalAvailableHours : 0;
     
     return {
@@ -1818,7 +1866,7 @@ function assembleFinancialStatements(modelData, monthlyRevenue, monthlyCosts, pr
                     medicalServicesRevenue += finalShare;
                     
                     if (calculatedShare > maxRevenueShare) {
-                        log(`      ⚠️       Revenue share limitado en ${service.name}: ${formatCurrency(calculatedShare)} → ${formatCurrency(finalShare)}`);
+                        log(`       ⚠️        Revenue share limitado en ${service.name}: ${formatCurrency(calculatedShare)} → ${formatCurrency(finalShare)}`);
                     }
                 }
             }
@@ -1835,18 +1883,18 @@ function assembleFinancialStatements(modelData, monthlyRevenue, monthlyCosts, pr
     
     const maxMedicalRevenue = monthlyCosts.opex.personnel * 0.6;
     if (medicalServicesRevenue > maxMedicalRevenue) {
-        log(`      ⚠️       Revenue share excede límite personal: ${formatCurrency(medicalServicesRevenue)} → ${formatCurrency(maxMedicalRevenue)}`);
+        log(`       ⚠️        Revenue share excede límite personal: ${formatCurrency(medicalServicesRevenue)} → ${formatCurrency(maxMedicalRevenue)}`);
         medicalServicesRevenue = maxMedicalRevenue;
     }
     detailedPL.opex.personnel.variable = medicalServicesRevenue;
     detailedPL.opex.personnel.fixed = Math.max(0, monthlyCosts.opex.personnel - medicalServicesRevenue);
     if (detailedPL.opex.personnel.fixed < 0) {
-        log(`      🚨       CRITICAL: Salarios fijos negativos detectados y corregidos`);
+        log(`       🚨        CRITICAL: Salarios fijos negativos detectados y corregidos`);
         detailedPL.opex.personnel.fixed = monthlyCosts.opex.personnel * 0.4;
         detailedPL.opex.personnel.variable = monthlyCosts.opex.personnel * 0.6;
     }
     
-    log(`      👥       Personal M${month}: Fijo=${formatCurrency(detailedPL.opex.personnel.fixed)} | Variable=${formatCurrency(detailedPL.opex.personnel.variable)} | Total=${formatCurrency(monthlyCosts.opex.personnel)}`);
+    log(`       👥        Personal M${month}: Fijo=${formatCurrency(detailedPL.opex.personnel.fixed)} | Variable=${formatCurrency(detailedPL.opex.personnel.variable)} | Total=${formatCurrency(monthlyCosts.opex.personnel)}`);
     pnl.opex = monthlyCosts.opex.total + medicalServicesRevenue;
     pnl.grossProfit = pnl.revenue - pnl.cogs;
     pnl.ebitda = pnl.grossProfit - pnl.opex;
@@ -1936,7 +1984,7 @@ function assembleFinancialStatements(modelData, monthlyRevenue, monthlyCosts, pr
  * Main orchestrator of the financial model.
  */
 function calculateFinancials() {
-    log('       🚀        ModelCalc v52.0 (Cockpit Estratégico Proactivo) INICIANDO');
+    log('        🚀         ModelCalc v52.0 (Cockpit Estratégico Proactivo) INICIANDO');
     try {
         financialResults = { pl: [], cf: [], bs: [], kpis: [], tirEquity: 0, detailedPL: [], breakEvenMonth: null };
         modelData.capitalStructure.debtFacilities.forEach(f => f.amountDrawn = 0);
@@ -2060,10 +2108,10 @@ function calculateFinancials() {
             });
         }
         
-        log('       ✅        ModelCalc v52.0 COMPLETADO');
+        log('        ✅         ModelCalc v52.0 COMPLETADO');
         return true;
     } catch (error) {
-        log(`       ❌        ERROR en ModelCalc: ${error.message}`);
+        log(`        ❌         ERROR en ModelCalc: ${error.message}`);
         console.error(error);
         return false;
     }
@@ -2188,7 +2236,7 @@ function countActiveAIAgents() {
     // count += 3; // Simulating other base agents
     return count;
 }
-//       🔥       V50.1 HELPER: Calculates Gross Margin for an archetype
+//        🔥        V50.1 HELPER: Calculates Gross Margin for an archetype
 function calculateGrossMarginPerCustomer(modelData, archetypeKey) {
     const journey = customerJourneyInitial[archetypeKey]; // Use initial for this calculation
     if (!journey) return 0;
@@ -2207,7 +2255,7 @@ function calculateGrossMarginPerCustomer(modelData, archetypeKey) {
     }
     return annualRevenue - annualCogs;
 }
-//       🔥       V50.1 REBUILT: Calculates a true LTV based on Gross Margin and Churn
+//        🔥        V50.1 REBUILT: Calculates a true LTV based on Gross Margin and Churn
 function calculateBlendedLtvCac(modelData, yearMonthsData) {
     let totalWeightedGrossMargin = 0;
     let totalWeightedChurn = 0;
@@ -2241,7 +2289,7 @@ function calculateBlendedLtvCac(modelData, yearMonthsData) {
         `  - Tasa de Churn Anual Ponderada: ${(totalWeightedChurn * 100).toFixed(1)}%\n` +
         `CAC Real (Pagados): ${formatCurrency(blendedCAC)}`;
     
-    log(`       🔍       LTV DEBUG: Blended GM: ${formatCurrency(totalWeightedGrossMargin)}, Blended Churn: ${totalWeightedChurn.toFixed(2)}, Calculated LTV: ${formatCurrency(blendedLTV)}`);
+    log(`        🔍        LTV DEBUG: Blended GM: ${formatCurrency(totalWeightedGrossMargin)}, Blended Churn: ${totalWeightedChurn.toFixed(2)}, Calculated LTV: ${formatCurrency(blendedLTV)}`);
     return { ratio, breakdown, ltv: blendedLTV, cac: blendedCAC };
 }
 function formatCustomerBreakdown(breakdown) {
@@ -2271,10 +2319,10 @@ function updateUnitEconomics() {
     }
 }
 function updateUI() {
-    log('                🔄                 Actualizando Interfaz del Dashboard...');
+    log('                 🔄                  Actualizando Interfaz del Dashboard...');
     try {
         if (!financialResults.pl || financialResults.pl.length < 5) {
-             log('                ⚠️                 Resultados financieros no listos para la actualización de la UI.');
+             log('                 ⚠️                  Resultados financieros no listos para la actualización de la UI.');
              return;
         }
         
@@ -2327,9 +2375,9 @@ function updateUI() {
         updateTables();
         updateCharts();
         checkStrategicAlerts(); // V52.0: Check for alerts after UI update
-        log('                ✅                 Actualización de la UI del Dashboard completada.');
+        log('                 ✅                  Actualización de la UI del Dashboard completada.');
     } catch (error) {
-        log(`                ❌                 Error en updateUI: ${error.message}`);
+        log(`                 ❌                  Error en updateUI: ${error.message}`);
         console.error(error);
     }
 }
@@ -2525,9 +2573,9 @@ function updateBalanceSheetTable() {
         const lastBS = financialResults.bs[financialResults.bs.length - 1];
         const balanceDiff = lastBS.totalAssets - lastBS.totalLiabilitiesAndEquity;
         if (Math.abs(balanceDiff) < BALANCE_TOLERANCE) {
-            validationDiv.innerHTML = '<span class="text-green-400">       ✅        Balance Validado</span>';
+            validationDiv.innerHTML = '<span class="text-green-400">        ✅         Balance Validado</span>';
         } else {
-            validationDiv.innerHTML = `<span class="text-red-400">       ❌        Error de Balance: ${formatCurrency(balanceDiff)}</span>`;
+            validationDiv.innerHTML = `<span class="text-red-400">        ❌         Error de Balance: ${formatCurrency(balanceDiff)}</span>`;
         }
     }
 }
@@ -2583,11 +2631,11 @@ function updateCharts() {
     charts.cashflow.update();
 }
 function forceCalculate() {
-    log('                🔄                 Recálculo manual solicitado.');
+    log('                 🔄                  Recálculo manual solicitado.');
     if (calculateFinancials()) {
         updateUI();
     } else {
-        log('                ❌                 Falló el recálculo manual.');
+        log('                 ❌                  Falló el recálculo manual.');
     }
 }
 function getModelValue(pathParts, data = modelData) {
@@ -2870,7 +2918,7 @@ function applyScenario(scenarioName) {
         modelData = mergeDeep(JSON.parse(JSON.stringify(baseModelData)), scenarioConfig);
     }
     
-    log(`                📊                 Escenario "${scenarioName}" aplicado.`);
+    log(`                 📊                  Escenario "${scenarioName}" aplicado.`);
     
     // Update sliders to reflect the new modelData
     setupControls();
@@ -2944,80 +2992,6 @@ function setupTabs() {
 // ===================================================================
 // ===== GEMINI API INTEGRATION (V52.0 Proactive Copilot) =========
 // ===================================================================
-
-// 📍 PASO 1.1: Crear Motor de Contexto Inteligente
-function buildComprehensiveModelContext() {
-    return {
-        modelStructure: {
-            dataLayers: {
-                inputs: Object.keys(modelData),
-                calculations: ['runMonthlySimulation', 'calculateMonthlyCosts', 'assembleFinancialStatements'],
-                outputs: ['pl', 'cf', 'bs', 'kpis']
-            },
-            businessLogic: {
-                customerArchetypes: modelData.customerArchetypes,
-                pricingStrategy: modelData.pricing,
-                growthEngine: modelData.marketing,
-                capitalStructure: modelData.capitalStructure
-            }
-        },
-        currentState: {
-            metrics: {
-                revenue: financialResults.pl[4]?.totalRevenue || 0,
-                ebitda: financialResults.pl[4]?.ebitda || 0,
-                ltvCac: financialResults.kpis[4]?.ltv_cac_ratio || 0,
-                customers: financialResults.kpis[4]?.totalActiveCustomers || 0
-            },
-            performance: analyzePerformanceMetrics(),
-            risks: identifyRiskFactors(),
-            opportunities: identifyOpportunities()
-        }
-    };
-}
-
-// 📍 PASO 1.2: Funciones de Análisis de Soporte
-function analyzePerformanceMetrics() {
-    if (!financialResults.pl || financialResults.pl.length < 5) return {};
-    
-    // Helper function to calculate CAGR
-    const calculateCAGR = (startValue, endValue, periods) => {
-        if (startValue <= 0) return 0;
-        return (Math.pow(endValue / startValue, 1 / periods) - 1);
-    };
-
-    const revenueY1 = financialResults.pl[0].totalRevenue;
-    const revenueY5 = financialResults.pl[4].totalRevenue;
-    const ebitdaMarginY1 = financialResults.pl[0].ebitdaMargin;
-    const ebitdaMarginY5 = financialResults.pl[4].ebitdaMargin;
-
-    return {
-        revenueCAGR: calculateCAGR(revenueY1, revenueY5, 4),
-        ebitdaMarginExpansion: ebitdaMarginY5 - ebitdaMarginY1,
-        scalabilityScore: (revenueY5 / (financialResults.kpis[4]?.activeSucursales || 1)) / 1000000, // Revenue per location in millions
-        efficiencyScore: (financialResults.kpis[4]?.ltv_cac_ratio || 0) / 10 // LTV/CAC ratio normalized
-    };
-}
-
-function identifyRiskFactors() {
-    if (!financialResults.pl || financialResults.pl.length < 5) return {};
-    return {
-        cashFlowNegative: financialResults.cf.some(year => year.cfo < 0),
-        highChurn: modelData.customerArchetypes.eduardo.churnRate > 0.4,
-        premiumConcentration: modelData.customerArchetypes.carlos.percentage < 0.1,
-        highUtilization: modelData.capacity.targetUtilization > 0.7
-    };
-}
-
-function identifyOpportunities() {
-    return {
-        expansionLocations: modelData.expansionPlan.expansionSchedule.length,
-        aiCrossSellUplift: toggleControls.PersonaVigenteAI ? modelData.aiDefaults.crossSellBoost : 0,
-        membershipAdoptionRate: modelData.pricing.membership.access.adoptionRate,
-        shiftToPremiumPotential: modelData.customerArchetypes.carlos.percentage
-    };
-}
-
-
 /**
  * Muestra el modal de Gemini y establece su título y contenido.
  * @param {string} title - El título para el encabezado del modal.
@@ -3137,7 +3111,7 @@ function showDefaultCopilotView() {
         <p class="text-slate-400 mb-4">Haz una pregunta sobre el estado actual del modelo. Por ejemplo: "Sugiere 3 iniciativas para mejorar el EBITDA del año 3" o "¿Por qué cae el número de clientes en el año 3?".</p>
         <textarea id="copilot-prompt" class="w-full h-24 p-2 bg-gray-800 border border-gray-600 rounded-md text-white" placeholder="Escribe tu pregunta aquí..."></textarea>
         <div class="text-right mt-4">
-            <button onclick="submitCopilotQuery()" class="bg-purple-600 hover:bg-purple-500 text-white px-4 py-2 rounded-lg font-medium">Enviar Pregunta    ✨   </button>
+            <button onclick="submitCopilotQuery()" class="bg-purple-600 hover:bg-purple-500 text-white px-4 py-2 rounded-lg font-medium">Enviar Pregunta     ✨    </button>
         </div>
         <div id="copilot-response" class="mt-4 p-4 bg-gray-900 rounded-md" style="display:none;"></div>
     `;
@@ -3376,16 +3350,16 @@ function checkStrategicAlerts() {
 // ===== INITIALIZATION ==============================================
 // ===================================================================
 document.addEventListener('DOMContentLoaded', function() {
-    log('                🚀                 INICIANDO MODELO FINANCIERO HOMBRE VIGENTE V52.0');
+    log('                 🚀                  INICIANDO MODELO FINANCIERO HOMBRE VIGENTE V52.0');
     try {
         setupTabs();
         setupControls();
         setupExitMultipleSlider();
         initializeCharts();
         forceCalculate(); // Initial calculation with the new base scenario
-        log('                🎉                 APLICACIÓN LISTA');
+        log('                 🎉                  APLICACIÓN LISTA');
     } catch (error) {
-        log(`                ❌                 ERROR CRÍTICO DURANTE LA INICIALIZACIÓN: ${error.message}`);
+        log(`                 ❌                  ERROR CRÍTICO DURANTE LA INICIALIZACIÓN: ${error.message}`);
         console.error(error);
     }
 });
@@ -3502,6 +3476,117 @@ function initStrategicCharts() {
                     data: [45, 90.5],
                     backgroundColor: ['#ef4444', '#10b981']
                 }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { labels: { color: '#9ca3af' } } },
+                scales: {
+                    x: { ticks: { color: '#9ca3af' } },
+                    y: { ticks: { color: '#9ca3af' } }
+                }
+            }
+        });
+    }
+
+    // Revenue Multiplication Chart
+    const canvas3 = document.getElementById('unit-revenue-multiplication-chart');
+    if (canvas3 && !charts['unit-revenue-multiplication-chart']) {
+        charts['unit-revenue-multiplication-chart'] = new Chart(canvas3, {
+            type: 'bar',
+            data: {
+                labels: ['Año 1', 'Año 2', 'Año 3', 'Año 4', 'Año 5'],
+                datasets: [
+                    { label: 'Base Services', data: [4800, 14940, 32460, 53880, 88920], backgroundColor: '#374151' },
+                    { label: 'BNPL Uplift', data: [1200, 3735, 8115, 13470, 22230], backgroundColor: '#10b981' },
+                    { label: 'Memberships', data: [1400, 3800, 7900, 13000, 21800], backgroundColor: '#3b82f6' },
+                    { label: 'Cross-sell IA', data: [656, 1992, 4328, 7184, 11856], backgroundColor: '#8b5cf6' }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { labels: { color: '#9ca3af' } } },
+                scales: {
+                    x: { stacked: true, ticks: { color: '#9ca3af' } },
+                    y: { stacked: true, ticks: { color: '#9ca3af' } }
+                }
+            }
+        });
+    }
+
+    // Arquetipo Breakdown Chart
+    const canvas4 = document.getElementById('unit-arquetipo-breakdown-chart');
+    if (canvas4 && !charts['unit-arquetipo-breakdown-chart']) {
+        charts['unit-arquetipo-breakdown-chart'] = new Chart(canvas4, {
+            type: 'doughnut',
+            data: {
+                labels: ['Carlos (8%)', 'Eduardo (42%)', 'Mantenimiento (28%)', 'Transaccional (22%)'],
+                datasets: [{
+                    label: 'Revenue Contribution %',
+                    data: [30, 45, 20, 5],
+                    backgroundColor: ['#3b82f6', '#0ea5e9', '#10b981', '#f59e0b']
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { labels: { color: '#9ca3af' } } }
+            }
+        });
+    }
+
+    // Data Flywheel Chart
+    const canvas5 = document.getElementById('unit-data-flywheel-chart');
+    if (canvas5 && !charts['unit-data-flywheel-chart']) {
+        charts['unit-data-flywheel-chart'] = new Chart(canvas5, {
+            type: 'line',
+            data: {
+                labels: ['Año 1', 'Año 2', 'Año 3', 'Año 4', 'Año 5'],
+                datasets: [{
+                    label: 'AI Precision %',
+                    data: [85, 88, 92, 95, 98],
+                    borderColor: '#06b6d4',
+                    backgroundColor: 'rgba(6, 182, 212, 0.1)',
+                    fill: true,
+                    tension: 0.4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { labels: { color: '#9ca3af' } } },
+                scales: {
+                    x: { ticks: { color: '#9ca3af' } },
+                    y: { ticks: { color: '#9ca3af' } }
+                }
+            }
+        });
+    }
+
+    // Capital Efficiency Chart
+    const canvas6 = document.getElementById('unit-capital-efficiency-chart');
+    if (canvas6 && !charts['unit-capital-efficiency-chart']) {
+        charts['unit-capital-efficiency-chart'] = new Chart(canvas6, {
+            type: 'line',
+            data: {
+                labels: ['Año 1', 'Año 2', 'Año 3', 'Año 4', 'Año 5'],
+                datasets: [
+                    {
+                        label: 'Cumulative Investment ($M)',
+                        data: [8, 38, 38, 42, 52],
+                        borderColor: '#ef4444',
+                        backgroundColor: 'rgba(239, 68, 68, 0.1)',
+                        fill: false
+                    },
+                    {
+                        label: 'Cumulative Value ($M)',
+                        data: [8, 45, 120, 250, 403],
+                        borderColor: '#10b981',
+                        backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                        fill: false
+                    }
+                ]
             },
             options: {
                 responsive: true,
