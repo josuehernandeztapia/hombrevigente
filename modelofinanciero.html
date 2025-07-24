@@ -546,6 +546,11 @@ input[type="number"]:focus, input[type="text"]:focus, select:focus {
                             📈 Comparar con Industria
                         </button>
                     </div>
+                    <div class="mt-4 text-center">
+                        <button onclick="diagnosticSystemCheck()" class="bg-gray-600 hover:bg-gray-500 text-white px-3 py-1 rounded-lg font-medium text-sm">
+                            🔧 Diagnóstico del Sistema
+                        </button>
+                    </div>
                 </div>
             </div>
             <!-- COLUMNA 2: Operaciones y Monetización -->
@@ -3082,16 +3087,21 @@ function closeGeminiModal() {
  * @returns {Promise<string>} - La respuesta de texto de la API.
  */
 async function callGeminiAPI(prompt) {
-    let userApiKey = document.getElementById('api-key-input').value.trim();
-    const apiKey = userApiKey || ""; // Dejar en blanco si no hay clave de usuario
+    let userApiKey = document.getElementById('api-key-input')?.value?.trim();
     
+    // Verificar que tenemos una API key
+    if (!userApiKey) {
+        throw new Error('API key de Google Gemini requerida. Por favor, ingresa tu API key en la configuración.');
+    }
+    
+    const apiKey = userApiKey;
     const model = "gemini-1.5-flash";
     const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
     
     const payload = {
         contents: [{ role: "user", parts: [{ text: prompt }] }]
     };
-    log(`[GEMINI] Llamando a la API. Usando clave ${userApiKey ? 'proporcionada por el usuario' : 'por defecto'}.`);
+    log(`[GEMINI] Llamando a la API. Usando clave proporcionada por el usuario.`);
     
     try {
         const response = await fetch(apiUrl, {
@@ -3812,8 +3822,23 @@ async function generateExecutiveSummary() {
     showLoadingState("Generando resumen ejecutivo profesional...");
     
     try {
+        // Verificar que tenemos datos financieros
+        if (!financialResults || !financialResults.pl || financialResults.pl.length === 0) {
+            throw new Error('No hay datos financieros disponibles. Ejecuta el modelo primero.');
+        }
+        
+        // Verificar que tenemos modelData
+        if (!modelData || !modelData.customerArchetypes) {
+            throw new Error('Datos del modelo no disponibles. Recarga la página.');
+        }
+        
         const executiveContext = buildExecutiveContext();
         const summary = await generateExpertExecutiveSummary(executiveContext);
+        
+        // Verificar que recibimos una respuesta válida
+        if (!summary || summary.trim() === '') {
+            throw new Error('No se pudo generar el resumen. Verifica tu API key de Gemini.');
+        }
         
         showGeminiModal('Resumen Ejecutivo Profesional', `
             <div class="executive-summary">
@@ -3835,12 +3860,21 @@ async function generateExecutiveSummary() {
         
     } catch (error) {
         console.error('Error generando resumen:', error);
-        showErrorModal('Error al generar resumen ejecutivo');
+        showErrorModal(`Error al generar resumen ejecutivo: ${error.message}`);
     }
 }
 
 // 📍 PASO 2.2: Contexto Ejecutivo Especializado
 function buildExecutiveContext() {
+    // Verificar datos antes de construir el contexto
+    if (!financialResults || !financialResults.pl || financialResults.pl.length === 0) {
+        throw new Error('Datos financieros no disponibles');
+    }
+    
+    if (!modelData || !modelData.customerArchetypes) {
+        throw new Error('Datos del modelo no disponibles');
+    }
+    
     const context = buildComprehensiveModelContext();
     
     return {
@@ -3888,6 +3922,21 @@ function calculateProfitabilityTrend() {
     const initialMargin = financialResults.pl[0]?.ebitdaMargin || 0;
     const finalMargin = financialResults.pl[4]?.ebitdaMargin || 0;
     return finalMargin - initialMargin;
+}
+
+function calculateEquityInvested() {
+    // Calculate total equity invested based on capital structure
+    const seedAmount = modelData.capitalStructure?.seedCapital?.amount || 5000000;
+    const seriesAAmount = modelData.capitalStructure?.seriesA?.amount || 15000000;
+    const totalEquity = seedAmount + seriesAAmount;
+    
+    // If we have balance sheet data, use actual equity
+    if (financialResults.bs && financialResults.bs.length > 0) {
+        const latestBS = financialResults.bs[financialResults.bs.length - 1];
+        return latestBS.equity?.total || totalEquity;
+    }
+    
+    return totalEquity;
 }
 
 function calculateMoneyMultiple() {
@@ -4265,6 +4314,76 @@ function extractDetailedUnitEconomics() {
             impactOnMargins: "Positive due to quality premium"
         }
     };
+}
+
+// ===================================================================
+// ===== FUNCIÓN DE DIAGNÓSTICO ====================================
+// ===================================================================
+
+function diagnosticSystemCheck() {
+    let diagnosticResults = [];
+    
+    // Verificar datos financieros
+    if (financialResults && financialResults.pl && financialResults.pl.length > 0) {
+        diagnosticResults.push('✅ Datos financieros: OK');
+        diagnosticResults.push(`   - P&L años disponibles: ${financialResults.pl.length}`);
+        diagnosticResults.push(`   - Revenue Año 5: ${formatCurrency(financialResults.pl[4]?.totalRevenue || 0)}`);
+    } else {
+        diagnosticResults.push('❌ Datos financieros: FALTANTES');
+    }
+    
+    // Verificar modelData
+    if (modelData && modelData.customerArchetypes) {
+        diagnosticResults.push('✅ Datos del modelo: OK');
+        diagnosticResults.push(`   - Arquetipos: ${Object.keys(modelData.customerArchetypes).join(', ')}`);
+    } else {
+        diagnosticResults.push('❌ Datos del modelo: FALTANTES');
+    }
+    
+    // Verificar funciones clave
+    const keyFunctions = [
+        'buildComprehensiveModelContext',
+        'buildExecutiveContext', 
+        'calculateEquityInvested',
+        'calculateTIRForMultiple',
+        'callGeminiAPI'
+    ];
+    
+    keyFunctions.forEach(funcName => {
+        if (typeof window[funcName] === 'function') {
+            diagnosticResults.push(`✅ Función ${funcName}: OK`);
+        } else {
+            diagnosticResults.push(`❌ Función ${funcName}: FALTANTE`);
+        }
+    });
+    
+    // Verificar API key
+    const apiKeyInput = document.getElementById('api-key-input');
+    if (apiKeyInput && apiKeyInput.value.trim()) {
+        diagnosticResults.push('✅ API Key: CONFIGURADA');
+    } else {
+        diagnosticResults.push('⚠️ API Key: NO CONFIGURADA (requerida para IA)');
+    }
+    
+    // Mostrar resultados
+    const diagnosticText = diagnosticResults.join('\n');
+    showGeminiModal('🔧 Diagnóstico del Sistema', `
+        <div class="space-y-4">
+            <div class="bg-gray-800 p-4 rounded-lg">
+                <h4 class="font-bold text-white mb-2">Estado del Sistema</h4>
+                <pre class="text-sm text-gray-300 whitespace-pre-wrap">${diagnosticText}</pre>
+            </div>
+            <div class="bg-blue-900 p-4 rounded-lg">
+                <h4 class="font-bold text-blue-400 mb-2">Instrucciones</h4>
+                <p class="text-sm text-gray-300">
+                    Si ves errores:<br>
+                    1. Ejecuta el modelo financiero primero (botón "Recalcular")<br>
+                    2. Configura tu API key de Google Gemini<br>
+                    3. Recarga la página si persisten los problemas
+                </p>
+            </div>
+        </div>
+    `);
 }
 
 </script>
