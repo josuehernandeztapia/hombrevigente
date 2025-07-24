@@ -270,11 +270,13 @@
 
             // Handle Contact Form Submission
             const contactForm = document.getElementById('contact-form');
-            contactForm.addEventListener('submit', (e) => {
-                e.preventDefault();
-                alert('¡Gracias por unirte al movimiento! Te mantendremos informado.');
-                contactForm.reset();
-            });
+            if (contactForm) {
+                contactForm.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    alert('¡Gracias por unirte al movimiento! Te mantendremos informado.');
+                    contactForm.reset();
+                });
+            }
         });
     </script>
 </body>
