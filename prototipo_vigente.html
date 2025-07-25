@@ -2,7 +2,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hombre Vigente - Prototipo AI</title>
+    <title>Hombre Vigente - Prototipo AI (Investor Demo)</title>
     <style>
         /* --- RESET Y ESTILOS GENERALES --- */
         :root {
@@ -257,6 +257,10 @@
             font-size: 16px;
             line-height: 1.6;
         }
+        
+        .recommendation-text strong {
+            color: var(--primary-color);
+        }
 
     </style>
 </head>
@@ -273,7 +277,7 @@
                 <table class="patient-table">
                     <thead>
                         <tr>
-                            <th>Nombre</th>
+                            <th>Nombre (Arquetipo)</th>
                             <th>ID Paciente</th>
                             <th>Último Scan</th>
                             <th>Índice Vigente</th>
@@ -285,7 +289,7 @@
                             <td>Carlos, el Rejuvenecedor</td>
                             <td>HV-001</td>
                             <td>15/07/2025</td>
-                            <td>82/100</td>
+                            <td>78/100</td>
                             <td><button class="btn start-diag-btn" data-patient-name="Carlos, el Rejuvenecedor">Iniciar Diagnóstico</button></td>
                         </tr>
                         <tr>
@@ -296,11 +300,25 @@
                             <td><button class="btn start-diag-btn" data-patient-name="Eduardo, el Novato">Iniciar Diagnóstico</button></td>
                         </tr>
                          <tr>
-                            <td>Javier, Gen X</td>
+                            <td>Javier, Gen X (Daño Solar)</td>
                             <td>HV-003</td>
+                            <td>20/07/2025</td>
+                            <td>58/100</td>
+                            <td><button class="btn start-diag-btn" data-patient-name="Javier, Gen X (Daño Solar)">Iniciar Diagnóstico</button></td>
+                        </tr>
+                        <tr>
+                            <td>Andrés, el Arquitecto Facial</td>
+                            <td>HV-004</td>
                             <td>N/A</td>
                             <td>N/A</td>
-                            <td><button class="btn start-diag-btn" data-patient-name="Javier, Gen X">Iniciar Diagnóstico</button></td>
+                            <td><button class="btn start-diag-btn" data-patient-name="Andrés, el Arquitecto Facial">Iniciar Diagnóstico</button></td>
+                        </tr>
+                        <tr>
+                            <td>Mateo, el Optimizador (Gen Z)</td>
+                            <td>HV-005</td>
+                            <td>N/A</td>
+                            <td>N/A</td>
+                            <td><button class="btn start-diag-btn" data-patient-name="Mateo, el Optimizador (Gen Z)">Iniciar Diagnóstico</button></td>
                         </tr>
                     </tbody>
                 </table>
@@ -376,6 +394,8 @@
             
             const captureTitle = document.getElementById('capture-title');
             const resultsTitle = document.getElementById('results-title');
+            
+            let currentPatientName = '';
 
             // Función para cambiar de vista
             function showView(viewId) {
@@ -388,9 +408,9 @@
             // Event Listeners para iniciar diagnóstico
             startDiagBtns.forEach(btn => {
                 btn.addEventListener('click', () => {
-                    const patientName = btn.getAttribute('data-patient-name');
-                    captureTitle.textContent = `Nuevo Diagnóstico para ${patientName}`;
-                    resultsTitle.textContent = `Resultado del Diagnóstico de ${patientName}`;
+                    currentPatientName = btn.getAttribute('data-patient-name');
+                    captureTitle.textContent = `Nuevo Diagnóstico para ${currentPatientName}`;
+                    resultsTitle.textContent = `Resultado del Diagnóstico de ${currentPatientName}`;
                     showView('capture-view');
                 });
             });
@@ -408,19 +428,62 @@
 
                 // Simular tiempo de análisis de la IA (3.5 segundos)
                 setTimeout(() => {
-                    populateResults();
+                    populateResults(currentPatientName);
                     showView('results-view');
                 }, 3500);
             });
 
             // Función para generar datos falsos y poblar la vista de resultados
-            function populateResults() {
-                // Simular datos generados por la IA
-                const score = Math.floor(Math.random() * (95 - 45 + 1)) + 45;
-                const inflamacion = (Math.random() * 8 + 1).toFixed(1);
-                const simetria = `${Math.floor(Math.random() * (98 - 85 + 1)) + 85}%`;
-                const arrugas = (Math.random() * 7 + 2).toFixed(1);
-                const textura = `${Math.floor(Math.random() * (90 - 60 + 1)) + 60}%`;
+            function populateResults(patientName) {
+                let score, inflamacion, simetria, arrugas, textura, recommendation;
+
+                // Lógica de diagnóstico específica por arquetipo de paciente
+                switch (patientName) {
+                    case 'Andrés, el Arquitecto Facial':
+                        score = Math.floor(Math.random() * (75 - 68 + 1)) + 68;
+                        inflamacion = (Math.random() * 2 + 1).toFixed(1); // Baja
+                        simetria = `${Math.floor(Math.random() * (88 - 80 + 1)) + 80}%`; // Baja
+                        arrugas = (Math.random() * 3 + 2).toFixed(1); // Bajas
+                        textura = `${Math.floor(Math.random() * (95 - 85 + 1)) + 85}%`; // Buena
+                        recommendation = "El <strong>análisis de contorno (YOLOv8 + MediaPipe)</strong> revela una asimetría facial notable y una falta de definición en el tercio inferior. Para optimizar la estructura y proyectar una imagen más fuerte, se recomienda un protocolo de <strong>Rellenos Faciales Estratégicos</strong> en la línea mandibular y el mentón, complementado con <strong>HIFU (Atlas Lift)</strong> para tensar la piel y mejorar el contorno.";
+                        break;
+                    
+                    case 'Mateo, el Optimizador (Gen Z)':
+                        score = Math.floor(Math.random() * (92 - 85 + 1)) + 85;
+                        inflamacion = (Math.random() * 1.5 + 1).toFixed(1); // Muy Baja
+                        simetria = `${Math.floor(Math.random() * (98 - 92 + 1)) + 92}%`; // Alta
+                        arrugas = (Math.random() * 1 + 1).toFixed(1); // Muy Bajas
+                        textura = `${Math.floor(Math.random() * (96 - 90 + 1)) + 90}%`; // Excelente
+                        recommendation = "El análisis facial muestra una piel en estado óptimo. Para llevar la apariencia al siguiente nivel, el <strong>análisis de segmentación (Segformer)</strong> se enfocó en la zona del cuello y barba, detectando folículos irregulares que rompen la línea de diseño. Se recomienda un plan de <strong>Depilación Láser</strong> para un contorno de barba perfecto y permanente, junto a un <strong>Blanqueamiento Dental Profesional</strong>.";
+                        break;
+
+                    case 'Javier, Gen X (Daño Solar)':
+                        score = Math.floor(Math.random() * (62 - 55 + 1)) + 55;
+                        inflamacion = (Math.random() * 6 + 3).toFixed(1); // Moderada-Alta
+                        simetria = `${Math.floor(Math.random() * (92 - 88 + 1)) + 88}%`; // OK
+                        arrugas = (Math.random() * 6 + 4).toFixed(1); // Altas
+                        textura = `${Math.floor(Math.random() * (70 - 60 + 1)) + 60}%`; // Mala
+                        recommendation = "El <strong>análisis de espectro (ViT + IR)</strong> detecta un daño solar significativo, manifestado en una textura irregular, manchas y un nivel de inflamación crónico. El plan de acción debe ser restaurativo. Se recomienda un protocolo de 3 sesiones de <strong>Láser Avanzado (IPL + CO2 fraccionado)</strong> para tratar la pigmentación y la textura, combinado con <strong>Mesoterapia</strong> para revitalizar la piel desde dentro.";
+                        break;
+
+                    case 'Eduardo, el Novato':
+                        score = Math.floor(Math.random() * (70 - 60 + 1)) + 60;
+                        inflamacion = (Math.random() * 7 + 4).toFixed(1); // Alta
+                        simetria = `${Math.floor(Math.random() * (95 - 90 + 1)) + 90}%`; // Buena
+                        arrugas = (Math.random() * 4 + 2).toFixed(1); // Leves
+                        textura = `${Math.floor(Math.random() * (80 - 70 + 1)) + 70}%`; // Regular
+                        recommendation = "El <strong>análisis térmico</strong> es claro: el principal problema es la inflamación y la congestión de la piel, probablemente por una rutina inadecuada. El punto de partida ideal es una <strong>Limpieza Facial Profunda</strong> para resetear la piel, seguida de la implementación de un plan de <strong>Grooming Ejecutivo</strong> para mantener los resultados. Es el primer paso para construir una base sólida.";
+                        break;
+
+                    default: // Carlos, el Rejuvenecedor
+                        score = Math.floor(Math.random() * (84 - 75 + 1)) + 75;
+                        inflamacion = (Math.random() * 4 + 2).toFixed(1); // Leve-Moderada
+                        simetria = `${Math.floor(Math.random() * (94 - 88 + 1)) + 88}%`; // Buena
+                        arrugas = (Math.random() * 7 + 5).toFixed(1); // Moderadas-Altas
+                        textura = `${Math.floor(Math.random() * (85 - 78 + 1)) + 78}%`; // Buena
+                        recommendation = "El <strong>análisis de arrugas dinámicas (ViT + MediaPipe)</strong> indica que la principal área de oportunidad está en la zona superior del rostro. Para un look más descansado y vigente, se recomienda <strong>Botox Precision Masculino</strong> en frente y entrecejo. Esto, combinado con un <strong>Facial de Alto Rendimiento</strong> trimestral, mantendrá la piel en su máximo rendimiento.";
+                        break;
+                }
 
                 // Poblar métricas
                 document.getElementById('inflamacion-metric').textContent = `${inflamacion} / 10`;
@@ -434,22 +497,13 @@
                 scoreElement.className = 'indice-score'; // Reset class
                 if (score >= 80) {
                     scoreElement.classList.add('success');
-                } else if (score >= 60) {
+                } else if (score >= 65) {
                     scoreElement.classList.add('warning');
                 } else {
                     scoreElement.classList.add('danger');
                 }
-
-                // Generar recomendación basada en el score
-                let recommendation = '';
-                if (score < 60) {
-                    recommendation = "El análisis detecta un nivel de inflamación elevado y una pérdida de textura significativa. Se recomienda un plan de acción intensivo: Iniciar con 2 sesiones de Facial de Alto Rendimiento para preparar la piel, seguido de un protocolo combinado de Láser CO2 y HIFU para un rejuvenecimiento integral.";
-                } else if (score < 80) {
-                    recommendation = "Se observa una buena base con áreas de mejora claras, especialmente en arrugas dinámicas y contorno. Se recomienda 1 sesión de Botox Precision Masculino para la zona glabelar y patas de gallo, complementado con Rellenos Faciales Estratégicos para definir la línea mandibular.";
-                } else {
-                    recommendation = "El estado general de la piel es excelente. Se recomienda un plan de mantenimiento y optimización: 1 Limpieza Facial Profunda mensual y un Blanqueamiento Dental Profesional para maximizar la apariencia. Considerar Mesoterapia como 'booster' de luminosidad trimestral.";
-                }
-                document.getElementById('recommendation-text').textContent = recommendation;
+                
+                document.getElementById('recommendation-text').innerHTML = recommendation;
             }
         });
     </script>
