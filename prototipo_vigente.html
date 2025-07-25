@@ -1,0 +1,458 @@
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hombre Vigente - Prototipo AI</title>
+    <style>
+        /* --- RESET Y ESTILOS GENERALES --- */
+        :root {
+            --bg-color: #1a1a1a;
+            --surface-color: #2c2c2c;
+            --primary-color: #00aaff;
+            --text-color: #e0e0e0;
+            --text-muted-color: #a0a0a0;
+            --success-color: #00cc88;
+            --warning-color: #ffaa00;
+            --danger-color: #ff4444;
+            --border-color: #444;
+        }
+
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        /* --- CONTENEDOR PRINCIPAL DE LA APP --- */
+        .app-container {
+            width: 100%;
+            max-width: 1200px;
+            height: 90vh;
+            max-height: 800px;
+            background-color: var(--surface-color);
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        header {
+            padding: 20px 30px;
+            border-bottom: 1px solid var(--border-color);
+            background-color: #222;
+        }
+
+        header h1 {
+            font-size: 24px;
+            color: var(--primary-color);
+            font-weight: 700;
+        }
+
+        main {
+            flex-grow: 1;
+            padding: 30px;
+            overflow-y: auto;
+        }
+
+        .view {
+            display: none; /* Ocultar todas las vistas por defecto */
+        }
+
+        .view.active {
+            display: block; /* Mostrar solo la vista activa */
+        }
+
+        h2 {
+            font-size: 28px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 10px;
+            display: inline-block;
+        }
+        
+        h3 {
+            font-size: 20px;
+            margin-bottom: 15px;
+            color: var(--primary-color);
+        }
+
+        /* --- ESTILOS DE COMPONENTES --- */
+        .btn {
+            background-color: var(--primary-color);
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.1s;
+        }
+
+        .btn:hover {
+            background-color: #0088cc;
+        }
+        
+        .btn:active {
+            transform: scale(0.98);
+        }
+
+        .btn-secondary {
+            background-color: transparent;
+            border: 1px solid var(--primary-color);
+            color: var(--primary-color);
+        }
+        
+        .btn-secondary:hover {
+            background-color: rgba(0, 170, 255, 0.1);
+        }
+
+        /* --- VISTA DASHBOARD --- */
+        .patient-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .patient-table th, .patient-table td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .patient-table th {
+            color: var(--text-muted-color);
+            font-size: 14px;
+            text-transform: uppercase;
+        }
+
+        /* --- VISTA CAPTURA --- */
+        .capture-area {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .video-feed {
+            width: 100%;
+            max-width: 640px;
+            height: 480px;
+            background-color: #000;
+            border: 2px dashed var(--border-color);
+            border-radius: 12px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: var(--text-muted-color);
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .video-feed svg {
+            width: 64px;
+            height: 64px;
+        }
+
+        /* --- VISTA PROCESAMIENTO --- */
+        .processing-area {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+            gap: 20px;
+        }
+
+        .spinner {
+            width: 60px;
+            height: 60px;
+            border: 6px solid var(--border-color);
+            border-top-color: var(--primary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* --- VISTA RESULTADOS --- */
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .result-panel {
+            background-color: #333;
+            padding: 20px;
+            border-radius: 12px;
+        }
+
+        .image-gallery img {
+            width: 100%;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+        
+        .image-gallery p {
+            text-align: center;
+            font-size: 14px;
+            color: var(--text-muted-color);
+            margin-bottom: 20px;
+        }
+
+        .indice-container {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .indice-score {
+            font-size: 80px;
+            font-weight: 700;
+            line-height: 1;
+        }
+        
+        .indice-score.success { color: var(--success-color); }
+        .indice-score.warning { color: var(--warning-color); }
+        .indice-score.danger { color: var(--danger-color); }
+
+        .metrics-list {
+            list-style: none;
+        }
+
+        .metrics-list li {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .metrics-list li:last-child {
+            border-bottom: none;
+        }
+
+        .metrics-list span:last-child {
+            font-weight: 700;
+        }
+        
+        .recommendation-text {
+            font-size: 16px;
+            line-height: 1.6;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+        <header>
+            <h1>Hombre Vigente <sup>AI</sup></h1>
+        </header>
+        <main>
+            <!-- VISTA 1: DASHBOARD DE PACIENTES -->
+            <div id="dashboard-view" class="view active">
+                <h2>Dashboard de Pacientes</h2>
+                <table class="patient-table">
+                    <thead>
+                        <tr>
+                            <th>Nombre</th>
+                            <th>ID Paciente</th>
+                            <th>Último Scan</th>
+                            <th>Índice Vigente</th>
+                            <th>Acción</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Carlos, el Rejuvenecedor</td>
+                            <td>HV-001</td>
+                            <td>15/07/2025</td>
+                            <td>82/100</td>
+                            <td><button class="btn start-diag-btn" data-patient-name="Carlos, el Rejuvenecedor">Iniciar Diagnóstico</button></td>
+                        </tr>
+                        <tr>
+                            <td>Eduardo, el Novato</td>
+                            <td>HV-002</td>
+                            <td>02/06/2025</td>
+                            <td>65/100</td>
+                            <td><button class="btn start-diag-btn" data-patient-name="Eduardo, el Novato">Iniciar Diagnóstico</button></td>
+                        </tr>
+                         <tr>
+                            <td>Javier, Gen X</td>
+                            <td>HV-003</td>
+                            <td>N/A</td>
+                            <td>N/A</td>
+                            <td><button class="btn start-diag-btn" data-patient-name="Javier, Gen X">Iniciar Diagnóstico</button></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- VISTA 2: CAPTURA DE DIAGNÓSTICO -->
+            <div id="capture-view" class="view">
+                <h2 id="capture-title">Nuevo Diagnóstico</h2>
+                <div class="capture-area">
+                    <div class="video-feed">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-12h2v4h-2zm0 6h2v2h-2z"/></svg>
+                        <span>Feed de cámara (simulado). Centre el rostro del paciente.</span>
+                    </div>
+                    <button id="start-scan-btn" class="btn">Iniciar Captura</button>
+                    <button class="btn btn-secondary back-to-dashboard">Volver</button>
+                </div>
+            </div>
+
+            <!-- VISTA 3: PROCESANDO -->
+            <div id="processing-view" class="view">
+                <div class="processing-area">
+                    <div class="spinner"></div>
+                    <h2>Analizando datos...</h2>
+                    <p>Persona Vigente AI está procesando la información RGB y Térmica.</p>
+                </div>
+            </div>
+
+            <!-- VISTA 4: RESULTADOS DEL DIAGNÓSTICO -->
+            <div id="results-view" class="view">
+                <h2 id="results-title">Resultado del Diagnóstico</h2>
+                <div class="results-grid">
+                    <div class="result-panel image-gallery">
+                        <h3>Análisis Visual</h3>
+                        <img src="https://placehold.co/600x400/2c2c2c/e0e0e0?text=Imagen+RGB" alt="Imagen RGB">
+                        <p>Imagen RGB</p>
+                        <img src="https://placehold.co/600x400/ff4444/e0e0e0?text=Imagen+Térmica" alt="Imagen Térmica">
+                        <p>Imagen Térmica (Inflamación)</p>
+                        <img src="https://placehold.co/600x400/00aaff/e0e0e0?text=Imagen+Fusionada" alt="Imagen Fusionada">
+                        <p>Imagen Fusionada (RGB + IR)</p>
+                    </div>
+                    <div class="result-panel">
+                        <h3>Veredicto de la IA</h3>
+                        <div class="indice-container">
+                            <div id="indice-score" class="indice-score">--</div>
+                            <p>Índice Vigente</p>
+                        </div>
+                        <ul class="metrics-list">
+                            <li><span>Nivel de Inflamación</span> <span id="inflamacion-metric">--</span></li>
+                            <li><span>Simetría Facial</span> <span id="simetria-metric">--</span></li>
+                            <li><span>Profundidad Arrugas (Glabela)</span> <span id="arrugas-metric">--</span></li>
+                            <li><span>Calidad de Textura</span> <span id="textura-metric">--</span></li>
+                        </ul>
+                    </div>
+                    <div class="result-panel">
+                        <h3>Plan de Acción Recomendado</h3>
+                        <p id="recommendation-text" class="recommendation-text">
+                            Analizando...
+                        </p>
+                    </div>
+                </div>
+                <br><br>
+                <button class="btn back-to-dashboard">Finalizar y Volver al Dashboard</button>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const views = document.querySelectorAll('.view');
+            const startDiagBtns = document.querySelectorAll('.start-diag-btn');
+            const startScanBtn = document.getElementById('start-scan-btn');
+            const backToDashboardBtns = document.querySelectorAll('.back-to-dashboard');
+            
+            const captureTitle = document.getElementById('capture-title');
+            const resultsTitle = document.getElementById('results-title');
+
+            // Función para cambiar de vista
+            function showView(viewId) {
+                views.forEach(view => {
+                    view.classList.remove('active');
+                });
+                document.getElementById(viewId).classList.add('active');
+            }
+
+            // Event Listeners para iniciar diagnóstico
+            startDiagBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const patientName = btn.getAttribute('data-patient-name');
+                    captureTitle.textContent = `Nuevo Diagnóstico para ${patientName}`;
+                    resultsTitle.textContent = `Resultado del Diagnóstico de ${patientName}`;
+                    showView('capture-view');
+                });
+            });
+
+            // Event Listener para volver al dashboard
+            backToDashboardBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    showView('dashboard-view');
+                });
+            });
+
+            // Event Listener para el botón de escanear
+            startScanBtn.addEventListener('click', () => {
+                showView('processing-view');
+
+                // Simular tiempo de análisis de la IA (3.5 segundos)
+                setTimeout(() => {
+                    populateResults();
+                    showView('results-view');
+                }, 3500);
+            });
+
+            // Función para generar datos falsos y poblar la vista de resultados
+            function populateResults() {
+                // Simular datos generados por la IA
+                const score = Math.floor(Math.random() * (95 - 45 + 1)) + 45;
+                const inflamacion = (Math.random() * 8 + 1).toFixed(1);
+                const simetria = `${Math.floor(Math.random() * (98 - 85 + 1)) + 85}%`;
+                const arrugas = (Math.random() * 7 + 2).toFixed(1);
+                const textura = `${Math.floor(Math.random() * (90 - 60 + 1)) + 60}%`;
+
+                // Poblar métricas
+                document.getElementById('inflamacion-metric').textContent = `${inflamacion} / 10`;
+                document.getElementById('simetria-metric').textContent = simetria;
+                document.getElementById('arrugas-metric').textContent = `${arrugas} / 10`;
+                document.getElementById('textura-metric').textContent = textura;
+
+                // Poblar y colorear el Índice Vigente
+                const scoreElement = document.getElementById('indice-score');
+                scoreElement.textContent = score;
+                scoreElement.className = 'indice-score'; // Reset class
+                if (score >= 80) {
+                    scoreElement.classList.add('success');
+                } else if (score >= 60) {
+                    scoreElement.classList.add('warning');
+                } else {
+                    scoreElement.classList.add('danger');
+                }
+
+                // Generar recomendación basada en el score
+                let recommendation = '';
+                if (score < 60) {
+                    recommendation = "El análisis detecta un nivel de inflamación elevado y una pérdida de textura significativa. Se recomienda un plan de acción intensivo: Iniciar con 2 sesiones de Facial de Alto Rendimiento para preparar la piel, seguido de un protocolo combinado de Láser CO2 y HIFU para un rejuvenecimiento integral.";
+                } else if (score < 80) {
+                    recommendation = "Se observa una buena base con áreas de mejora claras, especialmente en arrugas dinámicas y contorno. Se recomienda 1 sesión de Botox Precision Masculino para la zona glabelar y patas de gallo, complementado con Rellenos Faciales Estratégicos para definir la línea mandibular.";
+                } else {
+                    recommendation = "El estado general de la piel es excelente. Se recomienda un plan de mantenimiento y optimización: 1 Limpieza Facial Profunda mensual y un Blanqueamiento Dental Profesional para maximizar la apariencia. Considerar Mesoterapia como 'booster' de luminosidad trimestral.";
+                }
+                document.getElementById('recommendation-text').textContent = recommendation;
+            }
+        });
+    </script>
+
+</body>
+</html>
