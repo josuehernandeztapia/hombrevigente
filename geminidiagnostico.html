@@ -6,7 +6,18 @@
     <title>DiagnósticoVigente AI - Blueprint Interactivo Definitivo</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://unpkg.com/three@0.140.0/build/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script>
+        // Fallback CDN si el principal falla
+        if (typeof THREE === 'undefined') {
+            console.warn('⚠️ CDN principal falló, cargando fallback...');
+            const script = document.createElement('script');
+            script.src = 'https://unpkg.com/three@0.140.0/build/three.min.js';
+            script.onload = () => console.log('✅ Fallback CDN cargado');
+            script.onerror = () => console.error('❌ Fallback CDN también falló');
+            document.head.appendChild(script);
+        }
+    </script>
     <!-- Cache buster para forzar recarga -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -800,6 +811,18 @@
         document.addEventListener('DOMContentLoaded', function() {
             console.log('🌐 DOM Cargado - Inicializando elementos...');
             
+            // === DIAGNÓSTICO COMPLETO THREE.JS ===
+            console.log('=== DIAGNÓSTICO THREE.JS ===');
+            console.log('THREE disponible:', typeof THREE);
+            console.log('THREE version:', THREE?.REVISION);
+            console.log('Container existe:', !!document.getElementById('threejs-container'));
+            console.log('Variables globales:', {
+                scene: window.scene,
+                camera: window.camera,
+                renderer: window.renderer,
+                head: window.head
+            });
+            
             // INICIALIZACIÓN SEGURA DE VARIABLES DOM
             vizContainer = document.getElementById('threejs-container');
             matrixEffectEl = document.getElementById('matrix-effect');
@@ -818,7 +841,7 @@
             setTimeout(() => {
                 console.log('⏰ Después de timeout - THREE:', typeof THREE);
                 if (typeof THREE === 'undefined') {
-                    console.error('❌ THREE.js NO SE CARGÓ');
+                    console.error('❌ THREE.js NO SE CARGÓ - CAMBIANDO CDN...');
                     if (vizContainer) {
                         vizContainer.innerHTML = '<div style="color: red; padding: 20px; text-align: center;">❌ CDN Three.js falló - Verificar conexión a internet</div>';
                     }
@@ -1119,31 +1142,56 @@
                 try {
                     // VERIFICACIONES CRÍTICAS
                     if (typeof THREE === 'undefined') {
-                        throw new Error('THREE.js no disponible');
+                        throw new Error('THREE.js no disponible - CDN no cargó');
                     }
+                    
+                    console.log('✅ THREE.js disponible, versión:', THREE.REVISION);
                     
                     if (!vizContainer) {
                         throw new Error('Container no disponible');
                     }
                     
+                    console.log('✅ Container disponible:', {
+                        width: vizContainer.clientWidth,
+                        height: vizContainer.clientHeight,
+                        inDOM: vizContainer.parentNode !== null
+                    });
+                    
                     // LIMPIEZA TOTAL
                     vizContainer.innerHTML = '';
+                    console.log('🧹 Container limpiado');
                     
                     // CONFIGURACIÓN THREE.JS
                     scene = new THREE.Scene();
+                    console.log('🎬 Scene creada');
+                    
                     camera = new THREE.PerspectiveCamera(75, 16/9, 0.1, 1000);
                     camera.position.z = 4;
+                    console.log('📷 Camera configurada');
                     
-                    renderer = new THREE.WebGLRenderer({ antialias: true });
+                    renderer = new THREE.WebGLRenderer({ 
+                        antialias: true,
+                        alpha: true,
+                        preserveDrawingBuffer: true
+                    });
                     renderer.setSize(vizContainer.clientWidth, vizContainer.clientHeight);
-                    renderer.setClearColor(0x222222);
+                    renderer.setClearColor(0x222222, 1.0);
                     vizContainer.appendChild(renderer.domElement);
+                    console.log('🖥️ Renderer creado y añadido al DOM');
+                    
+                    // VERIFICAR QUE EL CANVAS SE AÑADIÓ
+                    const canvas = vizContainer.querySelector('canvas');
+                    if (!canvas) {
+                        throw new Error('Canvas no se añadió al DOM');
+                    }
+                    console.log('✅ Canvas verificado en DOM');
                     
                     // LUCES
                     const light = new THREE.DirectionalLight(0xffffff, 1);
                     light.position.set(0, 1, 1);
                     scene.add(light);
                     scene.add(new THREE.AmbientLight(0x404040, 0.5));
+                    console.log('💡 Luces añadidas');
                     
                     // MODELO CABEZA (ESFERA)
                     const geometry = new THREE.SphereGeometry(1.2, 32, 32);
@@ -1154,16 +1202,19 @@
                     });
                     head = new THREE.Mesh(geometry, material);
                     scene.add(head);
+                    console.log('🗿 Modelo 3D (cabeza) creado');
                     
                     // GRUPO HOTSPOTS
                     hotspotsGroup = new THREE.Group();
                     head.add(hotspotsGroup);
+                    console.log('🎯 Grupo hotspots creado');
                     
                     // RECREAR OVERLAYS DINÁMICAMENTE
                     const alertDiv = document.createElement('div');
                     alertDiv.id = 'critical-alert-dynamic';
                     alertDiv.className = 'critical-alert';
-                    alertDiv.textContent = 'Sistema 3D Inicializado';
+                    alertDiv.textContent = 'Sistema 3D Inicializado ✅';
+                    alertDiv.style.opacity = '1';
                     vizContainer.appendChild(alertDiv);
                     
                     const matrixDiv = document.createElement('div');
@@ -1174,9 +1225,22 @@
                     // ACTUALIZAR REFERENCIAS GLOBALES
                     criticalAlertEl = alertDiv;
                     matrixEffectEl = matrixDiv;
+                    console.log('🚨 Elementos overlay recreados');
+                    
+                    // PRIMER RENDER DE PRUEBA
+                    renderer.render(scene, camera);
+                    console.log('🎨 Primer render ejecutado');
                     
                     // INICIAR ANIMACIÓN
                     animate();
+                    console.log('🔄 Loop de animación iniciado');
+                    
+                    // OCULTAR ALERTA DESPUÉS DE 3 SEGUNDOS
+                    setTimeout(() => {
+                        if (criticalAlertEl) {
+                            criticalAlertEl.style.opacity = '0';
+                        }
+                    }, 3000);
                     
                     console.log('✅ THREE.js inicializado correctamente');
                     console.log('🎯 Modelo 3D creado: Esfera gris rotando');
@@ -1186,11 +1250,13 @@
                     
                 } catch (error) {
                     console.error('💥 Error en initThreeJS:', error);
+                    console.error('🔍 Error stack:', error.stack);
                     if (vizContainer) {
                         vizContainer.innerHTML = `
-                            <div style="color: #F87171; text-align: center; padding: 40px;">
+                            <div style="color: #F87171; text-align: center; padding: 40px; font-family: monospace;">
                                 ❌ Error de inicialización 3D<br>
-                                <small>${error.message}</small>
+                                <small style="color: #9CA3AF;">${error.message}</small><br>
+                                <button onclick="location.reload()" style="margin-top: 10px; padding: 5px 10px; background: #374151; color: white; border: none; border-radius: 4px; cursor: pointer;">🔄 Recargar Página</button>
                             </div>
                         `;
                     }
@@ -1215,7 +1281,24 @@
                     renderer.render(scene, camera);
                 } catch (error) {
                     console.error('💥 Error en render:', error);
+                    console.error('🔍 Render error details:', {
+                        scene: !!scene,
+                        camera: !!camera,
+                        renderer: !!renderer,
+                        domElement: !!renderer?.domElement,
+                        containerExists: !!vizContainer
+                    });
                     cancelAnimationFrame(animationFrameId);
+                    
+                    // Mostrar error en el container
+                    if (vizContainer) {
+                        vizContainer.innerHTML = `
+                            <div style="color: #F87171; text-align: center; padding: 20px;">
+                                ❌ Error en animación 3D<br>
+                                <small>${error.message}</small>
+                            </div>
+                        `;
+                    }
                 }
             }
             
@@ -1351,10 +1434,22 @@
             });
 
             window.addEventListener('resize', () => {
-                if (renderer) {
-                    camera.aspect = vizContainer.clientWidth / vizContainer.clientHeight;
-                    camera.updateProjectionMatrix();
-                    renderer.setSize(vizContainer.clientWidth, vizContainer.clientHeight);
+                if (renderer && camera && vizContainer) {
+                    try {
+                        const width = vizContainer.clientWidth;
+                        const height = vizContainer.clientHeight;
+                        
+                        if (width > 0 && height > 0) {
+                            camera.aspect = width / height;
+                            camera.updateProjectionMatrix();
+                            renderer.setSize(width, height);
+                            console.log('🔄 Resize aplicado:', { width, height });
+                        }
+                    } catch (error) {
+                        console.error('💥 Error en resize:', error);
+                    }
+                } else {
+                    console.warn('⚠️ Resize ignorado - componentes no disponibles');
                 }
             });
 
@@ -1459,9 +1554,26 @@
             // Inicialización segura del sistema 3D
             setTimeout(() => {
                 console.log('🚀 Iniciando sistema 3D...');
+                console.log('🔍 Pre-init check:', {
+                    THREE: typeof THREE,
+                    container: !!vizContainer,
+                    containerInDOM: !!document.getElementById('threejs-container'),
+                    containerWidth: vizContainer?.clientWidth,
+                    containerHeight: vizContainer?.clientHeight
+                });
+                
                 const success = initThreeJS();
+                console.log('🎯 initThreeJS result:', success);
+                
                 if (success) {
                     console.log('🎉 Sistema completamente funcional');
+                    console.log('📊 Post-init state:', {
+                        scene: !!scene,
+                        camera: !!camera,
+                        renderer: !!renderer,
+                        head: !!head,
+                        rendererDomElement: !!renderer?.domElement
+                    });
                 } else {
                     console.log('❌ Sistema 3D falló - Ver errores arriba');
                 }
