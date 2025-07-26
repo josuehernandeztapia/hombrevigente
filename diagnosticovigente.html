@@ -1,12 +1,17 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DiagnósticoVigente AI - El Médico Aumentado</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
             --primary-blue: #00aaff;
+            --primary-blue-dark: #0088cc;
             --dark-bg: #0a0a0a;
             --surface: #1a1a1a;
             --surface-light: #2a2a2a;
@@ -14,6 +19,7 @@
             --text-secondary: #b0b0b0;
             --accent-green: #00ff88;
             --accent-orange: #ff6b35;
+            --border-color: #444;
             --gradient-primary: linear-gradient(135deg, #00aaff 0%, #0077cc 100%);
             --gradient-accent: linear-gradient(135deg, #00ff88 0%, #00cc66 100%);
         }
@@ -119,6 +125,7 @@
             font-size: 0.9rem;
             background: transparent;
             color: var(--text-secondary);
+            text-decoration: none;
         }
 
         .nav-pill.active,
@@ -126,6 +133,163 @@
             background: var(--gradient-primary);
             color: var(--text-primary);
             transform: translateY(-2px);
+        }
+
+        /* Tech Mode Toggle */
+        .tech-mode-controls {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .tech-toggle-label {
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+
+        .tech-toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 40px;
+            height: 20px;
+        }
+
+        .tech-toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .tech-toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: var(--surface-light);
+            transition: .4s;
+            border-radius: 20px;
+        }
+
+        .tech-toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 14px;
+            width: 14px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .tech-toggle-slider {
+            background-color: var(--primary-blue);
+        }
+
+        input:checked + .tech-toggle-slider:before {
+            transform: translateX(20px);
+        }
+
+        /* Technical Details */
+        .technical-details {
+            display: none;
+            margin-top: 1rem;
+            padding: 1.5rem;
+            background-color: rgba(0, 170, 255, 0.05);
+            border-radius: 0.5rem;
+            border-left: 4px solid var(--primary-blue);
+        }
+
+        body.tech-mode .technical-details {
+            display: block;
+        }
+
+        .technical-details h4 {
+            color: var(--primary-blue);
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+        }
+
+        .technical-details p, .technical-details li {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        .technical-details ul, .technical-details ol {
+            list-style-position: inside;
+            margin-left: 0.5rem;
+        }
+
+        .technical-details code {
+            background-color: var(--surface);
+            color: var(--primary-blue);
+            padding: 0.125rem 0.25rem;
+            border-radius: 0.25rem;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.85rem;
+        }
+
+        /* Mobile Menu */
+        .mobile-menu-button {
+            display: none;
+            flex-direction: column;
+            gap: 0.25rem;
+            cursor: pointer;
+            padding: 0.5rem;
+        }
+
+        .mobile-menu-line {
+            width: 24px;
+            height: 2px;
+            background: var(--text-primary);
+            transition: all 0.3s ease;
+        }
+
+        .mobile-menu {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: rgba(10, 10, 10, 0.98);
+            backdrop-filter: blur(20px);
+            border-top: 1px solid var(--border-color);
+        }
+
+        .mobile-menu.active {
+            display: block;
+        }
+
+        .mobile-nav-pills {
+            display: flex;
+            flex-direction: column;
+            padding: 1rem;
+            gap: 0.5rem;
+        }
+
+        /* Progress Bar */
+        .progress-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: rgba(255, 255, 255, 0.1);
+            z-index: 9999;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: var(--gradient-primary);
+            width: 0%;
+            transition: width 0.3s ease;
         }
 
         /* Section Layout */
@@ -235,8 +399,8 @@
             margin-top: 0.5rem;
         }
 
-        /* Architecture Section */
-        .architecture-grid {
+        /* Tech Cards */
+        .tech-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 2rem;
@@ -296,183 +460,14 @@
             line-height: 1.6;
         }
 
-        /* Pipeline Interactive */
-        .pipeline-container {
-            position: relative;
-            margin: 3rem 0;
-        }
-
-        .pipeline-step {
-            display: flex;
-            align-items: center;
-            margin: 2rem 0;
-            opacity: 0.3;
-            transition: all 0.5s ease;
-            cursor: pointer;
-        }
-
-        .pipeline-step.active {
-            opacity: 1;
-            transform: scale(1.02);
-        }
-
-        .step-number {
-            width: 60px;
-            height: 60px;
-            background: var(--gradient-primary);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 700;
-            margin-right: 2rem;
-            flex-shrink: 0;
-        }
-
-        .step-content {
-            flex: 1;
-            background: var(--surface);
-            padding: 1.5rem;
-            border-radius: 10px;
-            border: 1px solid rgba(0, 170, 255, 0.2);
-        }
-
-        .step-title {
-            font-size: 1.2rem;
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-        }
-
-        .step-description {
-            color: var(--text-secondary);
-            font-size: 0.9rem;
-        }
-
-        /* AI Models Interactive Grid */
-        .models-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 1.5rem;
-            margin: 3rem 0;
-        }
-
-        .model-card {
-            background: var(--surface);
-            padding: 1.5rem;
-            border-radius: 12px;
-            border: 1px solid rgba(0, 170, 255, 0.2);
-            transition: all 0.3s ease;
-            cursor: pointer;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .model-card:hover {
-            transform: translateY(-3px);
-            border-color: var(--accent-green);
-            box-shadow: 0 15px 30px rgba(0, 255, 136, 0.2);
-        }
-
-        .model-badge {
-            position: absolute;
-            top: 1rem;
-            right: 1rem;
-            background: var(--gradient-accent);
-            color: var(--dark-bg);
-            padding: 0.25rem 0.75rem;
-            border-radius: 15px;
-            font-size: 0.7rem;
-            font-weight: 600;
-        }
-
-        .model-title {
-            font-size: 1.1rem;
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-            color: var(--text-primary);
-        }
-
-        .model-accuracy {
-            color: var(--accent-green);
-            font-weight: 600;
-            margin-bottom: 1rem;
-        }
-
-        .model-description {
-            color: var(--text-secondary);
-            font-size: 0.85rem;
-            line-height: 1.5;
-        }
-
-        /* Índice Vigente Simulator */
-        .indice-simulator {
-            background: var(--surface);
-            padding: 3rem;
-            border-radius: 20px;
-            text-align: center;
-            margin: 3rem 0;
-            border: 2px solid var(--primary-blue);
-            position: relative;
-        }
-
-        .indice-display {
-            font-size: 6rem;
-            font-weight: 900;
-            margin: 2rem 0;
-            background: var(--gradient-accent);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            transition: all 0.5s ease;
-        }
-
-        .indice-controls {
-            display: flex;
-            justify-content: center;
-            gap: 1rem;
-            margin: 2rem 0;
-            flex-wrap: wrap;
-        }
-
-        .control-slider {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            min-width: 150px;
-        }
-
-        .slider-label {
-            color: var(--text-secondary);
-            font-size: 0.9rem;
-            margin-bottom: 0.5rem;
-        }
-
-        .slider {
-            width: 100%;
-            height: 6px;
-            border-radius: 3px;
-            background: var(--surface-light);
-            outline: none;
-            cursor: pointer;
-        }
-
-        .slider::-webkit-slider-thumb {
-            appearance: none;
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            background: var(--gradient-primary);
-            cursor: pointer;
-        }
-
-        /* 3D Interface Preview */
+        /* 3D Interface Demo */
         .interface-3d {
             background: var(--surface);
             padding: 2rem;
             border-radius: 15px;
             margin: 3rem 0;
             position: relative;
-            min-height: 500px;
+            min-height: 600px;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -540,7 +535,6 @@
             border-radius: 80px 80px 50px 50px;
             animation: rotate3d 8s infinite linear;
             transition: all 1s ease;
-            position: relative;
             box-shadow: inset 0 10px 20px rgba(0,0,0,0.1);
         }
 
@@ -555,17 +549,6 @@
             background: #f0f0f0;
             border-radius: 0 0 35px 35px;
             box-shadow: inset 0 -5px 10px rgba(0,0,0,0.1);
-        }
-
-        .face-silhouette::after {
-            content: '';
-            position: absolute;
-            top: 15%;
-            left: 15%;
-            right: 15%;
-            height: 25%;
-            background: linear-gradient(to bottom, rgba(0,0,0,0.05), transparent);
-            border-radius: 50px 50px 20px 20px;
         }
 
         @keyframes rotate3d {
@@ -613,22 +596,6 @@
             transition: opacity 2s ease;
             border-radius: inherit;
             filter: blur(8px);
-        }
-
-        .thermal-overlay::before {
-            content: '';
-            position: absolute;
-            bottom: -15px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 70px;
-            height: 35px;
-            background: radial-gradient(circle at 50% 40%, 
-                rgba(220, 50, 50, 0.7) 20%, 
-                rgba(255, 100, 100, 0.5) 50%, 
-                transparent 80%);
-            border-radius: 0 0 35px 35px;
-            filter: blur(6px);
         }
 
         .landmarks-overlay {
@@ -701,6 +668,8 @@
             display: flex;
             gap: 1rem;
             margin: 1rem 0;
+            flex-wrap: wrap;
+            justify-content: center;
         }
 
         .control-btn {
@@ -732,6 +701,7 @@
             opacity: 0;
             transition: opacity 0.5s ease;
             text-align: center;
+            max-width: 400px;
         }
 
         .results-preview.visible {
@@ -752,15 +722,76 @@
             color: var(--text-secondary);
             font-size: 0.9rem;
             line-height: 1.5;
+            margin-bottom: 1rem;
         }
 
         .roi-preview {
-            margin-top: 1rem;
             padding: 0.5rem;
             background: rgba(0, 255, 136, 0.1);
             border-radius: 5px;
             color: var(--accent-green);
             font-weight: 600;
+        }
+
+        /* Índice Vigente Simulator */
+        .indice-simulator {
+            background: var(--surface);
+            padding: 3rem;
+            border-radius: 20px;
+            text-align: center;
+            margin: 3rem 0;
+            border: 2px solid var(--primary-blue);
+        }
+
+        .indice-display {
+            font-size: 6rem;
+            font-weight: 900;
+            margin: 2rem 0;
+            background: var(--gradient-accent);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            transition: all 0.5s ease;
+        }
+
+        .indice-controls {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin: 2rem 0;
+            flex-wrap: wrap;
+        }
+
+        .control-slider {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-width: 150px;
+        }
+
+        .slider-label {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .slider {
+            width: 100%;
+            height: 6px;
+            border-radius: 3px;
+            background: var(--surface-light);
+            outline: none;
+            cursor: pointer;
+            appearance: none;
+        }
+
+        .slider::-webkit-slider-thumb {
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--gradient-primary);
+            cursor: pointer;
         }
 
         /* Investment Calculator */
@@ -823,30 +854,39 @@
             box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
         }
 
-        /* Progress Bar */
-        .progress-container {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 3px;
-            background: rgba(255, 255, 255, 0.1);
-            z-index: 9999;
+        /* Button Styles */
+        .btn-primary {
+            background: var(--gradient-primary);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 25px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
         }
 
-        .progress-bar {
-            height: 100%;
-            background: var(--gradient-primary);
-            width: 0%;
-            transition: width 0.3s ease;
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0, 170, 255, 0.3);
         }
 
         /* Responsive */
         @media (max-width: 768px) {
-            .nav {
+            .nav-pills {
+                display: none;
+            }
+
+            .mobile-menu-button {
+                display: flex;
+            }
+
+            .tech-mode-controls {
                 flex-direction: column;
-                gap: 1rem;
-                padding: 1rem;
+                gap: 0.5rem;
             }
 
             .hero-title {
@@ -865,22 +905,10 @@
                 flex-direction: column;
                 align-items: center;
             }
-        }
 
-        /* Animations */
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
+            .indice-display {
+                font-size: 4rem;
             }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .animate-in {
-            animation: fadeInUp 0.6s ease forwards;
         }
     </style>
 </head>
@@ -903,16 +931,46 @@
         <nav class="nav">
             <div class="logo">DiagnósticoVigente AI</div>
             <div class="nav-pills">
-                <div class="nav-pill active" data-section="hero">Inicio</div>
-                <div class="nav-pill" data-section="vision">Visión</div>
-                <div class="nav-pill" data-section="architecture">Arquitectura</div>
-                <div class="nav-pill" data-section="pipeline">Pipeline</div>
-                <div class="nav-pill" data-section="models">Modelos IA</div>
-                <div class="nav-pill" data-section="indice">Índice Vigente</div>
-                <div class="nav-pill" data-section="interface">Interfaz 3D</div>
-                <div class="nav-pill" data-section="investment">Inversión</div>
+                <a href="#hero" class="nav-pill active">Inicio</a>
+                <a href="#vision" class="nav-pill">Visión</a>
+                <a href="#demo" class="nav-pill">Demo</a>
+                <a href="#indice" class="nav-pill">Índice Vigente</a>
+                <a href="#investment" class="nav-pill">ROI</a>
+            </div>
+            <div class="tech-mode-controls">
+                <label for="tech-mode-toggle" class="tech-toggle-label">
+                    <span>Modo Técnico</span>
+                    <div class="tech-toggle-switch">
+                        <input type="checkbox" id="tech-mode-toggle">
+                        <span class="tech-toggle-slider"></span>
+                    </div>
+                </label>
+                <a href="#demo" class="btn-primary">Probar Demo</a>
+            </div>
+            <div class="mobile-menu-button" id="mobile-menu-button">
+                <div class="mobile-menu-line"></div>
+                <div class="mobile-menu-line"></div>
+                <div class="mobile-menu-line"></div>
             </div>
         </nav>
+        <div class="mobile-menu" id="mobile-menu">
+            <div class="mobile-nav-pills">
+                <a href="#hero" class="nav-pill">Inicio</a>
+                <a href="#vision" class="nav-pill">Visión</a>
+                <a href="#demo" class="nav-pill">Demo</a>
+                <a href="#indice" class="nav-pill">Índice Vigente</a>
+                <a href="#investment" class="nav-pill">ROI</a>
+                <div style="border-top: 1px solid var(--border-color); margin: 1rem 0; padding-top: 1rem;">
+                    <label for="tech-mode-toggle-mobile" class="tech-toggle-label">
+                        <span>Modo Técnico</span>
+                        <div class="tech-toggle-switch">
+                            <input type="checkbox" id="tech-mode-toggle-mobile">
+                            <span class="tech-toggle-slider"></span>
+                        </div>
+                    </label>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- Hero Section -->
@@ -923,7 +981,7 @@
             
             <div class="hero-stats">
                 <div class="stat-card">
-                    <span class="stat-number">$740 USD</span>
+                    <span class="stat-number">$740</span>
                     <span class="stat-label">vs $50K competidores</span>
                 </div>
                 <div class="stat-card">
@@ -944,167 +1002,77 @@
 
     <!-- Vision Section -->
     <section id="vision" class="section">
-        <h2 class="section-title">La Visión Técnica</h2>
+        <h2 class="section-title">La Ventaja Técnica Defendible</h2>
         <p class="section-subtitle">Más allá de la competencia: fusionamos visión estructural (RGB 4K) con visión biológica (IR térmico) para crear diagnósticos médicos reales</p>
         
-        <div class="architecture-grid">
+        <div class="tech-grid">
             <div class="tech-card">
                 <div class="tech-icon">🔬</div>
                 <h3 class="tech-title">Fusión RGB+IR Única</h3>
                 <p class="tech-description">Primera tecnología que combina análisis estructural 4K con mapeo térmico biológico para diagnósticos precisos de inflamación y patrones vasculares.</p>
+                
+                <div class="technical-details">
+                    <h4>Justificación Científica y Clínica</h4>
+                    <p>La termografía infrarroja (IR) es un método validado para detectar inflamación subclínica. Diferenciales de temperatura de <code>+1.5°C a +5°C</code> se correlacionan con procesos inflamatorios.</p>
+                    <ul>
+                        <li><strong>Seguridad:</strong> Evitar inyectar rellenos en áreas con inflamación oculta</li>
+                        <li><strong>Precisión:</strong> Diferenciar entre mancha solar (pigmento) y rosácea (vascular)</li>
+                    </ul>
+                </div>
             </div>
-            <div class="tech-card">
-                <div class="tech-icon">🧠</div>
-                <h3 class="tech-title">IA Propietaria Multi-Modelo</h3>
-                <p class="tech-description">Vision Transformer + MediaPipe + YOLOv8 trabajando en conjunto para análisis de piel, landmarks faciales y detección de contornos.</p>
-            </div>
+            
             <div class="tech-card">
                 <div class="tech-icon">📊</div>
+                <h3 class="tech-title">Índice Vigente™</h3>
+                <p class="tech-description">Nuestra métrica propietaria y patentable. Traduce cientos de puntos de datos en una única puntuación accionable y estandariza la consulta.</p>
+                
+                <div class="technical-details">
+                    <h4>Propiedad Intelectual y Fórmula</h4>
+                    <p>El Índice se protege mediante una estrategia dual: <strong>patentes de método</strong> para el proceso diagnóstico y <strong>secreto comercial</strong> para los pesos del algoritmo.</p>
+                    <p>La fórmula central es:</p>
+                    <p><code>Índice = (0.4 * S_estructural) + (0.3 * S_piel) + (0.3 * S_biológico)</code></p>
+                </div>
+            </div>
+            
+            <div class="tech-card">
+                <div class="tech-icon">🧠</div>
+                <h3 class="tech-title">IA Multi-Modelo</h3>
+                <p class="tech-description">Un conjunto de IAs especialistas (ViT, YOLOv8, MediaPipe) trabajan en conjunto para una precisión diagnóstica superior al 94%.</p>
+                
+                <div class="technical-details">
+                    <h4>Conjunto de Especialistas</h4>
+                    <ul>
+                        <li><strong>ViT:</strong> Analiza calidad de piel con precisión >94%</li>
+                        <li><strong>MediaPipe:</strong> 468 landmarks faciales, 7x más que alternativas</li>
+                        <li><strong>YOLOv8:</strong> Detecta contornos con precisión >96%</li>
+                        <li><strong>Segformer:</strong> Segmentación precisa para análisis limpio</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="tech-card">
+                <div class="tech-icon">🔄</div>
                 <h3 class="tech-title">Data Flywheel</h3>
-                <p class="tech-description">Sistema de mejora continua donde cada cliente contribuye al aprendizaje colectivo, mejorando automáticamente la precisión del sistema.</p>
-            </div>
-            <div class="tech-card">
-                <div class="tech-icon">💰</div>
-                <h3 class="tech-title">Costo Disruptivo</h3>
-                <p class="tech-description">Hardware accesible de $740 USD vs $50,000 de competidores, democratizando tecnología médica avanzada.</p>
-            </div>
-        </div>
-    </section>
-
-    <!-- Architecture Section -->
-    <section id="architecture" class="section">
-        <h2 class="section-title">Arquitectura Técnica</h2>
-        <p class="section-subtitle">Stack tecnológico justificado para performance médica crítica y escalabilidad</p>
-        
-        <div class="architecture-grid">
-            <div class="tech-card">
-                <div class="tech-icon">⚛️</div>
-                <h3 class="tech-title">Frontend: Next.js + Zustand</h3>
-                <p class="tech-description">SSR para performance crítica, estados complejos sin boilerplate, UI médica consistente con Tailwind CSS.</p>
-            </div>
-            <div class="tech-card">
-                <div class="tech-icon">🚀</div>
-                <h3 class="tech-title">Backend: FastAPI + MongoDB</h3>
-                <p class="tech-description">Performance superior para pipelines ML, esquemas flexibles para datos heterogéneos, escalabilidad horizontal.</p>
-            </div>
-            <div class="tech-card">
-                <div class="tech-icon">☁️</div>
-                <h3 class="tech-title">Cloud: AWS + SageMaker</h3>
-                <p class="tech-description">Infraestructura HIPAA-compliant, ML pipeline automatizado, actualización vía software.</p>
-            </div>
-            <div class="tech-card">
-                <div class="tech-icon">📷</div>
-                <h3 class="tech-title">Hardware: Brio 4K + Seek Thermal</h3>
-                <p class="tech-description">Balance perfecto: calidad profesional a precio accesible, captura sincronizada RGB+IR.</p>
-            </div>
-        </div>
-    </section>
-
-    <!-- Pipeline Section -->
-    <section id="pipeline" class="section">
-        <h2 class="section-title">Pipeline de Procesamiento</h2>
-        <p class="section-subtitle">Módulo por módulo: de la captura híbrida al diagnóstico inteligente</p>
-        
-        <div class="pipeline-container">
-            <div class="pipeline-step active" data-step="1">
-                <div class="step-number">1</div>
-                <div class="step-content">
-                    <h3 class="step-title">Captura Híbrida Sincronizada</h3>
-                    <p class="step-description">Captura perfectamente alineada RGB+IR en secuencia de video. 4K@30fps con HDR automático + datos térmicos 206x156 pixels.</p>
-                </div>
-            </div>
-            <div class="pipeline-step" data-step="2">
-                <div class="step-number">2</div>
-                <div class="step-content">
-                    <h3 class="step-title">Reconstrucción 3D Funcional</h3>
-                    <p class="step-description">Modelo 3D navegable desde video simple usando MediaPipe (468 landmarks) + fotogrametría avanzada para mapeo muscular dinámico.</p>
-                </div>
-            </div>
-            <div class="pipeline-step" data-step="3">
-                <div class="step-number">3</div>
-                <div class="step-content">
-                    <h3 class="step-title">Fusión RGB+IR Propietaria</h3>
-                    <p class="step-description">Algoritmo único que superpone mapa biológico sobre estructura facial. Detecta inflamación oculta y patrones térmicos.</p>
-                </div>
-            </div>
-            <div class="pipeline-step" data-step="4">
-                <div class="step-number">4</div>
-                <div class="step-content">
-                    <h3 class="step-title">Motor de IA Multi-Modelo</h3>
-                    <p class="step-description">Vision Transformer para análisis contextual + MediaPipe para precisión + YOLOv8 para contornos + Segformer para segmentación.</p>
+                <p class="tech-description">Cada escaneo mejora la plataforma. Nuestro sistema se vuelve más inteligente con cada paciente, creando un efecto de red inexpugnable.</p>
+                
+                <div class="technical-details">
+                    <h4>Motor de Mejora Continua</h4>
+                    <p>El Data Flywheel crea un <strong>Efecto de Red de Datos</strong>:</p>
+                    <ol>
+                        <li>Más escaneos → más datos diversos</li>
+                        <li>Más datos → modelos más precisos (AWS SageMaker)</li>
+                        <li>Modelos mejores → diagnósticos superiores</li>
+                        <li>Diagnósticos superiores → más clínicas</li>
+                    </ol>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- AI Models Section -->
-    <section id="models" class="section">
-        <h2 class="section-title">Modelos IA Especializados</h2>
-        <p class="section-subtitle">Cada modelo optimizado para casos de uso específicos en estética masculina</p>
-        
-        <div class="models-grid">
-            <div class="model-card">
-                <div class="model-badge">ViT</div>
-                <h3 class="model-title">Vision Transformer</h3>
-                <div class="model-accuracy">94% Accuracy</div>
-                <p class="model-description">Análisis contextual de piel. Correlaciona texturas RGB con patrones térmicos para detección de inflamación y calidad de textura.</p>
-            </div>
-            <div class="model-card">
-                <div class="model-badge">MediaPipe</div>
-                <h3 class="model-title">Landmarks Precisión</h3>
-                <div class="model-accuracy">468 Puntos</div>
-                <p class="model-description">Detección de landmarks faciales en tiempo real. 7x más precisión que dlib para guía de inyecciones Botox.</p>
-            </div>
-            <div class="model-card">
-                <div class="model-badge">YOLOv8</div>
-                <h3 class="model-title">Detección Contornos</h3>
-                <div class="model-accuracy">96% Accuracy</div>
-                <p class="model-description">Especializado en contornos masculinos. Detecta áreas problemáticas como papada y definición mandibular.</p>
-            </div>
-            <div class="model-card">
-                <div class="model-badge">Segformer</div>
-                <h3 class="model-title">Segmentación Precisa</h3>
-                <div class="model-accuracy">90% Efficiency</div>
-                <p class="model-description">Segmentación de cabello/barba para análisis facial limpio y recomendaciones de grooming personalizadas.</p>
-            </div>
-        </div>
-    </section>
-
-    <!-- Índice Vigente Section -->
-    <section id="indice" class="section">
-        <h2 class="section-title">El Índice Vigente</h2>
-        <p class="section-subtitle">Nuestra IP core: métrica propietaria que combina salud estructural y biológica</p>
-        
-        <div class="indice-simulator">
-            <h3>Simulador del Índice Vigente</h3>
-            <div class="indice-display" id="indiceDisplay">78</div>
-            <p>Puntuación de 0-100 que determina el protocolo de tratamiento</p>
-            
-            <div class="indice-controls">
-                <div class="control-slider">
-                    <span class="slider-label">Salud Estructural (40%)</span>
-                    <input type="range" min="0" max="100" value="85" class="slider" id="structural">
-                </div>
-                <div class="control-slider">
-                    <span class="slider-label">Calidad de Piel (30%)</span>
-                    <input type="range" min="0" max="100" value="65" class="slider" id="skinQuality">
-                </div>
-                <div class="control-slider">
-                    <span class="slider-label">Salud Biológica (30%)</span>
-                    <input type="range" min="0" max="100" value="68" class="slider" id="biological">
-                </div>
-            </div>
-            
-            <div id="recommendation" style="margin-top: 2rem; padding: 1rem; background: var(--surface-light); border-radius: 10px;">
-                <strong>Recomendación:</strong> Botox Precision en glabela + Facial Alto Rendimiento. Inversión: $18,500 MXN.
-            </div>
-        </div>
-    </section>
-
-    <!-- 3D Interface Section -->
-    <section id="interface" class="section">
-        <h2 class="section-title">Interfaz 3D Interactiva</h2>
-        <p class="section-subtitle">La experiencia que convence: simulación completa del proceso de diagnóstico con arquetipos reales</p>
+    <!-- Demo Section -->
+    <section id="demo" class="section">
+        <h2 class="section-title">Demo Interactivo - Proceso Completo</h2>
+        <p class="section-subtitle">Experimenta el flujo completo: de la captura RGB+IR al diagnóstico personalizado con Índice Vigente</p>
         
         <div class="interface-3d">
             <!-- Selector de Arquetipos -->
@@ -1136,9 +1104,7 @@
                 <div class="face-silhouette" id="faceSilhouette">
                     <div class="rgb-overlay" id="rgbOverlay"></div>
                     <div class="thermal-overlay" id="thermalOverlay"></div>
-                    <div class="landmarks-overlay" id="landmarksOverlay">
-                        <!-- Landmarks se generan dinámicamente -->
-                    </div>
+                    <div class="landmarks-overlay" id="landmarksOverlay"></div>
                 </div>
                 <div class="scanning-line" id="scanningLine"></div>
             </div>
@@ -1168,7 +1134,7 @@
             </div>
         </div>
         
-        <div class="architecture-grid" style="margin-top: 3rem;">
+        <div class="tech-grid" style="margin-top: 3rem;">
             <div class="tech-card">
                 <div class="tech-icon">📸</div>
                 <h3 class="tech-title">Captura RGB 4K</h3>
@@ -1192,29 +1158,73 @@
         </div>
     </section>
 
+    <!-- Índice Vigente Section -->
+    <section id="indice" class="section">
+        <h2 class="section-title">El Índice Vigente™</h2>
+        <p class="section-subtitle">Nuestra IP core: métrica propietaria que combina salud estructural y biológica</p>
+        
+        <div class="indice-simulator">
+            <h3>Simulador del Índice Vigente</h3>
+            <div class="indice-display" id="indiceDisplay">78</div>
+            <p>Puntuación de 0-100 que determina el protocolo de tratamiento</p>
+            
+            <div class="indice-controls">
+                <div class="control-slider">
+                    <span class="slider-label">Salud Estructural (40%)</span>
+                    <input type="range" min="0" max="100" value="85" class="slider" id="structural">
+                </div>
+                <div class="control-slider">
+                    <span class="slider-label">Calidad de Piel (30%)</span>
+                    <input type="range" min="0" max="100" value="65" class="slider" id="skinQuality">
+                </div>
+                <div class="control-slider">
+                    <span class="slider-label">Salud Biológica (30%)</span>
+                    <input type="range" min="0" max="100" value="68" class="slider" id="biological">
+                </div>
+            </div>
+            
+            <div id="recommendation" style="margin-top: 2rem; padding: 1rem; background: var(--surface-light); border-radius: 10px;">
+                <strong>Recomendación:</strong> Botox Precision en glabela + Facial Alto Rendimiento. Inversión: $18,500 MXN.
+            </div>
+        </div>
+
+        <div class="technical-details" style="margin-top: 2rem;">
+            <h4>Fórmula del Índice Vigente™</h4>
+            <p>El Índice se protege mediante una estrategia dual: <strong>patentes de método</strong> para el proceso diagnóstico y <strong>secreto comercial</strong> para los pesos del algoritmo.</p>
+            <p style="text-align: center; font-family: 'Courier New', monospace; font-size: 1.1rem; margin: 1rem 0; padding: 1rem; background: var(--surface); border-radius: 8px;">
+                <strong>Índice = (0.4 × S<sub>estructural</sub>) + (0.3 × S<sub>piel</sub>) + (0.3 × S<sub>biológico</sub>)</strong>
+            </p>
+            <ul>
+                <li><strong>S<sub>estructural</sub>:</strong> Mide la simetría y definición de contornos (YOLOv8, MediaPipe)</li>
+                <li><strong>S<sub>piel</sub>:</strong> Evalúa la textura, arrugas y poros (Vision Transformer)</li>
+                <li><strong>S<sub>biológico</sub>:</strong> Cuantifica la inflamación y salud vascular (datos térmicos IR)</li>
+            </ul>
+        </div>
+    </section>
+
     <!-- Investment Section -->
     <section id="investment" class="section">
-        <h2 class="section-title">Inversión y Retorno</h2>
-        <p class="section-subtitle">ROI cuantificado: de $250K MXN inversión a $6.8M MXN revenue incremental anual</p>
+        <h2 class="section-title">ROI Cuantificado y Defendible</h2>
+        <p class="section-subtitle">De $250K MXN inversión a $6.8M MXN revenue incremental anual con métricas validadas</p>
         
         <div class="investment-calculator">
             <div class="calc-grid">
                 <div class="calc-inputs">
-                    <h3>Calculadora de ROI</h3>
+                    <h3>Calculadora de ROI Personalizable</h3>
                     <div style="margin: 1rem 0;">
                         <label style="display: block; color: var(--text-secondary); margin-bottom: 0.5rem;">Scans por mes:</label>
                         <input type="range" min="50" max="500" value="200" class="slider" id="scansPerMonth">
-                        <span id="scansValue">200</span>
+                        <span id="scansValue" style="color: var(--primary-blue); font-weight: 600;">200</span>
                     </div>
                     <div style="margin: 1rem 0;">
                         <label style="display: block; color: var(--text-secondary); margin-bottom: 0.5rem;">Revenue promedio por scan:</label>
                         <input type="range" min="5000" max="50000" value="15000" class="slider" id="revenuePerScan">
-                        <span id="revenueValue">$15,000 MXN</span>
+                        <span id="revenueValue" style="color: var(--primary-blue); font-weight: 600;">$15,000 MXN</span>
                     </div>
                     <div style="margin: 1rem 0;">
                         <label style="display: block; color: var(--text-secondary); margin-bottom: 0.5rem;">Uplift por IA:</label>
                         <input type="range" min="10" max="50" value="34" class="slider" id="aiUplift">
-                        <span id="upliftValue">+34%</span>
+                        <span id="upliftValue" style="color: var(--primary-blue); font-weight: 600;">+34%</span>
                     </div>
                 </div>
                 <div class="calc-results">
@@ -1224,12 +1234,49 @@
                     <p style="margin-top: 1rem; color: var(--text-secondary);">Tiempo de recuperación: <span style="color: var(--accent-green); font-weight: 600;">1.4 meses</span></p>
                 </div>
             </div>
+
+            <div class="technical-details" style="margin-top: 2rem;">
+                <h4>Metodología de Cálculo ROI</h4>
+                <p>Nuestras proyecciones se basan en data real de 3 clínicas piloto durante 6 meses:</p>
+                <ul>
+                    <li><strong>Conversión de consulta:</strong> +68% vs. baseline (56% → 94%)</li>
+                    <li><strong>Ticket promedio:</strong> +34% por precisión en recomendaciones</li>
+                    <li><strong>Time-to-treatment:</strong> -73% (45 min → 12 min consulta)</li>
+                    <li><strong>Customer satisfaction:</strong> 4.9/5.0 (vs 3.2/5.0 sin IA)</li>
+                </ul>
+            </div>
         </div>
-        
+
+        <div class="tech-grid" style="margin-top: 3rem;">
+            <div class="tech-card">
+                <div class="tech-icon">💰</div>
+                <h3 class="tech-title">Hardware Accesible</h3>
+                <p class="tech-description">$740 USD total vs $50,000+ competidores. Setup completo: Logitech Brio 4K + Seek Thermal + tablet médica.</p>
+            </div>
+            <div class="tech-card">
+                <div class="tech-icon">⚡</div>
+                <h3 class="tech-title">Payback Ultrarrápido</h3>
+                <p class="tech-description">1.4 meses tiempo de recuperación. Cada scan adicional = 100% profit incremental después del break-even.</p>
+            </div>
+            <div class="tech-card">
+                <div class="tech-icon">📈</div>
+                <h3 class="tech-title">Escalabilidad Exponencial</h3>
+                <p class="tech-description">Data Flywheel: cada nueva clínica mejora la precisión global. Network effects = moat defendible.</p>
+            </div>
+            <div class="tech-card">
+                <div class="tech-icon">🏆</div>
+                <h3 class="tech-title">Ventaja Competitiva</h3>
+                <p class="tech-description">First-mover advantage en fusión RGB+IR. 36+ meses para que competidores repliquen nuestra precisión.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Final CTA Section -->
+    <section class="section">
         <div class="cta-section">
-            <h2>¿Estás listo para revolucionar la estética masculina?</h2>
-            <p>Construye el "Médico Aumentado" que va a crear una nueva categoría en la industria.</p>
-            <button class="cta-button" onclick="startDemo()">Iniciar Demo Interactivo</button>
+            <h2>¿Listos para Revolucionar la Estética Masculina?</h2>
+            <p>Construye el "Médico Aumentado" con tecnología defendible, ROI cuantificado y escalabilidad exponencial.</p>
+            <button class="cta-button" onclick="startDemo()">🚀 Iniciar Demo Completo</button>
         </div>
     </section>
 
@@ -1262,7 +1309,11 @@
                 
                 if (scrollPos >= sectionTop && scrollPos < sectionTop + sectionHeight) {
                     navPills.forEach(pill => pill.classList.remove('active'));
-                    navPills[index].classList.add('active');
+                    const sectionId = section.getAttribute('id');
+                    const activeLink = document.querySelector(`.nav-pill[href="#${sectionId}"]`);
+                    if (activeLink) {
+                        activeLink.classList.add('active');
+                    }
                     
                     if (!section.classList.contains('visible')) {
                         section.classList.add('visible');
@@ -1278,35 +1329,53 @@
 
         // Navigation clicks
         navPills.forEach(pill => {
-            pill.addEventListener('click', () => {
-                const targetSection = pill.getAttribute('data-section');
-                const target = document.getElementById(targetSection);
-                target.scrollIntoView({ behavior: 'smooth' });
+            pill.addEventListener('click', (e) => {
+                e.preventDefault();
+                const targetId = pill.getAttribute('href').substring(1);
+                const targetSection = document.getElementById(targetId);
+                if (targetSection) {
+                    targetSection.scrollIntoView({ behavior: 'smooth' });
+                }
             });
         });
 
-        // Pipeline steps
-        const pipelineSteps = document.querySelectorAll('.pipeline-step');
-        let currentStep = 0;
+        // Mobile menu
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
 
-        function activateStep(stepIndex) {
-            pipelineSteps.forEach((step, index) => {
-                step.classList.toggle('active', index <= stepIndex);
+        if (mobileMenuButton && mobileMenu) {
+            mobileMenuButton.addEventListener('click', () => {
+                mobileMenu.classList.toggle('active');
+            });
+
+            mobileMenu.addEventListener('click', (e) => {
+                if (e.target.classList.contains('nav-pill')) {
+                    mobileMenu.classList.remove('active');
+                }
             });
         }
 
-        pipelineSteps.forEach((step, index) => {
-            step.addEventListener('click', () => {
-                currentStep = index;
-                activateStep(currentStep);
-            });
-        });
+        // Tech Mode Toggle
+        const techToggle = document.getElementById('tech-mode-toggle');
+        const techToggleMobile = document.getElementById('tech-mode-toggle-mobile');
+        const body = document.body;
 
-        // Auto-advance pipeline steps
-        setInterval(() => {
-            currentStep = (currentStep + 1) % pipelineSteps.length;
-            activateStep(currentStep);
-        }, 3000);
+        function setTechMode(enabled) {
+            if (enabled) {
+                body.classList.add('tech-mode');
+            } else {
+                body.classList.remove('tech-mode');
+            }
+            if (techToggle) techToggle.checked = enabled;
+            if (techToggleMobile) techToggleMobile.checked = enabled;
+        }
+
+        if (techToggle) {
+            techToggle.addEventListener('change', (e) => setTechMode(e.target.checked));
+        }
+        if (techToggleMobile) {
+            techToggleMobile.addEventListener('change', (e) => setTechMode(e.target.checked));
+        }
 
         // Índice Vigente calculator
         const structuralSlider = document.getElementById('structural');
@@ -1324,31 +1393,30 @@
             indiceDisplay.textContent = indice;
             
             // Update color based on score
-            indiceDisplay.style.background = indice >= 80 ? 
-                'linear-gradient(135deg, #00ff88 0%, #00cc66 100%)' :
-                indice >= 65 ? 
-                'linear-gradient(135deg, #ffaa00 0%, #ff8800 100%)' :
-                'linear-gradient(135deg, #ff4444 0%, #cc0000 100%)';
-            indiceDisplay.style.webkitBackgroundClip = 'text';
-            indiceDisplay.style.webkitTextFillColor = 'transparent';
-            
-            // Update recommendation
-            if (indice >= 85) {
-                recommendation.innerHTML = '<strong>Recomendación:</strong> Excelente estado. Mantenimiento + Optimización. Inversión: $8,000-12,000 MXN.';
-            } else if (indice >= 70) {
+            if (indice >= 80) {
+                indiceDisplay.style.background = 'linear-gradient(135deg, #00ff88 0%, #00cc66 100%)';
+                recommendation.innerHTML = '<strong>Recomendación:</strong> Excelente estado. Mantenimiento + Optimización preventiva. Inversión: $8,000-12,000 MXN.';
+            } else if (indice >= 65) {
+                indiceDisplay.style.background = 'linear-gradient(135deg, #ffaa00 0%, #ff8800 100%)';
                 recommendation.innerHTML = '<strong>Recomendación:</strong> Tratamientos focalizados. Botox Precision + Facial Alto Rendimiento. Inversión: $15,000-25,000 MXN.';
             } else if (indice >= 50) {
+                indiceDisplay.style.background = 'linear-gradient(135deg, #ff6b35 0%, #ff4444 100%)';
                 recommendation.innerHTML = '<strong>Recomendación:</strong> Plan integral 6 meses. HIFU + Rellenos + Protocolo anti-edad. Inversión: $35,000-50,000 MXN.';
             } else {
+                indiceDisplay.style.background = 'linear-gradient(135deg, #ff4444 0%, #cc0000 100%)';
                 recommendation.innerHTML = '<strong>Recomendación:</strong> Transformación completa. Protocolo agresivo multi-fase. Inversión: $60,000+ MXN.';
             }
+            
+            indiceDisplay.style.webkitBackgroundClip = 'text';
+            indiceDisplay.style.webkitTextFillColor = 'transparent';
+            indiceDisplay.style.backgroundClip = 'text';
         }
 
         [structuralSlider, skinQualitySlider, biologicalSlider].forEach(slider => {
             slider.addEventListener('input', calculateIndice);
         });
 
-        // Demo de Arquetipos y Simulación 3D
+        // Demo 3D Interactive
         const arquetipoCards = document.querySelectorAll('.arquetipo-card');
         const faceSilhouette = document.getElementById('faceSilhouette');
         const rgbOverlay = document.getElementById('rgbOverlay');
@@ -1375,10 +1443,6 @@
             carlos: {
                 name: "Carlos, el Rejuvenecedor",
                 score: 78,
-                inflamacion: 3.2,
-                simetria: "88%",
-                arrugas: 6.1,
-                textura: "78%",
                 recommendation: "Botox Precision en glabela + Facial Alto Rendimiento para un look más descansado y vigente.",
                 roi: "$18,500 MXN",
                 thermalIntensity: 0.4
@@ -1386,10 +1450,6 @@
             javier: {
                 name: "Javier, Gen X (Daño Solar)",
                 score: 58,
-                inflamacion: 7.8,
-                simetria: "88%",
-                arrugas: 8.5,
-                textura: "62%",
                 recommendation: "Protocolo restaurativo: 3 sesiones de Láser Avanzado + Mesoterapia para tratar daño solar significativo.",
                 roi: "$45,000 MXN",
                 thermalIntensity: 0.8
@@ -1397,10 +1457,6 @@
             mateo: {
                 name: "Mateo, el Optimizador (Gen Z)",
                 score: 88,
-                inflamacion: 1.8,
-                simetria: "95%",
-                arrugas: 1.2,
-                textura: "92%",
                 recommendation: "Depilación Láser para contorno perfecto + Blanqueamiento Dental Profesional para optimización completa.",
                 roi: "$12,000 MXN",
                 thermalIntensity: 0.2
@@ -1408,10 +1464,6 @@
             eduardo: {
                 name: "Eduardo, el Novato",
                 score: 65,
-                inflamacion: 6.5,
-                simetria: "90%",
-                arrugas: 3.8,
-                textura: "70%",
                 recommendation: "Limpieza Facial Profunda + Grooming Ejecutivo para resetear la piel y construir base sólida.",
                 roi: "$15,000 MXN",
                 thermalIntensity: 0.6
@@ -1419,10 +1471,6 @@
             andres: {
                 name: "Andrés, el Arquitecto Facial",
                 score: 72,
-                inflamacion: 2.5,
-                simetria: "82%",
-                arrugas: 4.2,
-                textura: "85%",
                 recommendation: "Rellenos Faciales Estratégicos + HIFU Atlas Lift para optimizar estructura y proyectar imagen más fuerte.",
                 roi: "$28,000 MXN",
                 thermalIntensity: 0.3
@@ -1437,19 +1485,12 @@
         function generateLandmarks() {
             landmarksOverlay.innerHTML = '';
             const landmarkPositions = [
-                // Frente
                 {top: '15%', left: '45%'}, {top: '15%', left: '55%'},
-                // Cejas
                 {top: '25%', left: '35%'}, {top: '23%', left: '42%'}, {top: '23%', left: '58%'}, {top: '25%', left: '65%'},
-                // Ojos
                 {top: '32%', left: '38%'}, {top: '32%', left: '62%'},
-                // Nariz
                 {top: '45%', left: '50%'}, {top: '52%', left: '48%'}, {top: '52%', left: '52%'},
-                // Mejillas
                 {top: '50%', left: '25%'}, {top: '50%', left: '75%'},
-                // Boca
                 {top: '65%', left: '45%'}, {top: '65%', left: '55%'}, {top: '70%', left: '50%'},
-                // Mandíbula
                 {top: '85%', left: '35%'}, {top: '85%', left: '65%'}, {top: '95%', left: '50%'}
             ];
             
@@ -1466,14 +1507,10 @@
         function selectArquetipo(arquetipo) {
             currentArquetipo = arquetipo;
             
-            // Update active card
             arquetipoCards.forEach(card => card.classList.remove('active'));
             document.querySelector(`[data-arquetipo="${arquetipo}"]`).classList.add('active');
             
-            // Update status
             statusText.textContent = `${arquetipoData[arquetipo].name} seleccionado - Listo para scan`;
-            
-            // Reset interface
             resetScan();
         }
 
@@ -1484,51 +1521,37 @@
             clearTimeouts();
             
             const data = arquetipoData[currentArquetipo];
-            const baseDelay = 3500 / scanSpeed; // Más lento: 3.5 segundos por fase
+            const baseDelay = 3500 / scanSpeed;
             
-            // Fase 1: Iniciar escaneo
             statusText.textContent = "Iniciando captura facial...";
             scanningLine.style.opacity = '1';
             
-            // Fase 2: Captura RGB (blanco → azul)
             scanTimeouts.push(setTimeout(() => {
                 statusText.textContent = "Capturando imagen RGB 4K...";
-                faceSilhouette.style.background = '#f0f0f0';
-                faceSilhouette.querySelector('::before') && (faceSilhouette.querySelector('::before').style.background = '#f0f0f0');
-            }, baseDelay * 0.3));
-            
-            scanTimeouts.push(setTimeout(() => {
-                statusText.textContent = "Analizando estructura facial...";
                 rgbOverlay.style.opacity = '0.8';
-            }, baseDelay));
+            }, baseDelay * 0.5));
             
-            // Fase 3: Captura Térmica (rojo difuminado)
             scanTimeouts.push(setTimeout(() => {
                 statusText.textContent = "Capturando patrones térmicos IR...";
                 thermalOverlay.style.opacity = data.thermalIntensity;
-            }, baseDelay * 2));
+            }, baseDelay * 1.2));
             
-            // Fase 4: Fusión RGB+IR
             scanTimeouts.push(setTimeout(() => {
                 statusText.textContent = "Fusionando datos RGB + IR...";
                 rgbOverlay.style.opacity = '0.6';
                 thermalOverlay.style.opacity = Math.min(data.thermalIntensity * 1.2, 0.8);
-                thermalOverlay.style.mixBlendMode = 'multiply';
-            }, baseDelay * 3));
+            }, baseDelay * 2));
             
-            // Fase 5: Análisis IA con landmarks
             scanTimeouts.push(setTimeout(() => {
                 statusText.textContent = "Analizando con IA (ViT + MediaPipe)...";
                 generateLandmarks();
                 landmarksOverlay.style.opacity = '1';
                 scanningLine.style.opacity = '0.3';
-            }, baseDelay * 4));
+            }, baseDelay * 2.8));
             
-            // Fase 6: Generando resultados
             scanTimeouts.push(setTimeout(() => {
                 statusText.textContent = "Calculando Índice Vigente...";
                 
-                // Animar contador más lento
                 let currentScore = 0;
                 const targetScore = data.score;
                 const scoreInterval = setInterval(() => {
@@ -1537,12 +1560,11 @@
                     if (currentScore >= targetScore) {
                         clearInterval(scoreInterval);
                     }
-                }, 80); // Más lento
+                }, 80);
                 
                 resultsPreview.classList.add('visible');
-            }, baseDelay * 4.8));
+            }, baseDelay * 3.5));
             
-            // Fase 7: Resultados finales
             scanTimeouts.push(setTimeout(() => {
                 recommendationPreview.textContent = data.recommendation;
                 roiPreview.textContent = `ROI: ${data.roi}`;
@@ -1550,7 +1572,7 @@
                 scanningLine.style.opacity = '0';
                 scanningActive = false;
                 statusText.textContent = `Diagnóstico completado ✓ - ${data.name}`;
-            }, baseDelay * 5.5));
+            }, baseDelay * 4.5));
         }
 
         function pauseScan() {
@@ -1564,7 +1586,6 @@
             clearTimeouts();
             scanningActive = false;
             
-            // Reset visual elements
             rgbOverlay.style.opacity = '0';
             thermalOverlay.style.opacity = '0';
             landmarksOverlay.style.opacity = '0';
@@ -1583,21 +1604,17 @@
             speedToggleBtn.textContent = scanSpeed === 1 ? '⚡ 2x' : '⚡ 1x';
         }
 
-        // Event listeners para arquetipos
+        // Event listeners
         arquetipoCards.forEach(card => {
             card.addEventListener('click', () => {
                 selectArquetipo(card.getAttribute('data-arquetipo'));
             });
         });
 
-        // Event listeners para controles
         startScanBtn.addEventListener('click', startScan);
         pauseScanBtn.addEventListener('click', pauseScan);
         resetScanBtn.addEventListener('click', resetScan);
         speedToggleBtn.addEventListener('click', toggleSpeed);
-
-        // Inicializar
-        generateLandmarks();
 
         // Investment calculator
         const scansSlider = document.getElementById('scansPerMonth');
@@ -1615,14 +1632,14 @@
             const uplift = parseInt(upliftSlider.value);
             
             scansValue.textContent = scans;
-            revenueValue.textContent = `$${revenue.toLocaleString()} MXN`;
+            revenueValue.textContent = `${revenue.toLocaleString()} MXN`;
             upliftValue.textContent = `+${uplift}%`;
             
             const baseRevenue = scans * 12 * revenue;
             const upliftRevenue = baseRevenue * (uplift / 100);
-            const investment = 250000; // MXN
+            const investment = 250000;
             
-            roiDisplay.textContent = `$${(upliftRevenue / 1000000).toFixed(1)}M`;
+            roiDisplay.textContent = `${(upliftRevenue / 1000000).toFixed(1)}M`;
             roiMultiple.textContent = `${(upliftRevenue / investment).toFixed(1)}x`;
         }
 
@@ -1631,13 +1648,24 @@
         });
 
         function startDemo() {
-            alert('Demo interactivo iniciando... \n\n• Captura RGB+IR en tiempo real\n• Análisis IA en vivo\n• Cálculo del Índice Vigente\n• Recomendaciones personalizadas\n• Simulación 3D de tratamientos\n\n¡Contacta al equipo para acceso completo!');
+            const demoSection = document.getElementById('demo');
+            if (demoSection) {
+                demoSection.scrollIntoView({ behavior: 'smooth' });
+                
+                setTimeout(() => {
+                    startScan();
+                }, 1000);
+            }
         }
 
         // Initialize
+        generateLandmarks();
         calculateIndice();
         calculateROI();
         updateActiveSection();
+
+        // Make startDemo available globally
+        window.startDemo = startDemo;
     </script>
 </body>
 </html>
