@@ -270,13 +270,13 @@
         #threejs-container {
             position: relative;
             width: 100%;
-            height: 0;
-            padding-bottom: 56.25%; /* 16:9 aspect ratio */
+            height: 450px; /* Altura fija */
             background-color: #111111;
             border-radius: 0.5rem;
-            overflow: visible; /* Cambio crítico */
+            overflow: visible;
             border: 2px solid var(--border-color);
         }
+
         #threejs-container canvas {
             position: absolute !important;
             top: 0 !important;
@@ -1155,7 +1155,7 @@
                 console.log('🚀 === INICIANDO THREE.JS MODO QUIRÚRGICO ===');
                 
                 try {
-                    // 1. VERIFICACIONES CRÍTICAS MEJORADAS
+                    // VERIFICACIONES CRÍTICAS
                     if (typeof THREE === 'undefined') {
                         throw new Error('THREE.js no disponible - CDN no cargó');
                     }
@@ -1164,108 +1164,106 @@
                         throw new Error('Container no disponible');
                     }
                     
-                    // 2. VERIFICAR DIMENSIONES CONTAINER ANTES DE PROCEDER
+                    // FORZAR DIMENSIONES ANTES DE VERIFICAR
+                    vizContainer.style.width = '100%';
+                    vizContainer.style.height = '450px';
+                    
+                    // VERIFICAR DIMENSIONES DESPUÉS DE FORZAR
                     const containerRect = vizContainer.getBoundingClientRect();
-                    console.log('📐 Dimensiones container:', {
+                    console.log('📐 Dimensiones container (post-fix):', {
                         width: containerRect.width,
-                        height: containerRect.height,
-                        clientWidth: vizContainer.clientWidth,
-                        clientHeight: vizContainer.clientHeight
+                        height: containerRect.height
                     });
                     
                     if (containerRect.width === 0 || containerRect.height === 0) {
-                        throw new Error('Container tiene dimensiones inválidas');
+                        // ÚLTIMO RECURSO: dimensiones hardcoded
+                        vizContainer.style.width = '800px';
+                        vizContainer.style.height = '450px';
+                        console.warn('⚠️ Usando dimensiones hardcoded como fallback');
                     }
                     
-                    // 3. LIMPIEZA TOTAL
+                    // LIMPIEZA TOTAL
                     vizContainer.innerHTML = '';
                     
-                    // 4. CONFIGURACIÓN THREE.JS CON VERIFICACIONES
+                    // CONFIGURACIÓN THREE.JS
                     scene = new THREE.Scene();
                     
-                    // 5. CAMERA CON ASPECT RATIO CORRECTO
-                    const width = vizContainer.clientWidth || 800;
-                    const height = vizContainer.clientHeight || 450;
+                    // CAMERA CON DIMENSIONES GARANTIZADAS
+                    const width = containerRect.width || 800;
+                    const height = containerRect.height || 450;
                     camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 1000);
-                    camera.position.set(0, 0, 5); // Más alejado para asegurar visibilidad
+                    camera.position.set(0, 0, 5);
                     
-                    // 6. RENDERER CON VERIFICACIÓN WEBGL
+                    // RENDERER CON VERIFICACIÓN WEBGL
                     renderer = new THREE.WebGLRenderer({ 
                         antialias: true,
-                        alpha: false, // Cambio crítico: no transparente
+                        alpha: false,
                         preserveDrawingBuffer: true
                     });
                     
-                    // 7. VERIFICAR WEBGL CONTEXT
+                    // VERIFICAR WEBGL CONTEXT
                     const gl = renderer.getContext();
                     if (!gl || gl.isContextLost()) {
-                        throw new Error('WebGL context no disponible o perdido');
+                        throw new Error('WebGL context no disponible');
                     }
                     console.log('✅ WebGL context válido');
                     
-                    // 8. FORZAR DIMENSIONES ESPECÍFICAS
+                    // FORZAR DIMENSIONES RENDERER
                     renderer.setSize(width, height);
-                    renderer.setClearColor(0x111111, 1.0); // Fondo más oscuro para contraste
+                    renderer.setClearColor(0x222222, 1.0);
                     renderer.domElement.style.display = 'block';
                     renderer.domElement.style.width = '100%';
                     renderer.domElement.style.height = '100%';
                     
                     vizContainer.appendChild(renderer.domElement);
                     
-                    // 9. VERIFICAR QUE CANVAS SE AÑADIÓ CORRECTAMENTE
+                    // VERIFICAR CANVAS
                     const canvas = vizContainer.querySelector('canvas');
                     if (!canvas) {
                         throw new Error('Canvas no se añadió al DOM');
                     }
                     
-                    console.log('🖥️ Canvas verificado:', {
+                    console.log('🖥️ Canvas creado:', {
                         width: canvas.width,
                         height: canvas.height,
                         clientWidth: canvas.clientWidth,
-                        clientHeight: canvas.clientHeight,
-                        display: canvas.style.display
+                        clientHeight: canvas.clientHeight
                     });
                     
-                    // 10. LUCES MÁS INTENSAS
-                    const light = new THREE.DirectionalLight(0xffffff, 2); // Intensidad aumentada
+                    // LUCES INTENSAS
+                    const light = new THREE.DirectionalLight(0xffffff, 2);
                     light.position.set(5, 5, 5);
                     scene.add(light);
                     
-                    const ambientLight = new THREE.AmbientLight(0x404040, 1); // Intensidad aumentada
+                    const ambientLight = new THREE.AmbientLight(0x404040, 1);
                     scene.add(ambientLight);
                     
-                    // 11. MODELO CON MATERIAL BÁSICO PRIMERO (PARA DEBUG)
-                    const geometry = new THREE.SphereGeometry(1.5, 32, 32); // Más grande
+                    // MODELO VERDE BRILLANTE PARA DEBUG
+                    const geometry = new THREE.SphereGeometry(1.5, 32, 32);
                     const material = new THREE.MeshBasicMaterial({ 
-                        color: 0x00ff00, // Verde brillante para máxima visibilidad
+                        color: 0x00ff00,
                         wireframe: false
                     });
                     head = new THREE.Mesh(geometry, material);
-                    head.position.set(0, 0, 0); // Centrado explícitamente
+                    head.position.set(0, 0, 0);
                     scene.add(head);
                     
-                    console.log('🗿 Modelo creado:', {
-                        position: head.position,
-                        scale: head.scale,
-                        visible: head.visible,
-                        material: head.material.type,
-                        geometry: head.geometry.type
-                    });
+                    console.log('🗿 Modelo verde creado');
                     
-                    // 12. GRUPO HOTSPOTS
+                    // GRUPO HOTSPOTS
                     hotspotsGroup = new THREE.Group();
-                    scene.add(hotspotsGroup); // Añadir a scene, no a head
+                    scene.add(hotspotsGroup);
                     
-                    // 13. MULTIPLE RENDERS FORZADOS
+                    // RENDERS MÚLTIPLES FORZADOS
                     for (let i = 0; i < 5; i++) {
                         renderer.render(scene, camera);
                     }
                     console.log('🎨 Renders múltiples ejecutados');
                     
-                    // 14. INICIAR ANIMACIÓN
+                    // INICIAR ANIMACIÓN
                     animate();
                     
-                    // 15. CREAR OVERLAYS DINÁMICAMENTE
+                    // ALERTA ÉXITO
                     const alertDiv = document.createElement('div');
                     alertDiv.id = 'critical-alert-dynamic';
                     alertDiv.className = 'critical-alert';
@@ -1286,7 +1284,7 @@
                     vizContainer.appendChild(alertDiv);
                     criticalAlertEl = alertDiv;
                     
-                    // 16. OCULTAR ALERTA DESPUÉS DE 3 SEGUNDOS
+                    // OCULTAR ALERTA DESPUÉS DE 3 SEGUNDOS
                     setTimeout(() => {
                         if (criticalAlertEl) {
                             criticalAlertEl.style.opacity = '0';
@@ -1294,14 +1292,10 @@
                     }, 3000);
                     
                     console.log('✅ THREE.js inicializado QUIRÚRGICAMENTE');
-                    
-                    // Actualizar referencias globales para debugging
-                    updateGlobalReferences();
-                    
                     return true;
                     
                 } catch (error) {
-                    console.error('💥 Error en initThreeJS QUIRÚRGICO:', error);
+                    console.error('💥 Error quirúrgico:', error);
                     if (vizContainer) {
                         vizContainer.innerHTML = `
                             <div style="color: #F87171; text-align: center; padding: 40px; font-family: monospace; background: #1F2937; border-radius: 8px;">
