@@ -6,7 +6,7 @@
     <title>DiagnósticoVigente AI - Blueprint Interactivo Definitivo</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.140.0/build/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r140/three.min.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -1077,10 +1077,18 @@
             let animationFrameId;
 
             function initThreeJS() {
-                if (typeof THREE === 'undefined' || !vizContainer) {
-                    console.error('Three.js or container not ready');
+                // Verificar carga de Three.js al inicio
+                if (typeof THREE === 'undefined') {
+                    console.error('Three.js no disponible');
+                    vizContainer.innerHTML = '<div class="flex items-center justify-center h-full text-red-400">Error de carga 3D</div>';
                     return;
                 }
+                
+                if (!vizContainer) {
+                    console.error('Container not ready');
+                    return;
+                }
+                
                 // Clear container before initializing
                 while (vizContainer.firstChild) {
                     vizContainer.removeChild(vizContainer.firstChild);
@@ -1088,7 +1096,6 @@
                 // Re-append overlay elements
                 vizContainer.appendChild(matrixEffectEl);
                 vizContainer.appendChild(criticalAlertEl);
-
 
                 scene = new THREE.Scene();
                 camera = new THREE.PerspectiveCamera(50, vizContainer.clientWidth / vizContainer.clientHeight, 0.1, 1000);
@@ -1104,17 +1111,10 @@
                 pointLight.position.set(5, 5, 5);
                 scene.add(pointLight);
 
-                // Create a basic head shape
+                // Simplificar creación de geometría
                 const geometry = new THREE.SphereGeometry(1.5, 64, 64);
-                // Deform sphere to be more head-like
-                const positionAttribute = geometry.attributes.position;
-                for (let i = 0; i < positionAttribute.count; i++) {
-                    const vertex = new THREE.Vector3();
-                    vertex.fromBufferAttribute(positionAttribute, i);
-                    vertex.y *= 1.2; // Elongate vertically
-                    vertex.z *= 0.9; // Flatten slightly
-                    positionAttribute.setXYZ(i, vertex.x, vertex.y, vertex.z);
-                }
+                // Usar geometry.scale() en lugar del bucle manual
+                geometry.scale(1, 1.2, 0.9); // Elongate vertically, flatten slightly
                 geometry.computeVertexNormals();
                 
                 const rgbMaterial = new THREE.MeshStandardMaterial({ color: 0xcccccc, roughness: 0.6, metalness: 0.3 });
@@ -1168,7 +1168,10 @@
                 if (!head) return;
 
                 while(hotspotsGroup.children.length > 0) {
-                    hotspotsGroup.remove(hotspotsGroup.children[0]);
+                    const child = hotspotsGroup.children[0];
+                    hotspotsGroup.remove(child);
+                    child.geometry?.dispose();
+                    child.material?.dispose();
                 }
                 criticalAlertEl.style.opacity = 0;
 
@@ -1321,10 +1324,16 @@
             createMarketChart();
             createCompetitorChart();
             
-            // Defer Three.js initialization
+            // Aumentar timeout inicialización
             setTimeout(() => {
-                initThreeJS();
-            }, 100);
+                if (typeof THREE !== 'undefined') {
+                    initThreeJS();
+                } else {
+                    console.error('Three.js no disponible');
+                    document.getElementById('threejs-container').innerHTML = 
+                        '<div class="flex items-center justify-center h-full text-red-400">Error de carga 3D</div>';
+                }
+            }, 500);
         });
     </script>
 </body>
