@@ -788,6 +788,18 @@
         document.addEventListener('DOMContentLoaded', function() {
             // === DEBUGGING CRÍTICO ===
             console.log('🌐 DOM Cargado');
+            
+            // Inicializar elementos DOM
+            vizContainer = document.getElementById('threejs-container');
+            matrixEffectEl = document.getElementById('matrix-effect');
+            criticalAlertEl = document.getElementById('critical-alert');
+
+            console.log('📦 Elementos DOM inicializados:', {
+                vizContainer: !!vizContainer,
+                matrixEffectEl: !!matrixEffectEl,
+                criticalAlertEl: !!criticalAlertEl
+            });
+            
             console.log('📦 THREE disponible:', typeof THREE);
             console.log('🎯 Container existe:', !!document.getElementById('threejs-container'));
             
@@ -1089,86 +1101,93 @@
                 );
             }
             
-            // Three.js Visualization Logic
-            const vizContainer = document.getElementById('threejs-container');
-            const matrixEffectEl = document.getElementById('matrix-effect');
-            const criticalAlertEl = document.getElementById('critical-alert');
+            // Three.js Visualization Logic - Variables globales
+            let vizContainer, matrixEffectEl, criticalAlertEl;
             
-            // DEBUGGING DE ELEMENTOS CRÍTICOS
-            console.log('🔍 === VERIFICACIÓN DE ELEMENTOS ===');
-            console.log('📦 vizContainer encontrado:', !!vizContainer, vizContainer);
-            console.log('✨ matrixEffectEl encontrado:', !!matrixEffectEl, matrixEffectEl);
-            console.log('🚨 criticalAlertEl encontrado:', !!criticalAlertEl, criticalAlertEl);
+            // Variables de Three.js
             let scene, camera, renderer, head, hotspotsGroup;
             let currentView = 'rgb';
             let animationFrameId;
 
             function initThreeJS() {
-                console.log('🚀 === INICIANDO THREE.JS MODO EMERGENCIA ===');
+                console.log('🚀 === INICIANDO THREE.JS MODO SEGURO ===');
                 
                 if (typeof THREE === 'undefined') {
                     console.error('❌ THREE.js NO DISPONIBLE');
-                    vizContainer.innerHTML = '<div style="color: red; text-align: center; padding: 40px;">THREE.js no cargó</div>';
+                    if (vizContainer) {
+                        vizContainer.innerHTML = '<div style="color: red; text-align: center; padding: 40px;">THREE.js no cargó</div>';
+                    }
                     return;
                 }
 
-                // Limpiar container completamente
+                if (!vizContainer) {
+                    console.error('❌ Container no encontrado');
+                    return;
+                }
+
+                // Limpiar container
                 vizContainer.innerHTML = '';
                 
-                // Configuración forzada
-                scene = new THREE.Scene();
-                camera = new THREE.PerspectiveCamera(75, 16/9, 0.1, 1000);
-                camera.position.z = 4;
-                
-                // Renderer con configuración mínima
-                renderer = new THREE.WebGLRenderer();
-                renderer.setSize(640, 360); // Tamaño fijo para evitar problemas
-                renderer.setClearColor(0x222222);
-                vizContainer.appendChild(renderer.domElement);
-                
-                // Luz básica
-                const light = new THREE.DirectionalLight(0xffffff, 1);
-                light.position.set(0, 1, 1);
-                scene.add(light);
-                scene.add(new THREE.AmbientLight(0x404040, 0.5));
-                
-                // Cubo simple para test
-                const geometry = new THREE.BoxGeometry(1, 1, 1);
-                const material = new THREE.MeshLambertMaterial({ color: 0x04D9FF });
-                head = new THREE.Mesh(geometry, material);
-                scene.add(head);
-                
-                // Grupo para hotspots
-                hotspotsGroup = new THREE.Group();
-                head.add(hotspotsGroup);
-                
-                // Re-añadir overlays
-                const alertDiv = document.createElement('div');
-                alertDiv.id = 'critical-alert';
-                alertDiv.className = 'critical-alert';
-                vizContainer.appendChild(alertDiv);
-                
-                const matrixDiv = document.createElement('div');
-                matrixDiv.id = 'matrix-effect';
-                matrixDiv.className = 'matrix-effect';
-                vizContainer.appendChild(matrixDiv);
-                
-                // Actualizar referencias globales
-                criticalAlertEl = alertDiv;
-                matrixEffectEl = matrixDiv;
-                
-                // Animación simple
-                function simpleAnimate() {
-                    requestAnimationFrame(simpleAnimate);
-                    if (head) {
-                        head.rotation.x += 0.01;
-                        head.rotation.y += 0.01;
+                try {
+                    // Configuración básica
+                    scene = new THREE.Scene();
+                    camera = new THREE.PerspectiveCamera(75, 640/360, 0.1, 1000);
+                    camera.position.z = 3;
+                    
+                    // Renderer
+                    renderer = new THREE.WebGLRenderer({ antialias: true });
+                    renderer.setSize(640, 360);
+                    renderer.setClearColor(0x222222);
+                    vizContainer.appendChild(renderer.domElement);
+                    
+                    // Luces
+                    const ambientLight = new THREE.AmbientLight(0x404040, 0.6);
+                    scene.add(ambientLight);
+                    const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+                    directionalLight.position.set(1, 1, 1);
+                    scene.add(directionalLight);
+                    
+                    // Modelo simple
+                    const geometry = new THREE.SphereGeometry(1, 32, 32);
+                    const material = new THREE.MeshLambertMaterial({ color: 0xcccccc });
+                    head = new THREE.Mesh(geometry, material);
+                    scene.add(head);
+                    
+                    // Grupo para hotspots
+                    hotspotsGroup = new THREE.Group();
+                    head.add(hotspotsGroup);
+                    
+                    // Re-crear elementos overlay
+                    const newMatrixEffect = document.createElement('div');
+                    newMatrixEffect.id = 'matrix-effect';
+                    newMatrixEffect.className = 'matrix-effect';
+                    vizContainer.appendChild(newMatrixEffect);
+                    
+                    const newCriticalAlert = document.createElement('div');
+                    newCriticalAlert.id = 'critical-alert';
+                    newCriticalAlert.className = 'critical-alert';
+                    vizContainer.appendChild(newCriticalAlert);
+                    
+                    // Actualizar referencias
+                    matrixEffectEl = newMatrixEffect;
+                    criticalAlertEl = newCriticalAlert;
+                    
+                    // Animación
+                    function animate() {
+                        requestAnimationFrame(animate);
+                        if (head) head.rotation.y += 0.01;
+                        if (renderer && scene && camera) {
+                            renderer.render(scene, camera);
+                        }
                     }
-                    if (renderer) renderer.render(scene, camera);
+                    animate();
+                    
+                    console.log('✅ THREE.js inicializado correctamente');
+                    
+                } catch (error) {
+                    console.error('💥 Error en initThreeJS:', error);
+                    vizContainer.innerHTML = '<div style="color: red; padding: 20px;">Error: ' + error.message + '</div>';
                 }
-                simpleAnimate();
-                
-                console.log('✅ MODO EMERGENCIA ACTIVADO - CUBO AZUL DEBE SER VISIBLE');
             }
 
             function animate() {
