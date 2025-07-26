@@ -1718,5 +1718,46 @@
             }, 1000);
         });
     </script>
+
+    <!-- SCRIPT TEMPORAL DE VERIFICACIÓN MÓVIL -->
+    <script>
+        console.log('🔍 VERIFICACIÓN MÓVIL DIAGNOSTICOVIGENTE AI:');
+        console.log('Container height:', document.getElementById('threejs-container')?.style.height);
+        console.log('Viewport width:', window.innerWidth);
+        console.log('Is mobile detected:', /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent));
+
+        // Test touch events
+        if ('ontouchstart' in window) {
+            console.log('✅ Touch events supported');
+        } else {
+            console.log('❌ Touch events NOT supported');
+        }
+
+        // Test responsive CSS
+        const container = document.getElementById('threejs-container');
+        if (container) {
+            const styles = window.getComputedStyle(container);
+            console.log('Container computed height:', styles.height);
+            console.log('Container computed width:', styles.width);
+            console.log('Container aspect-ratio:', styles.aspectRatio);
+        }
+
+        // Test demo grid
+        const demoGrid = document.querySelector('.demo-grid');
+        if (demoGrid) {
+            const gridStyles = window.getComputedStyle(demoGrid);
+            console.log('Demo grid columns:', gridStyles.gridTemplateColumns);
+        }
+
+        // Test view buttons
+        const viewBtns = document.querySelectorAll('.view-btn');
+        if (viewBtns.length > 0) {
+            const btnStyles = window.getComputedStyle(viewBtns[0]);
+            console.log('View button min-height:', btnStyles.minHeight);
+            console.log('View button padding:', btnStyles.padding);
+        }
+
+        console.log('🎯 Abre DevTools → Toggle Device Toolbar para probar móvil');
+    </script>
 </body>
 </html>
