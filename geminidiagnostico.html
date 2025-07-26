@@ -326,6 +326,59 @@
             0%, 100% { transform: translateX(-50%) scale(1); box-shadow: 0 0 0 0 rgba(248, 113, 113, 0.7); }
             50% { transform: translateX(-50%) scale(1.05); box-shadow: 0 0 20px 10px rgba(248, 113, 113, 0); }
         }
+        
+        /* 🌟 EFECTOS AVANZADOS PARA VISUALIZACIÓN 3D */
+        .glow-effect {
+            box-shadow: 0 0 20px rgba(4, 217, 255, 0.5);
+            animation: glow-pulse 2s ease-in-out infinite alternate;
+        }
+        
+        @keyframes glow-pulse {
+            from { box-shadow: 0 0 20px rgba(4, 217, 255, 0.5); }
+            to { box-shadow: 0 0 30px rgba(4, 217, 255, 0.8), 0 0 40px rgba(4, 217, 255, 0.3); }
+        }
+        
+        .particle-trail {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: radial-gradient(circle, #04D9FF 0%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+            animation: particle-float 3s ease-in-out infinite;
+        }
+        
+        @keyframes particle-float {
+            0%, 100% { transform: translateY(0px) scale(1); opacity: 0.6; }
+            50% { transform: translateY(-10px) scale(1.2); opacity: 1; }
+        }
+        
+        .cinematic-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(
+                45deg,
+                transparent 30%,
+                rgba(4, 217, 255, 0.1) 50%,
+                transparent 70%
+            );
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+        
+        .cinematic-overlay.active {
+            opacity: 1;
+            animation: cinematic-sweep 2s ease-in-out;
+        }
+        
+        @keyframes cinematic-sweep {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
     </style>
 </head>
 <body class="antialiased">
@@ -503,9 +556,10 @@
                                 </div>
                                 <div class="mt-6">
                                     <h4 class="font-bold text-lg mb-2 text-gray-200">Visualización de Datos</h4>
-                                    <div id="threejs-container">
+                                    <div id="threejs-container" class="glow-effect">
                                         <div id="matrix-effect" class="matrix-effect"></div>
                                         <div id="critical-alert" class="critical-alert"></div>
+                                        <div id="cinematic-overlay" class="cinematic-overlay"></div>
                                         <div id="emergency-controls" style="position: absolute; bottom: 10px; left: 10px; z-index: 100;">
                                             <button onclick="window.testThreeJS()" style="background: #374151; color: white; border: 1px solid #04D9FF; padding: 5px 10px; border-radius: 4px; font-size: 11px; cursor: pointer; margin-right: 5px;">🔍 Test</button>
                                             <button onclick="window.forceRender()" style="background: #374151; color: white; border: 1px solid #34D399; padding: 5px 10px; border-radius: 4px; font-size: 11px; cursor: pointer; margin-right: 5px;">🔄 Render</button>
@@ -1004,6 +1058,9 @@
             patientSelector.addEventListener('click', function(e) {
                 const button = e.target.closest('.patient-btn');
                 if (button) {
+                    // 🎵 SONIDO DE SELECCIÓN DE PACIENTE
+                    playBeep(1000, 120);
+                    
                     document.querySelectorAll('.patient-btn').forEach(btn => btn.classList.remove('bg-primary', 'border-primary', 'text-bg-dark'));
                     button.classList.add('bg-primary', 'border-primary', 'text-bg-dark');
                     startDiagnosis(button.dataset.patient);
@@ -1055,6 +1112,10 @@
 
                 steps.forEach((step, index) => {
                     setTimeout(() => {
+                        // 🎵 SONIDO DE PROGRESO DIFERENCIADO
+                        const frequencies = [400, 500, 600, 800];
+                        playBeep(frequencies[index] || 600, 80);
+                        
                         const iconEl = document.getElementById(`${step.id}-icon`);
                         const modelEl = document.getElementById(`${step.id}-model`);
                         
@@ -1069,7 +1130,11 @@
                         }
 
                         if (index === steps.length - 1) {
-                            setTimeout(() => showResults(patient), 500);
+                            // 🎵 SONIDO DE FINALIZACIÓN TRIUNFAL
+                            setTimeout(() => {
+                                playBeep(1200, 200);
+                                showResults(patient);
+                            }, 300);
                         }
                     }, cumulativeDelay);
                     cumulativeDelay += step.duration;
@@ -1151,8 +1216,90 @@
             
             // Three.js Visualization Logic - Variables ya declaradas globalmente
 
+            // Global variables for advanced effects
+            let particles = null;
+            let lastFrame = performance.now();
+            let audioContext = null;
+
+            // 🎵 SISTEMA DE SONIDO AVANZADO
+            function initAudioSystem() {
+                try {
+                    audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                    console.log('🎵 Sistema de audio inicializado');
+                } catch (error) {
+                    console.warn('⚠️ Audio no disponible:', error);
+                }
+            }
+
+            function playBeep(frequency = 800, duration = 200) {
+                if (!audioContext) {
+                    initAudioSystem();
+                }
+                
+                if (!audioContext) return;
+                
+                try {
+                    const oscillator = audioContext.createOscillator();
+                    const gainNode = audioContext.createGain();
+                    
+                    oscillator.connect(gainNode);
+                    gainNode.connect(audioContext.destination);
+                    
+                    oscillator.frequency.value = frequency;
+                    gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
+                    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + duration / 1000);
+                    
+                    oscillator.start(audioContext.currentTime);
+                    oscillator.stop(audioContext.currentTime + duration / 1000);
+                } catch (error) {
+                    console.warn('⚠️ Error reproduciendo sonido:', error);
+                }
+            }
+
+            // 📊 MÉTRICAS EN TIEMPO REAL
+            function addLiveMetrics() {
+                const metricsDiv = document.createElement('div');
+                metricsDiv.id = 'live-metrics';
+                metricsDiv.style.cssText = `
+                    position: absolute;
+                    top: 10px;
+                    left: 10px;
+                    background: rgba(0,0,0,0.8);
+                    color: #04D9FF;
+                    padding: 10px;
+                    border-radius: 8px;
+                    font-family: monospace;
+                    font-size: 11px;
+                    z-index: 50;
+                    backdrop-filter: blur(5px);
+                    border: 1px solid rgba(4, 217, 255, 0.3);
+                `;
+                
+                function updateMetrics() {
+                    const currentTime = performance.now();
+                    const fps = Math.round(1000 / (currentTime - lastFrame));
+                    const vertices = head && head.geometry ? head.geometry.attributes.position.count : 0;
+                    
+                    metricsDiv.innerHTML = `
+                        <div style="color: #34D399; font-weight: bold;">⚡ SISTEMA ACTIVO</div>
+                        <div>FPS: <span style="color: #FBBF24;">${fps || 60}</span></div>
+                        <div>Vertices: <span style="color: #FBBF24;">${vertices.toLocaleString()}</span></div>
+                        <div>Hotspots: <span style="color: #FBBF24;">${hotspotsGroup?.children.length || 0}</span></div>
+                        <div>Vista: <span style="color: #04D9FF; font-weight: bold;">${currentView.toUpperCase()}</span></div>
+                        <div>Partículas: <span style="color: #FBBF24;">${particles ? '✅' : '❌'}</span></div>
+                    `;
+                    
+                    lastFrame = currentTime;
+                    requestAnimationFrame(updateMetrics);
+                }
+                
+                vizContainer.appendChild(metricsDiv);
+                updateMetrics();
+                console.log('📊 Métricas en tiempo real activadas');
+            }
+
             function initThreeJS() {
-                console.log('🚀 === INICIANDO THREE.JS MODO QUIRÚRGICO ===');
+                console.log('🚀 === INICIANDO THREE.JS MODO QUIRÚRGICO CON EFECTOS AVANZADOS ===');
                 
                 try {
                     // VERIFICACIONES CRÍTICAS
@@ -1194,7 +1341,7 @@
                     camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 1000);
                     camera.position.set(0, 0, 5);
                     
-                    // RENDERER CON VERIFICACIÓN WEBGL
+                    // RENDERER CON VERIFICACIÓN WEBGL Y EFECTOS AVANZADOS
                     renderer = new THREE.WebGLRenderer({ 
                         antialias: true,
                         alpha: false,
@@ -1210,10 +1357,14 @@
                     
                     // FORZAR DIMENSIONES RENDERER
                     renderer.setSize(width, height);
-                    renderer.setClearColor(0x222222, 1.0);
+                    renderer.setClearColor(0x111111, 1.0);
                     renderer.domElement.style.display = 'block';
                     renderer.domElement.style.width = '100%';
                     renderer.domElement.style.height = '100%';
+                    
+                    // EFECTOS AVANZADOS: SOMBRAS Y POST-PROCESSING
+                    renderer.shadowMap.enabled = true;
+                    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
                     
                     vizContainer.appendChild(renderer.domElement);
                     
@@ -1230,25 +1381,53 @@
                         clientHeight: canvas.clientHeight
                     });
                     
-                    // LUCES INTENSAS
+                    // LUCES INTENSAS CON SOMBRAS
                     const light = new THREE.DirectionalLight(0xffffff, 2);
                     light.position.set(5, 5, 5);
+                    light.castShadow = true;
+                    light.shadow.mapSize.width = 2048;
+                    light.shadow.mapSize.height = 2048;
                     scene.add(light);
                     
-                    const ambientLight = new THREE.AmbientLight(0x404040, 1);
+                    const ambientLight = new THREE.AmbientLight(0x404040, 0.8);
                     scene.add(ambientLight);
                     
-                    // MODELO VERDE BRILLANTE PARA DEBUG
-                    const geometry = new THREE.SphereGeometry(1.5, 32, 32);
-                    const material = new THREE.MeshBasicMaterial({ 
-                        color: 0x00ff00,
-                        wireframe: false
+                    // MODELO PRINCIPAL CON SOMBRAS
+                    const geometry = new THREE.SphereGeometry(1.5, 64, 64);
+                    const material = new THREE.MeshPhongMaterial({ 
+                        color: 0xcccccc,
+                        shininess: 100,
+                        transparent: true,
+                        opacity: 1
                     });
                     head = new THREE.Mesh(geometry, material);
                     head.position.set(0, 0, 0);
+                    head.castShadow = true;
+                    head.receiveShadow = true;
                     scene.add(head);
                     
-                    console.log('🗿 Modelo verde creado');
+                    console.log('🗿 Modelo principal con sombras creado');
+                    
+                    // 🌟 PARTÍCULAS FLOTANTES ESPECTACULARES
+                    const particleGeometry = new THREE.BufferGeometry();
+                    const particleCount = 100;
+                    const positions = new Float32Array(particleCount * 3);
+
+                    for (let i = 0; i < particleCount * 3; i++) {
+                        positions[i] = (Math.random() - 0.5) * 10;
+                    }
+
+                    particleGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+                    const particleMaterial = new THREE.PointsMaterial({
+                        color: 0x04D9FF,
+                        size: 0.05,
+                        transparent: true,
+                        opacity: 0.6
+                    });
+
+                    particles = new THREE.Points(particleGeometry, particleMaterial);
+                    scene.add(particles);
+                    console.log('✨ Partículas flotantes añadidas');
                     
                     // GRUPO HOTSPOTS
                     hotspotsGroup = new THREE.Group();
@@ -1263,11 +1442,14 @@
                     // INICIAR ANIMACIÓN
                     animate();
                     
+                    // AÑADIR MÉTRICAS EN TIEMPO REAL
+                    addLiveMetrics();
+                    
                     // ALERTA ÉXITO
                     const alertDiv = document.createElement('div');
                     alertDiv.id = 'critical-alert-dynamic';
                     alertDiv.className = 'critical-alert';
-                    alertDiv.textContent = '✅ MODELO 3D FUNCIONANDO';
+                    alertDiv.textContent = '✅ SISTEMA 3D AVANZADO ACTIVO';
                     alertDiv.style.cssText = `
                         position: absolute;
                         top: 1rem;
@@ -1280,6 +1462,7 @@
                         font-weight: bold;
                         z-index: 20;
                         opacity: 1;
+                        box-shadow: 0 0 20px rgba(52, 211, 153, 0.5);
                     `;
                     vizContainer.appendChild(alertDiv);
                     criticalAlertEl = alertDiv;
@@ -1291,7 +1474,7 @@
                         }
                     }, 3000);
                     
-                    console.log('✅ THREE.js inicializado QUIRÚRGICAMENTE');
+                    console.log('✅ THREE.js con efectos avanzados inicializado');
                     return true;
                     
                 } catch (error) {
@@ -1324,9 +1507,34 @@
                 try {
                     animationFrameId = requestAnimationFrame(animate);
                     
-                    // Rotación suave
+                    // 🎬 ANIMACIONES ESPECTACULARES
+                    
+                    // Rotación suave del modelo principal
                     head.rotation.y += 0.01;
                     head.rotation.x += 0.005;
+                    
+                    // 🌟 ROTACIÓN DE PARTÍCULAS
+                    if (particles) {
+                        particles.rotation.y += 0.002;
+                        particles.rotation.x += 0.001;
+                    }
+
+                    // 💫 PULSACIÓN DE HOTSPOTS
+                    if (hotspotsGroup && hotspotsGroup.children.length > 0) {
+                        hotspotsGroup.children.forEach((hotspot, index) => {
+                            const time = Date.now() * 0.005;
+                            hotspot.scale.setScalar(1 + Math.sin(time + index) * 0.3);
+                            if (hotspot.material && hotspot.material.opacity !== undefined) {
+                                hotspot.material.opacity = 0.5 + Math.sin(time + index) * 0.3;
+                            }
+                        });
+                    }
+
+                    // 🎥 CAMERA SMOOTH MOVEMENT (movimiento cinematográfico sutil)
+                    const time = Date.now() * 0.0005;
+                    camera.position.x = Math.sin(time) * 0.3;
+                    camera.position.y = Math.cos(time * 0.7) * 0.2;
+                    camera.lookAt(head.position);
                     
                     // Render con verificación
                     renderer.render(scene, camera);
@@ -1372,13 +1580,16 @@
             }
 
             function switchToView(view, patient = null) {
-                console.log(`🎯 Cambiando a vista: ${view}`);
+                console.log(`🎯 Transición cinematográfica a: ${view}`);
                 
                 // VERIFICACIÓN CRÍTICA
                 if (!head || !hotspotsGroup || !criticalAlertEl) {
                     console.warn('⚠️ Elementos 3D no disponibles para cambio de vista');
                     return;
                 }
+                
+                // 🎵 EFECTO DE SONIDO PARA TRANSICIÓN
+                playBeep(600, 150);
                 
                 currentView = view;
                 
@@ -1400,80 +1611,120 @@
                 // LIMPIAR ALERTA
                 criticalAlertEl.style.opacity = 0;
                 
-                switch(view) {
-                    case 'rgb':
-                        head.material = new THREE.MeshStandardMaterial({ 
-                            color: 0xcccccc, 
-                            roughness: 0.6, 
-                            metalness: 0.3,
-                            wireframe: false
-                        });
-                        console.log('📷 Vista RGB activada');
-                        break;
-                        
-                    case 'thermal':
-                        // GENERAR TEXTURA TÉRMICA
-                        const canvas = document.createElement('canvas');
-                        canvas.width = 256;
-                        canvas.height = 256;
-                        const context = canvas.getContext('2d');
-                        
-                        const gradient = context.createRadialGradient(128, 128, 0, 128, 128, 128);
-                        gradient.addColorStop(0, '#ff0000');
-                        gradient.addColorStop(0.3, '#ff8800');
-                        gradient.addColorStop(0.6, '#ffff00');
-                        gradient.addColorStop(0.8, '#00ff00');
-                        gradient.addColorStop(1, '#0088ff');
-                        
-                        context.fillStyle = gradient;
-                        context.fillRect(0, 0, 256, 256);
-                        
-                        head.material = new THREE.MeshBasicMaterial({ 
-                            map: new THREE.CanvasTexture(canvas),
-                            wireframe: false
-                        });
-                        console.log('🌡️ Vista térmica activada');
-                        break;
-                        
-                    case 'fused':
-                        head.material = new THREE.MeshStandardMaterial({ 
-                            color: 0x04D9FF, 
-                            roughness: 0.4, 
-                            metalness: 0.5, 
-                            wireframe: true 
-                        });
-                        
-                        // AGREGAR HOTSPOTS SI DISPONIBLES
-                        if (patient && patient.hotspots && patient.hotspots.length > 0) {
-                            patient.hotspots.forEach(spot => {
-                                const hotspotGeometry = new THREE.SphereGeometry(0.1, 16, 16);
-                                const hotspotMaterial = new THREE.MeshBasicMaterial({ 
-                                    color: 0xF87171, 
-                                    transparent: true, 
-                                    opacity: 0.8 
+                // 🎬 TRANSICIÓN CINEMATOGRÁFICA CON FADE
+                head.material.transparent = true;
+                const fadeOut = new THREE.Clock();
+                
+                function fadeTransition() {
+                    const elapsed = fadeOut.getElapsedTime();
+                    head.material.opacity = Math.max(0, 1 - elapsed * 2);
+                    
+                    if (elapsed < 0.5) {
+                        requestAnimationFrame(fadeTransition);
+                    } else {
+                        // CAMBIAR MATERIAL SEGÚN VISTA
+                        switch(view) {
+                            case 'rgb':
+                                head.material = new THREE.MeshPhongMaterial({ 
+                                    color: 0xcccccc,
+                                    shininess: 100,
+                                    transparent: true,
+                                    opacity: 0
                                 });
-                                const hotspot = new THREE.Mesh(hotspotGeometry, hotspotMaterial);
-                                hotspot.position.set(spot.position.x, spot.position.y, spot.position.z);
-                                hotspot.position.multiplyScalar(1.5);
-                                hotspotsGroup.add(hotspot);
+                                console.log('📷 Vista RGB con transición');
+                                break;
                                 
-                                // MOSTRAR ALERTA
-                                criticalAlertEl.textContent = spot.message;
-                                criticalAlertEl.style.opacity = 1;
-                            });
-                        } else {
-                            // ALERTA GENÉRICA PARA DEMO
-                            criticalAlertEl.textContent = 'ZONA DE PRUEBA DETECTADA - FUSIÓN IA ACTIVA';
-                            criticalAlertEl.style.opacity = 1;
+                            case 'thermal':
+                                // GENERAR TEXTURA TÉRMICA ANIMADA
+                                const canvas = document.createElement('canvas');
+                                canvas.width = 256;
+                                canvas.height = 256;
+                                const context = canvas.getContext('2d');
+                                
+                                const gradient = context.createRadialGradient(128, 128, 0, 128, 128, 128);
+                                gradient.addColorStop(0, '#ff0000');
+                                gradient.addColorStop(0.3, '#ff8800');
+                                gradient.addColorStop(0.6, '#ffff00');
+                                gradient.addColorStop(0.8, '#00ff00');
+                                gradient.addColorStop(1, '#0088ff');
+                                
+                                context.fillStyle = gradient;
+                                context.fillRect(0, 0, 256, 256);
+                                
+                                head.material = new THREE.MeshBasicMaterial({ 
+                                    map: new THREE.CanvasTexture(canvas),
+                                    transparent: true,
+                                    opacity: 0
+                                });
+                                console.log('🌡️ Vista térmica con transición');
+                                break;
+                                
+                            case 'fused':
+                                head.material = new THREE.MeshStandardMaterial({ 
+                                    color: 0x04D9FF,
+                                    wireframe: true,
+                                    transparent: true,
+                                    opacity: 0
+                                });
+                                
+                                // AGREGAR HOTSPOTS SI DISPONIBLES
+                                if (patient && patient.hotspots && patient.hotspots.length > 0) {
+                                    patient.hotspots.forEach(spot => {
+                                        const hotspotGeometry = new THREE.SphereGeometry(0.1, 16, 16);
+                                        const hotspotMaterial = new THREE.MeshBasicMaterial({ 
+                                            color: 0xF87171, 
+                                            transparent: true, 
+                                            opacity: 0.8 
+                                        });
+                                        const hotspot = new THREE.Mesh(hotspotGeometry, hotspotMaterial);
+                                        hotspot.position.set(spot.position.x, spot.position.y, spot.position.z);
+                                        hotspot.position.multiplyScalar(1.5);
+                                        hotspotsGroup.add(hotspot);
+                                        
+                                        // MOSTRAR ALERTA
+                                        criticalAlertEl.textContent = spot.message;
+                                        criticalAlertEl.style.opacity = 1;
+                                    });
+                                } else {
+                                    // ALERTA GENÉRICA PARA DEMO
+                                    criticalAlertEl.textContent = 'FUSIÓN IA ACTIVA - ANÁLISIS PROFUNDO';
+                                    criticalAlertEl.style.opacity = 1;
+                                }
+                                
+                                console.log('🔬 Vista fusión IA con transición');
+                                break;
                         }
                         
-                        console.log('🔬 Vista fusión IA activada');
-                        break;
+                        // 🎬 FADE IN
+                        const fadeIn = new THREE.Clock();
+                        function fadeInTransition() {
+                            const elapsed = fadeIn.getElapsedTime();
+                            head.material.opacity = Math.min(1, elapsed * 2);
+                            
+                            if (elapsed < 0.5) {
+                                requestAnimationFrame(fadeInTransition);
+                            }
+                        }
+                        fadeInTransition();
+                    }
                 }
+                fadeTransition();
             }
             
             document.querySelectorAll('.view-btn').forEach(btn => {
                 btn.addEventListener('click', () => {
+                    // 🎬 EFECTO CINEMATOGRÁFICO AL HACER CLIC
+                    const cinematicOverlay = document.getElementById('cinematic-overlay');
+                    if (cinematicOverlay) {
+                        cinematicOverlay.classList.add('active');
+                        setTimeout(() => {
+                            cinematicOverlay.classList.remove('active');
+                        }, 2000);
+                    }
+                    
+                    // 🎵 SONIDO DE INTERACCIÓN
+                    playBeep(800, 100);
+                    
                     const patientKey = document.querySelector('.patient-btn.border-primary')?.dataset.patient;
                     if (patientKey) {
                         switchToView(btn.dataset.view, patientData[patientKey]);
@@ -1595,13 +1846,46 @@
             createMarketChart();
             createCompetitorChart();
             
-            // Mostrar indicador de carga
+            // 🌟 CREAR EFECTO DE PARTÍCULAS FLOTANTES EN EL CONTAINER
+            function createFloatingParticles() {
+                const container = document.getElementById('threejs-container');
+                if (!container) return;
+                
+                for (let i = 0; i < 15; i++) {
+                    const particle = document.createElement('div');
+                    particle.className = 'particle-trail';
+                    particle.style.left = Math.random() * 100 + '%';
+                    particle.style.top = Math.random() * 100 + '%';
+                    particle.style.animationDelay = Math.random() * 3 + 's';
+                    particle.style.animationDuration = (2 + Math.random() * 2) + 's';
+                    container.appendChild(particle);
+                    
+                    // Auto-remover después de 10 segundos
+                    setTimeout(() => {
+                        if (particle.parentNode) {
+                            particle.parentNode.removeChild(particle);
+                        }
+                    }, 10000);
+                }
+            }
+
+            // Mostrar indicador de carga con efectos
             const container = document.getElementById('threejs-container');
-            container.innerHTML = '<div class="flex items-center justify-center h-full text-primary">🔄 Cargando visualización 3D...</div>';
+            container.innerHTML = '<div class="flex items-center justify-center h-full text-primary">🔄 Cargando visualización 3D avanzada...</div>';
+            
+            // Crear partículas flotantes durante la carga
+            createFloatingParticles();
+            
+            // 🎵 SONIDO DE INICIO DEL SISTEMA
+            setTimeout(() => {
+                playBeep(300, 100);
+                setTimeout(() => playBeep(400, 100), 150);
+                setTimeout(() => playBeep(500, 150), 300);
+            }, 500);
             
             // Inicialización segura del sistema 3D
             setTimeout(() => {
-                console.log('🚀 Iniciando sistema 3D...');
+                console.log('🚀 Iniciando sistema 3D avanzado...');
                 console.log('🔍 Pre-init check:', {
                     THREE: typeof THREE,
                     container: !!vizContainer,
@@ -1614,15 +1898,24 @@
                 console.log('🎯 initThreeJS result:', success);
                 
                 if (success) {
-                    console.log('🎉 Sistema completamente funcional');
+                    // 🎵 SONIDO DE ÉXITO
+                    playBeep(800, 200);
+                    
+                    console.log('🎉 Sistema completamente funcional con efectos avanzados');
                     console.log('📊 Post-init state:', {
                         scene: !!scene,
                         camera: !!camera,
                         renderer: !!renderer,
                         head: !!head,
+                        particles: !!particles,
                         rendererDomElement: !!renderer?.domElement
                     });
+                    
+                    // Crear más partículas de celebración
+                    setTimeout(createFloatingParticles, 1000);
                 } else {
+                    // 🎵 SONIDO DE ERROR
+                    playBeep(200, 300);
                     console.log('❌ Sistema 3D falló - Ver errores arriba');
                 }
             }, 1000);
