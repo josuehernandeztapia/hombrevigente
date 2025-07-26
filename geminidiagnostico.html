@@ -798,12 +798,13 @@
                     console.error('❌ THREE.js NO SE CARGÓ');
                     const container = document.getElementById('threejs-container');
                     if (container) {
-                        container.innerHTML = '<div style="color: red; padding: 20px; text-align: center;">CDN Three.js falló - Verificar conexión</div>';
+                        container.innerHTML = '<div style="color: red; padding: 20px; text-align: center;">❌ CDN Three.js falló - Verificar conexión a internet</div>';
                     }
                 } else {
                     console.log('✅ THREE.js cargado correctamente');
+                    console.log('🔧 Versión THREE:', THREE.REVISION);
                 }
-            }, 100);
+            }, 500);
             
             // Chart.js dark mode defaults
             Chart.defaults.color = 'hsl(215, 25%, 70%)';
@@ -1092,29 +1093,36 @@
             const vizContainer = document.getElementById('threejs-container');
             const matrixEffectEl = document.getElementById('matrix-effect');
             const criticalAlertEl = document.getElementById('critical-alert');
+            
+            // DEBUGGING DE ELEMENTOS CRÍTICOS
+            console.log('🔍 === VERIFICACIÓN DE ELEMENTOS ===');
+            console.log('📦 vizContainer encontrado:', !!vizContainer, vizContainer);
+            console.log('✨ matrixEffectEl encontrado:', !!matrixEffectEl, matrixEffectEl);
+            console.log('🚨 criticalAlertEl encontrado:', !!criticalAlertEl, criticalAlertEl);
             let scene, camera, renderer, head, hotspotsGroup;
             let currentView = 'rgb';
             let animationFrameId;
 
             function initThreeJS() {
-                console.log('=== DEBUGGING THREE.JS ===');
-                console.log('THREE disponible:', typeof THREE !== 'undefined');
-                console.log('Container:', vizContainer);
+                console.log('🚀 === INICIANDO THREE.JS ===');
+                console.log('📦 THREE disponible:', typeof THREE !== 'undefined');
+                console.log('🎯 Container:', vizContainer);
                 
                 if (typeof THREE === 'undefined') {
-                    console.error('THREE.js NO CARGADO');
+                    console.error('❌ THREE.js NO CARGADO - FALLO CRÍTICO');
                     if (vizContainer) {
-                        vizContainer.innerHTML = '<div class="flex items-center justify-center h-full text-red-400">Error: Three.js no se cargó</div>';
+                        vizContainer.innerHTML = '<div class="flex items-center justify-center h-full text-red-400 p-4 text-center">❌ Error: Three.js no se cargó<br><small>Verificar conexión a internet</small></div>';
                     }
                     return;
                 }
                 
                 if (!vizContainer) {
-                    console.error('Container no encontrado');
+                    console.error('❌ Container no encontrado - FALLO CRÍTICO');
                     return;
                 }
                 
-                console.log('Container dimensiones:', vizContainer.clientWidth, 'x', vizContainer.clientHeight);
+                console.log('📐 Container dimensiones:', vizContainer.clientWidth, 'x', vizContainer.clientHeight);
+                console.log('🔧 THREE.js versión:', THREE.REVISION);
                 
                 // Clear container before initializing
                 while (vizContainer.firstChild) {
@@ -1131,6 +1139,8 @@
                 renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
                 renderer.setSize(vizContainer.clientWidth, vizContainer.clientHeight);
                 vizContainer.appendChild(renderer.domElement);
+                console.log('🎨 Renderer WebGL creado:', renderer.domElement);
+                console.log('🖥️ Canvas añadido al DOM:', vizContainer.contains(renderer.domElement));
 
                 const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
                 scene.add(ambientLight);
@@ -1163,6 +1173,8 @@
                 }
                 if(renderer && scene && camera) {
                     renderer.render(scene, camera);
+                } else {
+                    console.warn('⚠️ Animate: Missing components - renderer:', !!renderer, 'scene:', !!scene, 'camera:', !!camera);
                 }
             }
             
@@ -1249,11 +1261,13 @@
                         // FORZAR ALERTA PARA TESTING
                         const alertEl = document.getElementById('critical-alert');
                         if (alertEl) {
-                            alertEl.textContent = 'ZONA DE PRUEBA DETECTADA';
+                            alertEl.textContent = 'ZONA DE PRUEBA DETECTADA - FUSIÓN IA ACTIVA';
                             alertEl.style.opacity = 1;
-                            console.log('🚨 Alerta activada');
+                            console.log('🚨 Alerta crítica activada - Texto:', alertEl.textContent);
+                            console.log('🎯 Alerta visible - Opacity:', alertEl.style.opacity);
                         } else {
-                            console.error('❌ Elemento critical-alert no encontrado');
+                            console.error('❌ Elemento critical-alert no encontrado en DOM');
+                            console.log('🔍 Elementos disponibles:', document.querySelectorAll('[id*="alert"]'));
                         }
                         
                         console.log('🔬 Vista fusión IA activada');
@@ -1378,14 +1392,26 @@
             
             // Aumentar timeout inicialización
             setTimeout(() => {
-                console.log('🚀 Iniciando Three.js...');
+                console.log('🚀 === INICIANDO SISTEMA 3D ===');
+                console.log('⏰ Timeout completado - Verificando dependencias...');
+                console.log('📦 THREE disponible:', typeof THREE !== 'undefined');
+                console.log('🎯 Container disponible:', !!document.getElementById('threejs-container'));
+                console.log('🚨 Alert element disponible:', !!document.getElementById('critical-alert'));
+                
                 if (typeof THREE !== 'undefined') {
-                    console.log('🎯 Iniciando sistema 3D...');
-                    initThreeJS();
+                    console.log('✅ Todas las dependencias OK - Iniciando sistema 3D...');
+                    try {
+                        initThreeJS();
+                        console.log('🎉 Sistema 3D inicializado exitosamente');
+                    } catch (error) {
+                        console.error('💥 Error al inicializar Three.js:', error);
+                        document.getElementById('threejs-container').innerHTML = 
+                            '<div class="flex items-center justify-center h-full text-red-400 p-4 text-center">💥 Error de inicialización 3D<br><small>' + error.message + '</small></div>';
+                    }
                 } else {
                     console.error('❌ Three.js no disponible después de 1000ms');
                     document.getElementById('threejs-container').innerHTML = 
-                        '<div class="flex items-center justify-center h-full text-red-400">❌ Error de carga 3D</div>';
+                        '<div class="flex items-center justify-center h-full text-red-400 p-4 text-center">❌ Error de carga 3D<br><small>Three.js no se cargó</small></div>';
                 }
             }, 1000);
         });
