@@ -1133,7 +1133,7 @@
 
                 // CONFIGURACIÓN BÁSICA CON DEBUGGING
                 scene = new THREE.Scene();
-                scene.background = new THREE.Color(0x222222); // Fondo gris para ver diferencia
+                scene.background = new THREE.Color(0x000000);
                 
                 // CÁMARA CON POSICIÓN FIJA Y CLARA
                 camera = new THREE.PerspectiveCamera(75, vizContainer.clientWidth / vizContainer.clientHeight, 0.1, 1000);
@@ -1144,7 +1144,7 @@
                 // RENDERER CON DEBUGGING
                 renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
                 renderer.setSize(vizContainer.clientWidth, vizContainer.clientHeight);
-                renderer.setClearColor(0x333333); // Fondo visible para debug
+                renderer.setClearColor(0x000000);
                 vizContainer.appendChild(renderer.domElement);
                 console.log('🖼️ Renderer creado, tamaño:', vizContainer.clientWidth, 'x', vizContainer.clientHeight);
 
@@ -1158,9 +1158,11 @@
 
                 // MODELO SIMPLE Y VISIBLE
                 const geometry = new THREE.SphereGeometry(1, 32, 32);
-                const material = new THREE.MeshLambertMaterial({ 
+                geometry.scale(1, 1.3, 0.8); // Forma más parecida a cabeza humana
+                const material = new THREE.MeshStandardMaterial({ 
                     color: 0xcccccc,
-                    wireframe: false
+                    roughness: 0.6,
+                    metalness: 0.3
                 });
                 head = new THREE.Mesh(geometry, material);
                 head.position.set(0, 0, 0); // Centro exacto
@@ -1243,16 +1245,23 @@
                         canvas.width = 256;
                         canvas.height = 256;
                         const context = canvas.getContext('2d');
+                        
+                        // Gradiente térmico más realista
                         const gradient = context.createRadialGradient(128, 128, 0, 128, 128, 128);
-                        gradient.addColorStop(0, '#ff4444');
-                        gradient.addColorStop(0.3, '#ffaa00');
-                        gradient.addColorStop(0.6, '#44ff44');
-                        gradient.addColorStop(1, '#04D9FF');
+                        gradient.addColorStop(0, '#ff0000');    // Rojo centro (caliente)
+                        gradient.addColorStop(0.3, '#ff8800');  // Naranja
+                        gradient.addColorStop(0.6, '#ffff00');  // Amarillo
+                        gradient.addColorStop(0.8, '#00ff00');  // Verde
+                        gradient.addColorStop(1, '#0088ff');    // Azul (frío)
+                        
                         context.fillStyle = gradient;
                         context.fillRect(0, 0, 256, 256);
-                        head.material = new THREE.MeshBasicMaterial({ map: new THREE.CanvasTexture(canvas) });
-                        head.material.wireframe = false;
-                        console.log('🌡️ Vista térmica activada');
+                        
+                        head.material = new THREE.MeshBasicMaterial({ 
+                            map: new THREE.CanvasTexture(canvas),
+                            wireframe: false
+                        });
+                        console.log('🌡️ Vista térmica activada - Heat map aplicado');
                         break;
                     case 'fused':
                         console.log('🔬 Activando vista fusión');
