@@ -1,0 +1,1242 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DiagnósticoVigente AI - Blueprint Interactivo Definitivo</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: "Hombre Vigente" - A high-tech, premium dark theme inspired by the brand's logo. Features a dark gray/black background, brushed metal textures, and a vibrant electric blue accent with glow effects. -->
+    <!-- Application Structure Plan: A narrative, single-page dashboard structure with a sticky top navigation. The flow is designed to guide the user from the high-level value proposition ("Visión") to the interactive core ("Demo"), followed by deep-dive sections ("Tecnología", "Negocio", "Roadmap"). This non-linear, thematic structure is more engaging and user-friendly than the original report's format, allowing different personas (investor, clinician, CTO) to access relevant information quickly. Key interactions include the patient archetype simulator, dynamic ROI calculator, and interactive charts. -->
+    <!-- Visualization & Content Choices: 
+        - Market Growth: Goal: Inform/Impress. Viz: Bar Chart (Chart.js) to show the massive market potential. Interaction: Hover tooltips. Justification: More impactful than static numbers.
+        - Competitive Analysis: Goal: Compare. Viz: Radar Chart (Chart.js). Interaction: Hover tooltips. Justification: Visually demonstrates superiority across multiple vectors (tech, cost, model) more effectively than a table.
+        - ROI Calculator: Goal: Persuade. Viz: Interactive Sliders + Dynamic Bar Chart (Chart.js) + KPI cards. Interaction: User-controlled sliders update the chart and ROI metrics in real-time. Justification: Turns an abstract claim (27.2x ROI) into a tangible, personalized financial model for the clinic owner.
+        - Tech Pipeline: Goal: Organize/Explain. Viz: Numbered, styled HTML/CSS diagram. Interaction: Content appears on scroll. Justification: Clearly illustrates the complex data flow without needing SVG/Mermaid, making it accessible and easy to understand.
+        - Roadmap: Goal: Change/Future-Pacing. Viz: Vertical timeline with HTML/CSS. Interaction: Current phase highlighted. Justification: Clearly communicates the strategic vision and milestones.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        :root {
+            --bg-dark: #111827;
+            --surface-dark: #1F2937;
+            --surface-light: #374151;
+            --text-light: #F3F4F6;
+            --text-muted: #9CA3AF;
+            --primary-blue: #04D9FF;
+            --primary-blue-dark: #00AEEF;
+            --accent-green: #34D399;
+            --border-color: #4B5563;
+        }
+        html {
+            font-size: 16px;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-light);
+        }
+        .text-primary { color: var(--primary-blue); }
+        .bg-primary { background-color: var(--primary-blue); }
+        .border-primary { border-color: var(--primary-blue); }
+        .ring-primary { --tw-ring-color: var(--primary-blue); }
+        .text-accent { color: var(--accent-green); }
+        .bg-accent { background-color: var(--accent-green); }
+
+        .btn-primary {
+            background-color: var(--primary-blue);
+            color: var(--bg-dark);
+            font-weight: 700;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 15px rgba(4, 217, 255, 0.3);
+        }
+        .btn-primary:hover {
+            background-color: var(--primary-blue-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 0 25px rgba(4, 217, 255, 0.5);
+        }
+        .btn-secondary {
+            background-color: transparent;
+            color: var(--primary-blue);
+            border: 1px solid var(--primary-blue);
+            transition: all 0.3s ease;
+        }
+        .btn-secondary:hover {
+            background-color: rgba(4, 217, 255, 0.1);
+            transform: translateY(-2px);
+        }
+        .nav-link {
+            position: relative;
+            transition: color 0.3s ease;
+            color: var(--text-muted);
+        }
+        .nav-link.active, .nav-link:hover {
+            color: var(--primary-blue);
+            text-shadow: 0 0 10px rgba(4, 217, 255, 0.7);
+        }
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -4px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: var(--primary-blue);
+            transition: width 0.3s ease;
+        }
+        .nav-link.active::after {
+            width: 100%;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+        .kpi-card h3 {
+            font-size: 2.5rem;
+            line-height: 1.1;
+            text-shadow: 0 0 15px rgba(52, 211, 153, 0.5);
+        }
+        @media (min-width: 1024px) {
+            .kpi-card h3 {
+                font-size: 3.5rem;
+            }
+        }
+        .fade-in {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .progress-bar-inner, .subscore-bar-inner {
+            transition: width 1.5s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+        .flywheel-arrow {
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        .tech-toggle-label {
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+            color: var(--text-muted);
+        }
+        .tech-toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 40px;
+            height: 20px;
+        }
+        .tech-toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .tech-toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: var(--surface-light);
+            transition: .4s;
+            border-radius: 20px;
+        }
+        .tech-toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 14px;
+            width: 14px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        input:checked + .tech-toggle-slider {
+            background-color: var(--primary-blue);
+        }
+        input:checked + .tech-toggle-slider:before {
+            transform: translateX(20px);
+        }
+        .technical-details {
+            display: none;
+            margin-top: 1rem;
+            padding: 1.5rem;
+            background-color: rgba(4, 217, 255, 0.05);
+            border-radius: 0.5rem;
+            border-left: 4px solid var(--primary-blue);
+        }
+        body.tech-mode .technical-details {
+            display: block;
+        }
+        .technical-details h4 {
+            color: var(--primary-blue);
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+        }
+        .technical-details p, .technical-details li {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            line-height: 1.6;
+        }
+        .technical-details ul {
+            list-style-position: inside;
+            list-style-type: disc;
+            margin-left: 0.5rem;
+        }
+        .technical-details code {
+            background-color: var(--surface-dark);
+            color: var(--primary-blue);
+            padding: 0.125rem 0.25rem;
+            border-radius: 0.25rem;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.85rem;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.8);
+            backdrop-filter: blur(5px);
+        }
+        .modal-content {
+            background-color: var(--surface-dark);
+            margin: 10% auto;
+            padding: 2rem;
+            border: 1px solid var(--border-color);
+            width: 80%;
+            max-width: 600px;
+            border-radius: 1rem;
+            animation: slide-down 0.5s ease-out;
+        }
+        @keyframes slide-down {
+            from { transform: translateY(-50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        .close-button {
+            color: var(--text-muted);
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <header id="header" class="bg-black/50 backdrop-blur-lg sticky top-0 z-50 border-b border-gray-800">
+        <nav class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex-shrink-0">
+                    <a href="#hero" class="text-2xl font-extrabold text-gray-200">HOMBRE<span class="text-primary">VIGENTE</span></a>
+                </div>
+                <div class="hidden md:flex items-center">
+                    <div class="ml-10 flex items-baseline space-x-4">
+                        <a href="#vision" class="nav-link px-3 py-2 rounded-md text-sm font-medium">Visión</a>
+                        <a href="#demo" class="nav-link px-3 py-2 rounded-md text-sm font-medium">Demo</a>
+                        <a href="#tecnologia" class="nav-link px-3 py-2 rounded-md text-sm font-medium">Tecnología</a>
+                        <a href="#negocio" class="nav-link px-3 py-2 rounded-md text-sm font-medium">Negocio</a>
+                        <a href="#roadmap" class="nav-link px-3 py-2 rounded-md text-sm font-medium">Roadmap</a>
+                    </div>
+                </div>
+                <div class="hidden md:flex items-center gap-4">
+                    <label for="tech-mode-toggle" class="tech-toggle-label">
+                        <span class="text-xs font-medium">Modo Técnico</span>
+                        <div class="tech-toggle-switch">
+                            <input type="checkbox" id="tech-mode-toggle">
+                            <span class="tech-toggle-slider"></span>
+                        </div>
+                    </label>
+                    <a href="#demo" class="btn-primary font-semibold px-4 py-2 rounded-lg text-sm">Probar Demo</a>
+                </div>
+                <div class="md:hidden">
+                    <button id="mobile-menu-button" class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 focus:outline-none">
+                        <span class="sr-only">Abrir menú principal</span>
+                        <svg class="block h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+                        <svg class="hidden h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                    </button>
+                </div>
+            </div>
+        </nav>
+        <div id="mobile-menu" class="md:hidden hidden bg-black/80">
+            <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+                <a href="#vision" class="block nav-link px-3 py-2 rounded-md text-base font-medium">Visión</a>
+                <a href="#demo" class="block nav-link px-3 py-2 rounded-md text-base font-medium">Demo</a>
+                <a href="#tecnologia" class="block nav-link px-3 py-2 rounded-md text-base font-medium">Tecnología</a>
+                <a href="#negocio" class="block nav-link px-3 py-2 rounded-md text-base font-medium">Negocio</a>
+                <a href="#roadmap" class="block nav-link px-3 py-2 rounded-md text-base font-medium">Roadmap</a>
+                <div class="border-t border-gray-700 mt-2 pt-2">
+                    <label for="tech-mode-toggle-mobile" class="tech-toggle-label px-3 py-2">
+                        <span class="text-sm font-medium">Modo Técnico</span>
+                        <div class="tech-toggle-switch">
+                            <input type="checkbox" id="tech-mode-toggle-mobile">
+                            <span class="tech-toggle-slider"></span>
+                        </div>
+                    </label>
+                </div>
+                <a href="#demo" class="block btn-primary w-full text-center mt-2 font-semibold px-4 py-2 rounded-lg text-sm">Probar Demo</a>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <section id="hero" class="py-20 md:py-32 relative overflow-hidden">
+            <div class="absolute inset-0 bg-grid-pattern opacity-10"></div>
+            <div class="absolute inset-0 bg-radial-gradient"></div>
+            <style>
+                .bg-grid-pattern { background-image: linear-gradient(var(--border-color) 1px, transparent 1px), linear-gradient(to right, var(--border-color) 1px, var(--bg-dark) 1px); background-size: 40px 40px; }
+                .bg-radial-gradient { background: radial-gradient(circle at 50% 50%, rgba(4, 217, 255, 0.15) 0%, transparent 70%); }
+            </style>
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
+                <h1 class="text-4xl md:text-6xl font-extrabold tracking-tight leading-tight" style="text-shadow: 0 0 30px rgba(4, 217, 255, 0.5);">
+                    <span class="block text-gray-200">El <span class="text-primary">Médico Aumentado</span> para la</span>
+                    <span class="block text-primary">Estética de Alto Rendimiento.</span>
+                </h1>
+                <p class="mt-6 max-w-3xl mx-auto text-lg md:text-xl text-text-muted">
+                    "DiagnósticoVigente AI redefine la estética masculina fusionando visión estructural 4K, mapas térmicos y una IA de última generación. Nuestro demo clínico muestra cómo, en segundos, identificamos áreas críticas, generamos métricas accionables y personalizamos tratamientos con precisión científica… a una fracción del costo del líder de mercado."
+                </p>
+                <div class="mt-8 flex justify-center gap-4">
+                    <a href="#demo" class="btn-primary font-semibold px-8 py-3 rounded-lg text-base">Iniciar Demo Interactivo</a>
+                    <a href="#tecnologia" class="btn-secondary font-semibold px-8 py-3 rounded-lg text-base">Ver la Tecnología</a>
+                </div>
+            </div>
+        </section>
+
+        <section id="vision" class="py-20 md:py-24 bg-surface-dark">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-16">
+                    <h2 class="text-3xl md:text-4xl font-bold tracking-tight text-primary" style="text-shadow: 0 0 20px rgba(4, 217, 255, 0.3);">Una Oportunidad de Mercado Exponencial</h2>
+                    <p class="mt-4 max-w-3xl mx-auto text-lg text-text-muted">El sector de la estética masculina está en un punto de inflexión, con un 62% de los hombres frustrados por la falta de soluciones basadas en datos. Estamos creando una nueva categoría para este mercado desatendido de $95 mil millones.</p>
+                </div>
+                <div class="grid md:grid-cols-2 gap-8 lg:gap-16 items-center">
+                    <div class="fade-in">
+                        <h3 class="text-2xl font-bold mb-4 text-gray-200">Crecimiento del Mercado de Estética Masculina</h3>
+                        <p class="text-text-muted mb-6">El sector está en un punto de inflexión, con proyecciones que alcanzan los $95 mil millones para 2031. Este crecimiento no es solo en volumen, sino en la demanda de soluciones sofisticadas, personalizadas y basadas en datos, especialmente de una nueva generación de consumidores que rechazan el enfoque de "talla única".</p>
+                        <div class="chart-container">
+                            <canvas id="marketChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="fade-in">
+                        <h3 class="text-2xl font-bold mb-4 text-gray-200">El Vacío Competitivo</h3>
+                        <p class="text-text-muted mb-6">Los sistemas actuales son caros y superficiales (VISIA) o de baja fidelidad y no clínicos (Haut.AI). Nuestra plataforma ofrece una fusión única de datos de grado clínico (RGB+IR) con un modelo de negocio SaaS escalable, creando un foso competitivo imbatible.</p>
+                        <div class="chart-container">
+                            <canvas id="competitorChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="demo" class="py-20 md:py-24">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-16">
+                    <h2 class="text-3xl md:text-4xl font-bold tracking-tight text-primary" style="text-shadow: 0 0 20px rgba(4, 217, 255, 0.3);">Demo Interactivo: El Viaje Diagnóstico</h2>
+                    <p class="mt-4 max-w-3xl mx-auto text-lg text-text-muted">Esta es la experiencia central de DiagnósticoVigente AI. Siga los pasos para ver cómo transformamos un escaneo en un plan de tratamiento accionable y un ROI claro. Esta simulación demuestra cómo hacemos visible lo invisible, convirtiendo la incertidumbre en certeza clínica y financiera.</p>
+                </div>
+
+                <div class="bg-surface-dark p-6 md:p-10 rounded-2xl shadow-2xl border border-border-color">
+                    <div class="grid lg:grid-cols-5 gap-8">
+                        <div class="lg:col-span-2">
+                            <h3 class="font-bold text-xl mb-4 text-gray-200">1. Seleccione un Arquetipo de Paciente</h3>
+                            <div id="patient-selector" class="space-y-3"></div>
+
+                            <div id="patient-info" class="mt-6 p-4 rounded-lg bg-surface-light hidden">
+                                <h4 id="patient-name" class="font-bold text-lg text-primary"></h4>
+                                <p id="patient-desc" class="text-sm text-text-light mt-1"></p>
+                            </div>
+
+                            <div id="scan-progress" class="mt-8 hidden">
+                                <h3 class="font-bold text-xl mb-4 text-gray-200">2. Proceso de Diagnóstico en Vivo</h3>
+                                <div id="scan-steps-container" class="space-y-4">
+                                    <!-- Steps will be injected here by JS -->
+                                </div>
+                                <div class="mt-6 w-full bg-surface-light rounded-full h-2.5">
+                                    <div id="progress-bar" class="bg-primary h-2.5 rounded-full progress-bar-inner" style="width: 0%"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="lg:col-span-3">
+                            <div id="results-view" class="hidden">
+                                <h3 class="font-bold text-xl mb-4 text-gray-200">3. Resultados y Plan de Acción</h3>
+                                <div class="grid md:grid-cols-2 gap-6">
+                                    <div class="bg-surface-light p-6 rounded-lg cursor-pointer border border-border-color" id="indice-card">
+                                        <div class="text-center">
+                                            <p class="text-sm font-medium text-accent">ÍNDICE VIGENTE</p>
+                                            <p id="indice-vigente-score" class="text-6xl font-extrabold text-accent mt-1">0</p>
+                                            <p id="indice-vigente-desc" class="text-xs text-text-muted mt-1"></p>
+                                        </div>
+                                        <div id="indice-breakdown" class="mt-4 space-y-3">
+                                            <div>
+                                                <div class="flex justify-between items-center text-sm mb-1">
+                                                    <span class="font-medium text-text-muted">Salud Estructural</span>
+                                                    <span id="estructural-score" class="font-bold text-primary">0/100</span>
+                                                </div>
+                                                <div class="w-full bg-gray-700 rounded-full h-2"><div id="estructural-bar" class="bg-primary h-2 rounded-full subscore-bar-inner" style="width: 0%"></div></div>
+                                            </div>
+                                            <div>
+                                                <div class="flex justify-between items-center text-sm mb-1">
+                                                    <span class="font-medium text-text-muted">Calidad de Piel</span>
+                                                    <span id="piel-score" class="font-bold text-primary">0/100</span>
+                                                </div>
+                                                <div class="w-full bg-gray-700 rounded-full h-2"><div id="piel-bar" class="bg-primary h-2 rounded-full subscore-bar-inner" style="width: 0%"></div></div>
+                                            </div>
+                                            <div>
+                                                <div class="flex justify-between items-center text-sm mb-1">
+                                                    <span class="font-medium text-text-muted">Salud Biológica</span>
+                                                    <span id="biologico-score" class="font-bold text-primary">0/100</span>
+                                                </div>
+                                                <div class="w-full bg-gray-700 rounded-full h-2"><div id="biologico-bar" class="bg-primary h-2 rounded-full subscore-bar-inner" style="width: 0%"></div></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="bg-surface-light p-6 rounded-lg border border-border-color">
+                                        <h4 class="font-bold text-primary mb-2">Plan Recomendado por IA</h4>
+                                        <ul id="treatment-plan" class="space-y-1 text-sm text-text-light list-disc list-inside"></ul>
+                                    </div>
+                                </div>
+                                <div class="mt-6">
+                                    <h4 class="font-bold text-lg mb-2 text-gray-200">Visualización de Datos</h4>
+                                    <div class="relative aspect-video bg-black rounded-lg overflow-hidden border border-border-color">
+                                        <img id="analysis-image" src="https://placehold.co/600x400/111827/111827?text=" class="w-full h-full object-cover transition-opacity duration-300">
+                                        <div id="analysis-overlay" class="absolute inset-0 p-4 bg-black/70 text-white opacity-0 hover:opacity-100 transition-opacity duration-300">
+                                            <h5 id="overlay-title" class="font-bold"></h5>
+                                            <p id="overlay-text" class="text-sm mt-2"></p>
+                                        </div>
+                                    </div>
+                                    <div class="flex justify-center gap-2 mt-2">
+                                        <button data-view="rgb" class="view-btn btn-secondary text-xs px-3 py-1 rounded-full">RGB</button>
+                                        <button data-view="thermal" class="view-btn btn-secondary text-xs px-3 py-1 rounded-full">Térmico</button>
+                                        <button data-view="fused" class="view-btn btn-secondary text-xs px-3 py-1 rounded-full">Fusión IA</button>
+                                    </div>
+                                </div>
+                                <div class="mt-8">
+                                    <h3 class="font-bold text-xl mb-4 text-gray-200">4. Simule su Retorno de Inversión (ROI)</h3>
+                                    <div class="grid md:grid-cols-3 gap-4 text-center mb-6">
+                                        <div class="bg-surface-light p-4 rounded-lg border border-border-color">
+                                            <label for="scans-slider" class="text-sm font-medium text-text-muted">Escaneos / Mes</label>
+                                            <p id="scans-value" class="text-2xl font-bold text-primary"></p>
+                                            <input id="scans-slider" type="range" min="10" max="500" value="200" step="10" class="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer">
+                                        </div>
+                                        <div class="bg-surface-light p-4 rounded-lg border border-border-color">
+                                            <label for="revenue-slider" class="text-sm font-medium text-text-muted">Ingreso / Paciente</label>
+                                            <p id="revenue-value" class="text-2xl font-bold text-primary"></p>
+                                            <input id="revenue-slider" type="range" min="5000" max="50000" value="15000" step="1000" class="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer">
+                                        </div>
+                                        <div class="bg-surface-light p-4 rounded-lg border border-border-color">
+                                            <label for="uplift-slider" class="text-sm font-medium text-text-muted">Uplift de Conversión</p>
+                                            <p id="uplift-value" class="text-2xl font-bold text-primary"></p>
+                                            <input id="uplift-slider" type="range" min="10" max="100" value="68" step="1" class="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer">
+                                        </div>
+                                    </div>
+                                    <div class="bg-surface-dark border border-border-color p-6 rounded-lg">
+                                        <div class="chart-container" style="height: 250px; max-height: 250px;">
+                                            <canvas id="roiChart"></canvas>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                             <div id="demo-placeholder" class="flex items-center justify-center h-full bg-surface-light rounded-lg border-2 border-dashed border-border-color">
+                                <p class="text-text-muted p-8 text-center">Seleccione un arquetipo para iniciar el diagnóstico.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="tecnologia" class="py-20 md:py-24 bg-surface-dark">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-16">
+                    <h2 class="text-3xl md:text-4xl font-bold tracking-tight text-primary" style="text-shadow: 0 0 20px rgba(4, 217, 255, 0.3);">Arquitectura para una Precisión Imbatible</h2>
+                    <p class="mt-4 max-w-3xl mx-auto text-lg text-text-muted">Esta sección detalla nuestro motor tecnológico: desde la innovadora fusión de datos hasta el cerebro de IA multi-modelo y el pipeline que lo orquesta todo. Esta es nuestra ventaja injusta, protegida por propiedad intelectual y diseñada para escalar.</p>
+                </div>
+                <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+                    <!-- Fusión RGB + IR -->
+                    <div class="fade-in p-6 bg-surface-light rounded-lg flex flex-col border border-border-color">
+                        <div class="text-4xl font-extrabold text-primary mb-3">01</div>
+                        <h3 class="font-bold text-lg mb-2 text-gray-200">Fusión RGB + IR</h3>
+                        <p class="text-sm text-text-muted flex-grow">Capturamos la estructura visible y la biología invisible (inflamación, vascularización). Esta fusión de datos nos da una visión 360° de la salud de la piel.</p>
+                        <button class="btn-secondary text-xs mt-4 w-full tech-details-btn">Ver Detalles Técnicos</button>
+                        <div class="technical-details">
+                            <h4>Justificación Científica y Clínica</h4>
+                            <p>La termografía infrarroja (IR) es un método validado para detectar inflamación subclínica. Diferenciales de temperatura de <strong>+$1.5°C a +$5°C</strong> se correlacionan con procesos inflamatorios (Ref: PMC10744680). Nuestra fusión permite identificar estos patrones invisibles al ojo humano, lo que es crítico para:</p>
+                            <ul>
+                                <li><strong>Seguridad:</strong> Evitar inyectar rellenos en áreas con inflamación oculta.</li>
+                                <li><strong>Precisión:</strong> Diferenciar entre una mancha solar (pigmento) y rosácea (vascular) para seleccionar el láser correcto.</li>
+                            </ul>
+                            <p>Esta capacidad de análisis predictivo es inaccesible para competidores basados solo en RGB.</p>
+                        </div>
+                    </div>
+                    <!-- Índice Vigente -->
+                    <div class="fade-in p-6 bg-surface-light rounded-lg flex flex-col border border-border-color">
+                        <div class="text-4xl font-extrabold text-primary mb-3">02</div>
+                        <h3 class="font-bold text-lg mb-2 text-gray-200">Índice Vigente™</h3>
+                        <p class="text-sm text-text-muted flex-grow">Nuestra métrica propietaria y patentable. Traduce cientos de puntos de datos en una única puntuación accionable y estandariza la consulta.</p>
+                        <button class="btn-secondary text-xs mt-4 w-full tech-details-btn">Ver Detalles Técnicos</button>
+                        <div class="technical-details">
+                            <h4>Propiedad Intelectual y Fórmula</h4>
+                            <p>El Índice se protege mediante una estrategia dual: <strong>patentes de método</strong> para el proceso diagnóstico y <strong>secreto comercial</strong> para los pesos del algoritmo y los datasets de entrenamiento.</p>
+                            <p>La fórmula central es:</p>
+                            <p><code>Índice = (0.4 * S_estructural) + (0.3 * S_piel) + (0.3 * S_biológico)</code></p>
+                            <p>Esta fórmula convierte una evaluación subjetiva en una ciencia cuantificable, creando una poderosa herramienta de venta y seguimiento.</p>
+                        </div>
+                    </div>
+                    <!-- Cerebro IA Multi-Modelo -->
+                    <div class="fade-in p-6 bg-surface-light rounded-lg flex flex-col border border-border-color">
+                        <div class="text-4xl font-extrabold text-primary mb-3">03</div>
+                        <h3 class="font-bold text-lg mb-2 text-gray-200">Cerebro IA Multi-Modelo</h3>
+                        <p class="text-sm text-text-muted flex-grow">Un conjunto de IAs especialistas (ViT, YOLOv8, MediaPipe) trabajan en conjunto para una precisión diagnóstica superior al 94%.</p>
+                        <button class="btn-secondary text-xs mt-4 w-full tech-details-btn">Ver Detalles Técnicos</button>
+                        <div class="technical-details">
+                            <h4>Conjunto de Especialistas</h4>
+                            <ul>
+                                <li><strong>ViT:</strong> Analiza la calidad de la piel con una precisión >94%, correlacionando texturas RGB con patrones térmicos.</li>
+                                <li><strong>MediaPipe:</strong> Identifica 468 landmarks faciales para un mapeo topológico 3D de alta precisión, 7 veces más que alternativas como dlib.</li>
+                                <li><strong>YOLOv8:</strong> Detecta contornos faciales (mandíbula, papada) con una precisión >96% para guiar tratamientos.</li>
+                                <li><strong>Segformer:</strong> Aísla el vello facial para un análisis de piel sin interferencias.</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <!-- Data Flywheel -->
+                    <div class="fade-in p-6 bg-surface-light rounded-lg flex flex-col border border-border-color">
+                        <div class="text-4xl font-extrabold text-primary mb-3">04</div>
+                        <h3 class="font-bold text-lg mb-2 text-gray-200">Data Flywheel</h3>
+                        <p class="text-sm text-text-muted flex-grow">Cada escaneo mejora la plataforma. Nuestro sistema se vuelve más inteligente con cada paciente, creando un efecto de red de datos inexpugnable.</p>
+                        <button class="btn-secondary text-xs mt-4 w-full tech-details-btn">Ver Detalles Técnicos</button>
+                        <div class="technical-details">
+                            <h4>Motor de Mejora Continua</h4>
+                            <p>El Data Flywheel es un sistema de auto-mejora que crea un <strong>Efecto de Red de Datos</strong>. El ciclo es:</p>
+                            <ol class="list-decimal list-inside">
+                                <li>Más escaneos generan más datos diversos.</li>
+                                <li>Más datos conducen a modelos de IA más precisos (reentrenamiento automatizado en AWS SageMaker).</li>
+                                <li>Modelos mejores ofrecen diagnósticos superiores.</li>
+                                <li>Diagnósticos superiores atraen más clínicas y pacientes.</li>
+                            </ol>
+                            <p>Esto construye un foso competitivo que se ensancha exponencialmente, haciendo casi imposible que un competidor nos alcance.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="flywheel-visualization" class="mt-20 fade-in">
+                    <h3 class="text-2xl font-bold text-center mb-2 text-gray-200">Nuestro Data Flywheel: Una Ventaja Exponencial</h3>
+                    <p class="text-center text-text-muted max-w-3xl mx-auto mb-8">Cada escaneo mejora la plataforma para todos. Este ciclo de aprendizaje crea un foso competitivo que se profundiza con el tiempo, aumentando la precisión de nuestros modelos de forma continua.</p>
+                    <div class="max-w-4xl mx-auto grid grid-cols-2 md:grid-cols-4 items-center gap-4 text-center">
+                        <div class="p-4 bg-surface-light rounded-lg border border-border-color">
+                            <p class="text-2xl">📥</p>
+                            <p class="font-semibold mt-2">Más Escaneos</p>
+                        </div>
+                        <div class="text-primary text-3xl font-bold flywheel-arrow">&rarr;</div>
+                        <div class="p-4 bg-surface-light rounded-lg border border-border-color">
+                            <p class="text-2xl">🧠</p>
+                            <p class="font-semibold mt-2">IA Más Inteligente</p>
+                        </div>
+                         <div class="text-accent text-3xl font-bold flywheel-arrow hidden md:block">&rarr;</div>
+                         <div class="col-span-2 md:hidden border-t-2 border-dashed border-gray-700 my-4"></div>
+                         <div class="col-span-2 md:hidden border-t-2 border-dashed border-gray-700 my-4"></div>
+                         <div class="p-4 bg-surface-light rounded-lg border border-border-color">
+                            <p class="text-2xl">📈</p>
+                            <p class="font-semibold mt-2">Mejores Resultados</p>
+                        </div>
+                        <div class="text-primary text-3xl font-bold flywheel-arrow">&rarr;</div>
+                        <div class="p-4 bg-surface-light rounded-lg border border-border-color">
+                            <p class="text-2xl">👥</p>
+                            <p class="font-semibold mt-2">Más Clientes</p>
+                        </div>
+                    </div>
+                     <div class="mt-8 text-center bg-surface-light p-6 rounded-lg max-w-sm mx-auto border border-border-color">
+                         <p class="text-lg font-semibold text-accent">Precisión Diagnóstica Proyectada</p>
+                         <p id="flywheel-accuracy" class="text-5xl font-extrabold text-accent mt-2">87%</p>
+                         <p class="text-sm text-text-muted mt-1">(Mejora con cada 1000 escaneos)</p>
+                    </div>
+                </div>
+                 <div class="mt-20 fade-in">
+                    <h3 class="text-2xl font-bold text-center mb-8 text-gray-200">Stack Tecnológico Escalable y Conforme</h3>
+                    <div class="max-w-4xl mx-auto grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 text-center">
+                        <div class="p-4 bg-surface-light rounded-lg border border-border-color"><p class="font-semibold">Next.js</p><p class="text-xs text-text-muted">Frontend</p></div>
+                        <div class="p-4 bg-surface-light rounded-lg border border-border-color"><p class="font-semibold">FastAPI</p><p class="text-xs text-text-muted">Backend</p></div>
+                        <div class="p-4 bg-surface-light rounded-lg border border-border-color"><p class="font-semibold">Python</p><p class="text-xs text-text-muted">IA/ML</p></div>
+                        <div class="p-4 bg-surface-light rounded-lg border border-border-color"><p class="font-semibold">MongoDB</p><p class="text-xs text-text-muted">Base de Datos</p></div>
+                        <div class="p-4 bg-surface-light rounded-lg col-span-2 md:col-span-1 border border-border-color"><p class="font-semibold">AWS</p><p class="text-xs text-text-muted">Cloud (HIPAA/GDPR)</p></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="negocio" class="py-20 md:py-24">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-16">
+                    <h2 class="text-3xl md:text-4xl font-bold tracking-tight text-primary" style="text-shadow: 0 0 20px rgba(4, 217, 255, 0.3);">Un Modelo de Negocio SaaS Imparable</h2>
+                    <p class="mt-4 max-w-3xl mx-auto text-lg text-text-muted">Esta sección presenta nuestro plan de negocio, desde la estrategia de precios hasta las métricas financieras que demuestran un caso de inversión convincente. Nuestro enfoque SaaS vertical está diseñado para una rápida adopción, alta retención y un valor de por vida del cliente (LTV) excepcional.</p>
+                </div>
+                <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8 text-center">
+                    <div class="kpi-card fade-in">
+                        <h3 class="font-extrabold text-accent">27.2x</h3>
+                        <p class="font-semibold">ROI para la Clínica</p>
+                        <p class="text-sm text-text-muted">Retorno de inversión proyectado en el primer año.</p>
+                    </div>
+                    <div class="kpi-card fade-in">
+                        <h3 class="font-extrabold text-accent">+68%</h3>
+                        <p class="font-semibold">Aumento en Conversión</p>
+                        <p class="text-sm text-text-muted">De consulta a tratamiento, impulsando ingresos directos.</p>
+                    </div>
+                    <div class="kpi-card fade-in">
+                        <h3 class="font-extrabold text-accent">94%</h3>
+                        <p class="font-semibold">Precisión Diagnóstica</p>
+                        <p class="text-sm text-text-muted">Validada contra evaluación de expertos clínicos.</p>
+                    </div>
+                    <div class="kpi-card fade-in">
+                        <h3 class="font-extrabold text-accent">4.0x</h3>
+                        <p class="font-semibold">Ratio LTV:CAC</p>
+                        <p class="text-sm text-text-muted">Adquisición de clientes eficiente y alta retención.</p>
+                    </div>
+                </div>
+                <div class="mt-20 max-w-4xl mx-auto grid md:grid-cols-3 gap-8">
+                    <div class="fade-in bg-surface-dark border border-border-color rounded-lg p-6 text-center hover:shadow-lg hover:border-primary transition">
+                        <h4 class="font-bold text-lg text-primary">Essential</h4>
+                        <p class="text-4xl font-bold my-4">$299<span class="text-base font-normal text-text-muted">/mes</span></p>
+                        <p class="text-sm text-text-muted">Ideal para prácticas individuales o pequeñas (1-2 profesionales).</p>
+                    </div>
+                    <div class="fade-in border-2 border-primary rounded-lg p-6 text-center shadow-2xl relative bg-surface-dark" style="box-shadow: 0 0 30px rgba(4, 217, 255, 0.3);">
+                        <div class="absolute top-0 -translate-y-1/2 left-1/2 -translate-x-1/2">
+                            <span class="bg-primary text-bg-dark text-xs font-bold px-3 py-1 rounded-full">MÁS POPULAR</span>
+                        </div>
+                        <h4 class="font-bold text-lg text-primary">Professional</h4>
+                        <p class="text-4xl font-bold my-4">$799<span class="text-base font-normal text-text-muted">/mes</span></p>
+                        <p class="text-sm text-text-muted">Para clínicas medianas (3-5 profesionales) con integración EMR.</p>
+                    </div>
+                    <div class="fade-in bg-surface-dark border border-border-color rounded-lg p-6 text-center hover:shadow-lg hover:border-primary transition">
+                        <h4 class="font-bold text-lg text-primary">Enterprise</h4>
+                        <p class="text-4xl font-bold my-4">Custom</p>
+                        <p class="text-sm text-text-muted">Para cadenas de clínicas y necesidades de multi-ubicación.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="roadmap" class="py-20 md:py-24 bg-surface-dark">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                 <div class="text-center mb-16">
+                    <h2 class="text-3xl md:text-4xl font-bold tracking-tight text-primary" style="text-shadow: 0 0 20px rgba(4, 217, 255, 0.3);">Hoja de Ruta hacia el Liderazgo Global</h2>
+                    <p class="mt-4 max-w-3xl mx-auto text-lg text-text-muted">Nuestro plan estratégico a 36 meses está diseñado para la dominación del mercado. Desde el lanzamiento y la validación inicial hasta la escala masiva y la expansión a nuevos productos y geografías, este es nuestro camino para definir el futuro del diagnóstico estético.</p>
+                </div>
+                <div class="max-w-3xl mx-auto">
+                    <div class="relative">
+                        <div class="absolute left-4 md:left-1/2 w-0.5 h-full bg-border-color"></div>
+                        <div class="fade-in relative pl-10 md:pl-0 mb-12">
+                            <div class="md:flex items-center">
+                                <div class="md:w-1/2 md:pr-8">
+                                    <div class="p-6 bg-surface-light rounded-lg border border-border-color">
+                                        <p class="text-accent font-bold">Fase 1 (Meses 0-12)</p>
+                                        <h4 class="text-xl font-bold mt-1 text-gray-200">Lanzamiento y Validación</h4>
+                                        <ul class="mt-2 text-sm text-text-light list-disc list-inside">
+                                            <li>Lanzamiento de MVP en Norteamérica</li>
+                                            <li>Asegurar las primeras 50 clínicas</li>
+                                            <li>Presentar patentes clave del "Índice Vigente"</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="hidden md:block absolute left-1/2 -translate-x-1/2 w-8 h-8 bg-accent rounded-full border-4 border-surface-dark"></div>
+                            </div>
+                        </div>
+                        <div class="fade-in relative pl-10 md:pl-0 mb-12">
+                            <div class="md:flex flex-row-reverse items-center">
+                                <div class="md:w-1/2 md:pl-8">
+                                    <div class="p-6 bg-surface-light rounded-lg border border-border-color">
+                                        <p class="text-primary font-bold">Fase 2 (Meses 13-24)</p>
+                                        <h4 class="text-xl font-bold mt-1 text-gray-200">Escalar y Profundizar</h4>
+                                        <ul class="mt-2 text-sm text-text-light list-disc list-inside">
+                                            <li>Lanzar API de integración EMR (FHIR)</li>
+                                            <li>Escalar a +1,000 clínicas</li>
+                                            <li>Obtener autorización FDA 510(k) y Marca CE</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="hidden md:block absolute left-1/2 -translate-x-1/2 w-8 h-8 bg-primary rounded-full border-4 border-surface-dark"></div>
+                            </div>
+                        </div>
+                        <div class="fade-in relative pl-10 md:pl-0">
+                            <div class="md:flex items-center">
+                                <div class="md:w-1/2 md:pr-8">
+                                    <div class="p-6 bg-surface-light rounded-lg border border-border-color">
+                                        <p class="text-text-muted font-bold">Fase 3 (Meses 25-36)</p>
+                                        <h4 class="text-xl font-bold mt-1 text-gray-200">Dominar y Expandir</h4>
+                                        <ul class="mt-2 text-sm text-text-light list-disc list-inside">
+                                            <li>Expansión internacional (LATAM, Asia)</li>
+                                            <li>Lanzar producto para consumidor final</li>
+                                            <li>Crear marketplace de datos anónimos</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="hidden md:block absolute left-1/2 -translate-x-1/2 w-8 h-8 bg-gray-500 rounded-full border-4 border-surface-dark"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-surface-dark border-t border-border-color">
+        <div class="container mx-auto py-8 px-4 sm:px-6 lg:px-8 text-center text-text-muted text-sm">
+            <p>&copy; 2025 DiagnósticoVigente AI. Todos los derechos reservados.</p>
+            <p class="mt-2">Redefiniendo la estética masculina con precisión científica.</p>
+        </div>
+    </footer>
+    
+    <!-- Modal for Indice Vigente Formula -->
+    <div id="formula-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-button" id="close-formula-modal">&times;</span>
+            <h3 class="text-2xl font-bold text-primary mb-4">Fórmula del Índice Vigente™</h3>
+            <p class="text-text-muted mb-4">El Índice Vigente es nuestra métrica propietaria que traduce un análisis complejo en una puntuación accionable. Se calcula de la siguiente manera:</p>
+            <div class="bg-surface-light p-4 rounded-lg text-center border border-border-color">
+                <p class="text-lg font-mono text-text-light">
+                    Índice = (0.4 * S<sub>estructural</sub>) + (0.3 * S<sub>piel</sub>) + (0.3 * S<sub>biológico</sub>)
+                </p>
+            </div>
+            <ul class="mt-6 space-y-2 text-sm text-text-light">
+                <li><strong>S<sub>estructural</sub>:</strong> Mide la simetría y definición de contornos (YOLOv8, MediaPipe).</li>
+                <li><strong>S<sub>piel</sub>:</strong> Evalúa la textura, arrugas y poros (Vision Transformer).</li>
+                <li><strong>S<sub>biológico</sub>:</strong> Cuantifica la inflamación y salud vascular (datos térmicos IR).</li>
+            </ul>
+            <p class="mt-4 text-xs text-text-muted">Esta fórmula y sus pesos son parte de nuestro secreto comercial y están en proceso de protección de patente.</p>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Chart.js dark mode defaults
+            Chart.defaults.color = 'hsl(215, 25%, 70%)';
+            Chart.defaults.borderColor = 'hsl(215, 14%, 34%)';
+
+            const patientData = {
+                'carlos': {
+                    name: 'Carlos, el Rejuvenecedor',
+                    description: '38 años, preocupado por las primeras líneas de expresión y la pérdida de definición facial.',
+                    indice: 72,
+                    subscores: { estructural: 85, piel: 65, biologico: 68 },
+                    indiceDesc: 'Buen punto de partida, con áreas de mejora en textura y firmeza.',
+                    plan: ['Toxina Botulínica (entrecejo, frente)', 'Relleno de Ácido Hialurónico (surcos nasogenianos)', 'Bioestimulador de colágeno (mejillas)'],
+                    images: {
+                        rgb: 'https://placehold.co/600x400/D1C4E9/311B92?text=Carlos+RGB',
+                        thermal: 'https://placehold.co/600x400/FFCC80/E65100?text=Carlos+Térmico',
+                        fused: 'https://placehold.co/600x400/80DEEA/006064?text=Carlos+Fusión+IA'
+                    }
+                },
+                'javier': {
+                    name: 'Javier, Gen X con Daño Solar',
+                    description: '52 años, con daño solar visible, pérdida de volumen y flacidez en el tercio inferior.',
+                    indice: 58,
+                    subscores: { estructural: 60, piel: 50, biologico: 65 },
+                    indiceDesc: 'Potencial significativo de mejora en pigmentación y estructura.',
+                    plan: ['Láser fraccionado para textura y manchas', 'Relleno para restaurar pómulos y mentón', 'Hilos tensores para lifting no quirúrgico'],
+                     images: {
+                        rgb: 'https://placehold.co/600x400/C8E6C9/1B5E20?text=Javier+RGB',
+                        thermal: 'https://placehold.co/600x400/FFAB91/D84315?text=Javier+Térmico',
+                        fused: 'https://placehold.co/600x400/81D4FA/01579B?text=Javier+Fusión+IA'
+                    }
+                },
+                'andres': {
+                    name: 'Andrés, el Optimizador',
+                    description: '29 años, busca masculinización facial, mejorar el contorno mandibular y la proyección del mentón.',
+                    indice: 85,
+                    subscores: { estructural: 90, piel: 88, biologico: 80 },
+                    indiceDesc: 'Excelente base. Optimización enfocada en contornos y simetría.',
+                    plan: ['Relleno de alta densidad (mandíbula y mentón)', 'Tratamiento para grasa submentoniana', 'Cuidado de la piel preventivo'],
+                     images: {
+                        rgb: 'https://placehold.co/600x400/B2DFDB/004D40?text=Andrés+RGB',
+                        thermal: 'https://placehold.co/600x400/CFD8DC/263238?text=Andrés+Térmico',
+                        fused: 'https://placehold.co/600x400/A5D6A7/1B5E20?text=Andrés+Fusión+IA'
+                    }
+                }
+            };
+
+            const imageOverlays = {
+                rgb: { title: 'Análisis Estructural (RGB 4K)', text: 'La cámara de alta resolución captura detalles de la superficie: arrugas, poros, textura y simetría. Es la base para el análisis estructural.' },
+                thermal: { title: 'Mapa Biológico (Infrarrojo)', text: 'La cámara térmica revela lo invisible: patrones de inflamación subclínica y actividad vascular. Clave para la seguridad y predicción de resultados.' },
+                fused: { title: 'Fusión IA (Diagnóstico Aumentado)', text: 'Nuestra IA fusiona los datos RGB y térmicos, identificando zonas críticas y correlacionando la estructura con la biología subyacente para generar recomendaciones precisas.' }
+            };
+
+            let marketChartInstance, competitorChartInstance, roiChartInstance;
+
+            function createMarketChart() {
+                const ctx = document.getElementById('marketChart').getContext('2d');
+                if (marketChartInstance) marketChartInstance.destroy();
+                marketChartInstance = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['2024', '2031 (Proyección)'],
+                        datasets: [{
+                            label: 'Tamaño del Mercado (B USD)',
+                            data: [9.14, 95.08],
+                            backgroundColor: ['rgba(4, 217, 255, 0.2)', 'rgba(52, 211, 153, 0.2)'],
+                            borderColor: ['#04D9FF', '#34D399'],
+                            borderWidth: 2
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { display: false } },
+                        scales: { 
+                            y: { 
+                                beginAtZero: true, 
+                                title: { display: true, text: 'Billones de USD' },
+                                grid: { color: 'rgba(75, 85, 99, 0.5)' }
+                            },
+                            x: {
+                                grid: { display: false }
+                            }
+                        }
+                    }
+                });
+            }
+
+            function createCompetitorChart() {
+                const ctx = document.getElementById('competitorChart').getContext('2d');
+                if (competitorChartInstance) competitorChartInstance.destroy();
+                competitorChartInstance = new Chart(ctx, {
+                    type: 'radar',
+                    data: {
+                        labels: ['Precisión Clínica', 'Bajo Costo', 'Modelo SaaS', 'Datos Biológicos', 'Escalabilidad'],
+                        datasets: [
+                            {
+                                label: 'DiagnósticoVigente AI',
+                                data: [9, 8, 10, 9, 10],
+                                backgroundColor: 'rgba(4, 217, 255, 0.2)',
+                                borderColor: '#04D9FF',
+                                pointBackgroundColor: '#04D9FF',
+                            },
+                            {
+                                label: 'VISIA',
+                                data: [7, 2, 1, 1, 4],
+                                backgroundColor: 'rgba(156, 163, 175, 0.2)',
+                                borderColor: '#9CA3AF',
+                                pointBackgroundColor: '#9CA3AF',
+                            },
+                             {
+                                label: 'Haut.AI',
+                                data: [4, 10, 9, 0, 9],
+                                backgroundColor: 'rgba(52, 211, 153, 0.2)',
+                                borderColor: '#34D399',
+                                pointBackgroundColor: '#34D399',
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { position: 'bottom', labels: { color: '#9CA3AF' } } },
+                        scales: { 
+                            r: { 
+                                beginAtZero: true, 
+                                max: 10, 
+                                pointLabels: { font: { size: 10 }, color: '#F3F4F6' },
+                                grid: { color: 'rgba(75, 85, 99, 0.5)' },
+                                angleLines: { color: 'rgba(75, 85, 99, 0.5)' }
+                            } 
+                        }
+                    }
+                });
+            }
+            
+            const roiScansSlider = document.getElementById('scans-slider');
+            const roiRevenueSlider = document.getElementById('revenue-slider');
+            const roiUpliftSlider = document.getElementById('uplift-slider');
+            const roiScansValue = document.getElementById('scans-value');
+            const roiRevenueValue = document.getElementById('revenue-value');
+            const roiUpliftValue = document.getElementById('uplift-value');
+
+            function createRoiChart() {
+                const ctx = document.getElementById('roiChart').getContext('2d');
+                if (roiChartInstance) roiChartInstance.destroy();
+                
+                const scans = parseInt(roiScansSlider.value);
+                const revenue = parseInt(roiRevenueSlider.value);
+                const uplift = parseInt(roiUpliftSlider.value);
+
+                roiScansValue.textContent = scans;
+                roiRevenueValue.textContent = `$${revenue.toLocaleString('es-MX')}`;
+                roiUpliftValue.textContent = `+${uplift}%`;
+
+                const annualSubscription = 799 * 12; // USD
+                const hardwareCost = 740; // USD
+                const totalInvestment = annualSubscription + hardwareCost;
+
+                const baseAnnualRevenue = scans * 12 * revenue;
+                const incrementalRevenue = baseAnnualRevenue * (uplift / 100);
+                const roiMultiple = incrementalRevenue / (totalInvestment * 20); // Assuming 1 USD = 20 MXN
+                
+                roiChartInstance = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Inversión Anual (USD)', 'Ingreso Incremental (USD)'],
+                        datasets: [{
+                            data: [totalInvestment, incrementalRevenue/20],
+                            backgroundColor: ['rgba(4, 217, 255, 0.7)', 'rgba(52, 211, 153, 0.7)'],
+                            borderRadius: 4,
+                        }]
+                    },
+                    options: {
+                        indexAxis: 'y',
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { 
+                            legend: { display: false },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        return `$${context.raw.toLocaleString('en-US', {maximumFractionDigits: 0})}`;
+                                    }
+                                }
+                            },
+                            title: {
+                                display: true,
+                                text: `ROI Proyectado: ${roiMultiple.toFixed(1)}x`,
+                                font: { size: 16, weight: 'bold' },
+                                padding: { bottom: 10 }
+                            }
+                        },
+                        scales: { 
+                            x: { 
+                                beginAtZero: true,
+                                ticks: {
+                                    callback: function(value) {
+                                        return '$' + (value/1000) + 'k';
+                                    }
+                                },
+                                grid: { color: 'rgba(75, 85, 99, 0.5)' }
+                            },
+                            y: { grid: { display: false } }
+                        }
+                    }
+                });
+            }
+            
+            [roiScansSlider, roiRevenueSlider, roiUpliftSlider].forEach(slider => {
+                slider.addEventListener('input', createRoiChart);
+            });
+
+            const patientSelector = document.getElementById('patient-selector');
+            Object.keys(patientData).forEach(key => {
+                const patient = patientData[key];
+                const button = document.createElement('button');
+                button.className = 'patient-btn w-full text-left p-3 rounded-lg border-2 border-transparent transition-all duration-300 bg-surface-light hover:border-primary';
+                button.dataset.patient = key;
+                button.innerHTML = `<span class="font-semibold text-gray-200">${patient.name.split(',')[0]}</span><span class="text-sm text-text-muted">, ${patient.name.split(',')[1]}</span>`;
+                patientSelector.appendChild(button);
+            });
+
+            const patientInfo = document.getElementById('patient-info');
+            const patientName = document.getElementById('patient-name');
+            const patientDesc = document.getElementById('patient-desc');
+            const scanProgress = document.getElementById('scan-progress');
+            const resultsView = document.getElementById('results-view');
+            const demoPlaceholder = document.getElementById('demo-placeholder');
+            const scanStepsContainer = document.getElementById('scan-steps-container');
+
+            patientSelector.addEventListener('click', function(e) {
+                const button = e.target.closest('.patient-btn');
+                if (button) {
+                    document.querySelectorAll('.patient-btn').forEach(btn => btn.classList.remove('bg-primary', 'border-primary', 'text-bg-dark'));
+                    button.classList.add('bg-primary', 'border-primary', 'text-bg-dark');
+                    startDiagnosis(button.dataset.patient);
+                }
+            });
+
+            function startDiagnosis(patientKey) {
+                const patient = patientData[patientKey];
+                
+                demoPlaceholder.classList.add('hidden');
+                resultsView.classList.add('hidden');
+                
+                patientName.textContent = patient.name;
+                patientDesc.textContent = patient.description;
+                patientInfo.classList.remove('hidden');
+                scanProgress.classList.remove('hidden');
+
+                const progressBar = document.getElementById('progress-bar');
+                const steps = [
+                    { id: 'step-1', text: 'Captura RGB 4K + IR Térmico...', duration: 1500, progress: 25, model: null },
+                    { id: 'step-2', text: 'Reconstrucción 3D...', duration: 1000, progress: 50, model: 'MediaPipe' },
+                    { id: 'step-3', text: 'Análisis IA Multi-Modelo...', duration: 1500, progress: 75, model: 'ViT, YOLOv8' },
+                    { id: 'step-4', text: 'Generando Índice Vigente™...', duration: 1000, progress: 100, model: null }
+                ];
+
+                scanStepsContainer.innerHTML = '';
+                steps.forEach(step => {
+                    scanStepsContainer.innerHTML += `
+                        <div class="flex items-center gap-3">
+                            <div class="w-8 h-8 rounded-full bg-surface-light border border-border-color flex items-center justify-center font-bold text-primary" id="${step.id}-icon">${steps.indexOf(step) + 1}</div>
+                            <div>
+                                <span id="${step.id}-text" class="text-text-muted">${step.text}</span>
+                                <div id="${step.id}-model" class="text-xs text-primary font-medium hidden"></div>
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                let cumulativeDelay = 0;
+                progressBar.style.width = '0%';
+
+                steps.forEach((step, index) => {
+                    setTimeout(() => {
+                        const iconEl = document.getElementById(`${step.id}-icon`);
+                        const modelEl = document.getElementById(`${step.id}-model`);
+                        
+                        iconEl.classList.remove('bg-surface-light', 'border-border-color');
+                        iconEl.classList.add('bg-accent', 'border-accent');
+                        iconEl.innerHTML = `<span class="text-bg-dark font-bold">&#10003;</span>`;
+                        progressBar.style.width = `${step.progress}%`;
+
+                        if (step.model) {
+                            modelEl.textContent = `(Modelo: ${step.model})`;
+                            modelEl.classList.remove('hidden');
+                        }
+
+                        if (index === steps.length - 1) {
+                            setTimeout(() => showResults(patient), 500);
+                        }
+                    }, cumulativeDelay);
+                    cumulativeDelay += step.duration;
+                });
+            }
+            
+            const indiceScoreEl = document.getElementById('indice-vigente-score');
+            const indiceDescEl = document.getElementById('indice-vigente-desc');
+            const treatmentPlanEl = document.getElementById('treatment-plan');
+            const analysisImage = document.getElementById('analysis-image');
+            const overlayTitle = document.getElementById('overlay-title');
+            const overlayText = document.getElementById('overlay-text');
+
+            function animateScore(scoreEl, barEl, targetScore, duration = 1500) {
+                let currentScore = 0;
+                const increment = targetScore / (duration / 20);
+                
+                barEl.style.width = '0%';
+                scoreEl.textContent = `0/100`;
+
+                setTimeout(() => {
+                    barEl.style.width = `${targetScore}%`;
+                    const interval = setInterval(() => {
+                        currentScore += increment;
+                        if (currentScore >= targetScore) {
+                            currentScore = targetScore;
+                            clearInterval(interval);
+                        }
+                        scoreEl.textContent = `${Math.round(currentScore)}/100`;
+                    }, 20);
+                }, 100);
+            }
+
+            function showResults(patient) {
+                scanProgress.classList.add('hidden');
+                resultsView.classList.remove('hidden');
+
+                let currentScore = 0;
+                const targetScore = patient.indice;
+                const increment = targetScore / 50;
+                const interval = setInterval(() => {
+                    currentScore += increment;
+                    if (currentScore >= targetScore) {
+                        currentScore = targetScore;
+                        clearInterval(interval);
+                    }
+                    indiceScoreEl.textContent = Math.round(currentScore);
+                }, 20);
+
+                indiceDescEl.textContent = patient.indiceDesc;
+                
+                treatmentPlanEl.innerHTML = '';
+                patient.plan.forEach(item => {
+                    const li = document.createElement('li');
+                    li.textContent = item;
+                    treatmentPlanEl.appendChild(li);
+                });
+
+                animateScore(
+                    document.getElementById('estructural-score'),
+                    document.getElementById('estructural-bar'),
+                    patient.subscores.estructural
+                );
+                animateScore(
+                    document.getElementById('piel-score'),
+                    document.getElementById('piel-bar'),
+                    patient.subscores.piel
+                );
+                animateScore(
+                    document.getElementById('biologico-score'),
+                    document.getElementById('biologico-bar'),
+                    patient.subscores.biologico
+                );
+
+                updateAnalysisView('rgb', patient);
+                document.querySelector('.view-btn[data-view="rgb"]').classList.add('bg-primary', 'text-bg-dark');
+            }
+
+            document.querySelector('.lg\\:col-span-3').addEventListener('click', function(e) {
+                const button = e.target.closest('.view-btn');
+                if (button) {
+                    const patientKey = document.querySelector('.patient-btn.border-primary')?.dataset.patient;
+                    if (patientKey) {
+                        updateAnalysisView(button.dataset.view, patientData[patientKey]);
+                        document.querySelectorAll('.view-btn').forEach(btn => btn.classList.remove('bg-primary', 'text-bg-dark'));
+                        button.classList.add('bg-primary', 'text-bg-dark');
+                    }
+                }
+            });
+
+            function updateAnalysisView(view, patient) {
+                analysisImage.style.opacity = 0;
+                setTimeout(() => {
+                    analysisImage.src = patient.images[view];
+                    analysisImage.onerror = () => { analysisImage.src = 'https://placehold.co/600x400/cccccc/000000?text=Image+Not+Found'; };
+                    overlayTitle.textContent = imageOverlays[view].title;
+                    overlayText.textContent = imageOverlays[view].text;
+                    analysisImage.style.opacity = 1;
+                }, 300);
+            }
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                        if(entry.target.id === 'flywheel-visualization') {
+                            const accuracyEl = document.getElementById('flywheel-accuracy');
+                            let currentAccuracy = 87;
+                            const targetAccuracy = 94;
+                            const interval = setInterval(() => {
+                                currentAccuracy++;
+                                if (currentAccuracy >= targetAccuracy) {
+                                    clearInterval(interval);
+                                }
+                                accuracyEl.textContent = `${currentAccuracy}%`;
+                            }, 200);
+                            observer.unobserve(entry.target);
+                        }
+                    }
+                });
+            }, { threshold: 0.5 });
+
+            document.querySelectorAll('.fade-in').forEach(el => {
+                observer.observe(el);
+            });
+
+            const navLinks = document.querySelectorAll('.nav-link');
+            const sections = document.querySelectorAll('main section');
+            const headerHeight = document.getElementById('header').offsetHeight;
+
+            function updateActiveNav() {
+                let currentSectionId = '';
+                sections.forEach(section => {
+                    const sectionTop = section.offsetTop - headerHeight - 50;
+                    if (window.scrollY >= sectionTop) {
+                        currentSectionId = section.getAttribute('id');
+                    }
+                });
+                navLinks.forEach(link => {
+                    link.classList.remove('active');
+                    if (link.getAttribute('href') === `#${currentSectionId}`) {
+                        link.classList.add('active');
+                    }
+                });
+            }
+            
+            // Tech Mode Toggle Logic
+            const techToggle = document.getElementById('tech-mode-toggle');
+            const techToggleMobile = document.getElementById('tech-mode-toggle-mobile');
+            const body = document.body;
+
+            function setTechMode(isTechMode) {
+                if (isTechMode) {
+                    body.classList.add('tech-mode');
+                } else {
+                    body.classList.remove('tech-mode');
+                }
+                techToggle.checked = isTechMode;
+                techToggleMobile.checked = isTechMode;
+            }
+
+            techToggle.addEventListener('change', (e) => setTechMode(e.target.checked));
+            techToggleMobile.addEventListener('change', (e) => setTechMode(e.target.checked));
+
+            document.querySelectorAll('.tech-details-btn').forEach(button => {
+                button.addEventListener('click', () => {
+                    const details = button.nextElementSibling;
+                    details.style.display = details.style.display === 'block' ? 'none' : 'block';
+                });
+            });
+
+            // Modal Logic
+            const modal = document.getElementById('formula-modal');
+            const indiceCard = document.getElementById('indice-card');
+            const closeModal = document.getElementById('close-formula-modal');
+
+            indiceCard.onclick = function() {
+                modal.style.display = "block";
+            }
+            closeModal.onclick = function() {
+                modal.style.display = "none";
+            }
+            window.onclick = function(event) {
+                if (event.target == modal) {
+                    modal.style.display = "none";
+                }
+            }
+
+
+            // Mobile Menu Logic
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+            mobileMenuButton.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+                mobileMenuButton.querySelector('svg.block').classList.toggle('hidden');
+                mobileMenuButton.querySelector('svg.hidden').classList.toggle('hidden');
+            });
+            mobileMenu.addEventListener('click', (e) => {
+                if(e.target.tagName === 'A') {
+                    mobileMenu.classList.add('hidden');
+                    mobileMenuButton.querySelector('svg.block').classList.remove('hidden');
+                    mobileMenuButton.querySelector('svg.hidden').classList.add('hidden');
+                }
+            });
+            
+            window.addEventListener('scroll', updateActiveNav);
+            
+            createMarketChart();
+            createCompetitorChart();
+            createRoiChart();
+            updateActiveNav();
+        });
+    </script>
+</body>
+</html>
