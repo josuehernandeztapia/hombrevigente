@@ -785,6 +785,18 @@
     </div>
 
     <script>
+        // === VARIABLES GLOBALES SEGURAS ===
+        let vizContainer = null;
+        let matrixEffectEl = null;
+        let criticalAlertEl = null;
+        let scene = null;
+        let camera = null;
+        let renderer = null;
+        let head = null;
+        let hotspotsGroup = null;
+        let currentView = 'rgb';
+        let animationFrameId = null;
+
         document.addEventListener('DOMContentLoaded', function() {
             console.log('🌐 DOM Cargado - Inicializando elementos...');
             
@@ -1099,17 +1111,7 @@
                 );
             }
             
-            // Three.js Visualization Logic - Variables globales seguras
-            let vizContainer = null;
-            let matrixEffectEl = null;
-            let criticalAlertEl = null;
-            let scene = null;
-            let camera = null;
-            let renderer = null;
-            let head = null;
-            let hotspotsGroup = null;
-            let currentView = 'rgb';
-            let animationFrameId = null;
+            // Three.js Visualization Logic - Variables ya declaradas globalmente
 
             function initThreeJS() {
                 console.log('🚀 === INICIANDO THREE.JS MODO SEGURO ===');
