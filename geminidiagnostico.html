@@ -496,6 +496,11 @@
                                     <div id="threejs-container">
                                         <div id="matrix-effect" class="matrix-effect"></div>
                                         <div id="critical-alert" class="critical-alert"></div>
+                                        <div id="emergency-controls" style="position: absolute; bottom: 10px; left: 10px; z-index: 100;">
+                                            <button onclick="window.testThreeJS()" style="background: #374151; color: white; border: 1px solid #04D9FF; padding: 5px 10px; border-radius: 4px; font-size: 11px; cursor: pointer; margin-right: 5px;">🔍 Test</button>
+                                            <button onclick="window.forceRender()" style="background: #374151; color: white; border: 1px solid #34D399; padding: 5px 10px; border-radius: 4px; font-size: 11px; cursor: pointer; margin-right: 5px;">🔄 Render</button>
+                                            <button onclick="window.recreateThreeJS()" style="background: #374151; color: white; border: 1px solid #F87171; padding: 5px 10px; border-radius: 4px; font-size: 11px; cursor: pointer;">🛠️ Reset</button>
+                                        </div>
                                     </div>
                                     <div class="flex justify-center gap-2 mt-2">
                                         <button data-view="rgb" class="view-btn btn-secondary text-xs px-3 py-1 rounded-full">RGB</button>
@@ -1171,13 +1176,30 @@
                     
                     renderer = new THREE.WebGLRenderer({ 
                         antialias: true,
-                        alpha: true,
-                        preserveDrawingBuffer: true
+                        alpha: false,
+                        preserveDrawingBuffer: true,
+                        powerPreference: "high-performance"
                     });
-                    renderer.setSize(vizContainer.clientWidth, vizContainer.clientHeight);
+
+                    // Forzar tamaño mínimo si el container es muy pequeño
+                    const width = Math.max(vizContainer.clientWidth, 400);
+                    const height = Math.max(vizContainer.clientHeight, 300);
+
+                    renderer.setSize(width, height);
                     renderer.setClearColor(0x222222, 1.0);
+                    renderer.shadowMap.enabled = true;
+                    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
+                    // Verificar que el canvas se crea correctamente
+                    console.log('🖥️ Renderer configurado:', {
+                        width: width,
+                        height: height,
+                        canvas: !!renderer.domElement,
+                        context: !!renderer.getContext()
+                    });
+
                     vizContainer.appendChild(renderer.domElement);
-                    console.log('🖥️ Renderer creado y añadido al DOM');
+                    console.log('📌 Canvas añadido al DOM');
                     
                     // VERIFICAR QUE EL CANVAS SE AÑADIÓ
                     const canvas = vizContainer.querySelector('canvas');
@@ -1578,6 +1600,188 @@
                     console.log('❌ Sistema 3D falló - Ver errores arriba');
                 }
             }, 1000);
+
+            // === SISTEMA DE TESTING EXHAUSTIVO ===
+            window.testThreeJS = function() {
+                console.log('\n🔍 === DIAGNÓSTICO COMPLETO THREE.JS ===');
+                
+                // Test 1: Componentes básicos
+                console.log('1️⃣ COMPONENTES BÁSICOS:');
+                console.log('- THREE disponible:', typeof THREE);
+                console.log('- Scene existe:', !!scene);
+                console.log('- Camera existe:', !!camera);
+                console.log('- Renderer existe:', !!renderer);
+                console.log('- Head existe:', !!head);
+                console.log('- Container existe:', !!vizContainer);
+                
+                // Test 2: DOM y Canvas
+                console.log('\n2️⃣ DOM Y CANVAS:');
+                const container = document.getElementById('threejs-container');
+                const canvas = container?.querySelector('canvas');
+                console.log('- Container en DOM:', !!container);
+                console.log('- Canvas en DOM:', !!canvas);
+                console.log('- Container dimensions:', {
+                    width: container?.clientWidth,
+                    height: container?.clientHeight,
+                    visible: container?.offsetParent !== null
+                });
+                console.log('- Canvas dimensions:', {
+                    width: canvas?.width,
+                    height: canvas?.height,
+                    style: canvas?.style.cssText
+                });
+                
+                // Test 3: Renderer y WebGL
+                console.log('\n3️⃣ RENDERER Y WEBGL:');
+                if (renderer) {
+                    console.log('- Renderer type:', renderer.constructor.name);
+                    console.log('- Renderer size:', renderer.getSize(new THREE.Vector2()));
+                    console.log('- WebGL context:', !!renderer.getContext());
+                    console.log('- DOM element:', !!renderer.domElement);
+                    console.log('- Parent node:', !!renderer.domElement?.parentNode);
+                }
+                
+                // Test 4: Scene y objetos
+                console.log('\n4️⃣ SCENE Y OBJETOS:');
+                if (scene) {
+                    console.log('- Scene children count:', scene.children.length);
+                    console.log('- Scene children types:', scene.children.map(child => child.constructor.name));
+                }
+                if (head) {
+                    console.log('- Head visible:', head.visible);
+                    console.log('- Head position:', head.position);
+                    console.log('- Head scale:', head.scale);
+                    console.log('- Head material:', head.material?.constructor.name);
+                    console.log('- Head geometry:', head.geometry?.constructor.name);
+                }
+                
+                // Test 5: Camera
+                console.log('\n5️⃣ CAMERA:');
+                if (camera) {
+                    console.log('- Camera position:', camera.position);
+                    console.log('- Camera target:', camera.lookAt);
+                    console.log('- Camera aspect:', camera.aspect);
+                    console.log('- Camera fov:', camera.fov);
+                }
+                
+                // Test 6: Render manual
+                console.log('\n6️⃣ RENDER MANUAL:');
+                try {
+                    if (renderer && scene && camera) {
+                        renderer.render(scene, camera);
+                        console.log('✅ Render manual ejecutado exitosamente');
+                    } else {
+                        console.log('❌ No se puede hacer render - componentes faltantes');
+                    }
+                } catch (error) {
+                    console.error('💥 Error en render manual:', error);
+                }
+                
+                // Test 7: Estilo y visibilidad CSS
+                console.log('\n7️⃣ ESTILO Y VISIBILIDAD:');
+                if (canvas) {
+                    const style = window.getComputedStyle(canvas);
+                    console.log('- Canvas computed style:', {
+                        display: style.display,
+                        visibility: style.visibility,
+                        opacity: style.opacity,
+                        width: style.width,
+                        height: style.height,
+                        position: style.position,
+                        zIndex: style.zIndex
+                    });
+                }
+                
+                console.log('\n🎯 === FIN DIAGNÓSTICO ===\n');
+            };
+
+            // Auto-ejecutar test después de 2 segundos
+            setTimeout(() => {
+                console.log('🚀 Ejecutando test automático...');
+                window.testThreeJS();
+            }, 2000);
+
+            // === FUNCIONES DE EMERGENCIA ===
+            window.forceRender = function() {
+                console.log('🔄 Forzando render...');
+                try {
+                    if (renderer && scene && camera && head) {
+                        // Asegurar que head esté visible
+                        head.visible = true;
+                        head.scale.set(1, 1, 1);
+                        
+                        // Asegurar posición de cámara
+                        camera.position.set(0, 0, 4);
+                        camera.lookAt(0, 0, 0);
+                        camera.updateProjectionMatrix();
+                        
+                        // Limpiar y renderizar
+                        renderer.clear();
+                        renderer.render(scene, camera);
+                        
+                        console.log('✅ Render forzado completado');
+                        console.log('📊 Estado post-render:', {
+                            headVisible: head.visible,
+                            headPosition: head.position,
+                            cameraPosition: camera.position,
+                            sceneChildren: scene.children.length
+                        });
+                    } else {
+                        console.error('❌ Componentes faltantes para render');
+                    }
+                } catch (error) {
+                    console.error('💥 Error en render forzado:', error);
+                }
+            };
+
+            window.recreateThreeJS = function() {
+                console.log('🛠️ Recreando Three.js desde cero...');
+                
+                try {
+                    // Limpiar completamente
+                    if (renderer) {
+                        renderer.dispose();
+                        if (renderer.domElement && renderer.domElement.parentNode) {
+                            renderer.domElement.parentNode.removeChild(renderer.domElement);
+                        }
+                    }
+                    
+                    // Limpiar variables
+                    scene = null;
+                    camera = null;
+                    renderer = null;
+                    head = null;
+                    hotspotsGroup = null;
+                    
+                    // Limpiar container
+                    const container = document.getElementById('threejs-container');
+                    const canvas = container.querySelector('canvas');
+                    if (canvas) canvas.remove();
+                    
+                    console.log('🧹 Limpieza completada');
+                    
+                    // Reinicializar
+                    setTimeout(() => {
+                        const success = initThreeJS();
+                        console.log('🔄 Reinicialización:', success ? '✅ Éxito' : '❌ Falló');
+                        
+                        if (success) {
+                            setTimeout(() => {
+                                window.forceRender();
+                            }, 500);
+                        }
+                    }, 100);
+                    
+                } catch (error) {
+                    console.error('💥 Error en recreación:', error);
+                }
+            };
+
+            // Hacer variables globalmente accesibles para debugging
+            window.scene = scene;
+            window.camera = camera;
+            window.renderer = renderer;
+            window.head = head;
         });
     </script>
 </body>
