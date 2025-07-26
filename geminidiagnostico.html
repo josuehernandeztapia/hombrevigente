@@ -7,6 +7,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r140/three.min.js"></script>
+    <!-- Cache buster para forzar recarga -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -1077,12 +1078,14 @@
             let animationFrameId;
 
             function initThreeJS() {
+                console.log('🚀 Iniciando Three.js...');
                 // Verificar carga de Three.js al inicio
                 if (typeof THREE === 'undefined') {
-                    console.error('Three.js no disponible');
+                    console.error('❌ Three.js no disponible');
                     vizContainer.innerHTML = '<div class="flex items-center justify-center h-full text-red-400">Error de carga 3D</div>';
                     return;
                 }
+                console.log('✅ Three.js cargado correctamente');
                 
                 if (!vizContainer) {
                     console.error('Container not ready');
@@ -1120,12 +1123,14 @@
                 const rgbMaterial = new THREE.MeshStandardMaterial({ color: 0xcccccc, roughness: 0.6, metalness: 0.3 });
                 head = new THREE.Mesh(geometry, rgbMaterial);
                 scene.add(head);
+                console.log('✅ Modelo 3D de cabeza creado');
 
                 hotspotsGroup = new THREE.Group();
                 head.add(hotspotsGroup);
 
                 if (animationFrameId) cancelAnimationFrame(animationFrameId);
                 animate();
+                console.log('✅ Animación iniciada');
             }
 
             function animate() {
@@ -1160,12 +1165,16 @@
             }
 
             function switchToView(view, patient) {
+                console.log(`🎯 Cambiando a vista: ${view}`);
                 currentView = view;
                 document.querySelectorAll('.view-btn').forEach(btn => btn.classList.remove('active'));
                 const currentBtn = document.querySelector(`.view-btn[data-view="${view}"]`);
                 if (currentBtn) currentBtn.classList.add('active');
 
-                if (!head) return;
+                if (!head) {
+                    console.warn('⚠️ Modelo 3D no disponible');
+                    return;
+                }
 
                 while(hotspotsGroup.children.length > 0) {
                     const child = hotspotsGroup.children[0];
@@ -1177,10 +1186,16 @@
 
                 switch(view) {
                     case 'rgb':
-                        head.material = new THREE.MeshStandardMaterial({ color: 0xcccccc, roughness: 0.6, metalness: 0.3 });
+                        console.log('📷 Vista RGB activada');
+                        head.material = new THREE.MeshStandardMaterial({ 
+                            color: 0xcccccc, 
+                            roughness: 0.6, 
+                            metalness: 0.3 
+                        });
                         head.material.wireframe = false;
                         break;
                     case 'thermal':
+                        console.log('🌡️ Vista térmica activada');
                         const canvas = document.createElement('canvas');
                         canvas.width = 256;
                         canvas.height = 256;
@@ -1196,11 +1211,22 @@
                         head.material.wireframe = false;
                         break;
                     case 'fused':
-                        head.material = new THREE.MeshStandardMaterial({ color: 0x04D9FF, roughness: 0.4, metalness: 0.5, wireframe: true });
+                        console.log('🔬 Vista fusión IA activada');
+                        head.material = new THREE.MeshStandardMaterial({ 
+                            color: 0x04D9FF, 
+                            roughness: 0.4, 
+                            metalness: 0.5, 
+                            wireframe: true 
+                        });
                         if (patient && patient.hotspots) {
+                            console.log(`📍 Agregando ${patient.hotspots.length} hotspots`);
                             patient.hotspots.forEach(spot => {
                                 const hotspotGeometry = new THREE.SphereGeometry(0.1, 16, 16);
-                                const hotspotMaterial = new THREE.MeshBasicMaterial({ color: 0xF87171, transparent: true, opacity: 0.8 });
+                                const hotspotMaterial = new THREE.MeshBasicMaterial({ 
+                                    color: 0xF87171, 
+                                    transparent: true, 
+                                    opacity: 0.8 
+                                });
                                 const hotspot = new THREE.Mesh(hotspotGeometry, hotspotMaterial);
                                 hotspot.position.set(spot.position.x, spot.position.y, spot.position.z).multiplyScalar(1.5);
                                 hotspotsGroup.add(hotspot);
@@ -1324,14 +1350,19 @@
             createMarketChart();
             createCompetitorChart();
             
+            // Mostrar indicador de carga
+            const container = document.getElementById('threejs-container');
+            container.innerHTML = '<div class="flex items-center justify-center h-full text-primary">🔄 Cargando visualización 3D...</div>';
+            
             // Aumentar timeout inicialización
             setTimeout(() => {
                 if (typeof THREE !== 'undefined') {
+                    console.log('🎯 Iniciando sistema 3D...');
                     initThreeJS();
                 } else {
-                    console.error('Three.js no disponible');
+                    console.error('❌ Three.js no disponible después de 500ms');
                     document.getElementById('threejs-container').innerHTML = 
-                        '<div class="flex items-center justify-center h-full text-red-400">Error de carga 3D</div>';
+                        '<div class="flex items-center justify-center h-full text-red-400">❌ Error de carga 3D</div>';
                 }
             }, 500);
         });
