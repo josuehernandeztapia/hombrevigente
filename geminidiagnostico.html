@@ -6,6 +6,7 @@
     <title>DiagnósticoVigente AI - Blueprint Interactivo Definitivo</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.140.0/build/three.min.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -30,6 +31,7 @@
             --primary-blue-dark: #00AEEF;
             --accent-green: #34D399;
             --border-color: #4B5563;
+            --danger-color: #F87171;
         }
         html {
             font-size: 16px;
@@ -64,9 +66,14 @@
             border: 1px solid var(--primary-blue);
             transition: all 0.3s ease;
         }
-        .btn-secondary:hover {
+        .btn-secondary:hover, .view-btn.active {
             background-color: rgba(4, 217, 255, 0.1);
             transform: translateY(-2px);
+        }
+        .view-btn.active {
+             background-color: var(--primary-blue);
+             color: var(--bg-dark);
+             font-weight: 600;
         }
         .nav-link {
             position: relative;
@@ -248,6 +255,55 @@
             font-weight: bold;
             cursor: pointer;
         }
+        #threejs-container {
+            position: relative;
+            aspect-ratio: 16 / 9;
+            background-color: #000;
+            border-radius: 0.5rem;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+        }
+        #threejs-canvas {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+        .visualization-overlay {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            color: white;
+        }
+        .matrix-effect {
+            position: absolute;
+            inset: 0;
+            background: black;
+            overflow: hidden;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+            font-family: monospace;
+            font-size: 12px;
+            z-index: 10;
+        }
+        .critical-alert {
+            position: absolute;
+            top: 1rem;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: rgba(248, 113, 113, 0.8);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            font-weight: bold;
+            animation: pulse-alert 1.5s infinite;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+            z-index: 20;
+        }
+        @keyframes pulse-alert {
+            0%, 100% { transform: translateX(-50%) scale(1); box-shadow: 0 0 0 0 rgba(248, 113, 113, 0.7); }
+            50% { transform: translateX(-50%) scale(1.05); box-shadow: 0 0 20px 10px rgba(248, 113, 113, 0); }
+        }
     </style>
 </head>
 <body class="antialiased">
@@ -425,42 +481,14 @@
                                 </div>
                                 <div class="mt-6">
                                     <h4 class="font-bold text-lg mb-2 text-gray-200">Visualización de Datos</h4>
-                                    <div class="relative aspect-video bg-black rounded-lg overflow-hidden border border-border-color">
-                                        <img id="analysis-image" src="https://placehold.co/600x400/111827/111827?text=" class="w-full h-full object-cover transition-opacity duration-300">
-                                        <div id="analysis-overlay" class="absolute inset-0 p-4 bg-black/70 text-white opacity-0 hover:opacity-100 transition-opacity duration-300">
-                                            <h5 id="overlay-title" class="font-bold"></h5>
-                                            <p id="overlay-text" class="text-sm mt-2"></p>
-                                        </div>
+                                    <div id="threejs-container">
+                                        <div id="matrix-effect" class="matrix-effect"></div>
+                                        <div id="critical-alert" class="critical-alert"></div>
                                     </div>
                                     <div class="flex justify-center gap-2 mt-2">
                                         <button data-view="rgb" class="view-btn btn-secondary text-xs px-3 py-1 rounded-full">RGB</button>
                                         <button data-view="thermal" class="view-btn btn-secondary text-xs px-3 py-1 rounded-full">Térmico</button>
                                         <button data-view="fused" class="view-btn btn-secondary text-xs px-3 py-1 rounded-full">Fusión IA</button>
-                                    </div>
-                                </div>
-                                <div class="mt-8">
-                                    <h3 class="font-bold text-xl mb-4 text-gray-200">4. Simule su Retorno de Inversión (ROI)</h3>
-                                    <div class="grid md:grid-cols-3 gap-4 text-center mb-6">
-                                        <div class="bg-surface-light p-4 rounded-lg border border-border-color">
-                                            <label for="scans-slider" class="text-sm font-medium text-text-muted">Escaneos / Mes</label>
-                                            <p id="scans-value" class="text-2xl font-bold text-primary"></p>
-                                            <input id="scans-slider" type="range" min="10" max="500" value="200" step="10" class="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer">
-                                        </div>
-                                        <div class="bg-surface-light p-4 rounded-lg border border-border-color">
-                                            <label for="revenue-slider" class="text-sm font-medium text-text-muted">Ingreso / Paciente</label>
-                                            <p id="revenue-value" class="text-2xl font-bold text-primary"></p>
-                                            <input id="revenue-slider" type="range" min="5000" max="50000" value="15000" step="1000" class="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer">
-                                        </div>
-                                        <div class="bg-surface-light p-4 rounded-lg border border-border-color">
-                                            <label for="uplift-slider" class="text-sm font-medium text-text-muted">Uplift de Conversión</p>
-                                            <p id="uplift-value" class="text-2xl font-bold text-primary"></p>
-                                            <input id="uplift-slider" type="range" min="10" max="100" value="68" step="1" class="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer">
-                                        </div>
-                                    </div>
-                                    <div class="bg-surface-dark border border-border-color p-6 rounded-lg">
-                                        <div class="chart-container" style="height: 250px; max-height: 250px;">
-                                            <canvas id="roiChart"></canvas>
-                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -769,11 +797,7 @@
                     subscores: { estructural: 85, piel: 65, biologico: 68 },
                     indiceDesc: 'Buen punto de partida, con áreas de mejora en textura y firmeza.',
                     plan: ['Toxina Botulínica (entrecejo, frente)', 'Relleno de Ácido Hialurónico (surcos nasogenianos)', 'Bioestimulador de colágeno (mejillas)'],
-                    images: {
-                        rgb: 'https://placehold.co/600x400/D1C4E9/311B92?text=Carlos+RGB',
-                        thermal: 'https://placehold.co/600x400/FFCC80/E65100?text=Carlos+Térmico',
-                        fused: 'https://placehold.co/600x400/80DEEA/006064?text=Carlos+Fusión+IA'
-                    }
+                    hotspots: [ { position: {x: 0.5, y: 0.8, z: 0.8}, message: 'INFLAMACIÓN DETECTADA' } ]
                 },
                 'javier': {
                     name: 'Javier, Gen X con Daño Solar',
@@ -782,34 +806,20 @@
                     subscores: { estructural: 60, piel: 50, biologico: 65 },
                     indiceDesc: 'Potencial significativo de mejora en pigmentación y estructura.',
                     plan: ['Láser fraccionado para textura y manchas', 'Relleno para restaurar pómulos y mentón', 'Hilos tensores para lifting no quirúrgico'],
-                     images: {
-                        rgb: 'https://placehold.co/600x400/C8E6C9/1B5E20?text=Javier+RGB',
-                        thermal: 'https://placehold.co/600x400/FFAB91/D84315?text=Javier+Térmico',
-                        fused: 'https://placehold.co/600x400/81D4FA/01579B?text=Javier+Fusión+IA'
-                    }
+                    hotspots: [ { position: {x: -0.7, y: 0.2, z: 0.9}, message: 'ZONA DE RIESGO VASCULAR' } ]
                 },
-                'andres': {
-                    name: 'Andrés, el Optimizador',
+                'eduardo': {
+                    name: 'Eduardo, el Optimizador',
                     description: '29 años, busca masculinización facial, mejorar el contorno mandibular y la proyección del mentón.',
                     indice: 85,
                     subscores: { estructural: 90, piel: 88, biologico: 80 },
                     indiceDesc: 'Excelente base. Optimización enfocada en contornos y simetría.',
                     plan: ['Relleno de alta densidad (mandíbula y mentón)', 'Tratamiento para grasa submentoniana', 'Cuidado de la piel preventivo'],
-                     images: {
-                        rgb: 'https://placehold.co/600x400/B2DFDB/004D40?text=Andrés+RGB',
-                        thermal: 'https://placehold.co/600x400/CFD8DC/263238?text=Andrés+Térmico',
-                        fused: 'https://placehold.co/600x400/A5D6A7/1B5E20?text=Andrés+Fusión+IA'
-                    }
+                    hotspots: []
                 }
             };
 
-            const imageOverlays = {
-                rgb: { title: 'Análisis Estructural (RGB 4K)', text: 'La cámara de alta resolución captura detalles de la superficie: arrugas, poros, textura y simetría. Es la base para el análisis estructural.' },
-                thermal: { title: 'Mapa Biológico (Infrarrojo)', text: 'La cámara térmica revela lo invisible: patrones de inflamación subclínica y actividad vascular. Clave para la seguridad y predicción de resultados.' },
-                fused: { title: 'Fusión IA (Diagnóstico Aumentado)', text: 'Nuestra IA fusiona los datos RGB y térmicos, identificando zonas críticas y correlacionando la estructura con la biología subyacente para generar recomendaciones precisas.' }
-            };
-
-            let marketChartInstance, competitorChartInstance, roiChartInstance;
+            let marketChartInstance, competitorChartInstance;
 
             function createMarketChart() {
                 const ctx = document.getElementById('marketChart').getContext('2d');
@@ -892,83 +902,6 @@
                 });
             }
             
-            const roiScansSlider = document.getElementById('scans-slider');
-            const roiRevenueSlider = document.getElementById('revenue-slider');
-            const roiUpliftSlider = document.getElementById('uplift-slider');
-            const roiScansValue = document.getElementById('scans-value');
-            const roiRevenueValue = document.getElementById('revenue-value');
-            const roiUpliftValue = document.getElementById('uplift-value');
-
-            function createRoiChart() {
-                const ctx = document.getElementById('roiChart').getContext('2d');
-                if (roiChartInstance) roiChartInstance.destroy();
-                
-                const scans = parseInt(roiScansSlider.value);
-                const revenue = parseInt(roiRevenueSlider.value);
-                const uplift = parseInt(roiUpliftSlider.value);
-
-                roiScansValue.textContent = scans;
-                roiRevenueValue.textContent = `$${revenue.toLocaleString('es-MX')}`;
-                roiUpliftValue.textContent = `+${uplift}%`;
-
-                const annualSubscription = 799 * 12; // USD
-                const hardwareCost = 740; // USD
-                const totalInvestment = annualSubscription + hardwareCost;
-
-                const baseAnnualRevenue = scans * 12 * revenue;
-                const incrementalRevenue = baseAnnualRevenue * (uplift / 100);
-                const roiMultiple = incrementalRevenue / (totalInvestment * 20); // Assuming 1 USD = 20 MXN
-                
-                roiChartInstance = new Chart(ctx, {
-                    type: 'bar',
-                    data: {
-                        labels: ['Inversión Anual (USD)', 'Ingreso Incremental (USD)'],
-                        datasets: [{
-                            data: [totalInvestment, incrementalRevenue/20],
-                            backgroundColor: ['rgba(4, 217, 255, 0.7)', 'rgba(52, 211, 153, 0.7)'],
-                            borderRadius: 4,
-                        }]
-                    },
-                    options: {
-                        indexAxis: 'y',
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: { 
-                            legend: { display: false },
-                            tooltip: {
-                                callbacks: {
-                                    label: function(context) {
-                                        return `$${context.raw.toLocaleString('en-US', {maximumFractionDigits: 0})}`;
-                                    }
-                                }
-                            },
-                            title: {
-                                display: true,
-                                text: `ROI Proyectado: ${roiMultiple.toFixed(1)}x`,
-                                font: { size: 16, weight: 'bold' },
-                                padding: { bottom: 10 }
-                            }
-                        },
-                        scales: { 
-                            x: { 
-                                beginAtZero: true,
-                                ticks: {
-                                    callback: function(value) {
-                                        return '$' + (value/1000) + 'k';
-                                    }
-                                },
-                                grid: { color: 'rgba(75, 85, 99, 0.5)' }
-                            },
-                            y: { grid: { display: false } }
-                        }
-                    }
-                });
-            }
-            
-            [roiScansSlider, roiRevenueSlider, roiUpliftSlider].forEach(slider => {
-                slider.addEventListener('input', createRoiChart);
-            });
-
             const patientSelector = document.getElementById('patient-selector');
             Object.keys(patientData).forEach(key => {
                 const patient = patientData[key];
@@ -1000,19 +933,24 @@
                 const patient = patientData[patientKey];
                 
                 demoPlaceholder.classList.add('hidden');
-                resultsView.classList.add('hidden');
+                resultsView.classList.remove('hidden');
                 
                 patientName.textContent = patient.name;
                 patientDesc.textContent = patient.description;
                 patientInfo.classList.remove('hidden');
                 scanProgress.classList.remove('hidden');
+                
+                // Hide results cards until scan is complete
+                document.getElementById('indice-card').style.opacity = 0;
+                document.querySelector('.bg-surface-light.p-6.rounded-lg.border.border-border-color:not(#indice-card)').style.opacity = 0;
+
 
                 const progressBar = document.getElementById('progress-bar');
                 const steps = [
-                    { id: 'step-1', text: 'Captura RGB 4K + IR Térmico...', duration: 1500, progress: 25, model: null },
-                    { id: 'step-2', text: 'Reconstrucción 3D...', duration: 1000, progress: 50, model: 'MediaPipe' },
-                    { id: 'step-3', text: 'Análisis IA Multi-Modelo...', duration: 1500, progress: 75, model: 'ViT, YOLOv8' },
-                    { id: 'step-4', text: 'Generando Índice Vigente™...', duration: 1000, progress: 100, model: null }
+                    { id: 'step-1', text: 'Captura RGB 4K + IR Térmico...', duration: 2000, progress: 25, model: null, view: 'rgb' },
+                    { id: 'step-2', text: 'Reconstrucción 3D...', duration: 2000, progress: 50, model: 'MediaPipe', view: 'thermal' },
+                    { id: 'step-3', text: 'Análisis IA Multi-Modelo...', duration: 2000, progress: 75, model: 'ViT, YOLOv8', view: 'fused' },
+                    { id: 'step-4', text: 'Generando Índice Vigente™...', duration: 1000, progress: 100, model: null, view: 'fused' }
                 ];
 
                 scanStepsContainer.innerHTML = '';
@@ -1030,6 +968,9 @@
                 
                 let cumulativeDelay = 0;
                 progressBar.style.width = '0%';
+                
+                // Start 3D visualization sequence
+                runVisualizationSequence(patient, steps);
 
                 steps.forEach((step, index) => {
                     setTimeout(() => {
@@ -1057,9 +998,6 @@
             const indiceScoreEl = document.getElementById('indice-vigente-score');
             const indiceDescEl = document.getElementById('indice-vigente-desc');
             const treatmentPlanEl = document.getElementById('treatment-plan');
-            const analysisImage = document.getElementById('analysis-image');
-            const overlayTitle = document.getElementById('overlay-title');
-            const overlayText = document.getElementById('overlay-text');
 
             function animateScore(scoreEl, barEl, targetScore, duration = 1500) {
                 let currentScore = 0;
@@ -1083,7 +1021,14 @@
 
             function showResults(patient) {
                 scanProgress.classList.add('hidden');
-                resultsView.classList.remove('hidden');
+                
+                // Animate in results cards
+                const indiceCardEl = document.getElementById('indice-card');
+                const planCardEl = document.querySelector('.bg-surface-light.p-6.rounded-lg.border.border-border-color:not(#indice-card)');
+                indiceCardEl.style.transition = 'opacity 0.5s ease-in';
+                planCardEl.style.transition = 'opacity 0.5s ease-in';
+                indiceCardEl.style.opacity = 1;
+                planCardEl.style.opacity = 1;
 
                 let currentScore = 0;
                 const targetScore = patient.indice;
@@ -1121,59 +1066,178 @@
                     document.getElementById('biologico-bar'),
                     patient.subscores.biologico
                 );
+            }
+            
+            // Three.js Visualization Logic
+            const vizContainer = document.getElementById('threejs-container');
+            const matrixEffectEl = document.getElementById('matrix-effect');
+            const criticalAlertEl = document.getElementById('critical-alert');
+            let scene, camera, renderer, head, hotspotsGroup;
+            let currentView = 'rgb';
+            let animationFrameId;
 
-                updateAnalysisView('rgb', patient);
-                document.querySelector('.view-btn[data-view="rgb"]').classList.add('bg-primary', 'text-bg-dark');
+            function initThreeJS() {
+                if (typeof THREE === 'undefined' || !vizContainer) {
+                    console.error('Three.js or container not ready');
+                    return;
+                }
+                // Clear container before initializing
+                while (vizContainer.firstChild) {
+                    vizContainer.removeChild(vizContainer.firstChild);
+                }
+                // Re-append overlay elements
+                vizContainer.appendChild(matrixEffectEl);
+                vizContainer.appendChild(criticalAlertEl);
+
+
+                scene = new THREE.Scene();
+                camera = new THREE.PerspectiveCamera(50, vizContainer.clientWidth / vizContainer.clientHeight, 0.1, 1000);
+                camera.position.z = 5;
+
+                renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+                renderer.setSize(vizContainer.clientWidth, vizContainer.clientHeight);
+                vizContainer.appendChild(renderer.domElement);
+
+                const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+                scene.add(ambientLight);
+                const pointLight = new THREE.PointLight(0xffffff, 0.8);
+                pointLight.position.set(5, 5, 5);
+                scene.add(pointLight);
+
+                // Create a basic head shape
+                const geometry = new THREE.SphereGeometry(1.5, 64, 64);
+                // Deform sphere to be more head-like
+                const positionAttribute = geometry.attributes.position;
+                for (let i = 0; i < positionAttribute.count; i++) {
+                    const vertex = new THREE.Vector3();
+                    vertex.fromBufferAttribute(positionAttribute, i);
+                    vertex.y *= 1.2; // Elongate vertically
+                    vertex.z *= 0.9; // Flatten slightly
+                    positionAttribute.setXYZ(i, vertex.x, vertex.y, vertex.z);
+                }
+                geometry.computeVertexNormals();
+                
+                const rgbMaterial = new THREE.MeshStandardMaterial({ color: 0xcccccc, roughness: 0.6, metalness: 0.3 });
+                head = new THREE.Mesh(geometry, rgbMaterial);
+                scene.add(head);
+
+                hotspotsGroup = new THREE.Group();
+                head.add(hotspotsGroup);
+
+                if (animationFrameId) cancelAnimationFrame(animationFrameId);
+                animate();
             }
 
-            document.querySelector('.lg\\:col-span-3').addEventListener('click', function(e) {
-                const button = e.target.closest('.view-btn');
-                if (button) {
+            function animate() {
+                animationFrameId = requestAnimationFrame(animate);
+                if (head) {
+                    head.rotation.y += 0.005;
+                }
+                if(renderer && scene && camera) {
+                    renderer.render(scene, camera);
+                }
+            }
+            
+            function runVisualizationSequence(patient, steps) {
+                let cumulativeDelay = 0;
+                
+                switchToView('rgb'); // Start with RGB
+
+                steps.forEach(step => {
+                    setTimeout(() => {
+                        if(step.view === 'fused') {
+                            matrixEffectEl.style.opacity = 1;
+                            setTimeout(() => {
+                                matrixEffectEl.style.opacity = 0;
+                                switchToView(step.view, patient);
+                            }, 1000);
+                        } else {
+                            switchToView(step.view, patient);
+                        }
+                    }, cumulativeDelay);
+                    cumulativeDelay += step.duration;
+                });
+            }
+
+            function switchToView(view, patient) {
+                currentView = view;
+                document.querySelectorAll('.view-btn').forEach(btn => btn.classList.remove('active'));
+                const currentBtn = document.querySelector(`.view-btn[data-view="${view}"]`);
+                if (currentBtn) currentBtn.classList.add('active');
+
+                if (!head) return;
+
+                while(hotspotsGroup.children.length > 0) {
+                    hotspotsGroup.remove(hotspotsGroup.children[0]);
+                }
+                criticalAlertEl.style.opacity = 0;
+
+                switch(view) {
+                    case 'rgb':
+                        head.material = new THREE.MeshStandardMaterial({ color: 0xcccccc, roughness: 0.6, metalness: 0.3 });
+                        head.material.wireframe = false;
+                        break;
+                    case 'thermal':
+                        const canvas = document.createElement('canvas');
+                        canvas.width = 256;
+                        canvas.height = 256;
+                        const context = canvas.getContext('2d');
+                        const gradient = context.createRadialGradient(128, 128, 0, 128, 128, 128);
+                        gradient.addColorStop(0, '#ff4444');
+                        gradient.addColorStop(0.3, '#ffaa00');
+                        gradient.addColorStop(0.6, '#44ff44');
+                        gradient.addColorStop(1, '#04D9FF');
+                        context.fillStyle = gradient;
+                        context.fillRect(0, 0, 256, 256);
+                        head.material = new THREE.MeshBasicMaterial({ map: new THREE.CanvasTexture(canvas) });
+                        head.material.wireframe = false;
+                        break;
+                    case 'fused':
+                        head.material = new THREE.MeshStandardMaterial({ color: 0x04D9FF, roughness: 0.4, metalness: 0.5, wireframe: true });
+                        if (patient && patient.hotspots) {
+                            patient.hotspots.forEach(spot => {
+                                const hotspotGeometry = new THREE.SphereGeometry(0.1, 16, 16);
+                                const hotspotMaterial = new THREE.MeshBasicMaterial({ color: 0xF87171, transparent: true, opacity: 0.8 });
+                                const hotspot = new THREE.Mesh(hotspotGeometry, hotspotMaterial);
+                                hotspot.position.set(spot.position.x, spot.position.y, spot.position.z).multiplyScalar(1.5);
+                                hotspotsGroup.add(hotspot);
+                                
+                                criticalAlertEl.textContent = spot.message;
+                                criticalAlertEl.style.opacity = 1;
+                            });
+                        }
+                        break;
+                }
+            }
+            
+            document.querySelectorAll('.view-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
                     const patientKey = document.querySelector('.patient-btn.border-primary')?.dataset.patient;
                     if (patientKey) {
-                        updateAnalysisView(button.dataset.view, patientData[patientKey]);
-                        document.querySelectorAll('.view-btn').forEach(btn => btn.classList.remove('bg-primary', 'text-bg-dark'));
-                        button.classList.add('bg-primary', 'text-bg-dark');
+                        switchToView(btn.dataset.view, patientData[patientKey]);
                     }
+                });
+            });
+
+            window.addEventListener('resize', () => {
+                if (renderer) {
+                    camera.aspect = vizContainer.clientWidth / vizContainer.clientHeight;
+                    camera.updateProjectionMatrix();
+                    renderer.setSize(vizContainer.clientWidth, vizContainer.clientHeight);
                 }
             });
 
-            function updateAnalysisView(view, patient) {
-                analysisImage.style.opacity = 0;
-                setTimeout(() => {
-                    analysisImage.src = patient.images[view];
-                    analysisImage.onerror = () => { analysisImage.src = 'https://placehold.co/600x400/cccccc/000000?text=Image+Not+Found'; };
-                    overlayTitle.textContent = imageOverlays[view].title;
-                    overlayText.textContent = imageOverlays[view].text;
-                    analysisImage.style.opacity = 1;
-                }, 300);
-            }
-
+            // Initial setup
             const observer = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
                         entry.target.classList.add('visible');
-                        if(entry.target.id === 'flywheel-visualization') {
-                            const accuracyEl = document.getElementById('flywheel-accuracy');
-                            let currentAccuracy = 87;
-                            const targetAccuracy = 94;
-                            const interval = setInterval(() => {
-                                currentAccuracy++;
-                                if (currentAccuracy >= targetAccuracy) {
-                                    clearInterval(interval);
-                                }
-                                accuracyEl.textContent = `${currentAccuracy}%`;
-                            }, 200);
-                            observer.unobserve(entry.target);
-                        }
                     }
                 });
-            }, { threshold: 0.5 });
+            }, { threshold: 0.1 });
 
-            document.querySelectorAll('.fade-in').forEach(el => {
-                observer.observe(el);
-            });
-
+            document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+            
             const navLinks = document.querySelectorAll('.nav-link');
             const sections = document.querySelectorAll('main section');
             const headerHeight = document.getElementById('header').offsetHeight;
@@ -1236,7 +1300,6 @@
                 }
             }
 
-
             // Mobile Menu Logic
             const mobileMenuButton = document.getElementById('mobile-menu-button');
             const mobileMenu = document.getElementById('mobile-menu');
@@ -1257,8 +1320,11 @@
             
             createMarketChart();
             createCompetitorChart();
-            createRoiChart();
-            updateActiveNav();
+            
+            // Defer Three.js initialization
+            setTimeout(() => {
+                initThreeJS();
+            }, 100);
         });
     </script>
 </body>
