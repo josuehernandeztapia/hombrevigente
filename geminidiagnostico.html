@@ -1078,19 +1078,24 @@
             let animationFrameId;
 
             function initThreeJS() {
-                console.log('🚀 Iniciando Three.js...');
-                // Verificar carga de Three.js al inicio
+                console.log('=== DEBUGGING THREE.JS ===');
+                console.log('THREE disponible:', typeof THREE !== 'undefined');
+                console.log('Container:', vizContainer);
+                
                 if (typeof THREE === 'undefined') {
-                    console.error('❌ Three.js no disponible');
-                    vizContainer.innerHTML = '<div class="flex items-center justify-center h-full text-red-400">Error de carga 3D</div>';
+                    console.error('THREE.js NO CARGADO');
+                    if (vizContainer) {
+                        vizContainer.innerHTML = '<div class="flex items-center justify-center h-full text-red-400">Error: Three.js no se cargó</div>';
+                    }
                     return;
                 }
-                console.log('✅ Three.js cargado correctamente');
                 
                 if (!vizContainer) {
-                    console.error('Container not ready');
+                    console.error('Container no encontrado');
                     return;
                 }
+                
+                console.log('Container dimensiones:', vizContainer.clientWidth, 'x', vizContainer.clientHeight);
                 
                 // Clear container before initializing
                 while (vizContainer.firstChild) {
@@ -1114,11 +1119,9 @@
                 pointLight.position.set(5, 5, 5);
                 scene.add(pointLight);
 
-                // Simplificar creación de geometría
-                const geometry = new THREE.SphereGeometry(1.5, 64, 64);
-                // Usar geometry.scale() en lugar del bucle manual
-                geometry.scale(1, 1.2, 0.9); // Elongate vertically, flatten slightly
-                geometry.computeVertexNormals();
+                // GEOMETRÍA SIMPLIFICADA - SIN MANIPULACIÓN DE VÉRTICES
+                const geometry = new THREE.SphereGeometry(1.5, 32, 32);
+                geometry.scale(1, 1.2, 0.9); // Escalar directamente para forma de cabeza
                 
                 const rgbMaterial = new THREE.MeshStandardMaterial({ color: 0xcccccc, roughness: 0.6, metalness: 0.3 });
                 head = new THREE.Mesh(geometry, rgbMaterial);
@@ -1130,7 +1133,8 @@
 
                 if (animationFrameId) cancelAnimationFrame(animationFrameId);
                 animate();
-                console.log('✅ Animación iniciada');
+                
+                console.log('✅ Three.js inicializado correctamente');
             }
 
             function animate() {
@@ -1172,30 +1176,26 @@
                 if (currentBtn) currentBtn.classList.add('active');
 
                 if (!head) {
-                    console.warn('⚠️ Modelo 3D no disponible');
+                    console.warn('Head model not ready');
                     return;
                 }
 
+                // LIMPIEZA CORRECTA DE HOTSPOTS
                 while(hotspotsGroup.children.length > 0) {
                     const child = hotspotsGroup.children[0];
                     hotspotsGroup.remove(child);
-                    child.geometry?.dispose();
-                    child.material?.dispose();
+                    if(child.geometry) child.geometry.dispose();
+                    if(child.material) child.material.dispose();
                 }
                 criticalAlertEl.style.opacity = 0;
 
                 switch(view) {
                     case 'rgb':
-                        console.log('📷 Vista RGB activada');
-                        head.material = new THREE.MeshStandardMaterial({ 
-                            color: 0xcccccc, 
-                            roughness: 0.6, 
-                            metalness: 0.3 
-                        });
+                        head.material = new THREE.MeshStandardMaterial({ color: 0xcccccc, roughness: 0.6, metalness: 0.3 });
                         head.material.wireframe = false;
+                        console.log('📷 Vista RGB activada');
                         break;
                     case 'thermal':
-                        console.log('🌡️ Vista térmica activada');
                         const canvas = document.createElement('canvas');
                         canvas.width = 256;
                         canvas.height = 256;
@@ -1209,24 +1209,14 @@
                         context.fillRect(0, 0, 256, 256);
                         head.material = new THREE.MeshBasicMaterial({ map: new THREE.CanvasTexture(canvas) });
                         head.material.wireframe = false;
+                        console.log('🌡️ Vista térmica activada');
                         break;
                     case 'fused':
-                        console.log('🔬 Vista fusión IA activada');
-                        head.material = new THREE.MeshStandardMaterial({ 
-                            color: 0x04D9FF, 
-                            roughness: 0.4, 
-                            metalness: 0.5, 
-                            wireframe: true 
-                        });
+                        head.material = new THREE.MeshStandardMaterial({ color: 0x04D9FF, roughness: 0.4, metalness: 0.5, wireframe: true });
                         if (patient && patient.hotspots) {
-                            console.log(`📍 Agregando ${patient.hotspots.length} hotspots`);
                             patient.hotspots.forEach(spot => {
                                 const hotspotGeometry = new THREE.SphereGeometry(0.1, 16, 16);
-                                const hotspotMaterial = new THREE.MeshBasicMaterial({ 
-                                    color: 0xF87171, 
-                                    transparent: true, 
-                                    opacity: 0.8 
-                                });
+                                const hotspotMaterial = new THREE.MeshBasicMaterial({ color: 0xF87171, transparent: true, opacity: 0.8 });
                                 const hotspot = new THREE.Mesh(hotspotGeometry, hotspotMaterial);
                                 hotspot.position.set(spot.position.x, spot.position.y, spot.position.z).multiplyScalar(1.5);
                                 hotspotsGroup.add(hotspot);
@@ -1235,6 +1225,7 @@
                                 criticalAlertEl.style.opacity = 1;
                             });
                         }
+                        console.log('🔬 Vista fusión IA activada');
                         break;
                 }
             }
