@@ -1104,25 +1104,24 @@
             let animationFrameId;
 
             function initThreeJS() {
-                console.log('🚀 === INICIANDO THREE.JS ===');
-                console.log('📦 THREE disponible:', typeof THREE !== 'undefined');
-                console.log('🎯 Container:', vizContainer);
+                console.log('=== DEBUGGING THREE.JS ===');
+                console.log('THREE disponible:', typeof THREE !== 'undefined');
+                console.log('Container:', vizContainer);
                 
                 if (typeof THREE === 'undefined') {
-                    console.error('❌ THREE.js NO CARGADO - FALLO CRÍTICO');
+                    console.error('THREE.js NO CARGADO');
                     if (vizContainer) {
-                        vizContainer.innerHTML = '<div class="flex items-center justify-center h-full text-red-400 p-4 text-center">❌ Error: Three.js no se cargó<br><small>Verificar conexión a internet</small></div>';
+                        vizContainer.innerHTML = '<div class="flex items-center justify-center h-full text-red-400">Error: Three.js no se cargó</div>';
                     }
                     return;
                 }
                 
                 if (!vizContainer) {
-                    console.error('❌ Container no encontrado - FALLO CRÍTICO');
+                    console.error('Container no encontrado');
                     return;
                 }
                 
-                console.log('📐 Container dimensiones:', vizContainer.clientWidth, 'x', vizContainer.clientHeight);
-                console.log('🔧 THREE.js versión:', THREE.REVISION);
+                console.log('Container dimensiones:', vizContainer.clientWidth, 'x', vizContainer.clientHeight);
                 
                 // Clear container before initializing
                 while (vizContainer.firstChild) {
@@ -1132,49 +1131,62 @@
                 vizContainer.appendChild(matrixEffectEl);
                 vizContainer.appendChild(criticalAlertEl);
 
+                // CONFIGURACIÓN BÁSICA CON DEBUGGING
                 scene = new THREE.Scene();
-                camera = new THREE.PerspectiveCamera(50, vizContainer.clientWidth / vizContainer.clientHeight, 0.1, 1000);
-                camera.position.z = 5;
-
-                renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-                renderer.setSize(vizContainer.clientWidth, vizContainer.clientHeight);
-                vizContainer.appendChild(renderer.domElement);
-                console.log('🎨 Renderer WebGL creado:', renderer.domElement);
-                console.log('🖥️ Canvas añadido al DOM:', vizContainer.contains(renderer.domElement));
-
-                const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
-                scene.add(ambientLight);
-                const pointLight = new THREE.PointLight(0xffffff, 0.8);
-                pointLight.position.set(5, 5, 5);
-                scene.add(pointLight);
-
-                // GEOMETRÍA SIMPLIFICADA - SIN MANIPULACIÓN DE VÉRTICES
-                const geometry = new THREE.SphereGeometry(1.5, 32, 32);
-                geometry.scale(1, 1.2, 0.9); // Escalar directamente para forma de cabeza
+                scene.background = new THREE.Color(0x222222); // Fondo gris para ver diferencia
                 
-                const rgbMaterial = new THREE.MeshStandardMaterial({ color: 0xcccccc, roughness: 0.6, metalness: 0.3 });
-                head = new THREE.Mesh(geometry, rgbMaterial);
+                // CÁMARA CON POSICIÓN FIJA Y CLARA
+                camera = new THREE.PerspectiveCamera(75, vizContainer.clientWidth / vizContainer.clientHeight, 0.1, 1000);
+                camera.position.set(0, 0, 3); // Posición fija y cercana
+                camera.lookAt(0, 0, 0);
+                console.log('📷 Cámara posicionada en:', camera.position);
+
+                // RENDERER CON DEBUGGING
+                renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
+                renderer.setSize(vizContainer.clientWidth, vizContainer.clientHeight);
+                renderer.setClearColor(0x333333); // Fondo visible para debug
+                vizContainer.appendChild(renderer.domElement);
+                console.log('🖼️ Renderer creado, tamaño:', vizContainer.clientWidth, 'x', vizContainer.clientHeight);
+
+                // LUCES FUERTES Y CLARAS
+                const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
+                scene.add(ambientLight);
+                const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+                directionalLight.position.set(5, 5, 5);
+                scene.add(directionalLight);
+                console.log('💡 Luces añadidas');
+
+                // MODELO SIMPLE Y VISIBLE
+                const geometry = new THREE.SphereGeometry(1, 32, 32);
+                const material = new THREE.MeshLambertMaterial({ 
+                    color: 0xcccccc,
+                    wireframe: false
+                });
+                head = new THREE.Mesh(geometry, material);
+                head.position.set(0, 0, 0); // Centro exacto
                 scene.add(head);
-                console.log('✅ Modelo 3D de cabeza creado');
+                console.log('🎭 Modelo de cabeza creado y añadido');
 
                 hotspotsGroup = new THREE.Group();
                 head.add(hotspotsGroup);
 
                 if (animationFrameId) cancelAnimationFrame(animationFrameId);
-                animate();
                 
-                console.log('✅ Three.js inicializado correctamente');
+                // RENDER INICIAL FORZADO
+                renderer.render(scene, camera);
+                console.log('🎬 Render inicial ejecutado');
+                
+                animate();
+                console.log('✅ Three.js inicializado correctamente - MODELO DEBE SER VISIBLE');
             }
 
             function animate() {
                 animationFrameId = requestAnimationFrame(animate);
                 if (head) {
-                    head.rotation.y += 0.005;
+                    head.rotation.y += 0.01; // Rotación más visible
                 }
-                if(renderer && scene && camera) {
+                if (renderer && scene && camera) {
                     renderer.render(scene, camera);
-                } else {
-                    console.warn('⚠️ Animate: Missing components - renderer:', !!renderer, 'scene:', !!scene, 'camera:', !!camera);
                 }
             }
             
