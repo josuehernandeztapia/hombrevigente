@@ -1268,6 +1268,9 @@
                     console.log('🎯 Modelo 3D creado: Esfera gris rotando');
                     console.log('🚨 Elementos overlay recreados');
                     
+                    // Actualizar referencias globales para debugging
+                    updateGlobalReferences();
+                    
                     return true;
                     
                 } catch (error) {
@@ -1601,20 +1604,42 @@
                 }
             }, 1000);
 
-            // === SISTEMA DE TESTING EXHAUSTIVO ===
+            // ===============================================================
+            // 🎯 SISTEMA DE DIAGNÓSTICO Y SOLUCIÓN DEFINITIVA THREE.JS
+            // ===============================================================
+            // Autor: HombreVigente Team
+            // Propósito: Sistema completo para diagnosticar y solucionar 
+            //           problemas de visualización 3D en tiempo real
+            // Funcionalidades:
+            // - Diagnóstico exhaustivo de 7 componentes críticos
+            // - Funciones de emergencia para recuperación automática
+            // - Botones de control integrados en el container 3D
+            // - Variables globales accesibles para debugging manual
+            // ===============================================================
+
+            /**
+             * 🔍 FUNCIÓN DE DIAGNÓSTICO EXHAUSTIVO
+             * Ejecuta 7 tests críticos para identificar problemas en Three.js
+             * Se puede llamar manualmente: window.testThreeJS()
+             * Auto-ejecuta después de 2 segundos de carga
+             */
             window.testThreeJS = function() {
                 console.log('\n🔍 === DIAGNÓSTICO COMPLETO THREE.JS ===');
+                console.log('📅 Timestamp:', new Date().toLocaleTimeString());
+                console.log('🌐 User Agent:', navigator.userAgent.substring(0, 50) + '...');
                 
-                // Test 1: Componentes básicos
-                console.log('1️⃣ COMPONENTES BÁSICOS:');
-                console.log('- THREE disponible:', typeof THREE);
-                console.log('- Scene existe:', !!scene);
-                console.log('- Camera existe:', !!camera);
-                console.log('- Renderer existe:', !!renderer);
-                console.log('- Head existe:', !!head);
-                console.log('- Container existe:', !!vizContainer);
+                // ===== TEST 1: COMPONENTES BÁSICOS =====
+                // Verifica que todas las librerías y objetos principales existan
+                console.log('\n1️⃣ COMPONENTES BÁSICOS:');
+                console.log('- THREE disponible:', typeof THREE, THREE?.REVISION ? `(v${THREE.REVISION})` : '');
+                console.log('- Scene existe:', !!scene, scene ? `(${scene.children.length} children)` : '');
+                console.log('- Camera existe:', !!camera, camera ? `(${camera.type})` : '');
+                console.log('- Renderer existe:', !!renderer, renderer ? `(${renderer.constructor.name})` : '');
+                console.log('- Head (modelo 3D) existe:', !!head, head ? `(visible: ${head.visible})` : '');
+                console.log('- Container existe:', !!vizContainer, vizContainer ? `(${vizContainer.id})` : '');
                 
-                // Test 2: DOM y Canvas
+                // ===== TEST 2: DOM Y CANVAS =====
+                // Verifica que los elementos HTML estén correctamente insertados
                 console.log('\n2️⃣ DOM Y CANVAS:');
                 const container = document.getElementById('threejs-container');
                 const canvas = container?.querySelector('canvas');
@@ -1623,64 +1648,107 @@
                 console.log('- Container dimensions:', {
                     width: container?.clientWidth,
                     height: container?.clientHeight,
-                    visible: container?.offsetParent !== null
+                    visible: container?.offsetParent !== null,
+                    inViewport: container ? (container.getBoundingClientRect().top < window.innerHeight) : false
                 });
                 console.log('- Canvas dimensions:', {
                     width: canvas?.width,
                     height: canvas?.height,
-                    style: canvas?.style.cssText
+                    clientWidth: canvas?.clientWidth,
+                    clientHeight: canvas?.clientHeight,
+                    style: canvas?.style.cssText || 'no styles'
                 });
                 
-                // Test 3: Renderer y WebGL
+                // ===== TEST 3: RENDERER Y WEBGL =====
+                // Verifica el contexto WebGL y configuración del renderer
                 console.log('\n3️⃣ RENDERER Y WEBGL:');
                 if (renderer) {
+                    const size = new THREE.Vector2();
+                    renderer.getSize(size);
                     console.log('- Renderer type:', renderer.constructor.name);
-                    console.log('- Renderer size:', renderer.getSize(new THREE.Vector2()));
+                    console.log('- Renderer size:', `${size.x}x${size.y}`);
                     console.log('- WebGL context:', !!renderer.getContext());
                     console.log('- DOM element:', !!renderer.domElement);
                     console.log('- Parent node:', !!renderer.domElement?.parentNode);
+                    console.log('- Clear color:', renderer.getClearColor().getHexString());
+                    console.log('- Shadow map enabled:', renderer.shadowMap.enabled);
+                    console.log('- Pixel ratio:', renderer.getPixelRatio());
+                } else {
+                    console.log('❌ Renderer no disponible para testing');
                 }
                 
-                // Test 4: Scene y objetos
+                // ===== TEST 4: SCENE Y OBJETOS 3D =====
+                // Analiza la estructura de la escena y objetos 3D
                 console.log('\n4️⃣ SCENE Y OBJETOS:');
                 if (scene) {
                     console.log('- Scene children count:', scene.children.length);
-                    console.log('- Scene children types:', scene.children.map(child => child.constructor.name));
+                    console.log('- Scene children types:', scene.children.map(child => ({
+                        type: child.constructor.name,
+                        name: child.name || 'unnamed',
+                        visible: child.visible
+                    })));
+                    console.log('- Scene background:', scene.background);
+                    console.log('- Scene fog:', !!scene.fog);
+                } else {
+                    console.log('❌ Scene no disponible');
                 }
+                
                 if (head) {
                     console.log('- Head visible:', head.visible);
-                    console.log('- Head position:', head.position);
-                    console.log('- Head scale:', head.scale);
+                    console.log('- Head position:', `x:${head.position.x.toFixed(2)} y:${head.position.y.toFixed(2)} z:${head.position.z.toFixed(2)}`);
+                    console.log('- Head rotation:', `x:${head.rotation.x.toFixed(2)} y:${head.rotation.y.toFixed(2)} z:${head.rotation.z.toFixed(2)}`);
+                    console.log('- Head scale:', `x:${head.scale.x.toFixed(2)} y:${head.scale.y.toFixed(2)} z:${head.scale.z.toFixed(2)}`);
                     console.log('- Head material:', head.material?.constructor.name);
                     console.log('- Head geometry:', head.geometry?.constructor.name);
+                    console.log('- Head children count:', head.children.length);
+                } else {
+                    console.log('❌ Head (modelo 3D) no disponible');
                 }
                 
-                // Test 5: Camera
+                // ===== TEST 5: CAMERA =====
+                // Verifica configuración y posición de la cámara
                 console.log('\n5️⃣ CAMERA:');
                 if (camera) {
-                    console.log('- Camera position:', camera.position);
-                    console.log('- Camera target:', camera.lookAt);
-                    console.log('- Camera aspect:', camera.aspect);
+                    console.log('- Camera type:', camera.constructor.name);
+                    console.log('- Camera position:', `x:${camera.position.x.toFixed(2)} y:${camera.position.y.toFixed(2)} z:${camera.position.z.toFixed(2)}`);
+                    console.log('- Camera rotation:', `x:${camera.rotation.x.toFixed(2)} y:${camera.rotation.y.toFixed(2)} z:${camera.rotation.z.toFixed(2)}`);
+                    console.log('- Camera aspect:', camera.aspect?.toFixed(3));
                     console.log('- Camera fov:', camera.fov);
+                    console.log('- Camera near/far:', `${camera.near}/${camera.far}`);
+                    console.log('- Camera matrix needs update:', camera.matrixWorldNeedsUpdate);
+                } else {
+                    console.log('❌ Camera no disponible');
                 }
                 
-                // Test 6: Render manual
+                // ===== TEST 6: RENDER MANUAL =====
+                // Intenta ejecutar un render para verificar que el pipeline funciona
                 console.log('\n6️⃣ RENDER MANUAL:');
                 try {
                     if (renderer && scene && camera) {
+                        const startTime = performance.now();
                         renderer.render(scene, camera);
+                        const renderTime = performance.now() - startTime;
                         console.log('✅ Render manual ejecutado exitosamente');
+                        console.log('⏱️ Tiempo de render:', `${renderTime.toFixed(2)}ms`);
+                        console.log('📊 Render info:', renderer.info.render);
                     } else {
-                        console.log('❌ No se puede hacer render - componentes faltantes');
+                        console.log('❌ No se puede hacer render - componentes faltantes:', {
+                            renderer: !!renderer,
+                            scene: !!scene,
+                            camera: !!camera
+                        });
                     }
                 } catch (error) {
-                    console.error('💥 Error en render manual:', error);
+                    console.error('💥 Error en render manual:', error.message);
+                    console.error('🔍 Error stack:', error.stack);
                 }
                 
-                // Test 7: Estilo y visibilidad CSS
+                // ===== TEST 7: ESTILO Y VISIBILIDAD CSS =====
+                // Verifica que no hay problemas de CSS que oculten el canvas
                 console.log('\n7️⃣ ESTILO Y VISIBILIDAD:');
                 if (canvas) {
                     const style = window.getComputedStyle(canvas);
+                    const rect = canvas.getBoundingClientRect();
                     console.log('- Canvas computed style:', {
                         display: style.display,
                         visibility: style.visibility,
@@ -1688,100 +1756,392 @@
                         width: style.width,
                         height: style.height,
                         position: style.position,
-                        zIndex: style.zIndex
+                        zIndex: style.zIndex,
+                        overflow: style.overflow
                     });
+                    console.log('- Canvas bounding rect:', {
+                        top: rect.top.toFixed(2),
+                        left: rect.left.toFixed(2),
+                        width: rect.width.toFixed(2),
+                        height: rect.height.toFixed(2),
+                        inViewport: rect.top < window.innerHeight && rect.bottom > 0
+                    });
+                } else {
+                    console.log('❌ Canvas no disponible para análisis CSS');
+                }
+                
+                // ===== RESUMEN FINAL =====
+                const issues = [];
+                if (typeof THREE === 'undefined') issues.push('THREE.js no cargado');
+                if (!scene) issues.push('Scene no inicializada');
+                if (!camera) issues.push('Camera no inicializada');
+                if (!renderer) issues.push('Renderer no inicializado');
+                if (!head) issues.push('Modelo 3D no creado');
+                if (!canvas) issues.push('Canvas no en DOM');
+                
+                console.log('\n📋 RESUMEN DIAGNÓSTICO:');
+                if (issues.length === 0) {
+                    console.log('✅ SISTEMA COMPLETAMENTE FUNCIONAL');
+                    console.log('🎯 Todos los componentes están operativos');
+                } else {
+                    console.log('⚠️ PROBLEMAS DETECTADOS:', issues.length);
+                    issues.forEach((issue, index) => {
+                        console.log(`   ${index + 1}. ${issue}`);
+                    });
+                    console.log('💡 Usa window.recreateThreeJS() para intentar solucionar');
                 }
                 
                 console.log('\n🎯 === FIN DIAGNÓSTICO ===\n');
+                return issues.length === 0;
             };
 
-            // Auto-ejecutar test después de 2 segundos
+            /**
+             * ⏰ AUTO-EJECUCIÓN DE DIAGNÓSTICO
+             * Se ejecuta automáticamente 2 segundos después de la carga
+             * para verificar el estado inicial del sistema
+             */
             setTimeout(() => {
-                console.log('🚀 Ejecutando test automático...');
-                window.testThreeJS();
+                console.log('🚀 Ejecutando diagnóstico automático...');
+                const isHealthy = window.testThreeJS();
+                
+                // Mostrar notificación visual del estado
+                const container = document.getElementById('threejs-container');
+                if (container) {
+                    const statusDiv = document.createElement('div');
+                    statusDiv.style.cssText = `
+                        position: absolute; 
+                        top: 5px; 
+                        right: 5px; 
+                        padding: 3px 8px; 
+                        border-radius: 12px; 
+                        font-size: 10px; 
+                        font-weight: bold; 
+                        z-index: 200;
+                        ${isHealthy ? 
+                            'background: #10B981; color: white;' : 
+                            'background: #EF4444; color: white;'
+                        }
+                    `;
+                    statusDiv.textContent = isHealthy ? '✅ Sistema OK' : '⚠️ Problemas detectados';
+                    container.appendChild(statusDiv);
+                    
+                    // Auto-ocultar después de 5 segundos
+                    setTimeout(() => statusDiv.remove(), 5000);
+                }
             }, 2000);
 
-            // === FUNCIONES DE EMERGENCIA ===
-            window.forceRender = function() {
-                console.log('🔄 Forzando render...');
-                try {
-                    if (renderer && scene && camera && head) {
-                        // Asegurar que head esté visible
-                        head.visible = true;
-                        head.scale.set(1, 1, 1);
-                        
-                        // Asegurar posición de cámara
-                        camera.position.set(0, 0, 4);
-                        camera.lookAt(0, 0, 0);
-                        camera.updateProjectionMatrix();
-                        
-                        // Limpiar y renderizar
-                        renderer.clear();
-                        renderer.render(scene, camera);
-                        
-                        console.log('✅ Render forzado completado');
-                        console.log('📊 Estado post-render:', {
-                            headVisible: head.visible,
-                            headPosition: head.position,
-                            cameraPosition: camera.position,
-                            sceneChildren: scene.children.length
-                        });
-                    } else {
-                        console.error('❌ Componentes faltantes para render');
-                    }
-                } catch (error) {
-                    console.error('💥 Error en render forzado:', error);
-                }
-            };
+            // ===============================================================
+            // 🚨 FUNCIONES DE EMERGENCIA Y RECUPERACIÓN
+            // ===============================================================
 
-            window.recreateThreeJS = function() {
-                console.log('🛠️ Recreando Three.js desde cero...');
+            /**
+             * 🔄 FUNCIÓN DE RENDER FORZADO
+             * Fuerza un renderizado manual con configuración segura
+             * Útil cuando el modelo 3D no se ve pero los componentes existen
+             */
+            window.forceRender = function() {
+                console.log('🔄 === INICIANDO RENDER FORZADO ===');
+                const startTime = performance.now();
                 
                 try {
-                    // Limpiar completamente
-                    if (renderer) {
-                        renderer.dispose();
-                        if (renderer.domElement && renderer.domElement.parentNode) {
-                            renderer.domElement.parentNode.removeChild(renderer.domElement);
+                    // Verificar componentes críticos
+                    if (!renderer || !scene || !camera) {
+                        const missing = [];
+                        if (!renderer) missing.push('renderer');
+                        if (!scene) missing.push('scene');
+                        if (!camera) missing.push('camera');
+                        throw new Error(`Componentes faltantes: ${missing.join(', ')}`);
+                    }
+
+                    // === PASO 1: CONFIGURAR MODELO 3D ===
+                    if (head) {
+                        head.visible = true;                    // Asegurar visibilidad
+                        head.scale.set(1, 1, 1);              // Resetear escala
+                        head.position.set(0, 0, 0);           // Centrar modelo
+                        head.rotation.set(0, 0, 0);           // Resetear rotación
+                        console.log('✅ Modelo 3D configurado');
+                    } else {
+                        console.warn('⚠️ Modelo 3D no disponible, continuando...');
+                    }
+                    
+                    // === PASO 2: CONFIGURAR CÁMARA ===
+                    camera.position.set(0, 0, 4);             // Posición estándar
+                    camera.lookAt(0, 0, 0);                    // Mirar al centro
+                    camera.updateProjectionMatrix();           // Actualizar matriz
+                    console.log('✅ Cámara reconfigurada');
+                    
+                    // === PASO 3: CONFIGURAR RENDERER ===
+                    const container = document.getElementById('threejs-container');
+                    if (container) {
+                        const width = Math.max(container.clientWidth, 400);
+                        const height = Math.max(container.clientHeight, 300);
+                        
+                        // Actualizar tamaño si es necesario
+                        const currentSize = new THREE.Vector2();
+                        renderer.getSize(currentSize);
+                        if (currentSize.x !== width || currentSize.y !== height) {
+                            renderer.setSize(width, height);
+                            camera.aspect = width / height;
+                            camera.updateProjectionMatrix();
+                            console.log('✅ Tamaño actualizado:', `${width}x${height}`);
                         }
                     }
                     
-                    // Limpiar variables
+                    // === PASO 4: EJECUTAR RENDER ===
+                    renderer.clear();                          // Limpiar buffer
+                    renderer.render(scene, camera);            // Renderizar
+                    
+                    const renderTime = performance.now() - startTime;
+                    console.log('✅ Render forzado completado en', `${renderTime.toFixed(2)}ms`);
+                    
+                    // === PASO 5: REPORTAR ESTADO ===
+                    console.log('📊 Estado post-render:', {
+                        headVisible: head?.visible,
+                        headPosition: head ? `${head.position.x.toFixed(2)}, ${head.position.y.toFixed(2)}, ${head.position.z.toFixed(2)}` : 'N/A',
+                        cameraPosition: `${camera.position.x.toFixed(2)}, ${camera.position.y.toFixed(2)}, ${camera.position.z.toFixed(2)}`,
+                        sceneChildren: scene.children.length,
+                        renderInfo: renderer.info.render
+                    });
+                    
+                    // Mostrar confirmación visual
+                    showStatusMessage('🔄 Render forzado ejecutado', 'success');
+                    
+                } catch (error) {
+                    console.error('💥 Error en render forzado:', error.message);
+                    console.error('🔍 Stack trace:', error.stack);
+                    showStatusMessage('❌ Error en render forzado', 'error');
+                }
+                
+                console.log('🔄 === FIN RENDER FORZADO ===\n');
+            };
+
+            /**
+             * 🛠️ FUNCIÓN DE RECREACIÓN COMPLETA
+             * Destruye y recrea todo el sistema Three.js desde cero
+             * Útil para problemas graves de inicialización
+             */
+            window.recreateThreeJS = function() {
+                console.log('🛠️ === INICIANDO RECREACIÓN COMPLETA ===');
+                const startTime = performance.now();
+                
+                try {
+                    // === PASO 1: LIMPIEZA COMPLETA ===
+                    console.log('🧹 Limpiando sistema anterior...');
+                    
+                    // Cancelar animaciones
+                    if (animationFrameId) {
+                        cancelAnimationFrame(animationFrameId);
+                        animationFrameId = null;
+                        console.log('✅ Animaciones canceladas');
+                    }
+                    
+                    // Limpiar renderer
+                    if (renderer) {
+                        renderer.dispose();                     // Liberar recursos WebGL
+                        if (renderer.domElement && renderer.domElement.parentNode) {
+                            renderer.domElement.parentNode.removeChild(renderer.domElement);
+                        }
+                        console.log('✅ Renderer destruido');
+                    }
+                    
+                    // Limpiar geometrías y materiales
+                    if (head) {
+                        if (head.geometry) head.geometry.dispose();
+                        if (head.material) {
+                            if (Array.isArray(head.material)) {
+                                head.material.forEach(material => material.dispose());
+                            } else {
+                                head.material.dispose();
+                            }
+                        }
+                        console.log('✅ Recursos 3D liberados');
+                    }
+                    
+                    // === PASO 2: RESETEAR VARIABLES GLOBALES ===
                     scene = null;
                     camera = null;
                     renderer = null;
                     head = null;
                     hotspotsGroup = null;
+                    currentView = 'rgb';
+                    console.log('✅ Variables globales reseteadas');
                     
-                    // Limpiar container
+                    // === PASO 3: LIMPIAR CONTAINER DOM ===
                     const container = document.getElementById('threejs-container');
-                    const canvas = container.querySelector('canvas');
-                    if (canvas) canvas.remove();
+                    if (container) {
+                        // Preservar botones de emergencia
+                        const emergencyControls = container.querySelector('#emergency-controls');
+                        const emergencyHTML = emergencyControls ? emergencyControls.outerHTML : '';
+                        
+                        // Limpiar container
+                        container.innerHTML = '';
+                        
+                        // Restaurar botones de emergencia
+                        if (emergencyHTML) {
+                            container.innerHTML = emergencyHTML;
+                        }
+                        
+                        // Añadir indicador de carga
+                        const loadingDiv = document.createElement('div');
+                        loadingDiv.style.cssText = `
+                            position: absolute;
+                            top: 50%;
+                            left: 50%;
+                            transform: translate(-50%, -50%);
+                            color: #04D9FF;
+                            font-weight: bold;
+                            text-align: center;
+                            z-index: 50;
+                        `;
+                        loadingDiv.innerHTML = '🔄 Recreando sistema 3D...<br><small>Por favor espere...</small>';
+                        container.appendChild(loadingDiv);
+                        
+                        console.log('✅ Container DOM limpiado');
+                    }
                     
-                    console.log('🧹 Limpieza completada');
+                    const cleanupTime = performance.now() - startTime;
+                    console.log('🧹 Limpieza completada en', `${cleanupTime.toFixed(2)}ms`);
                     
-                    // Reinicializar
+                    // === PASO 4: REINICIALIZACIÓN ===
                     setTimeout(() => {
+                        console.log('🚀 Reinicializando Three.js...');
+                        const initStartTime = performance.now();
+                        
                         const success = initThreeJS();
+                        const initTime = performance.now() - initStartTime;
+                        
                         console.log('🔄 Reinicialización:', success ? '✅ Éxito' : '❌ Falló');
+                        console.log('⏱️ Tiempo de inicialización:', `${initTime.toFixed(2)}ms`);
                         
                         if (success) {
+                            // Ejecutar render forzado después de inicialización
                             setTimeout(() => {
+                                console.log('🎯 Ejecutando render post-inicialización...');
                                 window.forceRender();
+                                
+                                const totalTime = performance.now() - startTime;
+                                console.log('✅ Recreación completa en', `${totalTime.toFixed(2)}ms`);
+                                showStatusMessage('✅ Sistema recreado exitosamente', 'success');
                             }, 500);
+                        } else {
+                            console.error('❌ Falló la reinicialización');
+                            showStatusMessage('❌ Error en recreación', 'error');
                         }
                     }, 100);
                     
                 } catch (error) {
-                    console.error('💥 Error en recreación:', error);
+                    console.error('💥 Error en recreación:', error.message);
+                    console.error('🔍 Stack trace:', error.stack);
+                    showStatusMessage('💥 Error crítico en recreación', 'error');
                 }
+                
+                console.log('🛠️ === FIN RECREACIÓN ===\n');
             };
 
-            // Hacer variables globalmente accesibles para debugging
-            window.scene = scene;
-            window.camera = camera;
-            window.renderer = renderer;
-            window.head = head;
+            /**
+             * 💬 FUNCIÓN AUXILIAR PARA MOSTRAR MENSAJES DE ESTADO
+             * Muestra notificaciones visuales en el container 3D
+             */
+            function showStatusMessage(message, type = 'info') {
+                const container = document.getElementById('threejs-container');
+                if (!container) return;
+                
+                const statusDiv = document.createElement('div');
+                const colors = {
+                    success: 'background: #10B981; color: white;',
+                    error: 'background: #EF4444; color: white;',
+                    warning: 'background: #F59E0B; color: white;',
+                    info: 'background: #3B82F6; color: white;'
+                };
+                
+                statusDiv.style.cssText = `
+                    position: absolute;
+                    top: 50%;
+                    left: 50%;
+                    transform: translate(-50%, -50%);
+                    padding: 8px 16px;
+                    border-radius: 8px;
+                    font-size: 12px;
+                    font-weight: bold;
+                    z-index: 300;
+                    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+                    ${colors[type] || colors.info}
+                `;
+                statusDiv.textContent = message;
+                container.appendChild(statusDiv);
+                
+                // Auto-remover después de 3 segundos
+                setTimeout(() => {
+                    if (statusDiv.parentNode) {
+                        statusDiv.parentNode.removeChild(statusDiv);
+                    }
+                }, 3000);
+            }
+
+            // ===============================================================
+            // 🌐 VARIABLES GLOBALES PARA DEBUGGING
+            // ===============================================================
+            // Hacer variables principales accesibles desde la consola
+            // Uso: Abrir DevTools y escribir "window.scene" para inspeccionar
+            
+            /**
+             * Actualiza las referencias globales para debugging
+             * Se llama automáticamente después de cada inicialización
+             */
+            function updateGlobalReferences() {
+                window.scene = scene;
+                window.camera = camera;
+                window.renderer = renderer;
+                window.head = head;
+                window.hotspotsGroup = hotspotsGroup;
+                window.vizContainer = vizContainer;
+                
+                // Funciones de utilidad adicionales
+                window.getThreeJSInfo = function() {
+                    return {
+                        version: THREE?.REVISION,
+                        scene: scene ? {
+                            children: scene.children.length,
+                            background: scene.background,
+                            fog: !!scene.fog
+                        } : null,
+                        camera: camera ? {
+                            type: camera.constructor.name,
+                            position: camera.position,
+                            fov: camera.fov,
+                            aspect: camera.aspect
+                        } : null,
+                        renderer: renderer ? {
+                            type: renderer.constructor.name,
+                            size: renderer.getSize(new THREE.Vector2()),
+                            pixelRatio: renderer.getPixelRatio(),
+                            shadowMap: renderer.shadowMap.enabled
+                        } : null,
+                        head: head ? {
+                            visible: head.visible,
+                            position: head.position,
+                            material: head.material?.constructor.name,
+                            geometry: head.geometry?.constructor.name
+                        } : null
+                    };
+                };
+                
+                console.log('🌐 Referencias globales actualizadas para debugging');
+            }
+            
+            // Actualizar referencias iniciales
+            updateGlobalReferences();
+            
+            // ===============================================================
+            // 📋 RESUMEN DE FUNCIONES DISPONIBLES
+            // ===============================================================
+            console.log('\n📋 === FUNCIONES DE DIAGNÓSTICO DISPONIBLES ===');
+            console.log('🔍 window.testThreeJS()     - Diagnóstico completo');
+            console.log('🔄 window.forceRender()     - Render forzado');
+            console.log('🛠️ window.recreateThreeJS() - Recrear sistema');
+            console.log('📊 window.getThreeJSInfo()  - Info del sistema');
+            console.log('🌐 window.scene, window.camera, window.renderer - Variables globales');
+            console.log('===============================================\n');
         });
     </script>
 </body>
