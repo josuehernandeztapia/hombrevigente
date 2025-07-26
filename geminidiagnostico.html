@@ -6,7 +6,7 @@
     <title>DiagnósticoVigente AI - Blueprint Interactivo Definitivo</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r140/three.min.js"></script>
+    <script src="https://unpkg.com/three@0.140.0/build/three.min.js"></script>
     <!-- Cache buster para forzar recarga -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -786,6 +786,25 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            // === DEBUGGING CRÍTICO ===
+            console.log('🌐 DOM Cargado');
+            console.log('📦 THREE disponible:', typeof THREE);
+            console.log('🎯 Container existe:', !!document.getElementById('threejs-container'));
+            
+            // Test inmediato de Three.js
+            setTimeout(() => {
+                console.log('⏰ Después de timeout - THREE:', typeof THREE);
+                if (typeof THREE === 'undefined') {
+                    console.error('❌ THREE.js NO SE CARGÓ');
+                    const container = document.getElementById('threejs-container');
+                    if (container) {
+                        container.innerHTML = '<div style="color: red; padding: 20px; text-align: center;">CDN Three.js falló - Verificar conexión</div>';
+                    }
+                } else {
+                    console.log('✅ THREE.js cargado correctamente');
+                }
+            }, 100);
+            
             // Chart.js dark mode defaults
             Chart.defaults.color = 'hsl(215, 25%, 70%)';
             Chart.defaults.borderColor = 'hsl(215, 14%, 34%)';
@@ -1212,6 +1231,7 @@
                         console.log('🌡️ Vista térmica activada');
                         break;
                     case 'fused':
+                        console.log('🔬 Activando vista fusión');
                         head.material = new THREE.MeshStandardMaterial({ color: 0x04D9FF, roughness: 0.4, metalness: 0.5, wireframe: true });
                         if (patient && patient.hotspots) {
                             patient.hotspots.forEach(spot => {
@@ -1225,6 +1245,17 @@
                                 criticalAlertEl.style.opacity = 1;
                             });
                         }
+                        
+                        // FORZAR ALERTA PARA TESTING
+                        const alertEl = document.getElementById('critical-alert');
+                        if (alertEl) {
+                            alertEl.textContent = 'ZONA DE PRUEBA DETECTADA';
+                            alertEl.style.opacity = 1;
+                            console.log('🚨 Alerta activada');
+                        } else {
+                            console.error('❌ Elemento critical-alert no encontrado');
+                        }
+                        
                         console.log('🔬 Vista fusión IA activada');
                         break;
                 }
@@ -1347,15 +1378,16 @@
             
             // Aumentar timeout inicialización
             setTimeout(() => {
+                console.log('🚀 Iniciando Three.js...');
                 if (typeof THREE !== 'undefined') {
                     console.log('🎯 Iniciando sistema 3D...');
                     initThreeJS();
                 } else {
-                    console.error('❌ Three.js no disponible después de 500ms');
+                    console.error('❌ Three.js no disponible después de 1000ms');
                     document.getElementById('threejs-container').innerHTML = 
                         '<div class="flex items-center justify-center h-full text-red-400">❌ Error de carga 3D</div>';
                 }
-            }, 500);
+            }, 1000);
         });
     </script>
 </body>
