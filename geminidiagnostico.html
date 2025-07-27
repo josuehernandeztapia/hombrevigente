@@ -286,7 +286,6 @@
         #threejs-container {
             position: relative;
             width: 100%;
-            height: 450px; /* Altura fija */
             background-color: #111111;
             border-radius: 0.5rem;
             overflow: hidden;
@@ -1086,19 +1085,32 @@
         let animationFrameId = null;
 
         document.addEventListener('DOMContentLoaded', function() {
-            // === DEBUGGING CRÍTICO ===
-            console.log('🌐 DOM Cargado');
+            console.log('🌐 DOM Cargado - Inicializando elementos...');
             
-            // Inicializar elementos DOM
+            // === DIAGNÓSTICO COMPLETO THREE.JS ===
+            console.log('=== DIAGNÓSTICO THREE.JS ===');
+            console.log('THREE disponible:', typeof THREE);
+            console.log('THREE version:', THREE?.REVISION);
+            console.log('Container existe:', !!document.getElementById('threejs-container'));
+            console.log('Variables globales:', {
+                scene: window.scene,
+                camera: window.camera,
+                renderer: window.renderer,
+                head: window.head
+            });
+            
+            // INICIALIZACIÓN SEGURA DE VARIABLES DOM
             vizContainer = document.getElementById('threejs-container');
             matrixEffectEl = document.getElementById('matrix-effect');
             criticalAlertEl = document.getElementById('critical-alert');
-
-            console.log('📦 Elementos DOM inicializados:', {
-                vizContainer: !!vizContainer,
-                matrixEffectEl: !!matrixEffectEl,
-                criticalAlertEl: !!criticalAlertEl
-            });
+            
+            // VERIFICACIÓN CRÍTICA
+            if (!vizContainer) {
+                console.error('❌ threejs-container no encontrado');
+                return;
+            }
+            
+            console.log('✅ Elementos DOM inicializados correctamente');
             
             console.log('📦 THREE disponible:', typeof THREE);
             
