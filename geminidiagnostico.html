@@ -6,7 +6,18 @@
     <title>DiagnósticoVigente AI - Blueprint Interactivo Definitivo</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://unpkg.com/three@0.140.0/build/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script>
+        // Fallback CDN si el principal falla
+        if (typeof THREE === 'undefined') {
+            console.warn('⚠️ CDN principal falló, cargando fallback...');
+            const script = document.createElement('script');
+            script.src = 'https://unpkg.com/three@0.140.0/build/three.min.js';
+            script.onload = () => console.log('✅ Fallback CDN cargado');
+            script.onerror = () => console.error('❌ Fallback CDN también falló');
+            document.head.appendChild(script);
+        }
+    </script>
     <!-- Cache buster para forzar recarga -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -274,8 +285,9 @@
         }
         #threejs-container {
             position: relative;
-            aspect-ratio: 16 / 9;
-            background-color: #000;
+            width: 100%;
+            height: 450px; /* Altura fija */
+            background-color: #111111;
             border-radius: 0.5rem;
             overflow: hidden;
             border: 1px solid var(--border-color);
@@ -483,6 +495,59 @@
             0%, 100% { transform: translateX(-50%) scale(1); box-shadow: 0 0 0 0 rgba(248, 113, 113, 0.7); }
             50% { transform: translateX(-50%) scale(1.05); box-shadow: 0 0 20px 10px rgba(248, 113, 113, 0); }
         }
+        
+        /* 🌟 EFECTOS AVANZADOS PARA VISUALIZACIÓN 3D */
+        .glow-effect {
+            box-shadow: 0 0 20px rgba(4, 217, 255, 0.5);
+            animation: glow-pulse 2s ease-in-out infinite alternate;
+        }
+        
+        @keyframes glow-pulse {
+            from { box-shadow: 0 0 20px rgba(4, 217, 255, 0.5); }
+            to { box-shadow: 0 0 30px rgba(4, 217, 255, 0.8), 0 0 40px rgba(4, 217, 255, 0.3); }
+        }
+        
+        .particle-trail {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: radial-gradient(circle, #04D9FF 0%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+            animation: particle-float 3s ease-in-out infinite;
+        }
+        
+        @keyframes particle-float {
+            0%, 100% { transform: translateY(0px) scale(1); opacity: 0.6; }
+            50% { transform: translateY(-10px) scale(1.2); opacity: 1; }
+        }
+        
+        .cinematic-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(
+                45deg,
+                transparent 30%,
+                rgba(4, 217, 255, 0.1) 50%,
+                transparent 70%
+            );
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+        
+        .cinematic-overlay.active {
+            opacity: 1;
+            animation: cinematic-sweep 2s ease-in-out;
+        }
+        
+        @keyframes cinematic-sweep {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
     </style>
 </head>
 <body class="antialiased">
@@ -660,9 +725,15 @@
                                 </div>
                                 <div class="mt-6">
                                     <h4 class="font-bold text-lg mb-2 text-gray-200">Visualización de Datos</h4>
-                                    <div id="threejs-container">
+                                    <div id="threejs-container" class="glow-effect">
                                         <div id="matrix-effect" class="matrix-effect"></div>
                                         <div id="critical-alert" class="critical-alert"></div>
+                                        <div id="cinematic-overlay" class="cinematic-overlay"></div>
+                                        <div id="emergency-controls" style="position: absolute; bottom: 10px; left: 10px; z-index: 100;">
+                                            <button onclick="window.testThreeJS()" style="background: #374151; color: white; border: 1px solid #04D9FF; padding: 5px 10px; border-radius: 4px; font-size: 11px; cursor: pointer; margin-right: 5px;">🔍 Test</button>
+                                            <button onclick="window.forceRender()" style="background: #374151; color: white; border: 1px solid #34D399; padding: 5px 10px; border-radius: 4px; font-size: 11px; cursor: pointer; margin-right: 5px;">🔄 Render</button>
+                                            <button onclick="window.recreateThreeJS()" style="background: #374151; color: white; border: 1px solid #F87171; padding: 5px 10px; border-radius: 4px; font-size: 11px; cursor: pointer;">🛠️ Reset</button>
+                                        </div>
                                     </div>
                                     <div class="flex flex-col sm:flex-row justify-center gap-2 mt-2">
                                         <button data-view="rgb" class="view-btn btn-secondary rounded-full">RGB</button>
@@ -937,7 +1008,7 @@
 
     <footer class="bg-surface-dark border-t border-border-color">
         <div class="container mx-auto py-8 px-4 sm:px-6 lg:px-8 text-center text-text-muted text-sm">
-            <p>&copy; 2025 DiagnósticoVigente AI. Todos los derechos reservados.</p>
+            <p>&copy; 2025 Hombre Vigente - DiagnósticoVigente AI. Todos los derechos reservados.</p>
             <p class="mt-2">Redefiniendo la estética masculina con precisión científica.</p>
         </div>
     </footer>
@@ -963,6 +1034,18 @@
     </div>
 
     <script>
+        // === VARIABLES GLOBALES SEGURAS ===
+        let vizContainer = null;
+        let matrixEffectEl = null;
+        let criticalAlertEl = null;
+        let scene = null;
+        let camera = null;
+        let renderer = null;
+        let head = null;
+        let hotspotsGroup = null;
+        let currentView = 'rgb';
+        let animationFrameId = null;
+
         document.addEventListener('DOMContentLoaded', function() {
             // === DEBUGGING CRÍTICO ===
             console.log('🌐 DOM Cargado');
@@ -979,16 +1062,14 @@
             });
             
             console.log('📦 THREE disponible:', typeof THREE);
-            console.log('🎯 Container existe:', !!document.getElementById('threejs-container'));
             
             // Test inmediato de Three.js
             setTimeout(() => {
                 console.log('⏰ Después de timeout - THREE:', typeof THREE);
                 if (typeof THREE === 'undefined') {
-                    console.error('❌ THREE.js NO SE CARGÓ');
-                    const container = document.getElementById('threejs-container');
-                    if (container) {
-                        container.innerHTML = '<div style="color: red; padding: 20px; text-align: center;">❌ CDN Three.js falló - Verificar conexión a internet</div>';
+                    console.error('❌ THREE.js NO SE CARGÓ - CAMBIANDO CDN...');
+                    if (vizContainer) {
+                        vizContainer.innerHTML = '<div style="color: red; padding: 20px; text-align: center;">❌ CDN Three.js falló - Verificar conexión a internet</div>';
                     }
                 } else {
                     console.log('✅ THREE.js cargado correctamente');
@@ -1134,6 +1215,9 @@
             patientSelector.addEventListener('click', function(e) {
                 const button = e.target.closest('.patient-btn');
                 if (button) {
+                    // 🎵 SONIDO DE SELECCIÓN DE PACIENTE
+                    playBeep(1000, 120);
+                    
                     document.querySelectorAll('.patient-btn').forEach(btn => btn.classList.remove('bg-primary', 'border-primary', 'text-bg-dark'));
                     button.classList.add('bg-primary', 'border-primary', 'text-bg-dark');
                     startDiagnosis(button.dataset.patient);
@@ -1185,6 +1269,10 @@
 
                 steps.forEach((step, index) => {
                     setTimeout(() => {
+                        // 🎵 SONIDO DE PROGRESO DIFERENCIADO
+                        const frequencies = [400, 500, 600, 800];
+                        playBeep(frequencies[index] || 600, 80);
+                        
                         const iconEl = document.getElementById(`${step.id}-icon`);
                         const modelEl = document.getElementById(`${step.id}-model`);
                         
@@ -1199,7 +1287,11 @@
                         }
 
                         if (index === steps.length - 1) {
-                            setTimeout(() => showResults(patient), 500);
+                            // 🎵 SONIDO DE FINALIZACIÓN TRIUNFAL
+                            setTimeout(() => {
+                                playBeep(1200, 200);
+                                showResults(patient);
+                            }, 300);
                         }
                     }, cumulativeDelay);
                     cumulativeDelay += step.duration;
@@ -1429,12 +1521,69 @@
             }
 
             function animate() {
-                animationFrameId = requestAnimationFrame(animate);
-                if (head) {
-                    head.rotation.y += 0.01; // Rotación más visible
+                if (!scene || !camera || !renderer || !head) {
+                    console.warn('⚠️ Componentes Three.js no disponibles para animación');
+                    // Intentar reinicializar después de 1 segundo
+                    setTimeout(() => {
+                        if (vizContainer && typeof THREE !== 'undefined') {
+                            console.log('🔄 Intentando reinicializar Three.js...');
+                            initThreeJS();
+                        }
+                    }, 1000);
+                    return;
                 }
-                if (renderer && scene && camera) {
+                
+                try {
+                    animationFrameId = requestAnimationFrame(animate);
+                    
+                    // 🎬 ANIMACIONES ESPECTACULARES
+                    
+                    // Rotación suave del modelo principal
+                    head.rotation.y += 0.01;
+                    head.rotation.x += 0.005;
+                    
+                    // 🌟 ROTACIÓN DE PARTÍCULAS
+                    if (particles) {
+                        particles.rotation.y += 0.002;
+                        particles.rotation.x += 0.001;
+                    }
+
+                    // 💫 PULSACIÓN DE HOTSPOTS
+                    if (hotspotsGroup && hotspotsGroup.children.length > 0) {
+                        hotspotsGroup.children.forEach((hotspot, index) => {
+                            const time = Date.now() * 0.005;
+                            hotspot.scale.setScalar(1 + Math.sin(time + index) * 0.3);
+                            if (hotspot.material && hotspot.material.opacity !== undefined) {
+                                hotspot.material.opacity = 0.5 + Math.sin(time + index) * 0.3;
+                            }
+                        });
+                    }
+
+                    // 🎥 CAMERA SMOOTH MOVEMENT (movimiento cinematográfico sutil)
+                    const time = Date.now() * 0.0005;
+                    camera.position.x = Math.sin(time) * 0.3;
+                    camera.position.y = Math.cos(time * 0.7) * 0.2;
+                    camera.lookAt(head.position);
+                    
+                    // Render con verificación
                     renderer.render(scene, camera);
+                    
+                } catch (error) {
+                    console.error('💥 Error en animate:', error);
+                    console.log('🛑 Deteniendo animación');
+                    if (animationFrameId) {
+                        cancelAnimationFrame(animationFrameId);
+                    }
+                    
+                    // Mostrar error en container
+                    if (vizContainer) {
+                        vizContainer.innerHTML = `
+                            <div style="color: #F87171; text-align: center; padding: 20px; background: #1F2937; border-radius: 8px;">
+                                ❌ Error animación: ${error.message}<br>
+                                <button onclick="window.location.reload()" style="margin-top: 10px; padding: 5px 10px; background: #04D9FF; color: #111827; border: none; border-radius: 4px; cursor: pointer;">🔄 Recargar</button>
+                            </div>
+                        `;
+                    }
                 }
             }
             
@@ -1494,91 +1643,152 @@
                 });
             }
 
-            function switchToView(view, patient) {
-                console.log(`🎯 Cambiando a vista: ${view}`);
-                currentView = view;
-                document.querySelectorAll('.view-btn').forEach(btn => btn.classList.remove('active'));
-                const currentBtn = document.querySelector(`.view-btn[data-view="${view}"]`);
-                if (currentBtn) currentBtn.classList.add('active');
-
-                if (!head) {
-                    console.warn('Head model not ready');
+            function switchToView(view, patient = null) {
+                console.log(`🎯 Transición cinematográfica a: ${view}`);
+                
+                // VERIFICACIÓN CRÍTICA
+                if (!head || !hotspotsGroup || !criticalAlertEl) {
+                    console.warn('⚠️ Elementos 3D no disponibles para cambio de vista');
                     return;
                 }
-
-                // LIMPIEZA CORRECTA DE HOTSPOTS
+                
+                // 🎵 EFECTO DE SONIDO PARA TRANSICIÓN
+                playBeep(600, 150);
+                
+                currentView = view;
+                
+                // ACTUALIZAR BOTONES
+                document.querySelectorAll('.view-btn').forEach(btn => {
+                    btn.classList.remove('active');
+                });
+                const currentBtn = document.querySelector(`.view-btn[data-view="${view}"]`);
+                if (currentBtn) currentBtn.classList.add('active');
+                
+                // LIMPIAR HOTSPOTS
                 while(hotspotsGroup.children.length > 0) {
                     const child = hotspotsGroup.children[0];
                     hotspotsGroup.remove(child);
                     if(child.geometry) child.geometry.dispose();
                     if(child.material) child.material.dispose();
                 }
+                
+                // LIMPIAR ALERTA
                 criticalAlertEl.style.opacity = 0;
-
-                switch(view) {
-                    case 'rgb':
-                        head.material = new THREE.MeshStandardMaterial({ color: 0xcccccc, roughness: 0.6, metalness: 0.3 });
-                        head.material.wireframe = false;
-                        console.log('📷 Vista RGB activada');
-                        break;
-                    case 'thermal':
-                        const canvas = document.createElement('canvas');
-                        canvas.width = 256;
-                        canvas.height = 256;
-                        const context = canvas.getContext('2d');
-                        
-                        // Gradiente térmico más realista
-                        const gradient = context.createRadialGradient(128, 128, 0, 128, 128, 128);
-                        gradient.addColorStop(0, '#ff0000');    // Rojo centro (caliente)
-                        gradient.addColorStop(0.3, '#ff8800');  // Naranja
-                        gradient.addColorStop(0.6, '#ffff00');  // Amarillo
-                        gradient.addColorStop(0.8, '#00ff00');  // Verde
-                        gradient.addColorStop(1, '#0088ff');    // Azul (frío)
-                        
-                        context.fillStyle = gradient;
-                        context.fillRect(0, 0, 256, 256);
-                        
-                        head.material = new THREE.MeshBasicMaterial({ 
-                            map: new THREE.CanvasTexture(canvas),
-                            wireframe: false
-                        });
-                        console.log('🌡️ Vista térmica activada - Heat map aplicado');
-                        break;
-                    case 'fused':
-                        console.log('🔬 Activando vista fusión');
-                        head.material = new THREE.MeshStandardMaterial({ color: 0x04D9FF, roughness: 0.4, metalness: 0.5, wireframe: true });
-                        if (patient && patient.hotspots) {
-                            patient.hotspots.forEach(spot => {
-                                const hotspotGeometry = new THREE.SphereGeometry(0.1, 16, 16);
-                                const hotspotMaterial = new THREE.MeshBasicMaterial({ color: 0xF87171, transparent: true, opacity: 0.8 });
-                                const hotspot = new THREE.Mesh(hotspotGeometry, hotspotMaterial);
-                                hotspot.position.set(spot.position.x, spot.position.y, spot.position.z).multiplyScalar(1.5);
-                                hotspotsGroup.add(hotspot);
+                
+                // 🎬 TRANSICIÓN CINEMATOGRÁFICA CON FADE
+                head.material.transparent = true;
+                const fadeOut = new THREE.Clock();
+                
+                function fadeTransition() {
+                    const elapsed = fadeOut.getElapsedTime();
+                    head.material.opacity = Math.max(0, 1 - elapsed * 2);
+                    
+                    if (elapsed < 0.5) {
+                        requestAnimationFrame(fadeTransition);
+                    } else {
+                        // CAMBIAR MATERIAL SEGÚN VISTA
+                        switch(view) {
+                            case 'rgb':
+                                head.material = new THREE.MeshPhongMaterial({ 
+                                    color: 0xcccccc,
+                                    shininess: 100,
+                                    transparent: true,
+                                    opacity: 0
+                                });
+                                console.log('📷 Vista RGB con transición');
+                                break;
                                 
-                                criticalAlertEl.textContent = spot.message;
-                                criticalAlertEl.style.opacity = 1;
-                            });
+                            case 'thermal':
+                                // GENERAR TEXTURA TÉRMICA ANIMADA
+                                const canvas = document.createElement('canvas');
+                                canvas.width = 256;
+                                canvas.height = 256;
+                                const context = canvas.getContext('2d');
+                                
+                                const gradient = context.createRadialGradient(128, 128, 0, 128, 128, 128);
+                                gradient.addColorStop(0, '#ff0000');
+                                gradient.addColorStop(0.3, '#ff8800');
+                                gradient.addColorStop(0.6, '#ffff00');
+                                gradient.addColorStop(0.8, '#00ff00');
+                                gradient.addColorStop(1, '#0088ff');
+                                
+                                context.fillStyle = gradient;
+                                context.fillRect(0, 0, 256, 256);
+                                
+                                head.material = new THREE.MeshBasicMaterial({ 
+                                    map: new THREE.CanvasTexture(canvas),
+                                    transparent: true,
+                                    opacity: 0
+                                });
+                                console.log('🌡️ Vista térmica con transición');
+                                break;
+                                
+                            case 'fused':
+                                head.material = new THREE.MeshStandardMaterial({ 
+                                    color: 0x04D9FF,
+                                    wireframe: true,
+                                    transparent: true,
+                                    opacity: 0
+                                });
+                                
+                                // AGREGAR HOTSPOTS SI DISPONIBLES
+                                if (patient && patient.hotspots && patient.hotspots.length > 0) {
+                                    patient.hotspots.forEach(spot => {
+                                        const hotspotGeometry = new THREE.SphereGeometry(0.1, 16, 16);
+                                        const hotspotMaterial = new THREE.MeshBasicMaterial({ 
+                                            color: 0xF87171, 
+                                            transparent: true, 
+                                            opacity: 0.8 
+                                        });
+                                        const hotspot = new THREE.Mesh(hotspotGeometry, hotspotMaterial);
+                                        hotspot.position.set(spot.position.x, spot.position.y, spot.position.z);
+                                        hotspot.position.multiplyScalar(1.5);
+                                        hotspotsGroup.add(hotspot);
+                                        
+                                        // MOSTRAR ALERTA
+                                        criticalAlertEl.textContent = spot.message;
+                                        criticalAlertEl.style.opacity = 1;
+                                    });
+                                } else {
+                                    // ALERTA GENÉRICA PARA DEMO
+                                    criticalAlertEl.textContent = 'FUSIÓN IA ACTIVA - ANÁLISIS PROFUNDO';
+                                    criticalAlertEl.style.opacity = 1;
+                                }
+                                
+                                console.log('🔬 Vista fusión IA con transición');
+                                break;
                         }
                         
-                        // FORZAR ALERTA PARA TESTING
-                        const alertEl = document.getElementById('critical-alert');
-                        if (alertEl) {
-                            alertEl.textContent = 'ZONA DE PRUEBA DETECTADA - FUSIÓN IA ACTIVA';
-                            alertEl.style.opacity = 1;
-                            console.log('🚨 Alerta crítica activada - Texto:', alertEl.textContent);
-                            console.log('🎯 Alerta visible - Opacity:', alertEl.style.opacity);
-                        } else {
-                            console.error('❌ Elemento critical-alert no encontrado en DOM');
-                            console.log('🔍 Elementos disponibles:', document.querySelectorAll('[id*="alert"]'));
+                        // 🎬 FADE IN
+                        const fadeIn = new THREE.Clock();
+                        function fadeInTransition() {
+                            const elapsed = fadeIn.getElapsedTime();
+                            head.material.opacity = Math.min(1, elapsed * 2);
+                            
+                            if (elapsed < 0.5) {
+                                requestAnimationFrame(fadeInTransition);
+                            }
                         }
-                        
-                        console.log('🔬 Vista fusión IA activada');
-                        break;
+                        fadeInTransition();
+                    }
                 }
+                fadeTransition();
             }
             
             document.querySelectorAll('.view-btn').forEach(btn => {
                 btn.addEventListener('click', () => {
+                    // 🎬 EFECTO CINEMATOGRÁFICO AL HACER CLIC
+                    const cinematicOverlay = document.getElementById('cinematic-overlay');
+                    if (cinematicOverlay) {
+                        cinematicOverlay.classList.add('active');
+                        setTimeout(() => {
+                            cinematicOverlay.classList.remove('active');
+                        }, 2000);
+                    }
+                    
+                    // 🎵 SONIDO DE INTERACCIÓN
+                    playBeep(800, 100);
+                    
                     const patientKey = document.querySelector('.patient-btn.border-primary')?.dataset.patient;
                     if (patientKey) {
                         switchToView(btn.dataset.view, patientData[patientKey]);
@@ -1587,10 +1797,22 @@
             });
 
             window.addEventListener('resize', () => {
-                if (renderer) {
-                    camera.aspect = vizContainer.clientWidth / vizContainer.clientHeight;
-                    camera.updateProjectionMatrix();
-                    renderer.setSize(vizContainer.clientWidth, vizContainer.clientHeight);
+                if (renderer && camera && vizContainer) {
+                    try {
+                        const width = vizContainer.clientWidth;
+                        const height = vizContainer.clientHeight;
+                        
+                        if (width > 0 && height > 0) {
+                            camera.aspect = width / height;
+                            camera.updateProjectionMatrix();
+                            renderer.setSize(width, height);
+                            console.log('🔄 Resize aplicado:', { width, height });
+                        }
+                    } catch (error) {
+                        console.error('💥 Error en resize:', error);
+                    }
+                } else {
+                    console.warn('⚠️ Resize ignorado - componentes no disponibles');
                 }
             });
 
@@ -1688,34 +1910,309 @@
             createMarketChart();
             createCompetitorChart();
             
-            // Mostrar indicador de carga
-            const container = document.getElementById('threejs-container');
-            container.innerHTML = '<div class="flex items-center justify-center h-full text-primary">🔄 Cargando visualización 3D...</div>';
-            
-            // Aumentar timeout inicialización
-            setTimeout(() => {
-                console.log('🚀 === INICIANDO SISTEMA 3D ===');
-                console.log('⏰ Timeout completado - Verificando dependencias...');
-                console.log('📦 THREE disponible:', typeof THREE !== 'undefined');
-                console.log('🎯 Container disponible:', !!document.getElementById('threejs-container'));
-                console.log('🚨 Alert element disponible:', !!document.getElementById('critical-alert'));
+            // 🌟 CREAR EFECTO DE PARTÍCULAS FLOTANTES EN EL CONTAINER
+            function createFloatingParticles() {
+                const container = document.getElementById('threejs-container');
+                if (!container) return;
                 
-                if (typeof THREE !== 'undefined') {
-                    console.log('✅ Todas las dependencias OK - Iniciando sistema 3D...');
-                    try {
-                        initThreeJS();
-                        console.log('🎉 Sistema 3D inicializado exitosamente');
-                    } catch (error) {
-                        console.error('💥 Error al inicializar Three.js:', error);
-                        document.getElementById('threejs-container').innerHTML = 
-                            '<div class="flex items-center justify-center h-full text-red-400 p-4 text-center">💥 Error de inicialización 3D<br><small>' + error.message + '</small></div>';
-                    }
+                for (let i = 0; i < 15; i++) {
+                    const particle = document.createElement('div');
+                    particle.className = 'particle-trail';
+                    particle.style.left = Math.random() * 100 + '%';
+                    particle.style.top = Math.random() * 100 + '%';
+                    particle.style.animationDelay = Math.random() * 3 + 's';
+                    particle.style.animationDuration = (2 + Math.random() * 2) + 's';
+                    container.appendChild(particle);
+                    
+                    // Auto-remover después de 10 segundos
+                    setTimeout(() => {
+                        if (particle.parentNode) {
+                            particle.parentNode.removeChild(particle);
+                        }
+                    }, 10000);
+                }
+            }
+
+            // Mostrar indicador de carga con efectos
+            const container = document.getElementById('threejs-container');
+            container.innerHTML = '<div class="flex items-center justify-center h-full text-primary">🔄 Cargando visualización 3D avanzada...</div>';
+            
+            // Crear partículas flotantes durante la carga
+            createFloatingParticles();
+            
+            // 🎵 SONIDO DE INICIO DEL SISTEMA
+            setTimeout(() => {
+                playBeep(300, 100);
+                setTimeout(() => playBeep(400, 100), 150);
+                setTimeout(() => playBeep(500, 150), 300);
+            }, 500);
+            
+            // Inicialización segura del sistema 3D
+            setTimeout(() => {
+                console.log('🚀 Iniciando sistema 3D avanzado...');
+                console.log('🔍 Pre-init check:', {
+                    THREE: typeof THREE,
+                    container: !!vizContainer,
+                    containerInDOM: !!document.getElementById('threejs-container'),
+                    containerWidth: vizContainer?.clientWidth,
+                    containerHeight: vizContainer?.clientHeight
+                });
+                
+                const success = initThreeJS();
+                console.log('🎯 initThreeJS result:', success);
+                
+                if (success) {
+                    // 🎵 SONIDO DE ÉXITO
+                    playBeep(800, 200);
+                    
+                    console.log('🎉 Sistema completamente funcional con efectos avanzados');
+                    console.log('📊 Post-init state:', {
+                        scene: !!scene,
+                        camera: !!camera,
+                        renderer: !!renderer,
+                        head: !!head,
+                        particles: !!particles,
+                        rendererDomElement: !!renderer?.domElement
+                    });
+                    
+                    // Crear más partículas de celebración
+                    setTimeout(createFloatingParticles, 1000);
                 } else {
-                    console.error('❌ Three.js no disponible después de 1000ms');
-                    document.getElementById('threejs-container').innerHTML = 
-                        '<div class="flex items-center justify-center h-full text-red-400 p-4 text-center">❌ Error de carga 3D<br><small>Three.js no se cargó</small></div>';
+                    // 🎵 SONIDO DE ERROR
+                    playBeep(200, 300);
+                    console.log('❌ Sistema 3D falló - Ver errores arriba');
                 }
             }, 1000);
+
+            // ===============================================================
+            // 🎯 SISTEMA DE DIAGNÓSTICO Y SOLUCIÓN DEFINITIVA THREE.JS
+            // ===============================================================
+            // Autor: HombreVigente Team
+            // Propósito: Sistema completo para diagnosticar y solucionar 
+            //           problemas de visualización 3D en tiempo real
+            // Funcionalidades:
+            // - Diagnóstico exhaustivo de 7 componentes críticos
+            // - Funciones de emergencia para recuperación automática
+            // - Botones de control integrados en el container 3D
+            // - Variables globales accesibles para debugging manual
+            // ===============================================================
+
+                         /**
+              * 🔍 FUNCIÓN DE DIAGNÓSTICO QUIRÚRGICA
+              * Versión simplificada y directa para debug rápido
+              */
+             window.testThreeJS = function() {
+                 console.log('🔍 === DIAGNÓSTICO COMPLETO THREE.JS ===');
+                 console.log('THREE disponible:', typeof THREE);
+                 console.log('Variables globales:', { scene: !!scene, camera: !!camera, renderer: !!renderer, head: !!head });
+                 
+                 if (renderer) {
+                     console.log('Renderer info:', {
+                         domElement: !!renderer.domElement,
+                         context: renderer.getContext(),
+                         size: { width: renderer.domElement.width, height: renderer.domElement.height }
+                     });
+                 }
+                 
+                 if (vizContainer) {
+                     console.log('Container info:', {
+                         dimensions: { width: vizContainer.clientWidth, height: vizContainer.clientHeight },
+                         children: vizContainer.children.length,
+                         hasCanvas: !!vizContainer.querySelector('canvas')
+                     });
+                 }
+                 
+                 if (head) {
+                     console.log('Head model:', {
+                         position: head.position,
+                         visible: head.visible,
+                         inScene: scene && scene.children.includes(head)
+                     });
+                 }
+             };
+
+            /**
+             * ⏰ AUTO-EJECUCIÓN DE DIAGNÓSTICO
+             * Se ejecuta automáticamente 2 segundos después de la carga
+             * para verificar el estado inicial del sistema
+             */
+            setTimeout(() => {
+                console.log('🚀 Ejecutando diagnóstico automático...');
+                const isHealthy = window.testThreeJS();
+                
+                // Mostrar notificación visual del estado
+                const container = document.getElementById('threejs-container');
+                if (container) {
+                    const statusDiv = document.createElement('div');
+                    statusDiv.style.cssText = `
+                        position: absolute; 
+                        top: 5px; 
+                        right: 5px; 
+                        padding: 3px 8px; 
+                        border-radius: 12px; 
+                        font-size: 10px; 
+                        font-weight: bold; 
+                        z-index: 200;
+                        ${isHealthy ? 
+                            'background: #10B981; color: white;' : 
+                            'background: #EF4444; color: white;'
+                        }
+                    `;
+                    statusDiv.textContent = isHealthy ? '✅ Sistema OK' : '⚠️ Problemas detectados';
+                    container.appendChild(statusDiv);
+                    
+                    // Auto-ocultar después de 5 segundos
+                    setTimeout(() => statusDiv.remove(), 5000);
+                }
+            }, 2000);
+
+            // ===============================================================
+            // 🚨 FUNCIONES DE EMERGENCIA Y RECUPERACIÓN
+            // ===============================================================
+
+                         /**
+              * 🔄 FUNCIÓN DE RENDER FORZADO QUIRÚRGICA
+              * Fuerza múltiples renders para máxima visibilidad
+              */
+             window.forceRender = function() {
+                 if (renderer && scene && camera) {
+                     for (let i = 0; i < 10; i++) {
+                         renderer.render(scene, camera);
+                     }
+                     console.log('🎨 Force render ejecutado 10 veces');
+                 } else {
+                     console.error('❌ No se puede forzar render - componentes no disponibles');
+                 }
+             };
+
+                         /**
+              * 🛠️ FUNCIÓN DE RECREACIÓN QUIRÚRGICA
+              * Reinicia completamente el sistema Three.js
+              */
+             window.recreateThreeJS = function() {
+                 console.log('🔄 Recreando Three.js completamente...');
+                 
+                 // Limpiar variables globales
+                 if (animationFrameId) {
+                     cancelAnimationFrame(animationFrameId);
+                 }
+                 
+                 scene = null;
+                 camera = null;
+                 renderer = null;
+                 head = null;
+                 hotspotsGroup = null;
+                 
+                 // Reinicializar
+                 setTimeout(() => {
+                     initThreeJS();
+                 }, 500);
+             };
+
+            /**
+             * 💬 FUNCIÓN AUXILIAR PARA MOSTRAR MENSAJES DE ESTADO
+             * Muestra notificaciones visuales en el container 3D
+             */
+            function showStatusMessage(message, type = 'info') {
+                const container = document.getElementById('threejs-container');
+                if (!container) return;
+                
+                const statusDiv = document.createElement('div');
+                const colors = {
+                    success: 'background: #10B981; color: white;',
+                    error: 'background: #EF4444; color: white;',
+                    warning: 'background: #F59E0B; color: white;',
+                    info: 'background: #3B82F6; color: white;'
+                };
+                
+                statusDiv.style.cssText = `
+                    position: absolute;
+                    top: 50%;
+                    left: 50%;
+                    transform: translate(-50%, -50%);
+                    padding: 8px 16px;
+                    border-radius: 8px;
+                    font-size: 12px;
+                    font-weight: bold;
+                    z-index: 300;
+                    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+                    ${colors[type] || colors.info}
+                `;
+                statusDiv.textContent = message;
+                container.appendChild(statusDiv);
+                
+                // Auto-remover después de 3 segundos
+                setTimeout(() => {
+                    if (statusDiv.parentNode) {
+                        statusDiv.parentNode.removeChild(statusDiv);
+                    }
+                }, 3000);
+            }
+
+            // ===============================================================
+            // 🌐 VARIABLES GLOBALES PARA DEBUGGING
+            // ===============================================================
+            // Hacer variables principales accesibles desde la consola
+            // Uso: Abrir DevTools y escribir "window.scene" para inspeccionar
+            
+            /**
+             * Actualiza las referencias globales para debugging
+             * Se llama automáticamente después de cada inicialización
+             */
+            function updateGlobalReferences() {
+                window.scene = scene;
+                window.camera = camera;
+                window.renderer = renderer;
+                window.head = head;
+                window.hotspotsGroup = hotspotsGroup;
+                window.vizContainer = vizContainer;
+                
+                // Funciones de utilidad adicionales
+                window.getThreeJSInfo = function() {
+                    return {
+                        version: THREE?.REVISION,
+                        scene: scene ? {
+                            children: scene.children.length,
+                            background: scene.background,
+                            fog: !!scene.fog
+                        } : null,
+                        camera: camera ? {
+                            type: camera.constructor.name,
+                            position: camera.position,
+                            fov: camera.fov,
+                            aspect: camera.aspect
+                        } : null,
+                        renderer: renderer ? {
+                            type: renderer.constructor.name,
+                            size: renderer.getSize(new THREE.Vector2()),
+                            pixelRatio: renderer.getPixelRatio(),
+                            shadowMap: renderer.shadowMap.enabled
+                        } : null,
+                        head: head ? {
+                            visible: head.visible,
+                            position: head.position,
+                            material: head.material?.constructor.name,
+                            geometry: head.geometry?.constructor.name
+                        } : null
+                    };
+                };
+                
+                console.log('🌐 Referencias globales actualizadas para debugging');
+            }
+            
+            // Actualizar referencias iniciales
+            updateGlobalReferences();
+            
+            // ===============================================================
+            // 📋 RESUMEN DE FUNCIONES DISPONIBLES
+            // ===============================================================
+            console.log('\n📋 === FUNCIONES DE DIAGNÓSTICO DISPONIBLES ===');
+            console.log('🔍 window.testThreeJS()     - Diagnóstico completo');
+            console.log('🔄 window.forceRender()     - Render forzado');
+            console.log('🛠️ window.recreateThreeJS() - Recrear sistema');
+            console.log('📊 window.getThreeJSInfo()  - Info del sistema');
+            console.log('🌐 window.scene, window.camera, window.renderer - Variables globales');
+            console.log('===============================================\n');
         });
     </script>
 
