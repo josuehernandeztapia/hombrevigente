@@ -303,6 +303,13 @@
                 aspect-ratio: 4 / 3;
             }
         }
+        
+        @media (max-width: 480px) {
+            #threejs-container {
+                height: 45vh;
+                min-height: 200px;
+            }
+        }
         #threejs-canvas {
             width: 100%;
             height: 100%;
@@ -548,6 +555,38 @@
             0% { transform: translateX(-100%); }
             100% { transform: translateX(100%); }
         }
+        
+        /* MOBILE OPTIMIZATIONS */
+        @media (max-width: 768px) {
+            .patient-btn {
+                min-height: 48px;
+                padding: 16px;
+                font-size: 16px;
+            }
+            
+            .hero-title {
+                font-size: 2rem !important;
+                line-height: 1.2;
+            }
+            
+            .chart-container {
+                height: 250px !important;
+            }
+            
+            .nav-link {
+                padding: 12px 16px;
+                font-size: 16px;
+            }
+            
+            .kpi-card h3 {
+                font-size: 2rem !important;
+            }
+        }
+
+        .view-btn, .patient-btn {
+            touch-action: manipulation;
+            user-select: none;
+        }
     </style>
 </head>
 <body class="antialiased">
@@ -736,9 +775,9 @@
                                         </div>
                                     </div>
                                     <div class="flex flex-col sm:flex-row justify-center gap-2 mt-2">
-                                        <button data-view="rgb" class="view-btn btn-secondary rounded-full">RGB</button>
-                                        <button data-view="thermal" class="view-btn btn-secondary rounded-full">Térmico</button>
-                                        <button data-view="fused" class="view-btn btn-secondary rounded-full">Fusión IA</button>
+                                        <button data-view="rgb" class="view-btn btn-secondary text-sm px-4 py-2 rounded-full min-h-[44px]">RGB</button>
+                                        <button data-view="thermal" class="view-btn btn-secondary text-sm px-4 py-2 rounded-full min-h-[44px]">Térmico</button>
+                                        <button data-view="fused" class="view-btn btn-secondary text-sm px-4 py-2 rounded-full min-h-[44px]">Fusión IA</button>
                                     </div>
                                 </div>
                             </div>
