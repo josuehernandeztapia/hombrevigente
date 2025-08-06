@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DiagnósticoVigente™ - Demo Simplificado</title>
+    
+    <!-- Dependencies -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #0a0a0a;
+            overflow: hidden;
+        }
+        
+        #demo-container {
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+        }
+        
+        .intro-screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            z-index: 1000;
+            transition: opacity 0.5s ease;
+        }
+        
+        .intro-screen.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+        
+        .logo {
+            font-size: 48px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #04D9FF, #00AEEF);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 20px;
+        }
+        
+        .tagline {
+            font-size: 18px;
+            color: #9CA3AF;
+            margin-bottom: 40px;
+            text-align: center;
+            max-width: 600px;
+        }
+        
+        .start-btn {
+            padding: 15px 40px;
+            background: linear-gradient(135deg, #04D9FF, #00AEEF);
+            color: #000;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .start-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(4, 217, 255, 0.4);
+        }
+        
+        .features {
+            display: flex;
+            gap: 40px;
+            margin-top: 60px;
+            text-align: center;
+        }
+        
+        .feature {
+            flex: 1;
+        }
+        
+        .feature-icon {
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+        
+        .feature-title {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        .feature-desc {
+            font-size: 12px;
+            color: #9CA3AF;
+        }
+    </style>
+</head>
+<body>
+    <div id="demo-container">
+        <div class="intro-screen" id="introScreen">
+            <div class="logo">DiagnósticoVigente™</div>
+            <div class="tagline">
+                Demostración simplificada de análisis predictivo de salud<br>
+                Optimizada para presentaciones de inversión
+            </div>
+            <button class="start-btn" id="startBtn">Iniciar Demo</button>
+            
+            <div class="features">
+                <div class="feature">
+                    <div class="feature-icon">🧬</div>
+                    <div class="feature-title">3 Arquetipos</div>
+                    <div class="feature-desc">Análisis simplificado</div>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">⚡</div>
+                    <div class="feature-title">30-60s Demo</div>
+                    <div class="feature-desc">Pitch optimizado</div>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">🎯</div>
+                    <div class="feature-title">Índice Vigente™</div>
+                    <div class="feature-desc">Métrica propietaria</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Load the diagnostic demo component -->
+    <script src="diagnostic-demo.js"></script>
+    
+    <script>
+        let demo = null;
+        
+        document.getElementById('startBtn').addEventListener('click', function() {
+            // Hide intro screen
+            document.getElementById('introScreen').classList.add('hidden');
+            
+            // Add styles to document
+            const styleElement = document.createElement('div');
+            styleElement.innerHTML = diagnosticStyles;
+            document.head.appendChild(styleElement);
+            
+            // Initialize demo after a short delay
+            setTimeout(() => {
+                demo = new DiagnosticDemo('demo-container');
+                
+                // Auto-start the demo after 2 seconds
+                setTimeout(() => {
+                    if (demo) {
+                        const startButton = document.getElementById('startDemo');
+                        if (startButton) {
+                            startButton.click();
+                        }
+                    }
+                }, 2000);
+            }, 500);
+        });
+        
+        // Cleanup on page unload
+        window.addEventListener('beforeunload', function() {
+            if (demo) {
+                demo.destroy();
+            }
+        });
+        
+        // Handle resize
+        window.addEventListener('resize', function() {
+            if (demo) {
+                demo.onWindowResize();
+            }
+        });
+    </script>
+</body>
+</html>
