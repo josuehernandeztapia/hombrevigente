@@ -24,15 +24,14 @@
         }
         
         .hero-bg {
-            background-image: linear-gradient(rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0.9)), url('https://placehold.co/1920x1080/0d0d0d/1a1a1a.png?text=HV&font=montserrat');
+            background-image: linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8)), url('https://images.unsplash.com/photo-1618221319973-199b0ae3a7c6?q=80&w=2070&auto=format&fit=crop');
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
         }
 
         .section-title {
-            /* Aumentamos el tamaño del texto para mayor impacto visual. */
-            @apply text-7xl md:text-8xl font-black tracking-tighter text-white uppercase;
+            @apply text-5xl md:text-8xl font-black tracking-tighter text-white uppercase;
         }
         
         .btn-primary {
@@ -46,11 +45,12 @@
             background-color: #1A1A1A;
             border-top: 1px solid #2a2a2a;
             border-bottom: 1px solid #2a2a2a;
+            box-shadow: 0 0 15px rgba(99, 102, 241, 0.25); /* Added glow effect */
         }
 
         .marquee-content {
             display: flex;
-            animation: scrolling 25s linear infinite;
+            animation: scrolling 15s linear infinite; /* Increased speed */
             white-space: nowrap;
         }
 
@@ -58,14 +58,14 @@
             flex-shrink: 0;
             padding: 1rem 2rem;
             font-weight: 700;
-            font-size: 1rem;
+            font-size: 1.125rem; /* text-lg */
             text-transform: uppercase;
             letter-spacing: 0.1em;
-            color: #a0a0a0;
+            color: #E0E0E0; /* Increased contrast */
         }
         
         .marquee-item span {
-            color: #fff;
+            color: #818cf8; /* text-indigo-400 */
             margin-right: 0.5rem;
         }
 
@@ -84,24 +84,6 @@
             -webkit-backdrop-filter: blur(10px);
             border: 1px solid rgba(42, 42, 42, 0.5);
         }
-        
-        .spinner {
-            border: 4px solid rgba(255, 255, 255, 0.2);
-            border-left-color: #fff;
-            border-radius: 50%;
-            width: 50px;
-            height: 50px;
-            animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin {
-            to {
-                transform: rotate(360deg);
-            }
-        }
-        .prompt-suggestion {
-            @apply bg-gray-800 text-gray-300 text-xs px-3 py-1 rounded-full cursor-pointer transition-colors hover:bg-gray-700 hover:text-white;
-        }
     </style>
 </head>
 <body class="antialiased">
@@ -118,7 +100,7 @@
                 <a href="#contacto" class="text-gray-300 hover:text-white transition-colors">Contacto</a>
             </nav>
             
-            <button id="mobile-menu-button" class="md:hidden focus:outline-none">
+            <button id="mobile-menu-button" class="md:hidden focus:outline-none" aria-label="Abrir menú">
                 <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
             </button>
         </div>
@@ -140,10 +122,10 @@
                     Club de Alto Rendimiento <br> Estético Masculino
                 </h1>
                 <p class="text-lg md:text-xl text-gray-300 max-w-3xl mx-auto my-8">
-                    Diagnóstico térmico + RGB, plan personalizado con expertos y comunidad THE CLUB.
+                    Diagnóstico con Índice Vigente™, estrategia con expertos potenciados por IA y la comunidad THE CLUB.
                 </p>
                 <p class="text-md text-gray-500 italic max-w-2xl mx-auto mb-10">
-                    Donde los datos y expertos definen tu estrategia.
+                    Donde los datos y el criterio experto definen tu estrategia.
                 </p>
                 <a href="#contacto" class="btn-primary inline-block">
                     Quiero Conocer el Club
@@ -172,57 +154,55 @@
         <section id="concepto" class="py-20 md:py-28">
             <div class="container mx-auto px-6 text-center">
                 <h2 class="section-title">Nacimos para Eliminar el Caos</h2>
-                <p class="mt-6 text-lg text-gray-400 max-w-3xl mx-auto">
+                <p class="mt-6 text-lg text-gray-400 max-w-3xl mx-auto text-justify">
                     Tras escuchar a hombres como tú, descubrimos un patrón: el caos de la subjetividad, la desconfianza en soluciones genéricas y la frustración de una experiencia fragmentada. Hombre Vigente es la respuesta.
                 </p>
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mt-16 max-w-6xl mx-auto">
                     <div class="glass-card p-6 rounded-xl text-left">
                         <p class="font-bold text-gray-400">SI SIENTES QUE...</p>
-                        <p class="text-xl font-bold text-white mt-2">No sabes por dónde empezar</p>
+                        <p class="text-2xl font-black text-white mt-2">No sabes por dónde empezar</p>
                         <p class="mt-4 font-bold text-gray-400">NUESTRA RESPUESTA ES...</p>
-                        <p class="text-xl font-bold text-white mt-2">Un diagnóstico objetivo: tu Índice de Vigencia™.</p>
+                        <p class="text-2xl font-black text-white mt-2">Un diagnóstico objetivo: tu Índice Vigente™.</p>
                     </div>
                     <div class="glass-card p-6 rounded-xl text-left">
                         <p class="font-bold text-gray-400">SI SIENTES QUE...</p>
-                        <p class="text-xl font-bold text-white mt-2">Desconfías de lo genérico</p>
+                        <p class="text-2xl font-black text-white mt-2">Desconfías de lo genérico</p>
                         <p class="mt-4 font-bold text-gray-400">NUESTRA RESPUESTA ES...</p>
-                        <p class="text-xl font-bold text-white mt-2">Un plan personalizado, creado por expertos de confianza.</p>
+                        <p class="text-2xl font-black text-white mt-2">Un plan personalizado, creado por expertos de confianza.</p>
                     </div>
                     <div class="glass-card p-6 rounded-xl text-left">
                         <p class="font-bold text-gray-400">SI SIENTES QUE...</p>
-                        <p class="text-xl font-bold text-white mt-2">Odias saltar entre lugares</p>
+                        <p class="text-2xl font-black text-white mt-2">Odias saltar entre lugares</p>
                         <p class="mt-4 font-bold text-gray-400">NUESTRA RESPUESTA ES...</p>
-                        <p class="text-xl font-bold text-white mt-2">Un ecosistema completo en un solo club.</p>
+                        <p class="text-2xl font-black text-white mt-2">Un ecosistema completo en un solo club.</p>
                     </div>
                      <div class="glass-card p-6 rounded-xl text-left">
                         <p class="font-bold text-gray-400">SI SIENTES QUE...</p>
-                        <p class="text-xl font-bold text-white mt-2">Falta un espacio para hombres</p>
+                        <p class="text-2xl font-black text-white mt-2">Falta un espacio para hombres</p>
                         <p class="mt-4 font-bold text-gray-400">NUESTRA RESPUESTA ES...</p>
-                        <p class="text-xl font-bold text-white mt-2">El "Classic Tech Lounge", un ambiente de estrategia.</p>
+                        <p class="text-2xl font-black text-white mt-2">El "Classic Tech Lounge", un ambiente de estrategia.</p>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- =========== High-Tech / High-Touch =========== -->
+        <!-- =========== High-Tech / High-Touch (UPDATED TEXT) =========== -->
         <section class="py-20 md:py-28 bg-[#141414]">
             <div class="container mx-auto px-6">
                 <div class="text-center mb-16">
                     <h2 class="section-title">High-Tech + High-Touch</h2>
-                    <p class="mt-6 text-lg text-gray-400 max-w-3xl mx-auto">
-                       Combinamos la precisión de la data con el criterio insustituible de la experiencia humana.
+                    <p class="mt-6 text-lg text-gray-400 max-w-3xl mx-auto text-justify">
+                       Combinamos la precisión de los datos con el criterio insustituible de la experiencia humana.
                     </p>
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto">
                     <div class="border border-gray-800 p-8 rounded-2xl">
-                        <h3 class="text-3xl font-bold text-white mb-4">High-Tech: IA Propietaria</h3>
-                        <p class="text-gray-400 mb-6">La tecnología nos da el punto de partida objetivo. Un escaneo térmico + RGB genera tu Índice de Vigencia™, un score único sobre tu estado actual para trazar la ruta más efectiva.</p>
-                        <p class="font-bold text-sm text-gray-500 uppercase tracking-widest">EN DESARROLLO: DiagnósticoVigente™ AI</p>
+                        <h3 class="text-4xl font-black text-white mb-4">High-Tech: Inteligencia Predictiva</h3>
+                        <p class="text-gray-400 text-justify">Todo empieza con datos objetivos, no con opiniones. Un escaneo térmico + RGB genera tu Índice Vigente™, un diagnóstico preciso que alimenta nuestro motor de inteligencia. Este sistema nos permite diseñar y ajustar tu plan de servicios con una personalización dinámica, anticipando tus necesidades.</p>
                     </div>
                     <div class="border border-gray-800 p-8 rounded-2xl">
-                         <h3 class="text-3xl font-bold text-white mb-4">High-Touch: Expertos de Confianza</h3>
-                         <p class="text-gray-400 mb-6">Un equipo de especialistas interpreta tus datos, define la estrategia y ejecuta tu plan con maestría. No estás solo, estás respaldado por los mejores.</p>
-                         <p class="font-bold text-sm text-gray-500 uppercase tracking-widest">NUESTRO COMPROMISO: Acompañamiento Humano</p>
+                         <h3 class="text-4xl font-black text-white mb-4">High-Touch: El Director Humano</h3>
+                         <p class="text-gray-400 text-justify">La inteligencia artificial optimiza la ruta, pero el criterio de nuestros especialistas marca el destino. Ellos interpretan los matices, supervisan la ejecución de tu plan y toman las decisiones estratégicas clave. Tienes lo mejor de dos mundos: la eficiencia de la IA y la dirección insustituible de un experto de confianza.</p>
                     </div>
                 </div>
             </div>
@@ -232,57 +212,56 @@
         <section id="servicios" class="py-20 md:py-28">
             <div class="container mx-auto px-6 text-center">
                 <h2 class="section-title">No Ofrecemos Todo. <br>Ofrecemos lo que Funciona.</h2>
-                <p class="mt-6 text-lg text-gray-400 max-w-3xl mx-auto">
+                <p class="mt-6 text-lg text-gray-400 max-w-3xl mx-auto text-justify">
                     Nuestro arsenal de servicios está curado bajo una sola premisa: máximo rendimiento.
                 </p>
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mt-16 text-left">
                     <div class="border border-gray-800 p-8 rounded-2xl">
                         <h3 class="text-2xl font-bold text-white">Rejuvenecimiento Estructural</h3>
-                        <p class="mt-2 text-gray-400">Para recuperar la firmeza y redefinir la arquitectura facial, actuando en las capas profundas de la piel sin necesidad de bisturí.</p>
+                        <p class="mt-2 text-gray-400 text-justify">Para recuperar la firmeza y redefinir la arquitectura facial, actuando en las capas profundas de la piel sin necesidad de bisturí.</p>
                         <p class="mt-4 font-bold text-sm text-white">SERVICIOS CLAVE: Limpieza Facial Profunda, HIFU, RF Microneedling.</p>
                     </div>
                     <div class="border border-gray-800 p-8 rounded-2xl">
                         <h3 class="text-2xl font-bold text-white">Aplicaciones de Precisión</h3>
-                        <p class="mt-2 text-gray-400">Para controlar la expresión y restaurar volúmenes con dominio de la anatomía facial, logrando resultados potentes y naturales.</p>
+                        <p class="mt-2 text-gray-400 text-justify">Para controlar la expresión y restaurar volúmenes con dominio de la anatomía facial, logrando resultados potentes y naturales.</p>
                          <p class="mt-4 font-bold text-sm text-white">SERVICIOS CLAVE: Botox, Fillers, Sculptra.</p>
                     </div>
                     <div class="border border-gray-800 p-8 rounded-2xl">
                         <h3 class="text-2xl font-bold text-white">Contorno & Cirugía Ligera</h3>
-                        <p class="mt-2 text-gray-400">Protocolos quirúrgicos de mínima invasión para transformaciones medibles y permanentes, ejecutados por nuestros cirujanos aliados.</p>
+                        <p class="mt-2 text-gray-400 text-justify">Protocolos quirúrgicos de mínima invasión para transformaciones medibles y permanentes, ejecutados por nuestros cirujanos aliados.</p>
                          <p class="mt-4 font-bold text-sm text-white">SERVICIOS CLAVE: Blefaroplastia, Lipopapada, Bichectomía, Hilos PDO.</p>
                     </div>
                     <div class="border border-gray-800 p-8 rounded-2xl">
                         <h3 class="text-2xl font-bold text-white">Grooming de Rendimiento</h3>
-                        <p class="mt-2 text-gray-400">La base disciplinada de tu presencia. El punto de entrada a un ecosistema de alto rendimiento estético.</p>
+                        <p class="mt-2 text-gray-400 text-justify">La base disciplinada de tu presencia. El punto de entrada a un ecosistema de alto rendimiento estético.</p>
                         <p class="mt-4 font-bold text-sm text-white">SERVICIOS CLAVE: Diseño de Barba, Manicure/Pedicure Ejecutivo.</p>
                     </div>
                     <div class="border border-gray-800 p-8 rounded-2xl">
                         <h3 class="text-2xl font-bold text-white">Sonrisa de Impacto</h3>
-                        <p class="mt-2 text-gray-400">Desde una salud dental perfecta hasta el diseño de una sonrisa de alto impacto.</p>
+                        <p class="mt-2 text-gray-400 text-justify">Desde una salud dental perfecta hasta el diseño de una sonrisa de alto impacto.</p>
                         <p class="mt-4 font-bold text-sm text-white">SERVICIOS CLAVE: Limpieza Dental, Blanqueamiento LED.</p>
                     </div>
                     <div class="border border-gray-800 p-8 rounded-2xl">
                         <h3 class="text-2xl font-bold text-white">Rendimiento y Control Corporal</h3>
-                        <p class="mt-2 text-gray-400">Tecnología de precisión para el control del vello y protocolos de bienestar para la recuperación muscular.</p>
+                        <p class="mt-2 text-gray-400 text-justify">Tecnología de precisión para el control del vello y protocolos de bienestar para la recuperación muscular.</p>
                         <p class="mt-4 font-bold text-sm text-white">SERVICIOS CLAVE: Depilación Láser, Masajes Descontracturantes.</p>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- =========== Classic Tech Lounge =========== -->
+        <!-- =========== Classic Tech Lounge (UPDATED TEXT) =========== -->
         <section id="elclub" class="py-20 md:py-28 bg-cover bg-center" style="background-image: linear-gradient(rgba(20, 20, 20, 0.9), rgba(20, 20, 20, 0.9)), url('https://storage.googleapis.com/gemini-prod-us-west1-409101-assets/e62e30fa-e75c-482d-8b01-9f223f6e9118/0');">
             <div class="container mx-auto px-6 grid md:grid-cols-2 gap-12 items-center">
                 <div>
                     <h2 class="section-title">Classic Tech Lounge</h2>
-                    <p class="mt-6 text-lg text-gray-300">
-                        Creamos el espacio que el 61% de los hombres encuestados pedían: un club con una área privada donde se discute tu estrategia estética, con expertos con un café o un whisky en mano. Hombre Vigente, un ambiente que fusiona la calidez de un club de caballeros con la precisión visible de un laboratorio tecnológico.
+                    <p class="mt-6 text-lg text-gray-300 text-justify">
+                        Más que una sala de espera, es tu centro de estrategia. Creamos el antídoto al ambiente clínico y estéril: un lounge privado donde tu plan se discute con expertos, con un café o un whisky en mano. Es la fusión perfecta entre la calidez de un club de caballeros y la precisión de un laboratorio.
                     </p>
-                    <p class="mt-4 text-gray-300">
-                        Bienvenido a tu nuevo centro de control.
+                    <p class="mt-4 text-gray-300 font-bold">
+                        Bienvenido a tu centro de control personal.
                     </p>
                 </div>
-                <!-- Visuales del Lounge (reemplazo de la card IA) -->
                 <div class="glass-card p-8 rounded-2xl">
                     <div class="space-y-6">
                         <img src="https://res.cloudinary.com/dytmjjb9l/image/upload/v1760670284/3D_lounge_with_leather_sofas_coffee_whisky_bar_webinar_screen_modern_masculine_design._Upscale_waiting_area_or_consultation_space_with_premium_finishes_ambient_lighting_and_comfortable_seating_for_client_consultations_or_small_group_pr_ck1jka.png" alt="Lounge con sofás de piel, café y bar de whisky" class="w-full h-80 md:h-96 object-cover rounded-xl border border-gray-800">
@@ -296,7 +275,7 @@
         <section class="py-20 md:py-28">
             <div class="container mx-auto px-6 text-center">
                 <h2 class="section-title">Buscamos Expertos</h2>
-                <p class="mt-6 text-lg text-gray-400 max-w-3xl mx-auto">
+                <p class="mt-6 text-lg text-gray-400 max-w-3xl mx-auto text-justify">
                     Hombre Vigente es una colaboración entre tecnólogos y los mejores especialistas del sector. Estamos formando un círculo de élite que comparta nuestra visión de objetividad y la creación de una categoría sin precedentes. Si eres uno de ellos, queremos hablar contigo.
                 </p>
             </div>
@@ -310,10 +289,10 @@
                     Construyamos juntos la referencia en estética masculina.
                 </p>
                 <div class="flex flex-col sm:flex-row gap-4 justify-center">
-                    <button id="copy-email-btn" class="bg-transparent border-2 border-gray-600 text-gray-300 font-bold py-4 px-10 rounded-full hover:border-indigo-500 hover:text-white hover:bg-indigo-600/20 transition-colors">
+                    <button id="copy-email-btn" class="bg-transparent border-2 border-gray-600 text-gray-300 font-bold py-4 rounded-full hover:border-indigo-500 hover:text-white hover:bg-indigo-600/20 transition-colors w-full sm:w-72">
                         Copiar Correo
                     </button>
-                     <a href="https://wa.me/524422022540" target="_blank" class="bg-indigo-600 text-white font-bold py-4 px-10 rounded-full hover:bg-indigo-500 transition-colors">
+                     <a href="https://wa.me/524422022540" target="_blank" class="bg-indigo-600 text-white font-bold py-4 rounded-full hover:bg-indigo-500 transition-colors w-full sm:w-72 inline-flex items-center justify-center">
                         Chatea por WhatsApp
                     </a>
                 </div>
@@ -326,11 +305,10 @@
         <div class="container mx-auto px-6 text-center text-gray-500">
             <p class="font-black text-lg mb-4 text-white uppercase">Hombre <span class="font-normal">Vigente</span></p>
             <div class="flex justify-center space-x-6 mb-6">
-                <!-- Replace # with actual social media links -->
-                <a href="https://www.instagram.com/hombrevigente?igsh=MXcyOWoyMmJuazRvdQ==" target="_blank" class="hover:text-white transition-colors">
+                <a href="https://www.instagram.com/hombrevigente?igsh=MXcyOWoyMmJuazRvdQ==" target="_blank" class="hover:text-white transition-colors" aria-label="Instagram de Hombre Vigente">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.85s-.011 3.584-.069 4.85c-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07s-3.584-.012-4.85-.07c-3.252-.148-4.771-1.691-4.919-4.919-.058-1.265-.069-1.645-.069-4.85s.011-3.584.069-4.85c.149-3.225 1.664-4.771 4.919-4.919C8.416 2.175 8.796 2.163 12 2.163m0-2.163C8.74 0 8.333.011 7.053.072 2.695.272.273 2.69.073 7.052.012 8.333 0 8.74 0 12s.012 3.667.072 4.947c.2 4.358 2.618 6.78 6.98 6.98C8.333 23.988 8.74 24 12 24s3.667-.012 4.947-.072c4.354-.2 6.782-2.618 6.979-6.98.06-1.28.072-1.687.072-4.947s-.012-3.667-.072-4.947c-.196-4.354-2.617-6.78-6.979-6.98C15.667.012 15.26 0 12 0zm0 5.838a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.406-11.845a1.44 1.44 0 1 0 0-2.88 1.44 1.44 0 0 0 0 2.88z"/></svg>
                 </a>
-                <a href="https://www.facebook.com/share/1Ba7msMDTD/?mibextid=wwXIfr" target="_blank" class="hover:text-white transition-colors">
+                <a href="https://www.facebook.com/share/1Ba7msMDTD/?mibextid=wwXIfr" target="_blank" class="hover:text-white transition-colors" aria-label="Facebook de Hombre Vigente">
                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" class="w-6 h-6"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
                 </a>
             </div>
@@ -338,7 +316,6 @@
         </div>
     </footer>
 
-    <!-- JavaScript for Mobile Menu & Gemini API -->
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             // --- Mobile Menu Logic ---
@@ -353,94 +330,6 @@
             for(let link of mobileMenuLinks){
                 link.addEventListener('click', () => {
                      mobileMenu.classList.add('hidden');
-                });
-            }
-
-            // --- Gemini API Image Generation Logic (solo si existe la card) ---
-            const generateBtn = document.getElementById('generate-image-btn');
-            const promptInput = document.getElementById('lounge-prompt');
-            const imageContainer = document.getElementById('image-container');
-            const apiKeyInput = document.getElementById('api-key-input');
-            const promptSuggestions = document.querySelectorAll('.prompt-suggestion');
-
-            // --- Function to handle prompt suggestion clicks ---
-            promptSuggestions.forEach(button => {
-                button.addEventListener('click', () => {
-                    promptInput.value = button.dataset.prompt;
-                });
-            });
-
-            if (generateBtn && promptInput && imageContainer) {
-                const generateImage = async () => {
-                    const userPrompt = promptInput.value;
-                    if (!userPrompt) {
-                        imageContainer.innerHTML = `<p class="text-yellow-400 text-center p-4">Por favor, describe tu visión o elige una idea.</p>`;
-                        return;
-                    }
-
-                    imageContainer.innerHTML = '<div class="spinner"></div>';
-
-                    const fullPrompt = `Una imagen fotorrealista de un 'Classic Tech Lounge' para hombres. Sofisticado, moderno, masculino, con madera oscura, sofás de cuero, una barra premium y tecnología integrada. La visión del usuario es: ${userPrompt}. Estilo cinematográfico, iluminación ambiental.`;
-                    
-                    const apiKey = (apiKeyInput && apiKeyInput.value) ? apiKeyInput.value : "";
-                    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-002:predict?key=${apiKey}`;
-                    
-                    const payload = {
-                        instances: [{ prompt: fullPrompt }],
-                        parameters: { "sampleCount": 1 }
-                    };
-
-                    let response;
-                    let success = false;
-                    let delay = 1000;
-                    for (let i = 0; i < 4; i++) {
-                        try {
-                            response = await fetch(apiUrl, {
-                                method: 'POST',
-                                headers: { 'Content-Type': 'application/json' },
-                                body: JSON.stringify(payload)
-                            });
-
-                            if (response.ok) {
-                                success = true;
-                                break;
-                            } else if (response.status === 429 || response.status >= 500) {
-                                await new Promise(resolve => setTimeout(resolve, delay));
-                                delay *= 2;
-                            } else {
-                                break;
-                            }
-                        } catch (error) {
-                            await new Promise(resolve => setTimeout(resolve, delay));
-                            delay *= 2;
-                        }
-                    }
-                    
-                    if (!success || !response.ok) {
-                        imageContainer.innerHTML = `<p class="text-red-500 text-center p-4">No se pudo generar la imagen. Por favor, intenta de nuevo más tarde.</p>`;
-                        console.error("Image generation failed after retries", response);
-                        return;
-                    }
-
-                    try {
-                        const result = await response.json();
-                        if (result.predictions && result.predictions.length > 0 && result.predictions[0].bytesBase64Encoded) {
-                            const imageUrl = `data:image/png;base64,${result.predictions[0].bytesBase64Encoded}`;
-                            imageContainer.innerHTML = `<img src="${imageUrl}" alt="Visión generada por IA del Classic Tech Lounge" class="w-full h-full object-cover">`;
-                        } else {
-                            throw new Error("Respuesta inválida de la API");
-                        }
-                    } catch (error) {
-                        console.error('Error processing API response:', error);
-                        imageContainer.innerHTML = `<p class="text-red-500 text-center p-4">Hubo un error al procesar la imagen. Inténtalo de nuevo.</p>`;
-                    }
-                };
-
-                generateBtn.addEventListener('click', generateImage);
-                promptInput.addEventListener('keypress', (e) => {
-                    if (e.key === 'Enter') {
-                        generateImage();
-                    }
                 });
             }
 
@@ -473,6 +362,4 @@
     </script>
 </body>
 </html>
-
-
 
