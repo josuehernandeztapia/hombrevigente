@@ -276,41 +276,18 @@
                 <div>
                     <h2 class="section-title">Classic Tech Lounge</h2>
                     <p class="mt-6 text-lg text-gray-300">
-                        Creamos el espacio que el 61% de los hombres pedían: un club privado donde se discute estrategia con un café o un whisky en mano. Un ambiente que fusiona la calidez de un club de caballeros con la precisión visible de un laboratorio tecnológico.
+                        Creamos el espacio que el 61% de los hombres encuestados pedían: un club con una área privada donde se discute tu estrategia estética, con expertos con un café o un whisky en mano. Hombre Vigente, un ambiente que fusiona la calidez de un club de caballeros con la precisión visible de un laboratorio tecnológico.
                     </p>
                     <p class="mt-4 text-gray-300">
                         Bienvenido a tu nuevo centro de control.
                     </p>
                 </div>
-                <!-- Gemini Image Generation Feature -->
+                <!-- Visuales del Lounge (reemplazo de la card IA) -->
                 <div class="glass-card p-8 rounded-2xl">
-                    <h3 class="text-2xl font-bold text-white text-center mb-4">Crea tu Lounge con IA</h3>
-                     <p class="text-gray-400 text-center mb-6">Describe el ambiente ideal para tu sesión de estrategia. ¿No sabes por dónde empezar? Prueba una de estas ideas:</p>
-                    <div class="space-y-4">
-                        <input id="lounge-prompt" type="text" placeholder="Escribe tu visión aquí..." class="w-full p-3 rounded-md bg-gray-800/50 border border-gray-700 focus:outline-none focus:border-white transition-colors text-white placeholder-gray-500">
-                        
-                        <!-- Prompt Suggestions -->
-                        <div class="flex flex-wrap gap-2 justify-center">
-                            <button class="prompt-suggestion" data-prompt="un bar de whisky y arte minimalista">...con un bar de whisky</button>
-                            <button class="prompt-suggestion" data-prompt="una estación de café de especialidad y tecnología visible">...con café y tecnología</button>
-                            <button class="prompt-suggestion" data-prompt="sofás de piel oscura y una pantalla con métricas en tiempo real">...con sofás de piel y pantallas</button>
-                        </div>
-
-                        <button id="generate-image-btn" class="w-full bg-white text-black font-bold py-3 px-10 rounded-full hover:bg-gray-300 transition-colors duration-300 flex items-center justify-center space-x-2">
-                            <span>✨</span>
-                            <span>Generar Visión</span>
-                        </button>
+                    <div class="space-y-6">
+                        <img src="https://res.cloudinary.com/dytmjjb9l/image/upload/v1760670284/3D_lounge_with_leather_sofas_coffee_whisky_bar_webinar_screen_modern_masculine_design._Upscale_waiting_area_or_consultation_space_with_premium_finishes_ambient_lighting_and_comfortable_seating_for_client_consultations_or_small_group_pr_ck1jka.png" alt="Lounge con sofás de piel, café y bar de whisky" class="w-full h-80 md:h-96 object-cover rounded-xl border border-gray-800">
+                        <img src="https://res.cloudinary.com/dytmjjb9l/image/upload/v1760672336/Gen4_A_slow_tracking_shot_down_a_hallway_with_polished_concrete_floors_On_one_side_a_a-2_11958356_qbysec.png" alt="Pasillo con concreto pulido y diseño moderno" class="w-full h-80 md:h-96 object-cover rounded-xl border border-gray-800">
                     </div>
-                    <div id="image-container" class="mt-6 h-80 bg-black/20 rounded-xl border border-gray-800 flex items-center justify-center overflow-hidden">
-                        <p class="text-gray-500">Aquí aparecerá tu visión del club...</p>
-                    </div>
-                    <details class="mt-4 text-center">
-                        <summary class="text-sm text-gray-500 cursor-pointer hover:text-white transition-colors">Avanzado (Opcional)</summary>
-                        <div class="mt-2">
-                             <input id="api-key-input" type="password" placeholder="Usa tu propia API Key de Gemini aquí" class="w-full text-xs p-2 rounded-md bg-gray-900 border border-gray-700 focus:outline-none focus:border-white transition-colors text-white placeholder-gray-600">
-                             <p class="text-xs text-gray-600 mt-1">Para el público general, la API key se maneja de forma segura en nuestro servidor.</p>
-                        </div>
-                    </details>
                 </div>
             </div>
         </section>
@@ -379,7 +356,7 @@
                 });
             }
 
-            // --- Gemini API Image Generation Logic ---
+            // --- Gemini API Image Generation Logic (solo si existe la card) ---
             const generateBtn = document.getElementById('generate-image-btn');
             const promptInput = document.getElementById('lounge-prompt');
             const imageContainer = document.getElementById('image-container');
@@ -393,77 +370,79 @@
                 });
             });
 
-            const generateImage = async () => {
-                const userPrompt = promptInput.value;
-                if (!userPrompt) {
-                    imageContainer.innerHTML = `<p class="text-yellow-400 text-center p-4">Por favor, describe tu visión o elige una idea.</p>`;
-                    return;
-                }
+            if (generateBtn && promptInput && imageContainer) {
+                const generateImage = async () => {
+                    const userPrompt = promptInput.value;
+                    if (!userPrompt) {
+                        imageContainer.innerHTML = `<p class="text-yellow-400 text-center p-4">Por favor, describe tu visión o elige una idea.</p>`;
+                        return;
+                    }
 
-                imageContainer.innerHTML = '<div class="spinner"></div>';
+                    imageContainer.innerHTML = '<div class="spinner"></div>';
 
-                const fullPrompt = `Una imagen fotorrealista de un 'Classic Tech Lounge' para hombres. Sofisticado, moderno, masculino, con madera oscura, sofás de cuero, una barra premium y tecnología integrada. La visión del usuario es: ${userPrompt}. Estilo cinematográfico, iluminación ambiental.`;
-                
-                const apiKey = apiKeyInput.value || ""; 
-                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-002:predict?key=${apiKey}`;
-                
-                const payload = {
-                    instances: [{ prompt: fullPrompt }],
-                    parameters: { "sampleCount": 1 }
-                };
+                    const fullPrompt = `Una imagen fotorrealista de un 'Classic Tech Lounge' para hombres. Sofisticado, moderno, masculino, con madera oscura, sofás de cuero, una barra premium y tecnología integrada. La visión del usuario es: ${userPrompt}. Estilo cinematográfico, iluminación ambiental.`;
+                    
+                    const apiKey = (apiKeyInput && apiKeyInput.value) ? apiKeyInput.value : "";
+                    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-002:predict?key=${apiKey}`;
+                    
+                    const payload = {
+                        instances: [{ prompt: fullPrompt }],
+                        parameters: { "sampleCount": 1 }
+                    };
 
-                let response;
-                let success = false;
-                let delay = 1000;
-                for (let i = 0; i < 4; i++) {
-                    try {
-                        response = await fetch(apiUrl, {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify(payload)
-                        });
+                    let response;
+                    let success = false;
+                    let delay = 1000;
+                    for (let i = 0; i < 4; i++) {
+                        try {
+                            response = await fetch(apiUrl, {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify(payload)
+                            });
 
-                        if (response.ok) {
-                            success = true;
-                            break;
-                        } else if (response.status === 429 || response.status >= 500) {
+                            if (response.ok) {
+                                success = true;
+                                break;
+                            } else if (response.status === 429 || response.status >= 500) {
+                                await new Promise(resolve => setTimeout(resolve, delay));
+                                delay *= 2;
+                            } else {
+                                break;
+                            }
+                        } catch (error) {
                             await new Promise(resolve => setTimeout(resolve, delay));
                             delay *= 2;
+                        }
+                    }
+                    
+                    if (!success || !response.ok) {
+                        imageContainer.innerHTML = `<p class="text-red-500 text-center p-4">No se pudo generar la imagen. Por favor, intenta de nuevo más tarde.</p>`;
+                        console.error("Image generation failed after retries", response);
+                        return;
+                    }
+
+                    try {
+                        const result = await response.json();
+                        if (result.predictions && result.predictions.length > 0 && result.predictions[0].bytesBase64Encoded) {
+                            const imageUrl = `data:image/png;base64,${result.predictions[0].bytesBase64Encoded}`;
+                            imageContainer.innerHTML = `<img src="${imageUrl}" alt="Visión generada por IA del Classic Tech Lounge" class="w-full h-full object-cover">`;
                         } else {
-                            break;
+                            throw new Error("Respuesta inválida de la API");
                         }
                     } catch (error) {
-                        await new Promise(resolve => setTimeout(resolve, delay));
-                        delay *= 2;
+                        console.error('Error processing API response:', error);
+                        imageContainer.innerHTML = `<p class="text-red-500 text-center p-4">Hubo un error al procesar la imagen. Inténtalo de nuevo.</p>`;
                     }
-                }
-                
-                if (!success || !response.ok) {
-                    imageContainer.innerHTML = `<p class="text-red-500 text-center p-4">No se pudo generar la imagen. Por favor, intenta de nuevo más tarde.</p>`;
-                    console.error("Image generation failed after retries", response);
-                    return;
-                }
+                };
 
-                try {
-                    const result = await response.json();
-                    if (result.predictions && result.predictions.length > 0 && result.predictions[0].bytesBase64Encoded) {
-                        const imageUrl = `data:image/png;base64,${result.predictions[0].bytesBase64Encoded}`;
-                        imageContainer.innerHTML = `<img src="${imageUrl}" alt="Visión generada por IA del Classic Tech Lounge" class="w-full h-full object-cover">`;
-                    } else {
-                        throw new Error("Respuesta inválida de la API");
+                generateBtn.addEventListener('click', generateImage);
+                promptInput.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') {
+                        generateImage();
                     }
-                } catch (error) {
-                    console.error('Error processing API response:', error);
-                    imageContainer.innerHTML = `<p class="text-red-500 text-center p-4">Hubo un error al procesar la imagen. Inténtalo de nuevo.</p>`;
-                }
-            };
-
-            generateBtn.addEventListener('click', generateImage);
-            promptInput.addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') {
-                    generateImage();
-                }
-            });
+                });
+            }
 
             // --- Copy Email Logic ---
             const copyEmailBtn = document.getElementById('copy-email-btn');
