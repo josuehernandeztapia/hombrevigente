@@ -54,3 +54,9 @@ qdrant_storage/
 embeddings_cache/
 *.pkl
 *.pickle
+
+# === macOS sync conflict duplicates (Spotlight/iCloud/etc) ===
+* 2.*
+* 2
+* 3.*
+* 3
