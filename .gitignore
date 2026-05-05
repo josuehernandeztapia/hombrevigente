@@ -60,3 +60,7 @@ embeddings_cache/
 * 2
 * 3.*
 * 3
+
+# === Carpetas duplicadas por sync conflict ===
+**/* 2/
+**/* 3/
