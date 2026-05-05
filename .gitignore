@@ -1,0 +1,56 @@
+# === Secretos (NUNCA commitear) ===
+.env
+.env.local
+.env.*.local
+**/.env
+**/.env.local
+**/secrets.local.txt
+**/secrets/
+**/credentials/
+*.key
+*.pem
+*.cer
+*.p12
+
+# === Python ===
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+ENV/
+env/
+.venv
+
+# === Bases de datos generadas ===
+*.db
+*.sqlite
+*.sqlite3
+*.dump
+*.backup
+
+# === IDEs y OS ===
+.DS_Store
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# === Logs ===
+logs/
+*.log
+
+# === Frontend ===
+node_modules/
+.next/
+/build
+/out
+
+# === RAG / Vector DBs ===
+qdrant_storage/
+.qdrant/
+.pinecone/
+embeddings_cache/
+*.pkl
+*.pickle

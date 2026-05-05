@@ -1,0 +1,196 @@
+{
+  "arquetipos": [
+    {
+      "id": "carlos_vigente",
+      "nombre": "Carlos el Vigente",
+      "descripcion": "Corporate, alta frecuencia, premium, preventivo",
+      "edad_min": 30,
+      "edad_max": 40,
+      "ingreso_anual_min": 1200000,
+      "ingreso_anual_max": 1500000,
+      "ltv_12m": 100000,
+      "cac": 3077,
+      "ltv_cac_ratio": 32.5,
+      "peso_poblacion": 0.15,
+      "indice_vigente_promedio": 72,
+      "subscores": {
+        "estructural_min": 75,
+        "estructural_max": 85,
+        "piel_min": 65,
+        "piel_max": 75,
+        "biologico_min": 65,
+        "biologico_max": 75
+      },
+      "paquetes_preferidos": [
+        "diagnostico_360",
+        "facial_rejuvenecimiento",
+        "anti_aging_premium",
+        "membresia_vip_anual"
+      ],
+      "servicios_individuales_alta_propension": [
+        "botox",
+        "hifu",
+        "hydrafacial",
+        "fillers"
+      ],
+      "frecuencia_visitas_mes": 3,
+      "propension_bnpl": 0.24,
+      "churn_propensity": 0.18
+    },
+    {
+      "id": "eduardo_explorador",
+      "nombre": "Eduardo el Explorador",
+      "descripcion": "Emprendedor, innovador, prueba todo",
+      "edad_min": 35,
+      "edad_max": 45,
+      "ingreso_anual_min": 1500000,
+      "ingreso_anual_max": 2000000,
+      "ltv_12m": 135000,
+      "cac": 2750,
+      "ltv_cac_ratio": 49.1,
+      "peso_poblacion": 0.08,
+      "indice_vigente_promedio": 78,
+      "subscores": {
+        "estructural_min": 80,
+        "estructural_max": 90,
+        "piel_min": 70,
+        "piel_max": 80,
+        "biologico_min": 75,
+        "biologico_max": 85
+      },
+      "paquetes_preferidos": [
+        "membresia_vip_anual",
+        "transformacion_completa",
+        "anti_aging_premium"
+      ],
+      "servicios_individuales_alta_propension": [
+        "invisalign",
+        "liposuccion_papada",
+        "hifu",
+        "botox",
+        "depilacion_laser",
+        "blanqueamiento_led"
+      ],
+      "frecuencia_visitas_mes": 4,
+      "propension_bnpl": 0.16,
+      "churn_propensity": 0.12
+    },
+    {
+      "id": "miguel_maduro",
+      "nombre": "Miguel el Maduro",
+      "descripcion": "Ejecutivo senior, cirugía, transformación",
+      "edad_min": 50,
+      "edad_max": 60,
+      "ingreso_anual_min": 1800000,
+      "ingreso_anual_max": 2500000,
+      "ltv_12m": 95000,
+      "cac": 4358,
+      "ltv_cac_ratio": 21.8,
+      "peso_poblacion": 0.12,
+      "indice_vigente_promedio": 58,
+      "subscores": {
+        "estructural_min": 45,
+        "estructural_max": 60,
+        "piel_min": 50,
+        "piel_max": 65,
+        "biologico_min": 55,
+        "biologico_max": 70
+      },
+      "paquetes_preferidos": [
+        "transformacion_completa",
+        "anti_aging_premium",
+        "diagnostico_360"
+      ],
+      "servicios_individuales_alta_propension": [
+        "liposuccion_papada",
+        "invisalign",
+        "hifu",
+        "blanqueamiento_led",
+        "lifting_hilos_pdo"
+      ],
+      "frecuencia_visitas_mes": 2,
+      "propension_bnpl": 0.18,
+      "churn_propensity": 0.22
+    },
+    {
+      "id": "luis_renovado",
+      "nombre": "Luis el Renovado",
+      "descripcion": "Moderado, preventivo, disciplinado",
+      "edad_min": 42,
+      "edad_max": 48,
+      "ingreso_anual_min": 950000,
+      "ingreso_anual_max": 1200000,
+      "ltv_12m": 65000,
+      "cac": 2697,
+      "ltv_cac_ratio": 24.1,
+      "peso_poblacion": 0.18,
+      "indice_vigente_promedio": 68,
+      "subscores": {
+        "estructural_min": 65,
+        "estructural_max": 75,
+        "piel_min": 60,
+        "piel_max": 70,
+        "biologico_min": 65,
+        "biologico_max": 75
+      },
+      "paquetes_preferidos": [
+        "facial_rejuvenecimiento",
+        "grooming_mensual",
+        "diagnostico_360"
+      ],
+      "servicios_individuales_alta_propension": [
+        "hydrafacial",
+        "limpieza_facial",
+        "paquete_dermatologico",
+        "botox"
+      ],
+      "frecuencia_visitas_mes": 2,
+      "propension_bnpl": 0.35,
+      "churn_propensity": 0.25
+    },
+    {
+      "id": "ricardo_ejecutivo",
+      "nombre": "Ricardo el Ejecutivo",
+      "descripcion": "Time-sensitive, conveniencia, alto ticket",
+      "edad_min": 45,
+      "edad_max": 52,
+      "ingreso_anual_min": 2000000,
+      "ingreso_anual_max": 3000000,
+      "ltv_12m": 95000,
+      "cac": 3357,
+      "ltv_cac_ratio": 28.3,
+      "peso_poblacion": 0.10,
+      "indice_vigente_promedio": 65,
+      "subscores": {
+        "estructural_min": 60,
+        "estructural_max": 72,
+        "piel_min": 58,
+        "piel_max": 68,
+        "biologico_min": 62,
+        "biologico_max": 72
+      },
+      "paquetes_preferidos": [
+        "mantenimiento_ejecutivo",
+        "anti_aging_premium",
+        "diagnostico_360"
+      ],
+      "servicios_individuales_alta_propension": [
+        "botox",
+        "hifu",
+        "limpieza_facial",
+        "fillers"
+      ],
+      "frecuencia_visitas_mes": 3,
+      "propension_bnpl": 0.22,
+      "churn_propensity": 0.20
+    }
+  ],
+  "metadata": {
+    "fuente": "01_VISION_ESTRATEGIA_CORE.md lines 269-275, 04_FINANCIERO_CORE.md lines 39-46",
+    "validado_con_encuestas": "N=442",
+    "fecha_validacion": "2025-10-11",
+    "total_arquetipos": 5,
+    "cobertura_revenue": "63% de la base total (80% del revenue)",
+    "nota": "Estos son los Top 5 arquetipos validados. Existen 15 arquetipos adicionales pero representan el 20% restante del revenue."
+  }
+}

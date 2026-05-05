@@ -1,0 +1,140 @@
+{
+  "total_services": 26,
+  "total_chunks": 319,
+  "embedding_model": "text-embedding-3-small",
+  "embedding_dimensions": 1536,
+  "index_name": "hombrevigente-kb",
+  "timestamp": "2025-10-17 21:30:07",
+  "services": [
+    {
+      "id": "01",
+      "name": "HIFU (High-Intensity Focused Ultrasound)",
+      "chunks": 14
+    },
+    {
+      "id": "02",
+      "name": "Botox (Toxina Botulínica Tipo A)",
+      "chunks": 14
+    },
+    {
+      "id": "03",
+      "name": "RF Microneedling (Radiofrecuencia + Microagujas)",
+      "chunks": 14
+    },
+    {
+      "id": "04",
+      "name": "Láser CO2 Fraccionado",
+      "chunks": 14
+    },
+    {
+      "id": "05",
+      "name": "Limpieza Facial Profunda",
+      "chunks": 16
+    },
+    {
+      "id": "06",
+      "name": "PRP Dermapen (Plasma Rico en Plaquetas + Microagujas)",
+      "chunks": 14
+    },
+    {
+      "id": "07",
+      "name": "Limpieza Facial con Ultrasonido",
+      "chunks": 14
+    },
+    {
+      "id": "08",
+      "name": "Fillers (Rellenos de Ácido Hialurónico)",
+      "chunks": 15
+    },
+    {
+      "id": "09",
+      "name": "Sculptra (Ácido Poli-L-Láctico)",
+      "chunks": 15
+    },
+    {
+      "id": "10",
+      "name": "Blanqueamiento Dental LED",
+      "chunks": 15
+    },
+    {
+      "id": "11",
+      "name": "Limpieza Dental Profesional (Profilaxis)",
+      "chunks": 11
+    },
+    {
+      "id": "12",
+      "name": "Depilación Láser",
+      "chunks": 15
+    },
+    {
+      "id": "13",
+      "name": "Masajes Descontracturantes (Terapéuticos)",
+      "chunks": 11
+    },
+    {
+      "id": "14",
+      "name": "Corte de Pelo Masculino Profesional",
+      "chunks": 8
+    },
+    {
+      "id": "15",
+      "name": "Ajuste de Barba y Cejas Masculino",
+      "chunks": 8
+    },
+    {
+      "id": "16",
+      "name": "Manicure Natural Masculino",
+      "chunks": 9
+    },
+    {
+      "id": "17",
+      "name": "Pedicure Natural Masculino",
+      "chunks": 9
+    },
+    {
+      "id": "18",
+      "name": "Lifting con Hilos PDO",
+      "chunks": 10
+    },
+    {
+      "id": "19",
+      "name": "Liposucción de Papada",
+      "chunks": 9
+    },
+    {
+      "id": "20",
+      "name": "Bichectomía",
+      "chunks": 11
+    },
+    {
+      "id": "21",
+      "name": "Blefaroplastia (Cirugía de Párpados)",
+      "chunks": 10
+    },
+    {
+      "id": "22",
+      "name": "Lipofilling Facial (Transferencia Grasa Autóloga)",
+      "chunks": 11
+    },
+    {
+      "id": "23",
+      "name": "Bronceado UVA",
+      "chunks": 13
+    },
+    {
+      "id": "24",
+      "name": "Tinte Natural para Cabello",
+      "chunks": 13
+    },
+    {
+      "id": "25",
+      "name": "Reducción de Canas (Cobertura Sutil)",
+      "chunks": 13
+    },
+    {
+      "id": "26",
+      "name": "Rebaje de Vello Corporal",
+      "chunks": 13
+    }
+  ]
+}

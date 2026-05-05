@@ -1,0 +1,363 @@
+{
+  "paquetes_fase1": [
+    {
+      "id": "diagnostico_360",
+      "nombre": "Diagnóstico 360",
+      "precio_lista": 1650,
+      "cogs": 495,
+      "margen_pct": 70,
+      "duracion_min": 45,
+      "arquetipos_target": ["todos"],
+      "adopcion_pct": 68,
+      "servicios_incluidos": [
+        "escaneo_diagnostico_vigente",
+        "consulta_personalizada",
+        "simulacion_virtual_tryon"
+      ],
+      "descripcion": "Entry point del funnel, evaluación inicial personalizada"
+    },
+    {
+      "id": "facial_rejuvenecimiento",
+      "nombre": "Facial Rejuvenecimiento",
+      "precio_lista": 8500,
+      "cogs": 2975,
+      "margen_pct": 65,
+      "duracion_min": 180,
+      "arquetipos_target": ["luis_renovado", "carlos_vigente"],
+      "adopcion_pct": 45,
+      "servicios_incluidos": [
+        "hydrafacial",
+        "prp",
+        "led_therapy"
+      ],
+      "descripcion": "Paquete más popular, representa 30-40% de revenue recurrente"
+    },
+    {
+      "id": "anti_aging_premium",
+      "nombre": "Anti-Aging Premium",
+      "precio_lista": 18000,
+      "cogs": 7200,
+      "margen_pct": 60,
+      "duracion_min": 240,
+      "arquetipos_target": ["carlos_vigente", "miguel_maduro"],
+      "adopcion_pct": 35,
+      "servicios_incluidos": [
+        "hifu",
+        "botox",
+        "fillers",
+        "hydrafacial"
+      ],
+      "descripcion": "Tratamiento anti-aging completo"
+    },
+    {
+      "id": "grooming_mensual",
+      "nombre": "Grooming Mensual",
+      "precio_lista": 3200,
+      "cogs": 800,
+      "margen_pct": 75,
+      "duracion_min": 120,
+      "arquetipos_target": ["luis_renovado"],
+      "adopcion_pct": 55,
+      "servicios_incluidos": [
+        "corte_pelo",
+        "manicure",
+        "pedicure",
+        "limpieza_facial"
+      ],
+      "descripcion": "Mantenimiento mensual básico"
+    },
+    {
+      "id": "transformacion_completa",
+      "nombre": "Transformación Completa",
+      "precio_lista": 92200,
+      "cogs": 46100,
+      "margen_pct": 50,
+      "duracion_min": 720,
+      "arquetipos_target": ["miguel_maduro", "eduardo_explorador"],
+      "adopcion_pct": 12,
+      "servicios_incluidos": [
+        "liposuccion_papada",
+        "invisalign",
+        "hifu",
+        "botox",
+        "depilacion_laser_paquete",
+        "blanqueamiento_led"
+      ],
+      "descripcion": "Paquete Elite completo, 12 meses de tratamiento"
+    },
+    {
+      "id": "mantenimiento_ejecutivo",
+      "nombre": "Mantenimiento Ejecutivo",
+      "precio_lista": 5500,
+      "cogs": 1760,
+      "margen_pct": 68,
+      "duracion_min": 150,
+      "arquetipos_target": ["ricardo_ejecutivo"],
+      "adopcion_pct": 40,
+      "servicios_incluidos": [
+        "botox",
+        "limpieza_facial",
+        "corte_pelo",
+        "manicure"
+      ],
+      "descripcion": "Paquete mensual para ejecutivos time-sensitive",
+      "recurrencia": "mensual"
+    },
+    {
+      "id": "membresia_vip_anual",
+      "nombre": "Membresía VIP Anual",
+      "precio_lista": 120000,
+      "cogs": 33600,
+      "margen_pct": 72,
+      "duracion_min": 0,
+      "arquetipos_target": ["eduardo_explorador", "carlos_vigente"],
+      "adopcion_pct": 8,
+      "servicios_incluidos": [
+        "acceso_ilimitado_diagnostico",
+        "descuentos_20_pct_todos_servicios",
+        "eventos_vip_exclusivos",
+        "prioridad_booking"
+      ],
+      "descripcion": "Membresía anual premium con acceso VIP"
+    }
+  ],
+  "servicios_individuales_fase1": [
+    {
+      "id": "escaneo_diagnostico_vigente",
+      "nombre": "Escaneo Índice Vigente™",
+      "categoria": "Diagnóstico",
+      "precio_lista": 500,
+      "cogs": 120,
+      "margen_pct": 76,
+      "duracion_min": 12,
+      "arquetipos_target": ["todos"],
+      "frecuencia_tipica": "trimestral",
+      "descripcion": "Escaneo multi-modal RGB+IR con ML models"
+    },
+    {
+      "id": "hydrafacial",
+      "nombre": "Hydrafacial Elite",
+      "categoria": "Facial",
+      "precio_lista": 1750,
+      "cogs": 525,
+      "margen_pct": 70,
+      "duracion_min": 60,
+      "arquetipos_target": ["carlos_vigente", "luis_renovado", "eduardo_explorador"],
+      "frecuencia_tipica": "mensual",
+      "revenue_anual_cliente": 21000,
+      "rank_revenue": 9,
+      "descripcion": "Facial de hidratación profunda"
+    },
+    {
+      "id": "botox",
+      "nombre": "Botox (unidades variables)",
+      "categoria": "Inyectables",
+      "precio_lista": 3250,
+      "cogs": 812,
+      "margen_pct": 75,
+      "duracion_min": 30,
+      "arquetipos_target": ["carlos_vigente", "eduardo_explorador", "ricardo_ejecutivo"],
+      "frecuencia_tipica": "trimestral",
+      "revenue_anual_cliente": 13000,
+      "rank_revenue": 5,
+      "descripcion": "Toxina botulínica para reducción de arrugas"
+    },
+    {
+      "id": "hifu",
+      "nombre": "HIFU Ultraformer III",
+      "categoria": "Lifting",
+      "precio_lista": 4000,
+      "cogs": 1000,
+      "margen_pct": 75,
+      "duracion_min": 90,
+      "arquetipos_target": ["carlos_vigente", "miguel_maduro", "eduardo_explorador"],
+      "frecuencia_tipica": "semestral",
+      "revenue_anual_cliente": 8000,
+      "rank_revenue": 4,
+      "descripcion": "Ultrasonido focalizado de alta intensidad para lifting no invasivo"
+    },
+    {
+      "id": "fillers",
+      "nombre": "Fillers (ácido hialurónico)",
+      "categoria": "Inyectables",
+      "precio_lista": 4500,
+      "cogs": 1125,
+      "margen_pct": 75,
+      "duracion_min": 45,
+      "arquetipos_target": ["carlos_vigente", "ricardo_ejecutivo"],
+      "frecuencia_tipica": "trimestral",
+      "revenue_anual_cliente": 9000,
+      "rank_revenue": 6,
+      "descripcion": "Rellenos de ácido hialurónico para volumen facial"
+    },
+    {
+      "id": "limpieza_facial",
+      "nombre": "Limpieza Facial Profunda",
+      "categoria": "Facial",
+      "precio_lista": 1000,
+      "cogs": 300,
+      "margen_pct": 70,
+      "duracion_min": 60,
+      "arquetipos_target": ["luis_renovado", "ricardo_ejecutivo"],
+      "frecuencia_tipica": "mensual",
+      "revenue_anual_cliente": 12000,
+      "rank_revenue": 10,
+      "descripcion": "Limpieza facial profunda con extracción"
+    },
+    {
+      "id": "paquete_dermatologico",
+      "nombre": "Paquete Dermatológico (SVR)",
+      "categoria": "Productos",
+      "precio_lista": 925,
+      "cogs": 370,
+      "margen_pct": 60,
+      "duracion_min": 15,
+      "arquetipos_target": ["todos"],
+      "frecuencia_tipica": "mensual",
+      "revenue_anual_cliente": 11100,
+      "rank_revenue": 8,
+      "descripcion": "Jabón SVR + Crema + Bloqueador solar"
+    },
+    {
+      "id": "corte_pelo",
+      "nombre": "Corte de Pelo Premium",
+      "categoria": "Grooming",
+      "precio_lista": 400,
+      "cogs": 100,
+      "margen_pct": 75,
+      "duracion_min": 45,
+      "arquetipos_target": ["todos"],
+      "frecuencia_tipica": "mensual",
+      "descripcion": "Corte de pelo premium con consultoría de estilo"
+    },
+    {
+      "id": "manicure",
+      "nombre": "Manicure",
+      "categoria": "Grooming",
+      "precio_lista": 400,
+      "cogs": 100,
+      "margen_pct": 75,
+      "duracion_min": 30,
+      "arquetipos_target": ["todos"],
+      "frecuencia_tipica": "mensual",
+      "descripcion": "Manicure profesional"
+    },
+    {
+      "id": "pedicure",
+      "nombre": "Pedicure",
+      "categoria": "Grooming",
+      "precio_lista": 500,
+      "cogs": 125,
+      "margen_pct": 75,
+      "duracion_min": 45,
+      "arquetipos_target": ["todos"],
+      "frecuencia_tipica": "mensual",
+      "descripcion": "Pedicure profesional"
+    },
+    {
+      "id": "liposuccion_papada",
+      "nombre": "Liposucción de Papada",
+      "categoria": "Cirugía",
+      "precio_lista": 17500,
+      "cogs": 4200,
+      "margen_pct": 76,
+      "duracion_min": 180,
+      "arquetipos_target": ["miguel_maduro", "eduardo_explorador"],
+      "frecuencia_tipica": "anual",
+      "revenue_anual_cliente": 17500,
+      "rank_revenue": 2,
+      "propension_bnpl": 0.45,
+      "descripcion": "Liposucción quirúrgica de papada"
+    },
+    {
+      "id": "invisalign",
+      "nombre": "Invisalign (tratamiento completo)",
+      "categoria": "Dental",
+      "precio_lista": 40000,
+      "cogs": 14000,
+      "margen_pct": 65,
+      "duracion_min": 720,
+      "arquetipos_target": ["miguel_maduro", "eduardo_explorador"],
+      "frecuencia_tipica": "12-18 meses",
+      "revenue_anual_cliente": 40000,
+      "rank_revenue": 1,
+      "propension_bnpl": 0.58,
+      "descripcion": "Tratamiento de ortodoncia invisible completo (12-18 meses)"
+    },
+    {
+      "id": "blanqueamiento_led",
+      "nombre": "Blanqueamiento Dental LED",
+      "categoria": "Dental",
+      "precio_lista": 3000,
+      "cogs": 1050,
+      "margen_pct": 65,
+      "duracion_min": 90,
+      "arquetipos_target": ["eduardo_explorador", "miguel_maduro"],
+      "frecuencia_tipica": "semestral",
+      "revenue_anual_cliente": 6000,
+      "rank_revenue": 7,
+      "descripcion": "Blanqueamiento dental con tecnología LED"
+    },
+    {
+      "id": "depilacion_laser_paquete",
+      "nombre": "Depilación Láser (paquete 6 sesiones)",
+      "categoria": "Corporal",
+      "precio_lista": 15000,
+      "cogs": 4800,
+      "margen_pct": 68,
+      "duracion_min": 360,
+      "arquetipos_target": ["eduardo_explorador"],
+      "frecuencia_tipica": "6 meses",
+      "revenue_anual_cliente": 15000,
+      "rank_revenue": 3,
+      "descripcion": "Paquete completo de 6 sesiones de depilación láser"
+    },
+    {
+      "id": "lifting_hilos_pdo",
+      "nombre": "Lifting con Hilos PDO",
+      "categoria": "Lifting",
+      "precio_lista": 4000,
+      "cogs": 1200,
+      "margen_pct": 70,
+      "duracion_min": 120,
+      "arquetipos_target": ["miguel_maduro"],
+      "frecuencia_tipica": "anual",
+      "descripcion": "Lifting facial mínimamente invasivo con hilos tensores PDO"
+    },
+    {
+      "id": "prp",
+      "nombre": "PRP (Plasma Rico en Plaquetas)",
+      "categoria": "Regenerativo",
+      "precio_lista": 3500,
+      "cogs": 875,
+      "margen_pct": 75,
+      "duracion_min": 90,
+      "arquetipos_target": ["carlos_vigente", "eduardo_explorador"],
+      "frecuencia_tipica": "trimestral",
+      "descripcion": "Terapia regenerativa con plasma rico en plaquetas"
+    },
+    {
+      "id": "led_therapy",
+      "nombre": "LED Therapy (fototerapia)",
+      "categoria": "Facial",
+      "precio_lista": 800,
+      "cogs": 160,
+      "margen_pct": 80,
+      "duracion_min": 30,
+      "arquetipos_target": ["todos"],
+      "frecuencia_tipica": "semanal",
+      "descripcion": "Fototerapia LED para rejuvenecimiento facial"
+    }
+  ],
+  "metadata": {
+    "fuente_paquetes": "01_VISION_ESTRATEGIA_CORE.md lines 299-304, 04_FINANCIERO_CORE.md lines 75-83",
+    "fuente_servicios": "06_DTC_PRODUCTOS_CORE.md lines 559-570 (Top 10 por revenue)",
+    "fase": "Fase 1 (Meses 1-12)",
+    "validado_con_encuestas": "N=442",
+    "fecha_validacion": "2025-10-11",
+    "total_paquetes": 7,
+    "total_servicios_individuales": 17,
+    "nota_bnpl": "Servicios >$10K requieren BNPL para capturar 45-67% del TAM adicional",
+    "margen_promedio_ponderado": 73.4
+  }
+}

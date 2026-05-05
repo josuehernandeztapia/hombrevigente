@@ -1,0 +1,241 @@
+# =============================================================================
+# HOMBRE VIGENTE - GIT IGNORE
+# =============================================================================
+
+# -----------------------------------------------------------------------------
+# SECRETS & ENVIRONMENT
+# -----------------------------------------------------------------------------
+.env
+.env.local
+.env.*.local
+secrets.local.txt
+*.key
+*.pem
+*.cer
+*.p12
+
+# API Keys
+**/secrets/
+**/credentials/
+
+# -----------------------------------------------------------------------------
+# PYTHON
+# -----------------------------------------------------------------------------
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+pip-wheel-metadata/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual environments
+venv/
+ENV/
+env/
+.venv
+
+# PyInstaller
+*.manifest
+*.spec
+
+# Unit test / coverage
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+.pytest_cache/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# pyenv
+.python-version
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# -----------------------------------------------------------------------------
+# DATABASES
+# -----------------------------------------------------------------------------
+*.db
+*.sqlite
+*.sqlite3
+vigente_v3.db
+vigente_v2.db
+vigente_v1.db
+
+# PostgreSQL
+*.dump
+*.backup
+
+# -----------------------------------------------------------------------------
+# LOGS
+# -----------------------------------------------------------------------------
+logs/
+*.log
+*.log.*
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# -----------------------------------------------------------------------------
+# FRONTEND (Next.js / React)
+# -----------------------------------------------------------------------------
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Production
+/build
+/out
+/.next/
+
+# Misc
+.DS_Store
+*.pem
+
+# Debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# -----------------------------------------------------------------------------
+# VECTOR DATABASE (Local)
+# -----------------------------------------------------------------------------
+# Qdrant local storage
+qdrant_storage/
+.qdrant/
+
+# Pinecone cache
+.pinecone/
+
+# Embeddings cache
+embeddings_cache/
+*.pkl
+*.pickle
+
+# -----------------------------------------------------------------------------
+# KNOWLEDGE BASE (Generated files)
+# -----------------------------------------------------------------------------
+# Vector embeddings
+knowledge_base/**/*.embeddings
+knowledge_base/**/*.vectors
+knowledge_base/**/*.index
+
+# Generated FAQs/Protocolos (keep templates)
+# knowledge_base/faqs/generated/
+# knowledge_base/protocolos/generated/
+
+# -----------------------------------------------------------------------------
+# MEDIA & UPLOADS
+# -----------------------------------------------------------------------------
+uploads/
+media/
+temp/
+tmp/
+
+# Images from diagnostico
+diagnostico_images/
+thermal_images/
+rgb_images/
+
+# -----------------------------------------------------------------------------
+# DOCUMENTATION (Generated)
+# -----------------------------------------------------------------------------
+docs/_build/
+site/
+
+# -----------------------------------------------------------------------------
+# OS SPECIFIC
+# -----------------------------------------------------------------------------
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon
+._*
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Linux
+*~
+
+# -----------------------------------------------------------------------------
+# DEMO SPECIFIC
+# -----------------------------------------------------------------------------
+# Synthetic data (keep generators, ignore output)
+synthetic_data_output/
+generated_clients.json
+
+# Demo screenshots/videos (too large for repo)
+demo_assets/*.mp4
+demo_assets/*.mov
+demo_assets/screenshots/*.png
+
+# Pitch deck exports (keep source .pptx)
+pitch_deck/*.pdf
+
+# =============================================================================
+# ALLOWED FILES (Explicitly NOT ignored)
+# =============================================================================
+# Config templates
+!.env.example
+!secrets.example.txt
+
+# Knowledge Base templates
+!knowledge_base/servicios/_TEMPLATE.md
+!knowledge_base/faqs/_TEMPLATE.md
+!knowledge_base/protocolos/_TEMPLATE.md
+
+# Documentation
+!README.md
+!CHANGELOG*.md
+!TODO*.md
+!RESUMEN*.md
+
+# =============================================================================
+# NOTAS
+# =============================================================================
+# 1. Nunca commitear .env con API keys reales
+# 2. Usar .env.example para documentar estructura
+# 3. Bases de datos locales son temporales (demo)
+# 4. Knowledge Base .md files SÍ se commitean (son contenido)
+# =============================================================================

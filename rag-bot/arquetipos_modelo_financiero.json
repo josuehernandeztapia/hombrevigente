@@ -1,0 +1,110 @@
+{
+  "arquetipos_html_modelo": [
+    {
+      "id": "carlos",
+      "nombre": "Carlos - Rejuvenecedor Premium",
+      "descripcion": "Rejuvenecedor Premium 35-50",
+      "peso_poblacion": 0.08,
+      "ltv_12m": 32085,
+      "cac": 2510,
+      "ltv_cac_ratio": 12.8,
+      "churn_anual": 0.25,
+      "membership_propension": {
+        "elite": 0.15,
+        "access": 0.10
+      },
+      "bnpl_propension": 0.50,
+      "sub_arquetipos_ssot": ["hugo_empresario", "javier_evento", "sergio_influencer"]
+    },
+    {
+      "id": "eduardo",
+      "nombre": "Eduardo - Novato Estético",
+      "descripcion": "Novato Estético 25-40",
+      "peso_poblacion": 0.42,
+      "ltv_12m": 26300,
+      "cac": 750,
+      "ltv_cac_ratio": 35.1,
+      "churn_anual": 0.45,
+      "membership_propension": {
+        "elite": 0.05,
+        "access": 0.40
+      },
+      "bnpl_propension": 0.30,
+      "sub_arquetipos_ssot": ["eduardo_novato", "fernando_ejecutivo", "juan_creativo", "marco_viajero"]
+    },
+    {
+      "id": "mantenimiento",
+      "nombre": "Mantenimiento - Grooming Regular",
+      "descripcion": "Grooming Regular",
+      "peso_poblacion": 0.28,
+      "ltv_12m": 32980,
+      "cac": 450,
+      "ltv_cac_ratio": 73.3,
+      "churn_anual": 0.45,
+      "membership_propension": {
+        "elite": 0.05,
+        "access": 0.35
+      },
+      "bnpl_propension": 0.25,
+      "sub_arquetipos_ssot": ["pedro_sobrio", "alejandro_conservador", "daniel_refinado", "antonio_clasico"]
+    },
+    {
+      "id": "transaccional",
+      "nombre": "Transaccional - Cazador de Ofertas",
+      "descripcion": "Cazador Ofertas",
+      "peso_poblacion": 0.22,
+      "ltv_12m": 7980,
+      "cac": 400,
+      "ltv_cac_ratio": 20.0,
+      "churn_anual": 0.75,
+      "membership_propension": {
+        "elite": 0.0,
+        "access": 0.05
+      },
+      "bnpl_propension": 0.10,
+      "conversion_a_mantenimiento": {
+        "tasa": 0.20,
+        "descripcion": "20% de transaccionales se convierten en mantenimiento con el tiempo"
+      },
+      "sub_arquetipos_ssot": []
+    }
+  ],
+  "adherence_matrix": {
+    "carlos": {
+      "ultra": 0.90,
+      "high": 0.75,
+      "premium": 0.60,
+      "luxury": 0.40,
+      "surgery": 0.95
+    },
+    "eduardo": {
+      "ultra": 0.85,
+      "high": 0.65,
+      "premium": 0.35,
+      "luxury": 0.15,
+      "surgery": 0.95
+    },
+    "mantenimiento": {
+      "ultra": 0.80,
+      "high": 0.50,
+      "premium": 0.15,
+      "luxury": 0.05,
+      "surgery": 0.95
+    },
+    "transaccional": {
+      "ultra": 0.70,
+      "high": 0.30,
+      "premium": 0.05,
+      "luxury": 0.02,
+      "surgery": 0.95
+    }
+  },
+  "metadata": {
+    "version": "3.0_HTML_ALIGNED",
+    "fecha_creacion": "2025-10-15",
+    "fuente_principal": "modelofinanciero.html V53.1 (líneas 1095-1107)",
+    "total_arquetipos": 4,
+    "alineacion": "100% con modelo financiero HTML",
+    "notas": "LTV, CAC, churn, adherence matrix extraídos directamente del baseModelData del HTML. Los sub-arquetipos SSOT se mapean a estos 4 arquetipos base para clustering."
+  }
+}

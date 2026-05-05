@@ -1,0 +1,26 @@
+# Hombre Vigente - Demo Investor Seed Round
+# Python 3.10+
+# 100% alineado con datos validados wiki N=442
+
+# Backend API
+fastapi==0.109.0
+uvicorn[standard]==0.27.0
+pydantic==2.5.3
+python-multipart==0.0.6
+websockets==12.0
+
+# Synthetic Data Generation
+faker==22.0.0
+pandas>=2.2.0
+numpy>=1.26.0
+
+# Database
+# SQLite viene incluido en Python 3.10+
+
+# Data visualization (opcional, para análisis)
+plotly==5.18.0
+
+# ML/AI (para futura implementación de agentes)
+# scikit-learn==1.4.0
+# torch==2.1.2
+# transformers==4.36.2

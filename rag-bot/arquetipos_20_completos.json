@@ -1,0 +1,208 @@
+{
+  "arquetipos_base": [
+    {
+      "id": "carlos_vigente",
+      "nombre": "Carlos el Vigente",
+      "ltv_12m": 100000,
+      "cac": 3077,
+      "ltv_cac_ratio": 32.5,
+      "churn_anual": 0.22,
+      "propension_compra": 0.85,
+      "peso_poblacion": 0.15,
+      "membership_propension": {
+        "elite": 0.20,
+        "access": 0.15
+      },
+      "bnpl_propension": 0.45,
+      "sub_arquetipos": ["hugo_empresario", "javier_evento", "sergio_influencer"]
+    },
+    {
+      "id": "eduardo_explorador",
+      "nombre": "Eduardo el Explorador",
+      "ltv_12m": 135000,
+      "cac": 3500,
+      "ltv_cac_ratio": 38.5,
+      "churn_anual": 0.15,
+      "propension_compra": 0.88,
+      "peso_poblacion": 0.25,
+      "membership_propension": {
+        "elite": 0.10,
+        "access": 0.40
+      },
+      "bnpl_propension": 0.35,
+      "sub_arquetipos": ["eduardo_novato", "fernando_ejecutivo", "juan_creativo", "marco_viajero"]
+    },
+    {
+      "id": "miguel_maduro",
+      "nombre": "Miguel el Maduro",
+      "ltv_12m": 45000,
+      "cac": 2200,
+      "ltv_cac_ratio": 20.4,
+      "churn_anual": 0.35,
+      "propension_compra": 0.62,
+      "peso_poblacion": 0.20,
+      "membership_propension": {
+        "elite": 0.05,
+        "access": 0.35
+      },
+      "bnpl_propension": 0.25,
+      "sub_arquetipos": ["pedro_sobrio", "alejandro_conservador", "daniel_refinado", "antonio_clasico"]
+    },
+    {
+      "id": "luis_renovado",
+      "nombre": "Luis el Renovado",
+      "ltv_12m": 78000,
+      "cac": 2800,
+      "ltv_cac_ratio": 27.8,
+      "churn_anual": 0.28,
+      "propension_compra": 0.72,
+      "peso_poblacion": 0.22,
+      "membership_propension": {
+        "elite": 0.12,
+        "access": 0.38
+      },
+      "bnpl_propension": 0.52,
+      "sub_arquetipos": ["luis_fitness", "ricardo_papa", "pablo_divorcio", "gustavo_papa2"]
+    },
+    {
+      "id": "ricardo_ejecutivo",
+      "nombre": "Ricardo el Ejecutivo",
+      "ltv_12m": 85000,
+      "cac": 3200,
+      "ltv_cac_ratio": 26.5,
+      "churn_anual": 0.25,
+      "propension_compra": 0.75,
+      "peso_poblacion": 0.18,
+      "membership_propension": {
+        "elite": 0.18,
+        "access": 0.25
+      },
+      "bnpl_propension": 0.40,
+      "sub_arquetipos": ["manuel_emprendedor", "omar_bodybuilder", "diego_vacacionista", "quique_tatuado"]
+    }
+  ],
+  "sub_arquetipos_detalle": {
+    "hugo_empresario": {
+      "nombre": "Hugo, el Empresario Premium",
+      "ticket_promedio": 24000,
+      "servicios_preferidos": ["botox", "morpheus8", "hifu", "fillers"],
+      "frecuencia_visitas_mes": 1.5
+    },
+    "javier_evento": {
+      "nombre": "Javier, el Gran Evento",
+      "ticket_promedio": 18500,
+      "servicios_preferidos": ["botox", "fillers", "peeling", "limpieza_profunda"],
+      "frecuencia_visitas_mes": 0.8
+    },
+    "sergio_influencer": {
+      "nombre": "Sergio, el Influencer Urbano",
+      "ticket_promedio": 21500,
+      "servicios_preferidos": ["morpheus8", "fillers", "hifu", "bronceado"],
+      "frecuencia_visitas_mes": 2.0
+    },
+    "eduardo_novato": {
+      "nombre": "Eduardo, el Novato Estético",
+      "ticket_promedio": 4000,
+      "servicios_preferidos": ["limpieza_profunda", "peeling", "corte_barba"],
+      "frecuencia_visitas_mes": 0.5
+    },
+    "fernando_ejecutivo": {
+      "nombre": "Fernando, el Joven Ejecutivo",
+      "ticket_promedio": 6000,
+      "servicios_preferidos": ["botox", "limpieza_profunda", "manicure"],
+      "frecuencia_visitas_mes": 1.0
+    },
+    "juan_creativo": {
+      "nombre": "Juan, el Creativo Vanguardista",
+      "ticket_promedio": 11500,
+      "servicios_preferidos": ["peeling", "morpheus8", "depilacion_laser"],
+      "frecuencia_visitas_mes": 1.2
+    },
+    "marco_viajero": {
+      "nombre": "Marco, el Viajero Frecuente",
+      "ticket_promedio": 4500,
+      "servicios_preferidos": ["bronceado", "corte_barba", "masajes"],
+      "frecuencia_visitas_mes": 0.6
+    },
+    "pedro_sobrio": {
+      "nombre": "Pedro, el Ejecutivo Sobrio",
+      "ticket_promedio": 7500,
+      "servicios_preferidos": ["botox", "peeling", "limpieza_profunda"],
+      "frecuencia_visitas_mes": 0.8
+    },
+    "alejandro_conservador": {
+      "nombre": "Alejandro, el Manager Conservador",
+      "ticket_promedio": 6500,
+      "servicios_preferidos": ["botox", "limpieza_ultrasonido", "corte_barba"],
+      "frecuencia_visitas_mes": 0.7
+    },
+    "daniel_refinado": {
+      "nombre": "Daniel, el Senior Refinado",
+      "ticket_promedio": 10000,
+      "servicios_preferidos": ["botox", "fillers", "hifu"],
+      "frecuencia_visitas_mes": 1.0
+    },
+    "antonio_clasico": {
+      "nombre": "Antonio, el Senior Clásico",
+      "ticket_promedio": 5000,
+      "servicios_preferidos": ["botox", "limpieza_profunda", "blanqueamiento"],
+      "frecuencia_visitas_mes": 0.6
+    },
+    "luis_fitness": {
+      "nombre": "Luis, el Fitness Estético",
+      "ticket_promedio": 12500,
+      "servicios_preferidos": ["botox", "morpheus8", "depilacion_laser", "masajes"],
+      "frecuencia_visitas_mes": 1.5
+    },
+    "ricardo_papa": {
+      "nombre": "Ricardo, el Papá Renovado",
+      "ticket_promedio": 6500,
+      "servicios_preferidos": ["botox", "limpieza_profunda", "blanqueamiento"],
+      "frecuencia_visitas_mes": 0.8
+    },
+    "pablo_divorcio": {
+      "nombre": "Pablo, el Renovado Post-divorcio",
+      "ticket_promedio": 16000,
+      "servicios_preferidos": ["botox", "fillers", "peeling", "hifu"],
+      "frecuencia_visitas_mes": 1.8
+    },
+    "gustavo_papa2": {
+      "nombre": "Gustavo, el Papá 2.0",
+      "ticket_promedio": 5000,
+      "servicios_preferidos": ["limpieza_profunda", "corte_barba", "manicure"],
+      "frecuencia_visitas_mes": 0.7
+    },
+    "manuel_emprendedor": {
+      "nombre": "Manuel, el Emprendedor en Ascenso",
+      "ticket_promedio": 5500,
+      "servicios_preferidos": ["botox", "peeling", "corte_barba"],
+      "frecuencia_visitas_mes": 0.9
+    },
+    "omar_bodybuilder": {
+      "nombre": "Omar, el Bodybuilder",
+      "ticket_promedio": 13000,
+      "servicios_preferidos": ["morpheus8", "depilacion_laser", "bronceado", "masajes"],
+      "frecuencia_visitas_mes": 1.8
+    },
+    "diego_vacacionista": {
+      "nombre": "Diego, el Vacacionista",
+      "ticket_promedio": 5000,
+      "servicios_preferidos": ["bronceado", "limpieza_profunda", "corte_barba"],
+      "frecuencia_visitas_mes": 0.5
+    },
+    "quique_tatuado": {
+      "nombre": "Quique, el Joven Tatuado",
+      "ticket_promedio": 5500,
+      "servicios_preferidos": ["peeling", "limpieza_profunda", "depilacion_laser"],
+      "frecuencia_visitas_mes": 0.8
+    }
+  },
+  "metadata": {
+    "version": "3.0",
+    "fecha_creacion": "2025-10-15",
+    "fuente": "SSOT v1.2 Consolidado + Manual de Vuelo",
+    "total_arquetipos_base": 5,
+    "total_sub_arquetipos": 19,
+    "membership_tiers": ["access", "elite"]
+  }
+}
