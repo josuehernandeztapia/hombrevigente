@@ -171,10 +171,50 @@ def load_documents_from_dir(base_dir: Path, kb_type: str, id_prefix: str = "") -
                 "content": content,
                 "file_path": str(file_path),
                 "kb_type": kb_type,
+                "doc_subtype": "monografia",
             })
 
         except Exception as e:
             print(f"❌ Error leyendo {filename}: {e}")
+            continue
+
+    return documents
+
+
+def _extract_yaml_field(content: str, field: str) -> str | None:
+    if match := re.search(rf'^{re.escape(field)}:\s*(.+)$', content, re.MULTILINE):
+        return match.group(1).strip().strip('"').strip("'")
+    return None
+
+
+def load_tarjetas_from_dir(
+    base_dir: Path, kb_type: str, id_prefix: str = "longevity_tarjeta_"
+) -> List[Dict]:
+    """Carga tarjetas atómicas YAML desde longevity/tarjetas/"""
+    documents = []
+    doc_files = sorted(f for f in base_dir.glob("*.md") if f.name.lower() != "readme.md")
+
+    print(f"📇 tarjetas: {len(doc_files)} archivos en {base_dir}")
+
+    for file_path in doc_files:
+        filename = file_path.stem
+        try:
+            content = file_path.read_text(encoding='utf-8')
+            tarjeta_id = _extract_yaml_field(content, "id") or filename
+            doc_name = _extract_yaml_field(content, "nombre") or content.split("\n")[0].replace("#", "").strip()
+            doc_id = f"{id_prefix}{tarjeta_id}"
+
+            documents.append({
+                "id": doc_id,
+                "name": doc_name,
+                "slug": tarjeta_id,
+                "content": content,
+                "file_path": str(file_path),
+                "kb_type": kb_type,
+                "doc_subtype": "tarjeta",
+            })
+        except Exception as e:
+            print(f"❌ Error leyendo tarjeta {filename}: {e}")
             continue
 
     return documents
@@ -187,6 +227,9 @@ def load_services(source: str = "servicios") -> List[Dict]:
         services.extend(load_documents_from_dir(SERVICIOS_DIR, "servicios"))
     if source in ("longevity", "all"):
         services.extend(load_documents_from_dir(LONGEVITY_DIR, "longevity", id_prefix="longevity_"))
+        tarjetas_dir = LONGEVITY_DIR / "tarjetas"
+        if tarjetas_dir.is_dir():
+            services.extend(load_tarjetas_from_dir(tarjetas_dir, "longevity"))
     return services
 
 

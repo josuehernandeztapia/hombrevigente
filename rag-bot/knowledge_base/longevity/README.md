@@ -18,6 +18,9 @@
 | `20–24` | Khavinson | Marco + Endoluten, Cerluten, Vladonix, Ventfort |
 | `25–28` | Aplicación HV | Biomarcadores, lifestyle, nervio periférico, termografía |
 | `29` | `29_MOTOR_JUSTIFICACION_EJEMPLOS.md` | Plantillas de respuesta RAG con citas |
+| `tarjetas/` | 15 tarjetas atómicas YAML | Chunks Peldaño 1 (suplementos, biomarcadores, wearables, hábitos, gates) |
+
+**Copia espejo:** `~/Downloads/longevity/tarjetas/`
 
 ---
 
