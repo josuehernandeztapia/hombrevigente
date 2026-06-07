@@ -1,59 +1,42 @@
-# 🏛️ Hombre Vigente — Single Source of Truth (SSOT)
+# Hombre Vigente — Repositorio Central
 
-Bienvenido al **Repositorio Central del Ecosistema IA "Hombre Vigente" (SSOT)**.  
-Esta es la **ÚNICA FUENTE DE VERDAD** para el modelo **Clinic-in-a-Box AI-Powered** de Hombre Vigente.
+Repositorio del ecosistema **Hombre Vigente**: club de estética regenerativa masculina + capa de longevidad, operado con IA.
 
-> **Versión:** v0.9 BASE Consolidada  
-> *Estado: En construcción hacia v1.0*  
+> **Versión:** Junio 2026 · Pre-operativo (MVP-0 en validación)
 
 ---
 
-## 🎯 **Objetivo**
-Centralizar TODO el conocimiento técnico, estratégico y operativo necesario para diseñar, lanzar y escalar el modelo Hombre Vigente.
+## Estructura real del repo
 
-Incluye visión, estrategia, SOPs, arquitectura tecnológica, IA, Unit Economics, marketing y governance.
-
----
-
-## 📂 **Estructura del Repositorio**
-- `0_Executive_Summary/`  
-  - Visión, Misión, Propuesta de Valor
-- `1_Business_Strategy/`  
-  - Mercado, Modelo de Negocio, Roadmap
-- `2_Blueprint_Operativo/`  
-  - Customer Journey, SOPs, Certificación NOM
-- `3_Financial_Model/`  
-  - CAPEX, Unit Economics
-- `4_Tech_Stack/`  
-  - Infraestructura, Data Flywheel
-- `5_AI_Powered_Ecosystem/`  
-  - Inventario de Agentes, Algoritmos
-- `6_Marketing_Branding/`  
-  - Customer Archetypes, Omnicanal
-- `7_Governance_and_Versioning/`  
-  - Versioning, CHANGELOG, LICENSE
+| Carpeta / archivo | Contenido |
+|-------------------|-----------|
+| [`estrategia_2026/`](estrategia_2026/) | **Documento maestro** — plan, síntesis unificada, MVP-0 operativo, research, deck |
+| [`wiki/`](wiki/) | 8 CORE + 2 GAP (resúmenes navegables por dominio) |
+| [`rag-bot/`](rag-bot/) | Backend FastAPI, pipeline RAG, knowledge base clínica, generador sintético |
+| [`blueprint/`](blueprint/) | `financial-engine.js` + demos de diagnóstico |
+| `*.html` | Demos y prototipos (modelo financiero, pitch, war room, diagnóstico) |
+| [`rag-bot/Leer/`](rag-bot/Leer/) | SSOT v1.1 + v1.2 (texto consolidado) |
 
 ---
 
-## ⚡️ **Estado actual**
-Esta es la **BASE consolidada (v0.9)** generada desde el Repositorio Central del Ecosistema IA.  
-Es la plataforma sobre la que construiremos **v1.0**, integrando:
+## Por dónde empezar
 
-✅ Customer_Archetypes completos (20 fichas detalladas)  
-✅ Hoja CAPEX Fase 1 y 2 detallada  
-✅ Pricing y elasticidad por segmento  
-✅ Certificación Vigente (NOM compliance)  
-✅ Marketing y estrategia omnicanal  
-✅ Governance completo (CHANGELOG, CONTRIBUTING)
+1. **Estrategia y próximos pasos** → [`estrategia_2026/SINTESIS_Relato_Unificado_HombreVigente.md`](estrategia_2026/SINTESIS_Relato_Unificado_HombreVigente.md)
+2. **Lanzar validación** → [`estrategia_2026/MVP0_Playbook.md`](estrategia_2026/MVP0_Playbook.md)
+3. **Revisión honesta del repo** → [`estrategia_2026/Revision_Quirurgica_Repo_HombreVigente.md`](estrategia_2026/Revision_Quirurgica_Repo_HombreVigente.md)
+4. **Wiki por dominio** → [`wiki/README.md`](wiki/README.md)
 
 ---
 
-## 📌 **Cómo colaborar**
-1. Crea un fork o rama.  
-2. Propón cambios vía Pull Request.  
-3. Abre un Issue para sugerencias o preguntas.  
+## Estado actual (honesto)
+
+- **Validado:** insight de dolor + encuesta N=442 (interés declarado, no conversión).
+- **Funcional:** pipeline RAG sobre 26 servicios estéticos; motor financiero (`financial-engine.js`).
+- **Simulado:** agentes IA backend (mocks demo); diagnóstico térmico (front-end demo).
+- **Pendiente:** 5–10 betas reales (MVP-0 concierge por WhatsApp).
 
 ---
 
-## 🔖 **License**
-Por definir en `LICENSE.md`.  
+## Deploy
+
+GitHub Pages publica los HTMLs y assets estáticos. `rag-bot/` y `wiki/` quedan fuera del deploy (ver `.github/workflows/static.yml`).
