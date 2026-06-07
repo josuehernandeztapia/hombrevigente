@@ -2,7 +2,7 @@
 
 Resúmenes CORE por dominio. Junio 2026.
 
-> Los 63 archivos `.md` vacíos (placeholders sin contenido) fueron eliminados en la limpieza del repo. El material extenso original vive en Google Drive ("Hombre Vigente ALL"), el SSOT (`rag-bot/Leer/`) y [`estrategia_2026/`](../estrategia_2026/).
+> Los 63 archivos `.md` vacíos (placeholders sin contenido) fueron eliminados en la limpieza del repo. SSOT extenso v1.1/v1.2 → [`archive/ssot-v1-legacy/`](../archive/ssot-v1-legacy/). Corpus RAG activo → `rag-bot/knowledge_base/`. Operación 2026 → [`estrategia_2026/`](../estrategia_2026/).
 
 ## Archivos
 
