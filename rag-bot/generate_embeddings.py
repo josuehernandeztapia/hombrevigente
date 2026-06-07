@@ -11,6 +11,7 @@ Características:
 import os
 import re
 import time
+import argparse
 from pathlib import Path
 from typing import List, Dict, Tuple
 import json
@@ -36,6 +37,7 @@ INDEX_NAME = "hombrevigente-kb"
 EMBEDDING_MODEL = "text-embedding-3-small"
 EMBEDDING_DIMENSIONS = 1536
 SERVICIOS_DIR = Path("knowledge_base/servicios")
+LONGEVITY_DIR = Path("knowledge_base/longevity")
 
 # Validate API keys
 if not OPENAI_API_KEY:
@@ -48,21 +50,28 @@ openai_client = OpenAI(api_key=OPENAI_API_KEY)
 pc = Pinecone(api_key=PINECONE_API_KEY)
 
 
-def extract_metadata_from_header(content: str) -> Dict:
-    """Extrae metadata del header del servicio"""
+def extract_metadata_from_header(content: str, kb_type: str = "servicios") -> Dict:
+    """Extrae metadata del header del documento"""
     metadata = {
         "categoria": "Unknown",
         "fase": "Unknown",
         "precio_base": 0,
         "duracion": "Unknown",
-        "frecuencia": "Unknown"
+        "frecuencia": "Unknown",
+        "kb_type": kb_type,
+        "avenida_hv": "Unknown",
+        "evidencia": "Unknown",
     }
 
-    # Extract from markdown header
     if match := re.search(r'\*\*Categoría\*\*:\s*(.+)', content):
         metadata["categoria"] = match.group(1).strip()
     if match := re.search(r'\*\*Fase\*\*:\s*(.+)', content):
         metadata["fase"] = match.group(1).strip()
+    if match := re.search(r'\*\*Avenida HV\*\*:\s*(.+)', content):
+        metadata["avenida_hv"] = match.group(1).strip()
+        metadata["fase"] = metadata["avenida_hv"]
+    if match := re.search(r'\*\*Evidencia predominante\*\*:\s*(.+)', content):
+        metadata["evidencia"] = match.group(1).strip()
     if match := re.search(r'\*\*Precio base\*\*:\s*\$?([\d,]+)', content):
         precio_str = match.group(1).replace(',', '')
         metadata["precio_base"] = int(precio_str)
@@ -90,7 +99,8 @@ def chunk_by_sections(content: str, service_id: str, service_name: str) -> List[
     body = content[header_end:] if header_end > 0 else content
 
     # Get service metadata
-    service_metadata = extract_metadata_from_header(header)
+    kb_type = "longevity" if "longevity" in service_id else "servicios"
+    service_metadata = extract_metadata_from_header(header, kb_type=kb_type)
 
     # Split by sections (##)
     sections = re.split(r'\n## ', body)
@@ -131,44 +141,52 @@ def chunk_by_sections(content: str, service_id: str, service_name: str) -> List[
     return chunks
 
 
-def load_services() -> List[Dict]:
-    """Carga todos los servicios desde markdown files"""
-    services = []
-    service_files = sorted(SERVICIOS_DIR.glob("[0-9][0-9]_*.md"))
+def load_documents_from_dir(base_dir: Path, kb_type: str, id_prefix: str = "") -> List[Dict]:
+    """Carga documentos markdown numerados desde un directorio"""
+    documents = []
+    doc_files = sorted(base_dir.glob("[0-9][0-9]_*.md"))
 
-    print(f"📁 Encontrados {len(service_files)} archivos de servicios")
+    print(f"📁 {kb_type}: {len(doc_files)} archivos en {base_dir}")
 
-    for file_path in service_files:
-        # Extract service ID and name from filename
+    for file_path in doc_files:
         filename = file_path.stem
         match = re.match(r'(\d+)_(.+)', filename)
         if not match:
             print(f"⚠️  Saltando archivo con formato incorrecto: {filename}")
             continue
 
-        service_id = match.group(1)
-        service_slug = match.group(2)
+        doc_num = match.group(1)
+        doc_slug = match.group(2)
+        doc_id = f"{id_prefix}{doc_num}" if id_prefix else doc_num
 
-        # Read content
         try:
             content = file_path.read_text(encoding='utf-8')
-
-            # Extract service name from first line (# Title)
             first_line = content.split('\n')[0]
-            service_name = first_line.replace('#', '').strip()
+            doc_name = first_line.replace('#', '').strip()
 
-            services.append({
-                "id": service_id,
-                "name": service_name,
-                "slug": service_slug,
+            documents.append({
+                "id": doc_id,
+                "name": doc_name,
+                "slug": doc_slug,
                 "content": content,
-                "file_path": str(file_path)
+                "file_path": str(file_path),
+                "kb_type": kb_type,
             })
 
         except Exception as e:
             print(f"❌ Error leyendo {filename}: {e}")
             continue
 
+    return documents
+
+
+def load_services(source: str = "servicios") -> List[Dict]:
+    """Carga documentos según fuente: servicios, longevity o all"""
+    services = []
+    if source in ("servicios", "all"):
+        services.extend(load_documents_from_dir(SERVICIOS_DIR, "servicios"))
+    if source in ("longevity", "all"):
+        services.extend(load_documents_from_dir(LONGEVITY_DIR, "longevity", id_prefix="longevity_"))
     return services
 
 
@@ -228,6 +246,9 @@ def upsert_to_pinecone(index, chunks: List[Dict], embeddings: List[List[float]])
             "precio_base": chunk["metadata"]["precio_base"],
             "duracion": chunk["metadata"]["duracion"],
             "frecuencia": chunk["metadata"]["frecuencia"],
+            "kb_type": chunk["metadata"].get("kb_type", "servicios"),
+            "avenida_hv": chunk["metadata"].get("avenida_hv", "Unknown"),
+            "evidencia": chunk["metadata"].get("evidencia", "Unknown"),
         }
 
         vectors.append({
@@ -252,12 +273,22 @@ def upsert_to_pinecone(index, chunks: List[Dict], embeddings: List[List[float]])
 
 
 def main():
+    parser = argparse.ArgumentParser(description="Generar embeddings para Knowledge Base HV")
+    parser.add_argument(
+        "--source",
+        choices=["servicios", "longevity", "all"],
+        default="servicios",
+        help="KB a procesar (default: servicios). Usar 'longevity' para SSOT longevidad.",
+    )
+    args = parser.parse_args()
+
     print("🚀 Iniciando generación de embeddings para Knowledge Base")
+    print(f"   Fuente: {args.source}")
     print("=" * 70)
 
     # 1. Load services
-    print("\n📚 Paso 1: Cargando servicios...")
-    services = load_services()
+    print("\n📚 Paso 1: Cargando documentos...")
+    services = load_services(source=args.source)
     print(f"✅ Cargados {len(services)} servicios")
 
     # 2. Create chunks
@@ -324,6 +355,7 @@ def main():
     print("\n💾 Paso 7: Guardando metadata local...")
     metadata_file = Path("knowledge_base/embeddings_metadata.json")
     metadata = {
+        "source": args.source,
         "total_services": len(services),
         "total_chunks": len(all_chunks),
         "embedding_model": EMBEDDING_MODEL,
