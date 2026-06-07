@@ -12,14 +12,14 @@ evidencia:
   nivel: Observacional + validación dispositivos
   resumen: HRV nocturno correlaciona con recuperación y carga; útil como tendencia intraindividual, no diagnóstico clínico absoluto.
   fuentes:
-    - Shaffer F, Ginsberg JP, 2017 — HRV review — PMID 28072787
-    - Kinnunen H et al., 2020 — Oura ring validation — PMID 32803460
+    - Shaffer F, Ginsberg JP, 2017 — An overview of HRV metrics and norms (Front Public Health) — PMID 29034226
+    - Kinnunen H et al., 2020 — Nocturnal HR/HRV vía ring PPG vs ECG (Physiol Meas) — PMID 32217820
 requiere_receta: no
 contraindicaciones: ["arritmias: interpretación limitada", "no sustituye Holter médico"]
 flag_seguridad: ninguno
 confianza: media
 disclaimer: "Información educativa de optimización. No es diagnóstico ni tratamiento médico. Consulta a un profesional de salud."
-version: v0.1
+version: v0.2
 revisado_por: PENDIENTE-MEDICO
 fecha: 2026-06-07
 ---

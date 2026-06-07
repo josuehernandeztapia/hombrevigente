@@ -13,13 +13,13 @@ evidencia:
   resumen: Privación de sueño empeora marcadores metabólicos e inflamatorios; extensión de sueño mejora algunos outcomes en intervenciones cortas.
   fuentes:
     - Walker MP, 2017 — Why We Sleep (divulgación; base E3–E4)
-    - Irwin MR et al., 2016 — Sleep and inflammation — PMID 27059824
+    - Irwin MR et al., 2016 — Sleep disturbance, sleep duration & inflammation: meta-analysis (Biol Psychiatry) — PMID 26140821
 requiere_receta: no
 contraindicaciones: ["insomnio crónico: evaluación médica del sueño", "apnea no diagnosticada: wearable no sustituye polisomnografía"]
 flag_seguridad: precaucion
 confianza: alta
 disclaimer: "Información educativa de optimización. No es diagnóstico ni tratamiento médico. Consulta a un profesional de salud."
-version: v0.1
+version: v0.2
 revisado_por: PENDIENTE-MEDICO
 fecha: 2026-06-07
 ---

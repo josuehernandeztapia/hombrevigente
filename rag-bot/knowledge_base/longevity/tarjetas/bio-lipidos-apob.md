@@ -12,14 +12,14 @@ evidencia:
   nivel: Meta-análisis + guías
   resumen: Reducción LDL/ApoB reduce eventos CV en ensayos con estatinas y PCSK9i; triglicéridos como factor de riesgo modificable.
   fuentes:
-    - Ference BA et al., 2017 — LDL causal CV — PMID 28859947
-    - Grundy SM et al., 2019 — AHA/ACC cholesterol guidelines — PMID 30586774
+    - Ference BA et al., 2017 — LDL cause ASCVD: EAS Consensus Panel (Eur Heart J) — PMID 28444290
+    - Grundy SM et al., 2019 — AHA/ACC cholesterol guideline — PMID 30586774
 requiere_receta: no
 contraindicaciones: ["interpretación individualizada; estatinas son Rx"]
 flag_seguridad: ninguno
 confianza: alta
 disclaimer: "Información educativa de optimización. No es diagnóstico ni tratamiento médico. Consulta a un profesional de salud."
-version: v0.1
+version: v0.2
 revisado_por: PENDIENTE-MEDICO
 fecha: 2026-06-07
 ---

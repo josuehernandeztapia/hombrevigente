@@ -12,14 +12,14 @@ evidencia:
   nivel: Observacional + RCT (reducción marcador)
   resumen: Asociación con eventos CV en meta-análisis observacionales; reducción con vitaminas B no siempre traduce a menos eventos en todos los ensayos.
   fuentes:
-    - Wald DS et al., 2002 — Homocysteine and CVD meta-analysis — PMID 11834528
-    - Clarke R et al., 2010 — B vitamins and homocysteine — PMID 20571086
+    - Wald DS et al., 2002 — Homocysteine and CVD: causality from meta-analysis (BMJ) — PMID 12446535
+    - Clarke R et al., 2010 — B vitamins lowering homocysteine, meta-analysis de 8 RCTs — PMID 20937919
 requiere_receta: no
 contraindicaciones: ["ninguna para medición; interpretación requiere contexto clínico"]
 flag_seguridad: ninguno
 confianza: alta
 disclaimer: "Información educativa de optimización. No es diagnóstico ni tratamiento médico. Consulta a un profesional de salud."
-version: v0.1
+version: v0.2
 revisado_por: PENDIENTE-MEDICO
 fecha: 2026-06-07
 ---

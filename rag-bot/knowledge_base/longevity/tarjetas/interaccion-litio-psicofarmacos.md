@@ -12,14 +12,14 @@ evidencia:
   nivel: Guías clínicas
   resumen: Interacciones litio bien documentadas; suplementos que alteran hidratación/renal (cafeína exceso, ayuno) o SNC (Cerluten marketing) requieren psiquiatra.
   fuentes:
-    - Gitlin M, 2016 — Lithium side effects and toxicity — PMID 26999127
-    - Malhi GS et al., 2017 — Bipolar disorder guidelines — PMID 28440185
+    - Gitlin M, 2016 — Lithium side effects and toxicity (Int J Bipolar Disord) — PMID 27900734
+    - Malhi GS et al., 2020 — RANZCP mood disorders guidelines: bipolar summary (Bipolar Disord) — PMID 33296123
 requiere_receta: n/a
 contraindicaciones: ["RAG NO debe recomendar cambios en litio/quetiapina", "RAG NO debe iniciar péptidos/senolíticos/hormonas sin psiquiatra + médico general", "ayuno prolongado sin supervisión"]
 flag_seguridad: alto-riesgo
 confianza: alta
 disclaimer: "Información educativa de optimización. No es diagnóstico ni tratamiento médico. Consulta a un profesional de salud."
-version: v0.1
+version: v0.2
 revisado_por: PENDIENTE-MEDICO
 fecha: 2026-06-07
 ---

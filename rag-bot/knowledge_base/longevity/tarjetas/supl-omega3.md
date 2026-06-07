@@ -13,13 +13,13 @@ evidencia:
   resumen: Reduce triglicéridos; modesta reducción de eventos CV en subgrupos; efecto antiinflamatorio en algunos ensayos con hs-CRP.
   fuentes:
     - Bhatt DL et al., 2019 — REDUCE-IT icosapent ethyl — PMID 30415628
-    - Calder PC, 2017 — Omega-3 review inflammation — PMID 28637797
+    - Calder PC, 2017 — Omega-3 fatty acids and inflammatory processes: from molecules to man (Biochem Soc Trans) — PMID 28900017
 requiere_receta: no
 contraindicaciones: ["anticoagulantes/antiplaquetarios: precaución sangrado", "alergia pescado (fuente)", "cirugía próxima: informar médico"]
 flag_seguridad: precaucion
 confianza: alta
 disclaimer: "Información educativa de optimización. No es diagnóstico ni tratamiento médico. Consulta a un profesional de salud."
-version: v0.1
+version: v0.2
 revisado_por: PENDIENTE-MEDICO
 fecha: 2026-06-07
 ---

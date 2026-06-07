@@ -13,13 +13,13 @@ evidencia:
   resumen: Deficiencia clara asociada a osteomalacia/osteoporosis; rangos óptimos para extrasquelético debatidos.
   fuentes:
     - Holick MF et al., 2011 — Evaluation treatment vit D deficiency — PMID 21646368
-    - Bouillon R et al., 2017 — Optimal vit D status — PMID 28158798
+    - Bouillon R et al., 2013 — Optimal vitamin D status: critical analysis (JCEM) — PMID 23922354
 requiere_receta: no
 contraindicaciones: ["hipercalcemia: no suplementar sin médico"]
 flag_seguridad: precaucion
 confianza: alta
 disclaimer: "Información educativa de optimización. No es diagnóstico ni tratamiento médico. Consulta a un profesional de salud."
-version: v0.1
+version: v0.2
 revisado_por: PENDIENTE-MEDICO
 fecha: 2026-06-07
 ---

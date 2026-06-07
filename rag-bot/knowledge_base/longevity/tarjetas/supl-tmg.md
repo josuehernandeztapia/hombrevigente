@@ -12,14 +12,14 @@ evidencia:
   nivel: RCT
   resumen: Reduce homocisteína plasmática de forma consistente en RCTs; efecto duro en outcomes CV menos claro que reducción de marcador.
   fuentes:
-    - Olthof MR et al., 2005 — Betaine lowers homocysteine — PMID 15735095
-    - Schwab U et al., 2011 — Betaine and homocysteine — PMID 21270374
+    - Schwab U et al., 2002 — Betaine supplementation decreases plasma homocysteine (AJCN) — PMID 12399266
+    - Olthof MR et al., 2006 — Folic acid and betaine on flow-mediated dilation (RCT) — PMID 16871332
 requiere_receta: no
 contraindicaciones: ["LDL muy elevado: TMG puede subir LDL en algunos estudios — precaución", "embarazo/lactancia: consultar médico"]
 flag_seguridad: precaucion
 confianza: media
 disclaimer: "Información educativa de optimización. No es diagnóstico ni tratamiento médico. Consulta a un profesional de salud."
-version: v0.1
+version: v0.2
 revisado_por: PENDIENTE-MEDICO
 fecha: 2026-06-07
 ---

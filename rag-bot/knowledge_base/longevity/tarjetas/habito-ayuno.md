@@ -13,13 +13,13 @@ evidencia:
   resumen: Pérdida de peso similar a restricción calórica en muchos ensayos; beneficios metabólicos modestos; adherencia variable.
   fuentes:
     - Sutton EF et al., 2018 — Early TRE insulin sensitivity — PMID 29754952
-    - Liu D et al., 2022 — IF meta-analysis — PMID 35487895
+    - Liu D et al., 2022 — Calorie restriction ± time-restricted eating (RCT, NEJM) — PMID 35443107
 requiere_receta: no
 contraindicaciones: ["diabetes insulinodependiente", "trastorno alimentario", "embarazo/lactancia", "litio: horarios comida pueden afectar niveles — psiquiatra", "bajo peso"]
 flag_seguridad: precaucion
 confianza: media
 disclaimer: "Información educativa de optimización. No es diagnóstico ni tratamiento médico. Consulta a un profesional de salud."
-version: v0.1
+version: v0.2
 revisado_por: PENDIENTE-MEDICO
 fecha: 2026-06-07
 ---

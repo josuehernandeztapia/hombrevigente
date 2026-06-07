@@ -12,14 +12,14 @@ evidencia:
   nivel: Observacional
   resumen: RHR elevada asociada a mortalidad en cohortes poblacionales; cambios intraindividuales útiles para recuperación en deportistas.
   fuentes:
-    - Zhang D et al., 2016 — Resting heart rate and mortality — PMID 27188887
-    - Düking P et al., 2018 — Wearables in sports — PMID 30132057
+    - Zhang D et al., 2016 — Resting heart rate and all-cause/CV mortality: meta-analysis (CMAJ) — PMID 26598376
+    - Düking P et al., 2018 — Reliability/sensitivity/validity of wearable sensors (JMIR Mhealth) — PMID 29712629
 requiere_receta: no
 contraindicaciones: ["arritmia: medición puede ser errática", "RHR muy baja con síntomas: médico"]
 flag_seguridad: ninguno
 confianza: media
 disclaimer: "Información educativa de optimización. No es diagnóstico ni tratamiento médico. Consulta a un profesional de salud."
-version: v0.1
+version: v0.2
 revisado_por: PENDIENTE-MEDICO
 fecha: 2026-06-07
 ---

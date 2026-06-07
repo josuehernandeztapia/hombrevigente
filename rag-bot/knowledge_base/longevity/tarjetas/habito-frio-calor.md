@@ -12,14 +12,14 @@ evidencia:
   nivel: Observacional (sauna) + RCT pequeños (frío)
   resumen: Sauna asociada a menor mortalidad CV en cohortes finlandesas; frío mejora sensación recuperación en atletas, evidencia dura longevidad limitada.
   fuentes:
-    - Laukkanen T et al., 2015 — Sauna and mortality — PMID 25705824
-    - Espeland D et al., 2022 — Winter swimming review — PMID 35768581
+    - Laukkanen T et al., 2015 — Sauna bathing and fatal CV/all-cause mortality (JAMA Intern Med) — PMID 25705824
+    - [FALTA FUENTE — Espeland D et al., 2022, "Health effects of voluntary exposure to cold water", Int J Circumpolar Health; PMID por verificar antes de producción]
 requiere_receta: no
 contraindicaciones: ["enfermedad cardiovascular inestable", "hipotensión ortostática", "embarazo", "frío: síndrome de Raynaud grave"]
 flag_seguridad: precaucion
 confianza: media
 disclaimer: "Información educativa de optimización. No es diagnóstico ni tratamiento médico. Consulta a un profesional de salud."
-version: v0.1
+version: v0.2
 revisado_por: PENDIENTE-MEDICO
 fecha: 2026-06-07
 ---

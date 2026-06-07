@@ -13,13 +13,13 @@ evidencia:
   resumen: Mejora modesta en calidad de sueño y reducción de estrés en algunos RCTs; asociación con menor riesgo metabólico en cohortes.
   fuentes:
     - Abbasi B et al., 2012 — Mg y insomnio en ancianos — PMID 23853635
-    - Fiorentini D et al., 2021 — Magnesium review — PMID 33540229
+    - Fiorentini D et al., 2021 — Magnesium: biochemistry, nutrition, detection, deficiency (Nutrients) — PMID 33808247
 requiere_receta: no
 contraindicaciones: ["insuficiencia renal grave", "miastenia gravis", "bloqueo cardíaco", "laxantes Mg + exceso: diarrea"]
 flag_seguridad: precaucion
 confianza: media
 disclaimer: "Información educativa de optimización. No es diagnóstico ni tratamiento médico. Consulta a un profesional de salud."
-version: v0.1
+version: v0.2
 revisado_por: PENDIENTE-MEDICO
 fecha: 2026-06-07
 ---
