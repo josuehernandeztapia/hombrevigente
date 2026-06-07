@@ -13,7 +13,7 @@ Los **hallmarks of aging** son un marco para entender por qué los tejidos pierd
 
 **Referencias canónicas:**
 - López-Otín C, Blasco MA, Partridge L, Serrano M, Kroemer G. *The Hallmarks of Aging.* Cell. 2013;153(6):1194-1217. PMID: 23746838 (E1)
-- López-Otín C, et al. *Hallmarks of aging: An expanding universe.* Cell. 2023;186(12):2438-2478. PMID: 37014410 (E1)
+- López-Otín C, et al. *Hallmarks of aging: An expanding universe.* Cell. 2023;186(2):243-278. PMID: 36599349 (E1)
 
 ---
 
@@ -64,8 +64,15 @@ El Informe de Optimización puede decir:
 
 ## 📚 Referencias adicionales
 
-- Kennedy BK, et al. Geroscience: linking aging to chronic disease. Cell. 2014. PMID: 25259953 (E1)
+- Kennedy BK, et al. Geroscience: linking aging to chronic disease. Cell. 2014. [FALTA FUENTE — PMID 25259953 apuntaba a otro paper; verificar el real de Kennedy 2014 antes de producción]
 - McKinsey Future of Wellness 2024–2026 — healthspan como tendencia de mercado (contexto negocio, no clínica)
+
+---
+
+## Auditoría citas (2026-06-07)
+- PMID 23746838 → OK (Hallmarks of aging, Cell 2013)
+- PMID 37014410 → reemplazado por **36599349** (Hallmarks 2023; el viejo era radiómica de mama)
+- PMID 25259953 → [FALTA FUENTE] (apuntaba a "starving myocardium"; el Kennedy geroscience real queda por verificar)
 
 ---
 

@@ -15,8 +15,8 @@
 
 **Goralatide / TB4-Frag / RKDV** = fragmentos marketing anti-fibrosis (ej. en blends "Glow Limitless") — literatura más limitada que Tβ4 completo.
 
-- Goldstein AL, et al. Thymosin β4: actin-sequestering protein moonlights to repair injured tissues. Trends Mol Med. 2005. PMID: 16213776 (E1)
-- Maar K, et al. Thymosin beta4 and wound healing. Ann N Y Acad Sci. 2012. PMID: 22413728 (E2)
+- Philp D, et al. Thymosin beta 4 and a synthetic peptide containing its actin-binding domain promote dermal wound repair in db/db diabetic and aged mice. Wound Repair Regen. 2003. PMID: 12581423 (E2)
+- Goldstein AL, et al. Thymosin β4: actin-sequestering protein moonlights to repair injured tissues. Trends Mol Med. 2005. [FALTA FUENTE — PMID 16213776 era genética forense; verificar Goldstein 2005]
 
 ---
 
@@ -58,5 +58,13 @@
 
 ## 📚 Referencias
 
-- Philp D, et al. Thymosin beta4 promotes angiogenesis. Ann N Y Acad Sci. 2003. PMID: 12583930 (E2)
-- Smart N, et al. Thymosin β4 induces adult epicardial progenitor mobilization. Nature. 2011. PMID: 21654827 (E2)
+- Smart N, et al. Thymosin β4 induces adult epicardial progenitor mobilization. Nature. 2011. [FALTA FUENTE — PMID 21654827 era terapia fotodinámica Rose Bengal; verificar Smart 2011]
+
+---
+
+## Auditoría citas (2026-06-07)
+- PMID 16213776 → [FALTA FUENTE] (era STR forense en población mexicana)
+- PMID 22413728 → [FALTA FUENTE] (era "pharmaceutical quality"); línea Maar removida
+- PMID 12583930 → reemplazado por **12581423** (Philp/Goldstein/Kleinman, Tβ4 dermal wound repair, Wound Repair Regen 2003; el viejo era ansiedad/náusea)
+- PMID 21654827 → [FALTA FUENTE] (era terapia fotodinámica)
+> Nota: 09 es core pero solo se pudo anclar 1 fuente Tβ4 verificada (12581423). El resto requiere verificación antes de embeber.

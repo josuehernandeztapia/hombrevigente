@@ -11,7 +11,7 @@ Ver marco: `05_senescencia_senoliticos.md`
 
 ## 📋 Definición
 
-- **Fisetina:** flavonol en fresas, manzanas; senolítico en roedores (E2 PMID: 30626963).
+- **Fisetina:** flavonol en fresas, manzanas; senolítico en roedores (E2 PMID: 30279143).
 - **Quercetina:** flavonoide amplio; parte de combo D+Q con dasatinib en humanos (E3).
 
 ---
@@ -39,4 +39,13 @@ Inhibición vías de supervivencia en células senescentes (BCL-2 family, tyrosi
 
 ## 📚 PMID
 
-30626963, 28877492, 25754370, 31422101
+- **30279143** (Yousefzadeh, fisetin senotherapeutic, EBioMedicine 2018)
+- **25754370** (Zhu, Achilles' heel of senescent cells / D+Q, Aging Cell 2015)
+- **30616998** (Justice, senolytics IPF first-in-human, EBioMedicine 2019)
+- [FALTA FUENTE] PMID 28877492 era islotes β-cell (verificar fuente quercetina/senescencia)
+
+## Auditoría citas (2026-06-07)
+- PMID 30626963 → reemplazado por **30279143** (Yousefzadeh fisetin; el viejo era vectores AAV)
+- PMID 28877492 → [FALTA FUENTE] (era subpoblaciones de células β)
+- PMID 25754370 → OK (Zhu, Achilles' heel)
+- PMID 31422101 → reemplazado por **30616998** (Justice senolytics IPF; el viejo era testículo de rata)

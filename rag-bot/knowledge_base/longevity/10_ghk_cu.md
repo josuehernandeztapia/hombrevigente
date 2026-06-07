@@ -11,8 +11,8 @@
 
 **GHK** (Gly-His-Lys) es un tripeptido unido a cobre (GHK-Cu) con roles en **remodelación tisular**, síntesis de colágeno y modulación génica en fibroblastos.
 
-- Pickart L, Margolina A. Regenerative and protective actions of the GHK-Cu peptide. Int J Mol Sci. 2018. PMID: 30103415 (E2 review)
-- Pickart L, et al. GHK peptide as a natural modulator of multiple cellular pathways. BioMed Res Int. 2015. PMID: 26064896 (E2)
+- Pickart L, Margolina A. Regenerative and protective actions of the GHK-Cu peptide. Int J Mol Sci. 2018. PMID: 29986520 (E2 review)
+- Pickart L, et al. GHK peptide as a natural modulator of multiple cellular pathways. BioMed Res Int. 2015. [FALTA FUENTE — PMID 26064896 era E. coli uropatógena; verificar Pickart 2015]
 
 ---
 
@@ -66,3 +66,9 @@
 
 **¿GHK-Cu "rejuvenece" epigenéticamente?**  
 Solo en fibroblastos cultivados (E2). Lenguaje: "modulación de expresión génica en modelos celulares".
+
+---
+
+## Auditoría citas (2026-06-07)
+- PMID 30103415 → reemplazado por **29986520** (Pickart & Margolina, GHK-Cu regenerative actions, Int J Mol Sci 2018; el viejo era digestión de almidón)
+- PMID 26064896 → [FALTA FUENTE] (era E. coli uropatógena pediátrica; verificar Pickart BioMed Res Int 2015)

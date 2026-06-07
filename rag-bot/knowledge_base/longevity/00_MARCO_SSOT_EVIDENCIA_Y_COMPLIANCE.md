@@ -121,7 +121,7 @@ Cada recomendación generada debe incluir:
 ## 🔗 Fuentes maestras del SSOT
 
 - PubMed / PMC (revisiones y mecanismos)
-- Hallmarks of Aging (López-Otín et al., Cell 2013; Cell 2023 update PMID: 37014410)
+- Hallmarks of Aging (López-Otín et al., Cell 2013 PMID: 23746838; Cell 2023 update PMID: 36599349)
 - Inflammaging (Franceschi et al.)
 - COFEPRIS marco general; NOM-022-SSA3-2012 (actos médicos)
 - Papers específicos por monografía en archivos `01–29`
@@ -152,3 +152,8 @@ avenida: transversal
 evidencia: E5
 tags: [compliance, evidencia, lenguaje, COFEPRIS, RAG]
 ```
+
+---
+
+## Auditoría citas (2026-06-07)
+- PMID 37014410 → reemplazado por **36599349** (Hallmarks of aging: an expanding universe, López-Otín, Cell 2023). El 37014410 apuntaba a un paper de radiómica de cáncer de mama.

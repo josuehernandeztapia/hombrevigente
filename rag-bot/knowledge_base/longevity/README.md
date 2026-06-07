@@ -20,7 +20,9 @@
 | `29` | `29_MOTOR_JUSTIFICACION_EJEMPLOS.md` | Plantillas de respuesta RAG con citas |
 | `tarjetas/` | 15 tarjetas atómicas YAML | Chunks Peldaño 1 (suplementos, biomarcadores, wearables, hábitos, gates) |
 
-**Copia espejo:** `~/Downloads/longevity/tarjetas/`
+**Copia espejo:** `~/Downloads/longevity/tarjetas/` · monografías en `~/Downloads/longevity/repo_monografias/`
+
+**Auditoría PMIDs (2026-06-07):** 16 monografías corregidas; 25 PMIDs activos verificados en PubMed; huecos marcados `[FALTA FUENTE]`. Ver bloques `## Auditoría citas` por archivo e `INDICE_SSOT_PORTABLE.md` §7.
 
 ---
 

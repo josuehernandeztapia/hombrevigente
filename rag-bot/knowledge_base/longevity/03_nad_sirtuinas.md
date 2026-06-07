@@ -22,7 +22,7 @@
 3. **CD38** consume NAD+; inhibición en modelos extiende salud (E2).
 4. **Sinergia conceptual** con resveratrol (activador SIRT1 en modelos) — popular en biohacking, evidencia humana mixta (E2–E3).
 
-**Imai SI, Guarente L.** NAD+ and sirtuins in aging and disease. Trends Cell Biol. 2014. PMID: 24856065 (E1)
+**Verdin E.** NAD+ in aging, metabolism, and neurodegeneration. Science. 2015. PMID: 26785480 (E1)
 
 ---
 
@@ -40,12 +40,12 @@
 ## ✅ Evidencia por intervención
 
 ### NMN (nicotinamida mononucleótido)
-- Yoshino J, et al. Nicotinamide mononucleotide increases muscle insulin sensitivity in prediabetic women. Science. 2021. PMID: 34014344 (E3)
+- Yoshino M, et al. Nicotinamide mononucleotide increases muscle insulin sensitivity in prediabetic women. Science. 2021. PMID: 33888596 (E3)
 - Múltiples RCTs pequeños: mejora en distancia de marcha, NAD+ sanguíneo (E3)
 - **Gap:** outcomes duros de longevidad en humanos no demostrados (E2–E3)
 
 ### NR (nicotinamide riboside)
-- Trammell SA, et al. Nicotinamide riboside is uniquely and orally bioavailable in mice and humans. Nat Commun. 2016. PMID: 27116242 (E3)
+- Trammell SA, et al. Nicotinamide riboside is uniquely and orally bioavailable in mice and humans. Nat Commun. 2016. [FALTA FUENTE — PMID 27116242 apuntaba a otro paper; verificar PMID real de Trammell 2016]
 - Brenner C — serie de pilotos (E3)
 
 ### Resveratrol (ver monografía `16_resveratrol.md`)
@@ -72,4 +72,13 @@
 ## 📚 Referencias
 
 - Rajman L, et al. Therapeutic potential of NAD-boosting molecules. Cell Metab. 2018. PMID: 29514064 (E1)
-- Liao B, et al. Nicotinamide mononucleotide supplementation enhances aerobic capacity. J Int Soc Sports Nutr. 2021. PMID: 34893247 (E3)
+- Liao B, et al. Nicotinamide mononucleotide supplementation enhances aerobic capacity. J Int Soc Sports Nutr. 2021. [FALTA FUENTE — PMID 34893247 apuntaba a un paper de carragenina; verificar PMID real de Liao 2021]
+
+---
+
+## Auditoría citas (2026-06-07)
+- PMID 24856065 → reemplazado por **26785480** (Verdin, NAD+ in aging, Science 2015; el viejo era química de fluoresceína)
+- PMID 34014344 → reemplazado por **33888596** (Yoshino, NMN en prediabéticas, Science 2021; el viejo era errata de ataxia espástica)
+- PMID 29514064 → OK (Rajman, NAD-boosting molecules, Cell Metab 2018)
+- PMID 27116242 → [FALTA FUENTE] (era "Vit D in dementia"; verificar Trammell NR real)
+- PMID 34893247 → [FALTA FUENTE] (era carragenina/inflamación intestinal; verificar Liao real)

@@ -13,8 +13,8 @@
 
 **Espermidina** = poliamina presente en dieta (trigo germen, soja fermentada, hígado) y suplementada; inducidor de autofagia en modelos (E2).
 
-- Madeo F, et al. Spermidine in health and disease. Science. 2018. PMID: 30026355 (E1)
-- Eisenberg T, et al. Induction of autophagy by spermidine promotes longevity. Nat Cell Biol. 2009. PMID: 19170625 (E2)
+- Madeo F, et al. Spermidine in health and disease. Science. 2018. PMID: 29371440 (E1)
+- Eisenberg T, et al. Induction of autophagy by spermidine promotes longevity. Nat Cell Biol. 2009. PMID: 19801973 (E2)
 
 ---
 
@@ -31,7 +31,7 @@
 
 ## ✅ Evidencia humana (E3)
 
-- Wirth M, et al. The effect of spermidine on memory in older adults. Cortex. 2018. PMID: 29890268 (E3) — mejora memoria en subgrupo.
+- Wirth M, et al. The effect of spermidine on memory in older adults. Cortex. 2018. [FALTA FUENTE — PMID 29890268 apuntaba a un paper de fluoróforos NIR; verificar PMID real de Wirth 2018]
 - Dietary spermidine correlates with mortalidad cardiovascular en cohortes observacionales (E3).
 
 **Gap:** no hay RCT masivo de longevidad; dosis óptima humana no consensuada.
@@ -69,3 +69,10 @@
 
 **¿Espermidina "detoxifica"?**  
 No usar lenguaje detox. Usar: "modulación de autofagia en investigación".
+
+---
+
+## Auditoría citas (2026-06-07)
+- PMID 30026355 → reemplazado por **29371440** (Madeo, Spermidine in health and disease, Science 2018; el viejo era virus Schmallenberg)
+- PMID 19170625 → reemplazado por **19801973** (Eisenberg, autophagy by spermidine, Nat Cell Biol 2009; el viejo no resuelve en PubMed)
+- PMID 29890268 → [FALTA FUENTE] (era fluoróforos NIR; verificar Wirth memoria real)

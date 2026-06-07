@@ -16,7 +16,7 @@ Precursor directo de **NAD+** vía vía salvage (NMNAT). Ver marco completo en `
 ## 🔬 Mecanismo (resumen)
 
 - Oral NMN → absorción intestinal → NAD+ hepático/sanguíneo en humanos (E3).
-- Mejora sensibilidad insulina muscular en prediabéticas (E3 PMID: 34014344).
+- Mejora sensibilidad insulina muscular en prediabéticas (E3 PMID: 33888596).
 - Modelos roedores: mejora función mitocondrial, endurance (E2).
 
 ---
@@ -52,4 +52,12 @@ Precursor directo de **NAD+** vía vía salvage (NMNAT). Ver marco completo en `
 
 ## 📚 PMID clave
 
-34014344, 34893247, 36482258, 24856065
+- **33888596** (Yoshino, NMN ↑ sensibilidad insulina en prediabéticas, Science 2021)
+- **36482258** (Yi/Maier, NMN RCT en adultos sanos de mediana edad, GeroScience 2023)
+- [FALTA FUENTE] Liao 2021 (capacidad aeróbica) e Igarashi 2022 (NPJ Aging) — verificar PMIDs reales
+
+## Auditoría citas (2026-06-07)
+- PMID 34014344 → reemplazado por **33888596** (Yoshino; el viejo era errata de ataxia espástica)
+- PMID 34893247 → [FALTA FUENTE] (era carragenina/inflamación; verificar Liao 2021)
+- PMID 36482258 → OK (NMN RCT GeroScience 2023)
+- PMID 24856065 → [FALTA FUENTE] (era química de fluoresceína; el NAD+ ancla real está en `03` como Verdin 26785480/Rajman 29514064)

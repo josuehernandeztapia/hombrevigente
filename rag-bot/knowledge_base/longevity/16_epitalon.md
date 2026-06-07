@@ -11,7 +11,7 @@
 
 **Epitalon** (tetrapeptide Ala-Glu-Asp-Gly) derivado de extracto pineal; asociado en literatura Khavinson con **telomerasa** y **melatonina** en modelos.
 
-- Anisimov VN, et al. Effect of Epitalon on biomarkers of aging, lifespan and spontaneous tumor incidence in mice. Biogerontology. 2003. PMID: 12766535 (E2)
+- Anisimov VN, et al. Effect of Epitalon on biomarkers of aging, life span and spontaneous tumor incidence in female SHR mice. Biogerontology. 2003. PMID: 14501183 (E2)
 - Khavinson VK, et al. Epithalon peptide induces telomerase activity (claims). Bull Exp Biol Med. 2003. (E3)
 
 ---
@@ -36,3 +36,8 @@
 
 - Teoría telómeros y cáncer — prudencia oncológica.
 - Distinto de **epigenetic clocks** comerciales.
+
+---
+
+## Auditoría citas (2026-06-07)
+- PMID 12766535 → reemplazado por **14501183** (Anisimov, Epitalon en ratones SHR hembra, Biogerontology 2003; el viejo era L-deprenyl en cerebro de rata)

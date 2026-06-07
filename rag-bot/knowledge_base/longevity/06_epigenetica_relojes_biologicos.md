@@ -33,7 +33,7 @@
 
 | Compuesto | Evidencia epigenética | Tier |
 |-----------|----------------------|------|
-| **GHK-Cu** | Modulación expresión génica en fibroblastos (wound healing) | E2 PMID: 24254940 |
+| **GHK-Cu** | Modulación expresión génica en fibroblastos (wound healing) | E2 [FALTA FUENTE — PMID 24254940 era olfato de insectos; ver `10_ghk_cu` (Pickart 29986520)] |
 | **Resveratrol / NMN** | Sirtuinas, desacetilación histonas en modelos | E2 |
 | **Khavinson péptidos** | Claims de regulación génica en tejidos específicos (Khavinson papers) | E2–E3 |
 | **Fisetina** | Cambios en metilación en roedores (investigación) | E2 |
@@ -67,3 +67,11 @@ Si usuario tiene TruAge previo:
 
 **¿Khavinson "reprograma" epigenética?**  
 Lenguaje marketing. Preferir: "péptidos cortos estudiados por Khavinson para modulación de expresión génica en modelos (E2–E3)".
+
+---
+
+## Auditoría citas (2026-06-07)
+- PMID 24138928 → OK (Horvath clock, Genome Biol 2013)
+- PMID 30669119 → OK (Lu, GrimAge, Aging 2019)
+- PMID 35029144 → OK (Belsky, DunedinPACE, eLife 2022)
+- PMID 24254940 → [FALTA FUENTE] (era electroantenograma de insectos; para GHK ver Pickart 29986520 en `10_ghk_cu`)

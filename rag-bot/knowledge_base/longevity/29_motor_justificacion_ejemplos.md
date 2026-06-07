@@ -34,7 +34,7 @@
 **Input:** Mismo usuario + ciática recurrente + RM discopatía L4-S1 documentada + pide "Wolverine stack".
 
 **Output RAG:**
-> **Educación:** BPC-157 y TB-500 muestran efectos en **reparación tisular y modelos de lesión nerviosa periférica** en roedores (E2, PMID 29738410, 30993593). **No hay RCT en humanos para ciática.**
+> **Educación:** BPC-157 y TB-500 muestran efectos en **reparación tisular y modelos de lesión nerviosa periférica** en roedores (E2, PMID 21548867 BPC-157, 12581423 Tβ4). **No hay RCT en humanos para ciática.**
 >
 > **Routing:** Esta solicitud activa **Avenida 2**. Próximo paso: **teleconsulta médica** para evaluar indicación, interacciones (**litio/quetiapina si aplica**), y vía **magistral con receta** — no venta de research peptide.
 >
@@ -78,3 +78,10 @@
 3. Si litio/psiquiátricos en intake + Cerluten/estimulantes → derivar psiquiatra.
 4. Siempre append disclaimer `00_MARCO`.
 5. Citar `(E#)` y PMID cuando exista en chunk.
+
+---
+
+## Auditoría citas (2026-06-07)
+- PMID 24833586 → OK (Franceschi, inflammaging, J Gerontol 2014)
+- PMID 29738410 → reemplazado por **21548867** (Sikiric, BPC-157 review; el viejo era alineación espinal)
+- PMID 30993593 → reemplazado por **12581423** (Philp, Tβ4 reparación dérmica; el viejo era errata de Vestronidase)

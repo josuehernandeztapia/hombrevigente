@@ -14,8 +14,8 @@
 **Reprogramación parcial** = exposición breve a factores sin perder identidad celular — investigación en longevidad (E2).
 
 - Takahashi K, Yamanaka S. Induction of pluripotent stem cells. Cell. 2006. PMID: 16904174 (E1)
-- Ocampo A, et al. In vivo amelioration of age-associated hallmarks by partial reprogramming. Cell. 2016. PMID: 27889383 (E2)
-- Lu Y, et al. Reprogramming to recover youthful epigenetic information and restore vision. Nature. 2020. PMID: 33473216 (E2)
+- Ocampo A, et al. In vivo amelioration of age-associated hallmarks by partial reprogramming. Cell. 2016. [FALTA FUENTE — PMID 27889383 era CBT en psicosis; verificar Ocampo Cell 2016]
+- Lu Y, et al. Reprogramming to recover youthful epigenetic information and restore vision. Nature. 2020. [FALTA FUENTE — PMID 33473216 era spiking visual de ratón; verificar Lu Nature 2020]
 
 ---
 
@@ -51,3 +51,10 @@ El protocolo personal menciona "preparación epigenética". SSOT permite:
 
 **¿Cuándo estará en humanos?**  
 Desconocido. Seguir fuentes primarias (Nature, Cell, FDA) — no marketing de clínicas.
+
+---
+
+## Auditoría citas (2026-06-07)
+- PMID 16904174 → OK (Takahashi & Yamanaka, iPSC, Cell 2006)
+- PMID 27889383 → [FALTA FUENTE] (era revisión de CBT en psicosis; verificar Ocampo 2016)
+- PMID 33473216 → [FALTA FUENTE] (era spiking del sistema visual de ratón; verificar Lu/Sinclair 2020)

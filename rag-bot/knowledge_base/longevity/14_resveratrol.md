@@ -11,8 +11,8 @@
 
 **Resveratrol** es un polifenol (uvas, vino tinto, Japanese knotweed) activador de **SIRT1** en modelos, asociado a caloric restriction mimetics.
 
-- Baur JA, Sinclair DA. Therapeutic potential of resveratrol. Nat Rev Drug Discov. 2006. PMID: 16485410 (E1)
-- Howitz KT, et al. Small molecule activators of sirtuins extend yeast lifespan. Nature. 2003. PMID: 14570085 (E2)
+- Baur JA, et al. Resveratrol improves health and survival of mice on a high-calorie diet. Nature. 2006. PMID: 17086191 (E2)
+- Howitz KT, et al. Small molecule activators of sirtuins extend Saccharomyces cerevisiae lifespan. Nature. 2003. PMID: 12939617 (E2)
 
 ---
 
@@ -49,3 +49,9 @@
 
 **¿Resveratrol activa reprogramación?**  
 No. Activa sirtuinas (E2), no factores Yamanaka.
+
+---
+
+## Auditoría citas (2026-06-07)
+- PMID 16485410 → reemplazado por **17086191** (Baur, resveratrol mejora salud/supervivencia en ratones, Nature 2006; el viejo era reconstrucción iterativa de imagen). Nota: si se prefiere el review "in vivo evidence" Nat Rev Drug Discov 2006, verificar su PMID aparte.
+- PMID 14570085 → reemplazado por **12939617** (Howitz, activadores de sirtuinas extienden vida en levadura, Nature 2003; el viejo era distancia carina-incisivo)

@@ -13,8 +13,8 @@
 
 **Aprobación FDA (E4):** reducción de **grasa visceral** en lipodistrofia asociada a VIH (Egrifta®).
 
-- Falutz J, et al. Metabolic effects of a growth hormone-releasing factor in patients with HIV. N Engl J Med. 2007. PMID: 18032787 (E4)
-- Stanford FC, et al. Effect of tesamorelin on visceral fat and liver fat. J Clin Endocrinol Metab. 2014. PMID: 24823779 (E4)
+- Falutz J, et al. Metabolic effects of a growth hormone-releasing factor in patients with HIV. N Engl J Med. 2007. PMID: 18057338 (E4)
+- Stanford FC, et al. Effect of tesamorelin on visceral fat and liver fat. J Clin Endocrinol Metab. 2014. [FALTA FUENTE — PMID 24823779 era pseudogenes/ceRNA; verificar Stanford 2014]
 
 ---
 
@@ -59,4 +59,11 @@
 
 ## 📚 Referencias
 
-- Koutkia P, et al. Growth hormone-releasing hormone in HIV lipodystrophy. JAMA. 2004. PMID: 15507589 (E4)
+- Koutkia P, et al. Growth hormone-releasing hormone in HIV lipodystrophy. JAMA. 2004. [FALTA FUENTE — PMID 15507589 era editorial sobre supresión ácida/neumonía; verificar Koutkia 2004]
+
+---
+
+## Auditoría citas (2026-06-07)
+- PMID 18032787 → reemplazado por **18057338** (Falutz, GHRF en pacientes con VIH, NEJM 2007; el viejo era fosforilación de WAVE2)
+- PMID 24823779 → [FALTA FUENTE] (era pseudogenes como ceRNA; verificar Stanford JCEM 2014)
+- PMID 15507589 → [FALTA FUENTE] (era editorial de supresión ácida; verificar Koutkia JAMA 2004)
