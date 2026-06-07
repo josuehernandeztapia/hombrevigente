@@ -13,9 +13,13 @@ rag-bot/
 ├── knowledge_base/
 │   ├── servicios/          # 26 monografías estéticas
 │   └── longevity/          # SSOT longevidad (00–29) + tarjetas/
-├── generate_embeddings.py    # KB → Pinecone
-├── rag_retrieval.py          # Query semántica + GPT-4o-mini
-├── test_rag.py               # Suite de pruebas
+├── kb_pipeline.py            # Carga + chunking (compartido)
+├── embed_kb_local.py         # KB → JSON local (sin Pinecone) ★
+├── rag_retrieval_local.py    # Cosine + gates HV + GPT ★
+├── generate_embeddings.py      # KB → Pinecone (legacy)
+├── rag_retrieval.py            # Pinecone (legacy)
+├── test_rag_local.py         # Gates + routing
+├── test_rag.py               # Suite Pinecone
 ├── verify_setup.py           # Chequeo de .env y deps
 ├── servicios_completos.json  # Catálogo + adherence + BNPL
 ├── arquetipos_modelo_financiero.json
@@ -27,20 +31,26 @@ rag-bot/
 
 ---
 
-## Quick start
+## Quick start (RAG local — recomendado)
 
 ```bash
 cd rag-bot
 pip install -r requirements.txt
-cp .env.example .env   # OPENAI_API_KEY, PINECONE_API_KEY
+cp .env.example .env   # solo OPENAI_API_KEY
 
-# Embeddings (servicios + longevidad)
-python generate_embeddings.py --source all
+# 1. Embeddings → JSON (diferencial por content_hash)
+python embed_kb_local.py --source all
 
-# Probar RAG
-python rag_retrieval.py
-python test_rag.py
+# 2. Query con gates HV (Avenida 1 default, sin chunks [FALTA FUENTE])
+python rag_retrieval_local.py "homocisteína alta y suplementos"
+python rag_retrieval_local.py "cuánto cuesta HIFU" --route servicios
+python rag_retrieval_local.py "BPC-157 inyectable" --no-llm   # gate Av.2
+
+# 3. Tests gates/routing (sin API)
+python test_rag_local.py
 ```
+
+**Legacy Pinecone:** `generate_embeddings.py` + `rag_retrieval.py` (opcional).
 
 ---
 

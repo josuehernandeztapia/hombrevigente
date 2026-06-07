@@ -20,6 +20,10 @@ numpy>=1.26.0
 # Data visualization (opcional, para análisis)
 plotly==5.18.0
 
+# RAG local + legacy Pinecone
+openai>=1.12.0
+python-dotenv>=1.0.0
+
 # ML/AI (para futura implementación de agentes)
 # scikit-learn==1.4.0
 # torch==2.1.2
