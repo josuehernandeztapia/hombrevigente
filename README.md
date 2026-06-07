@@ -15,7 +15,8 @@ Repositorio del ecosistema **Hombre Vigente**: club de estética regenerativa ma
 | [`rag-bot/`](rag-bot/) | Backend FastAPI, pipeline RAG, knowledge base clínica, generador sintético |
 | [`blueprint/`](blueprint/) | `financial-engine.js` + demos de diagnóstico |
 | `*.html` | Demos y prototipos (modelo financiero, pitch, war room, diagnóstico) |
-| [`rag-bot/Leer/`](rag-bot/Leer/) | SSOT v1.1 + v1.2 (texto consolidado) |
+| [`archive/`](archive/) | HTMLs legacy archivados (duplicados y laboratorio) |
+| [`rag-bot/Leer/`](rag-bot/Leer/) | SSOT v1.1 + v1.2 + Manual de Vuelo (sin duplicados HTML) |
 
 ---
 
