@@ -1,8 +1,10 @@
 # Caso #0 — Baseline Juan Josué (fundador)
 
-**Inicio:** 2026-06-07 · **Rol:** Beta #0 antes de reclutar red · **Tracker:** fila #0 en `MVP0_Beta_Tracker.xlsx`
+**Inicio:** 2026-06-07 · **Edad:** 44 (FN 28/12/1981) · **Tracker:** fila #0 en `MVP0_Beta_Tracker.xlsx`
 
-> Completa lo marcado `[ ]` esta semana. No subas este archivo a git con labs/fotos — solo rutas locales o Drive privado.
+**Fuente labs/imagen:** `~/Downloads/longevity/Estudios_Medicos/` (no commitear PDFs al repo).
+
+**Protocolo borrador:** [`MVP0_Caso0_Protocolo.md`](MVP0_Caso0_Protocolo.md) — pendiente firma médico.
 
 ---
 
@@ -12,103 +14,106 @@
 |-------|-------|
 | Nombre | Juan Josué Hernández Tapia |
 | WhatsApp | `[completar]` |
-| Edad | `[completar]` |
+| Edad | 44 |
 | Ciudad | Querétaro (Bajío) |
-| Objetivo principal | Recuperación (ciática) + estética + longevidad |
-| Estado tracker | `Baseline en curso` |
+| Objetivo principal | Ciática / columna lumbar + energía + estética + longevidad |
+| Estado tracker | `Baseline en curso` — labs ✅ imagen ✅ foto ⏳ |
 
 ---
 
-## 2. Screening (obligatorio — ya conocido)
+## 2. Screening (obligatorio)
 
 | Banderas | Detalle | Acción |
 |----------|---------|--------|
-| Psiquiatría | Litio + quetiapina (bipolar) | Clearance con psiquiatra antes de stack avanzado |
-| Oncología | Antecedente de cáncer | Clearance / sin senolíticos agresivos sin oncólogo |
-| Medicación crónica | Litio, quetiapina | Documentar interacciones en protocolo |
-
-**RAG gate esperado:** preguntas sobre Cerluten/peptidos inyectables → `blocked` / derivación médica. Correcto.
+| Psiquiatría | Litio + quetiapina (bipolar) | Psiquiatra **antes** de stack; vigilar ánimo/sueño |
+| Oncología | Antecedente familiar / personal (validar en Tally) | Sin senolíticos agresivos sin oncólogo |
+| **Litio sérico bajo** | **0.42 mmol/L** (ref. 0.6–1.2, oct-2025) | Informar psiquiatra — sub-terapéutico |
 
 ---
 
-## 3. Baseline a capturar (hoy / esta semana)
+## 3. Labs — 7 oct 2025 (Lab. Corregidora)
 
-### Foto
-- [ ] Frente, buena luz, misma hora del día (anotar: `____`)
-- [ ] Perfil / postura (ciática: cómo te ves de lado)
-- [ ] Ruta archivo: `________________` (Drive privado / local)
+| Marcador | Resultado | Ref. | Flag |
+|----------|-----------|------|------|
+| **Litio** | **0.42 mmol/L** | 0.6 – 1.2 | 🔴 Bajo — psiquiatra |
+| Glucosa basal | 85.2 mg/dL | ≤99 | OK |
+| HbA1c | 5.4 % | <5.7 | OK |
+| Creatinina | 0.85 mg/dL | 0.7 – 1.3 | OK (vigilar con litio) |
+| Urea / BUN | 22.3 / 10.4 mg/dL | normal | OK |
+| TSH | 3.244 µIU/mL | 0.3 – 4.2 | OK |
+| T4 libre | 1.06 ng/dL | 0.7 – 1.48 | OK |
+| T3 libre | 3.09 pg/mL | 1.71 – 3.71 | OK |
+| Anti-TPO / Anti-Tg | 0.24 / 2.35 IU/mL | bajo | Sin autoinmunidad tiroidea |
+| **Leptina** | **22.74 ng/mL** | ~0.7–8.3 (IMC normal) | 🟡 Alta — adiposidad/inflamación |
+| Insulina | 4.0 µU/mL | 3.1 – 21.3 | OK-baja (anexo PDF) |
+| Quantose RI | 45 | <63 sensible | Buena sensibilidad insulina (anexo) |
 
-**Observación manual (sin AI):**
-- Glow / textura piel: `[ ]`
-- Postura / composición: `[ ]`
-- Notas ciática (1–5 dolor hoy): `[ ]`
+**Archivos:** `Lab_Completo_Metabolico_7oct2025.pdf` · `Lab_Litio_7oct2025.pdf` · `Lab_Tiroides_Glucosa_7oct2025.pdf` (subset del completo).
 
-### Labs (ideal &lt; 90 días)
-- [ ] IGF-1
-- [ ] hs-CRP
-- [ ] Glucosa / HbA1c
-- [ ] Panel hepático / renal
-- [ ] PSA (si aplica)
-- [ ] Homocisteína / vitamina D (si tienes)
-- [ ] Ruta PDF: `________________`
+**Pendiente en labs (ideal baseline longevidad):** IGF-1 · hs-CRP · homocisteína · 25(OH)D · PSA · perfil lipídico/ApoB si no está en anexo.
 
-### Wearable (si tienes)
-- [ ] Dispositivo: `[Oura / Whoop / Apple Watch / ninguno]`
-- [ ] HRV promedio 7d: `[ ]`
-- [ ] Sueño score 7d: `[ ]`
-- [ ] Readiness / recuperación: `[ ]`
+---
 
-### Subjetivo día 0 (escala 1–5)
-| | Hoy |
+## 4. Imagen — columna lumbar (25 feb 2025, NEWROSPINE)
+
+### RM lumbar — reporte Dr. Óscar Martínez Reséndiz
+**Archivo:** `Resonancia_Lumbar_Reporte_25feb2025.pdf`
+
+1. Cambios degenerativos vertebrales (osteofitos marginales).
+2. **Discopatía degenerativa grado IV (Pfirrmann)** L4-L5 y L5-S1: fisura anular, abultamiento, **contacto radicular L5 y S1**, estenosis foraminal bilateral discreta.
+3. Espondiloartropatía facetaria; conducto raquídeo amplio; **sin compresión franca** de raíz emergente.
+
+**Relevancia ciática:** correlación anatómica fuerte con objetivo #1 (territorio conservador/regenerativo — decisión médica).
+
+### RX lumbar
+**Archivo:** `RX_Columna_Lumbar_25feb2025.pdf` — placas AP/lateral/dinámicas (sin texto de lectura en PDF; revisión visual / correlación con RM).
+
+---
+
+## 5. Subjetivo día 0 (completar tú)
+
+| | Hoy `[ ]` |
 |---|-----|
-| Energía | `[ ]` |
-| Sueño | `[ ]` |
-| Ánimo | `[ ]` |
-| Dolor ciática | `[ ]` |
+| Energía (1–5) | |
+| Sueño (1–5) | |
+| Ánimo (1–5) | |
+| Dolor ciática (1–5) | |
+| Peso (kg) | ~60–64 (actualizar) |
+| Cintura (cm) | |
 
-### Medidas
-- [ ] Peso (kg): `[ ]`
-- [ ] Estatura (cm): `[ ]`
-- [ ] Cintura (cm): `[ ]`
+### Foto baseline
+- [ ] Frente + perfil, misma luz
+- [ ] Ruta: `~/HombreVigente-Caso0/baseline-2026-06/`
 
----
-
-## 4. Stack Fase 0 (referencia Plan Maestro — validar con médico)
-
-**No iniciar ni cambiar sin médico aliado + tu psiquiatra cuando aplique.**
-
-| Capa | Componentes (referencia) |
-|------|--------------------------|
-| Reparación | BPC-157 oral, Goralatide (anti-fibrosis) |
-| Estética | GHK-Cu |
-| Metabólico | Tesamorelin (escalado gradual) |
-| Oral base | NMN, Resveratrol, Spermidine, Fisetin/Quercetin ciclos |
-| Avanzado | Khavinson (ciclos) — solo con clearance |
-
-**Tu protocolo formal:** armar con `MVP0_Plantilla_Protocolo.md` → revisión médico → PDF WhatsApp.
+### Wearable
+- [ ] Dispositivo: `[ ]` · HRV / sueño 7d: `[ ]`
 
 ---
 
-## 5. Próximos pasos Caso #0
+## 6. Lectura integrada (educativa, no prescripción)
 
-1. [ ] Llenar Tally contigo mismo (misma experiencia que un beta).
-2. [ ] Capturar baseline §3 (foto + labs si hay).
-3. [ ] Armar protocolo en plantilla + enviar a médico aliado.
-4. [ ] Al entregar: fila #0 → Estado `Protocolo entregado` + fecha.
-5. [ ] Check-in semana 1 en tracker (misma fecha que betas futuros).
+**Lo que los datos sugieren para el protocolo MVP-0:**
 
----
+| Señal | Implicación operativa |
+|-------|----------------------|
+| RM L4-S1 Pfirrmann IV + contacto radicular | Priorizar **Wolverine** (BPC/Goralatide) + movilidad; alinea con plan maestro |
+| Litio 0.42 + renal OK | **No tocar litio por cuenta propia**; hidratación; psiquiatra primero |
+| Leptina alta con peso bajo | Revisar composición corporal / inflamación; lifestyle + labs CRP |
+| Metabólico OK (glucosa, HbA1c, Quantose) | Tesamorelin solo con monitoreo médico gradual |
+| Tiroideo OK | Sin bandera tiroides |
 
-## 6. Carpeta privada sugerida
-
-```
-~/HombreVigente-Caso0/
-  baseline-2026-06-08/
-    fotos/
-    labs/
-    notas-diario.md
-```
+**Gates RAG esperados:** Cerluten/peptidos inyectables → `blocked` / derivación — correcto.
 
 ---
 
-*Caso #0 = prueba del flujo antes de invitar a nadie. Si a ti te frustra el onboarding, un beta también.*
+## 7. Próximos pasos
+
+1. [x] Labs + imagen indexados (esta nota).
+2. [ ] Foto baseline + subjetivo §5.
+3. [ ] Llenar Tally (misma UX que beta).
+4. [ ] Enviar `MVP0_Caso0_Protocolo.md` a médico aliado + psiquiatra (litio).
+5. [ ] Tras firma → tracker `Protocolo entregado` + semana 1 check-in.
+
+---
+
+*Información educativa. Interpretación clínica y decisiones terapéuticas: solo con tus médicos tratantes.*
