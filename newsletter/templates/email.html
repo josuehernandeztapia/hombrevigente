@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{{ subject }}</title>
+</head>
+<!-- Plantilla email-safe: fondo claro (mejor entregabilidad/lectura), acento bronce de marca. -->
+<body style="margin:0;padding:0;background:#F4F2EE;font-family:-apple-system,Segoe UI,Helvetica,Arial,sans-serif;color:#16140F;">
+<!-- preheader oculto -->
+<div style="display:none;max-height:0;overflow:hidden;opacity:0;">{{ preheader }}</div>
+
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#F4F2EE;">
+<tr><td align="center" style="padding:28px 16px;">
+  <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;background:#FFFFFF;border:1px solid #E6E1D8;border-radius:14px;overflow:hidden;">
+
+    <!-- header -->
+    <tr><td style="background:#100F0C;padding:22px 28px;">
+      <span style="color:#FFFFFF;font-weight:900;letter-spacing:-.02em;font-size:18px;">PULSO VIGENTE</span>
+      <span style="color:#C9A86A;font-weight:700;font-size:12px;letter-spacing:.12em;"> · Nº{{ numero }}</span>
+      <div style="color:#9A958A;font-size:12px;margin-top:4px;">La ciencia de longevidad, traducida a lo que sí puedes hacer hoy.</div>
+    </td></tr>
+
+    <!-- body -->
+    <tr><td style="padding:28px;font-size:16px;line-height:1.6;color:#26221A;">
+      {{ body_html }}
+    </td></tr>
+
+    <!-- footer -->
+    <tr><td style="background:#100F0C;padding:22px 28px;color:#8C887E;font-size:12px;line-height:1.6;">
+      <div style="color:#FFFFFF;font-weight:900;margin-bottom:8px;">HOMBRE <span style="font-weight:400;">VIGENTE</span></div>
+      Información educativa de optimización y bienestar. No es diagnóstico ni tratamiento médico.
+      Los insumos de Avenida 2 requieren prescripción y farmacia autorizada.
+      <div style="margin-top:12px;">
+        <a href="{{ '{{{RESEND_UNSUBSCRIBE_URL}}}' }}" style="color:#C9A86A;">Cancelar suscripción</a>
+        &nbsp;·&nbsp; contacto@hombrevigente.com
+      </div>
+    </td></tr>
+
+  </table>
+</td></tr>
+</table>
+</body>
+</html>

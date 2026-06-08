@@ -1,0 +1,101 @@
+# Pulso Vigente — BORRADOR semanal. Abre un PR con un número candidato. NUNCA envía.
+name: Newsletter draft
+
+on:
+  schedule:
+    - cron: '0 14 * * 4'   # jueves 14:00 UTC
+  workflow_dispatch:
+
+concurrency:
+  group: newsletter-draft
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  draft:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: pip
+          cache-dependency-path: newsletter/requirements.txt
+
+      - name: Install deps
+        run: pip install -r newsletter/requirements.txt
+
+      - name: Cosechar candidatos verificados (Europe PMC)
+        run: python newsletter/harvest.py --days 14 --per-topic 4
+
+      - name: Generar stub del próximo número
+        id: stub
+        run: |
+          set -euo pipefail
+          DATE=$(date -u +%Y-%m-%d)
+          # siguiente número correlativo
+          LAST=$(ls newsletter/issues/*.md 2>/dev/null | sed -E 's/.*-([0-9]+)\.md/\1/' | sort -n | tail -1 || echo "000")
+          NEXT=$(printf "%03d" $((10#${LAST:-000} + 1)))
+          MONTH=$(date -u +%Y-%m)
+          OUT="newsletter/issues/${MONTH}-${NEXT}.md"
+          cat > "$OUT" <<'STUB'
+---
+numero: "NEXTNUM"
+fecha: NEXTDATE
+subject: "Pulso Vigente NºNEXTNUM — [TITULAR]"
+preheader: "[preheader]"
+audiencia: plus
+---
+
+**TLDR:** [una línea]
+
+---
+
+## 🟢 Accionable — [titular]
+[noticia] · *Fuente: [PMID/DOI/registro verificado].*
+> **🔵 Lente Vigente:** [qué hacer hoy / Av.1]
+
+## 🔬 Frontera — [titular]
+[noticia] · *Fuente: [verificada].*
+> **🔵 Lente Vigente:** [contexto, etiquetado investigación]
+
+## 🤖 AI × Longevity — [titular]
+[noticia] · *Fuente: [verificada].*
+> **🔵 Lente Vigente:** [hype con sustancia]
+
+## 🌍 Contexto / Voz — [titular]
+[noticia o cita atribuida real] · *Fuente: [verificada].*
+
+---
+
+**🟢 Para ti, miembro Plus:** [acción personalizada]
+
+**Bottom line:** [cierre que ata todo]
+
+---
+
+*Pulso Vigente es información educativa de optimización y bienestar. No es diagnóstico ni tratamiento médico.*
+STUB
+          sed -i "s/NEXTNUM/${NEXT}/g; s/NEXTDATE/${DATE}/g" "$OUT"
+          echo "out=${OUT}" >> "$GITHUB_OUTPUT"
+          echo "next=${NEXT}" >> "$GITHUB_OUTPUT"
+          # TODO: enchufar el harvester (watchlist.yml + Europe PMC + verificación) para pre-llenar candidatos.
+
+      - name: Abrir PR con el borrador
+        uses: peter-evans/create-pull-request@v6
+        with:
+          branch: newsletter/draft-${{ steps.stub.outputs.next }}
+          title: "Pulso Vigente Nº${{ steps.stub.outputs.next }} — borrador"
+          commit-message: "draft(newsletter): número ${{ steps.stub.outputs.next }}"
+          body: |
+            Borrador automático del próximo Pulso Vigente.
+            - Llena los [placeholders] con items **verificados** (PMID/DOI/registro).
+            - Regla de hierro: fuente primaria o no entra (ver EDITORIAL.md).
+            - Al hacer **merge**, `newsletter-send.yml` lo envía.
+          labels: newsletter, draft

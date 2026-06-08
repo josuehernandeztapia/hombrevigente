@@ -1,0 +1,94 @@
+# Pulso Vigente — watchlist
+# Lo que el harvester (newsletter-draft) escanea cada semana.
+# Cada item de ciencia se VERIFICA contra PubMed/Europe PMC antes de entrar.
+
+temas_ssot:            # alineados a las monografías del SSOT
+  - hallmarks_envejecimiento
+  - inflammaging
+  - nad_nmn_sirtuinas
+  - autofagia_espermidina
+  - senescencia_senoliticos
+  - epigenetica_relojes_reprogramacion
+  - peptidos_bpc_tb500_ghk_tesamorelin
+  - glp1_metabolismo
+  - lipidos_apob
+  - sueno
+  - termico_inflamacion
+  - piel_optimizacion
+
+beat_ai_longevity:
+  - descubrimiento_farmacos_ia
+  - diseno_proteinas        # RFdiffusion / AlphaFold
+  - relojes_envejecimiento_ml
+  - modelos_fundacionales_biologia
+
+fuentes_primarias:
+  journals_alto_impacto:
+    - New England Journal of Medicine
+    - Nature
+    - Science
+    - Cell
+    - Lancet
+    - JAMA
+    - Nature Aging
+    - Nature Medicine
+    - Cell Metabolism
+    - Aging Cell
+    - GeroScience
+    - eLife
+  bases:
+    - PubMed / Europe PMC
+    - ClinicalTrials.gov
+    - bioRxiv / medRxiv   # preprint -> etiquetar
+
+prensa_contexto:
+  - Endpoints News
+  - STAT News
+  - FierceBiotech
+  - BioPharma Dive
+  - MIT Technology Review
+  - Longevity.Technology
+  - Lifespan.io
+
+empresas_leads:          # PR = pista, no cita; verificar a fuente primaria
+  - Verve / Eli Lilly
+  - NewLimit
+  - Altos Labs
+  - Retro Biosciences
+  - Insilico Medicine
+  - Isomorphic Labs / DeepMind
+  - Recursion
+  - BioAge
+  - Gero
+  - Calico
+  - Turn Bio
+  - Rubedo Life Sciences
+
+voces:                   # radar; citas textuales, atribuidas, verificadas. NUNCA inventar.
+  investigadores:
+    - David Sinclair
+    - Eric Verdin
+    - Nir Barzilai
+    - Matt Kaeberlein
+    - Steve Horvath
+    - Morgan Levine
+    - George Church
+    - Vadim Gladyshev
+    - Aubrey de Grey
+  operadores:
+    - Peter Attia
+    - Peter Diamandis
+    - Bryan Johnson
+  ai_bio:
+    - Demis Hassabis
+    - David Baker
+    - Alex Zhavoronkov
+    - Emad Mostaque
+
+senal_de_campo:
+  - XPRIZE Healthspan
+
+# NO usar como "fuente de noticia" (conflicto de interés / competidores):
+inteligencia_competencia_no_noticia:
+  - Fountain Life      # de Diamandis
+  - Lifeforce          # de Diamandis; además benchmark/competidor HV

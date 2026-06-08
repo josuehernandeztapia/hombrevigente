@@ -47,6 +47,12 @@ node_modules/
 /build
 /out
 
+# === MVP-0 datos clínicos (PHI — nunca en git) ===
+rag-bot/data/labs_intake/
+rag-bot/data/intake/
+rag-bot/data/protocols/
+rag-bot/data/mvp0_runs/
+
 # === RAG / Vector DBs ===
 qdrant_storage/
 .qdrant/
@@ -54,6 +60,11 @@ qdrant_storage/
 embeddings_cache/
 *.pkl
 *.pickle
+
+# === Newsletter (artefactos locales) ===
+newsletter/preview.html
+preview.html
+newsletter/assets/*.png
 
 # === Office temp files ===
 ~$*
