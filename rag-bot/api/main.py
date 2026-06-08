@@ -49,6 +49,12 @@ class RagQueryRequest(BaseModel):
     use_llm: bool = True
     top_k: int = Field(5, ge=1, le=10)
     avenida_max: Literal["1", "2", "1-2"] = "1"
+    beta_id: Optional[str] = Field(
+        None,
+        max_length=64,
+        description="row-0, caso0, tally-{id} — carga intake congelado",
+    )
+    channel: Optional[Literal["whatsapp", "api", "cli", "notas", "tally", "email"]] = "api"
 
 
 class KnowledgePromoteRequest(BaseModel):
@@ -69,6 +75,8 @@ def _run_query(
     top_k: int = 5,
     avenida_max: str = "1",
     parse: bool = False,
+    beta_id: Optional[str] = None,
+    channel: Optional[str] = "api",
 ) -> dict:
     index_path = Path(
         os.getenv("HV_EMBEDDINGS_INDEX", str(_ROOT / "knowledge_base" / "embeddings_local.json"))
@@ -91,6 +99,8 @@ def _run_query(
             role=role,
             parse=parse,
             source="api",
+            beta_id=beta_id,
+            channel=channel,
         )
     except FileNotFoundError as e:
         raise HTTPException(status_code=503, detail=str(e)) from e
@@ -100,16 +110,32 @@ def _run_query(
 
 @app.get("/api/health")
 def health():
+    from frozen_context import resolve_intake
+
     idx = Path(
         os.getenv("HV_EMBEDDINGS_INDEX", str(_ROOT / "knowledge_base" / "embeddings_local.json"))
     )
     if not idx.is_absolute():
         idx = _ROOT / idx
     index_ok = idx.exists()
+
+    states_dir = Path(os.getenv("HV_BETA_STATES_DIR", "data/beta_states"))
+    if not states_dir.is_absolute():
+        states_dir = _ROOT / states_dir
+    states_writable = states_dir.exists() and os.access(states_dir, os.W_OK)
+
+    intake, _ = resolve_intake(beta_id="row-0")
+    beta_fixture_ok = intake is not None
+
+    ok = index_ok and beta_fixture_ok
     return {
-        "status": "ok" if index_ok else "degraded",
+        "status": "ok" if ok else "degraded",
         "index_loaded": index_ok,
         "openai_configured": bool(os.getenv("OPENAI_API_KEY")),
+        "beta_states_dir": str(states_dir),
+        "beta_states_writable": states_writable,
+        "beta_fixture_row_0": beta_fixture_ok,
+        "retrieval_backend": os.getenv("HV_RETRIEVAL_BACKEND", "json"),
     }
 
 
@@ -123,6 +149,8 @@ def rag_query_post(body: RagQueryRequest, parse: bool = Query(False)):
         top_k=body.top_k,
         avenida_max=body.avenida_max,
         parse=parse,
+        beta_id=body.beta_id,
+        channel=body.channel,
     )
 
 
@@ -217,6 +245,8 @@ def rag_query_get(
     top_k: int = Query(5, ge=1, le=10),
     avenida_max: Literal["1", "2", "1-2"] = "1",
     parse: bool = Query(False),
+    beta_id: Optional[str] = Query(None, max_length=64),
+    channel: Optional[str] = Query("api"),
 ):
     return _run_query(
         q,
@@ -226,4 +256,6 @@ def rag_query_get(
         top_k=top_k,
         avenida_max=avenida_max,
         parse=parse,
+        beta_id=beta_id,
+        channel=channel,
     )

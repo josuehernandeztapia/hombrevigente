@@ -19,6 +19,7 @@ primary_region = "dfw"
   HV_RETRIEVAL_BACKEND = "pgvector"
   HV_DECISION_LOG_ENABLED = "true"
   HV_DECISION_LOG_PATH = "/data/decision_log.jsonl"
+  HV_BETA_STATES_DIR = "/data/beta_states"
   HV_EMBEDDINGS_INDEX = "/data/embeddings_local.json"
 
 [mounts]

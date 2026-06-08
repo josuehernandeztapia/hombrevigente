@@ -28,14 +28,39 @@ class TestGates(unittest.TestCase):
         self.assertTrue(g.triggered)
         self.assertEqual(g.code, "gate_psiquiatria")
 
+    def test_litio_ayuno_gate(self):
+        g = check_gates("tomo litio 0.42 y quiero ayuno intermitente 16:8", "longevity")
+        self.assertTrue(g.triggered)
+        self.assertEqual(g.code, "gate_psiquiatria")
+
     def test_vitamina_d_sin_gate(self):
         g = check_gates("mi vitamina D está baja, ¿qué dice la evidencia?", "longevity")
         self.assertFalse(g.triggered)
+
+    def test_onco_fisetina_gate(self):
+        g = check_gates(
+            "tengo antecedente oncológico, ¿puedo empezar fisetina y quercetina?",
+            "longevity",
+        )
+        self.assertTrue(g.triggered)
+        self.assertEqual(g.code, "gate_oncologia")
 
 
 class TestRouting(unittest.TestCase):
     def test_longevity_route(self):
         self.assertEqual(detect_kb_route("homocisteína alta y TMG"), "longevity")
+
+    def test_caso0_litio_route(self):
+        self.assertEqual(
+            detect_kb_route("mi litio en sangre está en 0.42 mmol/L"),
+            "longevity",
+        )
+
+    def test_caso0_ciatica_route(self):
+        self.assertEqual(
+            detect_kb_route("discopatía Pfirrmann grado IV L4-L5 y ciática"),
+            "longevity",
+        )
 
     def test_servicios_route(self):
         self.assertEqual(detect_kb_route("cuánto cuesta el HIFU"), "servicios")

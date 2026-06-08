@@ -41,7 +41,7 @@ PMIDs corregidos (intención → PMID real verificado):
 - Irwin sueño/inflamación → **26140821** · Zhang RHR → **26598376** · Düking wearables → **29712629**
 - Liu ayuno (NEJM RCT) → **35443107** · Gitlin litio → **27900734** · Malhi bipolar → **33296123**
 
-Pendiente (`[FALTA FUENTE]`): Espeland cold-water review (Int J Circumpolar Health 2022) — el artículo existe pero su PMID exacto queda por confirmar antes de producción.
+Verificado (2026-06-08): cold-water review — PMID **36137565** (Esperland et al., Int J Circumpolar Health 2022). Readiness — gap E3 documentado en texto; fuente HRV-guided training PMID **28570494**.
 
 Sin cambios (ya correctos en v0.1): supl-vitamina-d (17634462, 28202713), REDUCE-IT (30415628), Abbasi Mg (23853635), Q-SYMBIO (25282031), Sutton eTRF (29754952), Grundy (30586774), Holick guideline (21646368), Laukkanen sauna (25705824).
 

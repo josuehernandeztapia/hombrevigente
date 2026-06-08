@@ -56,6 +56,10 @@ python rag_retrieval_local.py "BPC-157 inyectable" --no-llm   # gate Av.2
 # 3. Tests gates/routing + golden-set gates (sin API)
 python test_rag_local.py
 
+# 3b. Golden trajectories (intake → triage → RAG frozen, sin LLM)
+python trajectory_runner.py
+python trajectory_runner.py --id TRAJ-HV-006
+
 # 4. Golden-set completo (requiere OPENAI_API_KEY + embeddings)
 python scripts/sync_golden_set.py
 python golden_runner.py --gates-only    # CI rápido
@@ -68,8 +72,14 @@ curl -X POST http://localhost:8080/rag/query?parse=1 \
   -H "Content-Type: application/json" \
   -d '{"query":"cuánto cuesta HIFU","role":"concierge"}'
 
+# Perfil congelado (S5) — gates con litio/onco del intake
+curl -X POST "http://localhost:8080/rag/query?parse=1&use_llm=false" \
+  -H "Content-Type: application/json" \
+  -d '{"query":"¿puedo hacer ayuno 16:8?","beta_id":"row-0","channel":"api"}'
+
 # 6. Fly deploy
-fly deploy   # desde rag-bot/ (secrets: OPENAI_API_KEY)
+fly deploy   # desde rag-bot/ (secrets: OPENAI_API_KEY, HV_ADMIN_PIN)
+# Prod: POST https://hv-rag-api.fly.dev/rag/query con beta_id row-0 | caso0 | tally-{id}
 ```
 
 **Legacy Pinecone:** `generate_embeddings.py` + `rag_retrieval.py` (opcional).
@@ -86,6 +96,26 @@ fly deploy   # desde rag-bot/ (secrets: OPENAI_API_KEY)
 | `servicios` | `knowledge_base/servicios/[0-9][0-9]_*.md` |
 | `longevity` | Monografías `00–29` + `longevity/tarjetas/*.md` |
 | `all` | Ambas |
+
+---
+
+## Beta state (MVP-0 S2)
+
+```bash
+python scripts/beta_state_cli.py show --intake fixtures/caso0_intake_p1_entrega.json
+python scripts/beta_state_cli.py sync fixtures/caso0_intake_p1_entrega.json --clearance --foto --baseline
+```
+
+Persiste en `data/beta_states/{beta_id}.json`. `decision_log` acepta `beta_id`, `turn_number`, `channel`.
+
+## RAG + contexto intake (S5)
+
+```bash
+python rag_retrieval_local.py "¿puedo hacer ayuno 16:8?" --beta-id row-0 --no-llm
+python scripts/concierge_mvp.py --local --beta-id row-0 "¿puedo tomar NMN?"
+```
+
+El perfil congelado alimenta **gates** (litio en intake aunque no esté en la pregunta) y el **prompt** LLM.
 
 ---
 

@@ -22,7 +22,12 @@
 
 **Copia espejo:** `~/Downloads/longevity/tarjetas/` · monografías en `~/Downloads/longevity/repo_monografias/`
 
-**Auditoría PMIDs (2026-06-07):** 16 monografías corregidas; 25 PMIDs activos verificados en PubMed; huecos marcados `[FALTA FUENTE]`. Ver bloques `## Auditoría citas` por archivo e `INDICE_SSOT_PORTABLE.md` §7.
+**Auditoría PMIDs (2026-06-08):** SSOT longevity completo — monografías y tarjetas sin `[FALTA FUENTE]` en contenido embebible. Ver `## Auditoría citas` por archivo e `INDICE_SSOT_PORTABLE.md` §7.
+
+**Changelog monografías:**
+- `07_reprogramacion_celular.md` — 2026-06-07: +Ocampo/Lu/Gill/Yang; 0 huecos
+- `13_nmn.md` — 2026-06-08: +Liao 34238308, +Igarashi 35927255; 0 huecos
+- `03_nad_sirtuinas.md` — 2026-06-08: +Trammell 27721479; eje NAD+ sin huecos
 
 ---
 

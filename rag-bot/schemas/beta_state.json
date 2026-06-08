@@ -1,0 +1,66 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hombrevigente.mx/schemas/beta_state.json",
+  "title": "Hombre Vigente Beta State (MVP-0)",
+  "description": "Estado operativo resumible por beta — alineado a Pipeline Sheets y intake_mvp0.json",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "beta_id": {
+      "type": "string",
+      "description": "Clave estable: pipeline_row, tally_response_id o slug (ej. caso0)"
+    },
+    "pipeline_row": { "type": "integer", "minimum": 0 },
+    "tally_response_id": { "type": "string" },
+    "perfil": { "type": "string", "enum": ["verde", "marcado"] },
+    "phase": {
+      "type": "string",
+      "enum": [
+        "lead",
+        "onboarding",
+        "screening",
+        "protocolo-entregado",
+        "semana-1",
+        "semana-2",
+        "semana-3",
+        "semana-4",
+        "feedback",
+        "escalate-humano"
+      ]
+    },
+    "next_action": { "type": "string" },
+    "slots": {
+      "type": "object",
+      "properties": {
+        "tally_completo": { "type": "boolean" },
+        "clearance_medica": { "type": "boolean" },
+        "protocolo_entregado": { "type": "boolean" },
+        "foto_baseline": { "type": "boolean" },
+        "labs_parseados": { "type": "boolean" },
+        "baseline_subjetivo": { "type": "boolean" },
+        "checkin_semana_actual": { "type": "boolean" }
+      },
+      "additionalProperties": false
+    },
+    "turn_count": { "type": "integer", "minimum": 0 },
+    "last_channel": {
+      "type": "string",
+      "enum": ["whatsapp", "tally", "notas", "cli", "api", "email"]
+    },
+    "updated_at": { "type": "string", "format": "date-time" },
+    "history": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "at": { "type": "string", "format": "date-time" },
+          "from_phase": { "type": "string" },
+          "to_phase": { "type": "string" },
+          "note": { "type": "string" }
+        },
+        "required": ["at", "to_phase"]
+      }
+    }
+  },
+  "required": ["beta_id", "phase", "next_action", "slots", "turn_count", "updated_at"]
+}

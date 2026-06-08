@@ -1,0 +1,140 @@
+{
+  "patient": {
+    "name": "HERNANDEZ TAPIA JUAN JOSUE",
+    "age": "43 años",
+    "gender": "MASCULINO",
+    "order_id": "25100703062"
+  },
+  "lab": {
+    "name": "Laboratorio Corregidora",
+    "collection_date": "07/10/2025",
+    "validation_date": "07/10/2025"
+  },
+  "biomarkers": [
+    {
+      "name": "Anticuerpos Anti Peroxidasa Tiroidea",
+      "value": "0.24",
+      "unit": "IU/mL",
+      "ref_low": "0.00",
+      "ref_high": "5.60",
+      "flag": "normal"
+    },
+    {
+      "name": "Anticuerpos Anti Tirogobulina",
+      "value": "2.35",
+      "unit": "IU/mL",
+      "ref_low": "0.00",
+      "ref_high": "4.10",
+      "flag": "normal"
+    },
+    {
+      "name": "Triyodotironina (T3 Total)",
+      "value": "1.17",
+      "unit": "ng/mL",
+      "ref_low": "0.60",
+      "ref_high": "1.80",
+      "flag": "normal"
+    },
+    {
+      "name": "Triyodotironina Libre (FT3)",
+      "value": "3.09",
+      "unit": "pg/mL",
+      "ref_low": "1.71",
+      "ref_high": "3.71",
+      "flag": "normal"
+    },
+    {
+      "name": "Tiroxina (T4 Total)",
+      "value": "8.43",
+      "unit": "µg/dL",
+      "ref_low": "4.20",
+      "ref_high": "13.00",
+      "flag": "normal"
+    },
+    {
+      "name": "Tiroxina Libre (FT4)",
+      "value": "1.06",
+      "unit": "ng/dL",
+      "ref_low": "0.70",
+      "ref_high": "1.48",
+      "flag": "normal"
+    },
+    {
+      "name": "Hormona Estimulante de la Tiroides (TSH)",
+      "value": "3.244",
+      "unit": "µIU/mL",
+      "ref_low": "0.300",
+      "ref_high": "4.200",
+      "flag": "normal"
+    },
+    {
+      "name": "Índice de Tiroxina Libre",
+      "value": "7.81",
+      "unit": "ug/dL",
+      "ref_low": "5.06",
+      "ref_high": "9.42",
+      "flag": "normal"
+    },
+    {
+      "name": "Hemoglobina Glicada",
+      "value": "5.4",
+      "unit": "%",
+      "ref_low": "Menor a 5.7",
+      "ref_high": "6.4",
+      "flag": "normal"
+    },
+    {
+      "name": "Leptina",
+      "value": "22.74",
+      "unit": "ng/mL",
+      "ref_low": "4.0",
+      "ref_high": "32.0",
+      "flag": "normal"
+    },
+    {
+      "name": "Glucosa Basal",
+      "value": "85.2",
+      "unit": "mg/dL",
+      "ref_low": "Menor o igual a 99",
+      "ref_high": "125",
+      "flag": "normal"
+    },
+    {
+      "name": "Urea",
+      "value": "22.32",
+      "unit": "mg/dL",
+      "ref_low": "14.98",
+      "ref_high": "44.08",
+      "flag": "normal"
+    },
+    {
+      "name": "Nitrógeno Ureico",
+      "value": "10.43",
+      "unit": "mg/dL",
+      "ref_low": "6.00",
+      "ref_high": "20.00",
+      "flag": "normal"
+    },
+    {
+      "name": "Creatinina",
+      "value": "0.85",
+      "unit": "mg/dL",
+      "ref_low": "0.70",
+      "ref_high": "1.30",
+      "flag": "normal"
+    }
+  ],
+  "flags_critical": [],
+  "notes": [
+    "Los medicamentos de uso común pueden interferir con algunos ensayos del laboratorio. Favor de considerar esta posibilidad en resultados irregulares. Realizar el ensayo en equipos y/o metodologías diferentes puede generar resultados diferentes."
+  ],
+  "_meta": {
+    "extraction_method": "text",
+    "models_used": {
+      "struct": "gpt-4o-mini",
+      "vision": null
+    },
+    "source_file": "Lab_Completo_Metabolico_7oct2025.pdf",
+    "extracted_at": "2026-06-08T02:36:51.444414+00:00"
+  }
+}

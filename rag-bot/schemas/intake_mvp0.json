@@ -1,0 +1,204 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://hombrevigente.mx/schemas/intake_mvp0.json",
+  "title": "Hombre Vigente MVP-0 Intake",
+  "description": "Esquema tipado para respuestas Tally (MVP0_Cuestionario.md). Mapeo manual o webhook futuro.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "meta": {
+      "type": "object",
+      "properties": {
+        "submitted_at": { "type": "string", "format": "date-time" },
+        "tally_response_id": { "type": "string" },
+        "source": { "type": "string", "enum": ["tally", "manual", "caso0"] },
+        "pipeline_row": { "type": "integer", "description": "Fila en MVP0_Beta_Tracker" }
+      },
+      "required": ["source"]
+    },
+    "identity": {
+      "type": "object",
+      "properties": {
+        "nombre": { "type": "string", "minLength": 1 },
+        "edad": { "type": "integer", "minimum": 18, "maximum": 99 },
+        "whatsapp": { "type": "string", "pattern": "^\\+?[0-9]{10,15}$" },
+        "ciudad": { "type": "string" },
+        "peso_kg": { "type": "number", "minimum": 30, "maximum": 250 },
+        "estatura_cm": { "type": "integer", "minimum": 120, "maximum": 230 }
+      },
+      "required": ["nombre", "edad", "whatsapp", "ciudad"]
+    },
+    "objetivos": {
+      "type": "object",
+      "properties": {
+        "principal": {
+          "type": "string",
+          "enum": [
+            "energia",
+            "recuperacion_dolor",
+            "estetica",
+            "grasa_visceral",
+            "longevidad",
+            "rendimiento"
+          ]
+        },
+        "secundarios": {
+          "type": "array",
+          "items": { "$ref": "#/properties/objetivos/properties/principal" }
+        },
+        "meta_8_semanas": { "type": "string", "maxLength": 500 },
+        "urgencia_1_5": { "type": "integer", "minimum": 1, "maximum": 5 }
+      },
+      "required": ["principal", "meta_8_semanas"]
+    },
+    "lifestyle": {
+      "type": "object",
+      "properties": {
+        "energia_1_5": { "type": "integer", "minimum": 1, "maximum": 5 },
+        "sueno_1_5": { "type": "integer", "minimum": 1, "maximum": 5 },
+        "dias_entreno_semana": { "type": "integer", "minimum": 0, "maximum": 7 },
+        "dolor_recurrente": { "type": "string" },
+        "suplementos_actuales": { "type": "string" }
+      }
+    },
+    "screening": {
+      "type": "object",
+      "properties": {
+        "cancer_antecedente": {
+          "type": "string",
+          "enum": ["si", "no", "prefiero_hablarlo"]
+        },
+        "psiquiatria_tratamiento": {
+          "type": "string",
+          "enum": ["si", "no", "prefiero_hablarlo"]
+        },
+        "cardio_renal_hepatica": { "type": "string", "enum": ["si", "no"] },
+        "medicacion_cronica": { "type": "string" },
+        "alergias": { "type": "string" },
+        "embarazo_lactancia_menor": { "type": "boolean", "default": false },
+        "medico_cabecera": { "type": "string", "enum": ["si", "no"] },
+        "bandera_activa": {
+          "type": "boolean",
+          "description": "true si cualquier screening 🔴 requiere clearance"
+        },
+        "bandera_detalle": { "type": "string" }
+      },
+      "required": [
+        "cancer_antecedente",
+        "psiquiatria_tratamiento",
+        "cardio_renal_hepatica"
+      ]
+    },
+    "data_moat": {
+      "type": "object",
+      "properties": {
+        "foto_subida": { "type": "boolean" },
+        "foto_path_privado": {
+          "type": "string",
+          "description": "Ruta local/Drive — nunca en git"
+        },
+        "labs_subidos": { "type": "boolean" },
+        "labs_pdf_paths_privados": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "labs_parse_json": {
+          "type": "string",
+          "description": "Ruta a salida de labs_intake_manual.py"
+        },
+        "wearable_usa": { "type": "boolean" },
+        "wearable_dispositivo": { "type": "string" },
+        "wearable_promedios_7d": { "type": "string" }
+      }
+    },
+    "consentimiento": {
+      "type": "object",
+      "properties": {
+        "educativo_no_rx": { "type": "boolean", "const": true },
+        "uso_datos_protocolo": { "type": "boolean", "const": true },
+        "anonimo_mejora_producto": { "type": "boolean" },
+        "feedback_4_semanas": { "type": "boolean" }
+      },
+      "required": ["educativo_no_rx", "uso_datos_protocolo"]
+    },
+    "pipeline": {
+      "type": "object",
+      "description": "Campos derivados para MVP0_Beta_Tracker.xlsx",
+      "properties": {
+        "estado": {
+          "type": "string",
+          "enum": [
+            "lead",
+            "onboarding",
+            "screening",
+            "protocolo-entregado",
+            "semana-1",
+            "semana-2",
+            "semana-3",
+            "semana-4",
+            "feedback",
+            "escalate-humano"
+          ]
+        },
+        "stack_sugerido": {
+          "type": "string",
+          "enum": ["glow", "wolverine", "metabolic", "combinacion", "pendiente"]
+        },
+        "revisado_medico": { "type": "boolean", "default": false },
+        "fecha_revision_medico": { "type": "string", "format": "date" }
+      }
+    }
+  },
+  "required": ["identity", "objetivos", "screening", "consentimiento"],
+  "examples": [
+    {
+      "meta": { "source": "caso0", "pipeline_row": 0 },
+      "identity": {
+        "nombre": "Juan Josué Hernández Tapia",
+        "edad": 44,
+        "whatsapp": "+524421234567",
+        "ciudad": "Querétaro",
+        "peso_kg": 62,
+        "estatura_cm": 169
+      },
+      "objetivos": {
+        "principal": "recuperacion_dolor",
+        "secundarios": ["estetica", "longevidad", "energia"],
+        "meta_8_semanas": "Romper ciclo de ciática recurrente y recuperar energía",
+        "urgencia_1_5": 5
+      },
+      "lifestyle": {
+        "energia_1_5": 3,
+        "sueno_1_5": 3,
+        "dias_entreno_semana": 2,
+        "dolor_recurrente": "Ciática lumbar L4-S1, cada ~2 meses",
+        "suplementos_actuales": "Litio carbonato, quetiapina XR"
+      },
+      "screening": {
+        "cancer_antecedente": "si",
+        "psiquiatria_tratamiento": "si",
+        "cardio_renal_hepatica": "no",
+        "medicacion_cronica": "Litio, quetiapina",
+        "bandera_activa": true,
+        "bandera_detalle": "Psiquiatría (litio+quetiapina) + antecedente oncológico"
+      },
+      "data_moat": {
+        "foto_subida": false,
+        "labs_subidos": true,
+        "labs_parse_json": "data/labs_intake/Lab_Completo_Metabolico_7oct2025.json",
+        "wearable_usa": false
+      },
+      "consentimiento": {
+        "educativo_no_rx": true,
+        "uso_datos_protocolo": true,
+        "anonimo_mejora_producto": true,
+        "feedback_4_semanas": true
+      },
+      "pipeline": {
+        "estado": "screening",
+        "stack_sugerido": "wolverine",
+        "revisado_medico": false
+      }
+    }
+  ]
+}

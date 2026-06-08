@@ -4,7 +4,9 @@ set -eu
 cd /app
 
 INDEX_PATH="${HV_EMBEDDINGS_INDEX:-/data/embeddings_local.json}"
-mkdir -p "$(dirname "$INDEX_PATH")"
+STATES_DIR="${HV_BETA_STATES_DIR:-/data/beta_states}"
+LOG_PATH="${HV_DECISION_LOG_PATH:-/data/decision_log.jsonl}"
+mkdir -p "$(dirname "$INDEX_PATH")" "$STATES_DIR" "$(dirname "$LOG_PATH")"
 
 if [ -n "${OPENAI_API_KEY:-}" ]; then
   echo "[entrypoint] sync embeddings → ${INDEX_PATH}"

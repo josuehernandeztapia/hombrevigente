@@ -1,0 +1,59 @@
+{
+  "meta": {
+    "submitted_at": "2026-06-07T12:00:00+00:00",
+    "source": "tally",
+    "tally_response_id": "gbAO6Yl",
+    "pipeline_row": 0
+  },
+  "identity": {
+    "nombre": "Juan Josué Hernández Tapia",
+    "edad": 44,
+    "whatsapp": "+52 442 202 2540",
+    "ciudad": "Querétaro",
+    "peso_kg": 65,
+    "estatura_cm": 167
+  },
+  "objetivos": {
+    "principal": "recuperacion_dolor",
+    "secundarios": ["estetica", "longevidad", "energia", "grasa_visceral"],
+    "meta_8_semanas": "Romper ciclo ciática, recuperar energía, mejorar estética",
+    "urgencia_1_5": 5
+  },
+  "lifestyle": {
+    "energia_1_5": 3,
+    "sueno_1_5": 3,
+    "dias_entreno_semana": 4,
+    "dolor_recurrente": "Ciática L4-S1 recurrente (~cada 2 meses)",
+    "suplementos_actuales": "Litio carbonato, quetiapina XR"
+  },
+  "screening": {
+    "cancer_antecedente": "si",
+    "psiquiatria_tratamiento": "si",
+    "cardio_renal_hepatica": "no",
+    "medicacion_cronica": "Litio carbonato, quetiapina XR",
+    "alergias": "no",
+    "embarazo_lactancia_menor": false,
+    "medico_cabecera": "si",
+    "bandera_activa": true,
+    "bandera_detalle": "antecedente oncológico; psiquiatría (litio, quetiapina)"
+  },
+  "data_moat": {
+    "foto_subida": false,
+    "labs_subidos": true,
+    "wearable_usa": false,
+    "wearable_dispositivo": "",
+    "wearable_promedios_7d": ""
+  },
+  "consentimiento": {
+    "educativo_no_rx": true,
+    "uso_datos_protocolo": true,
+    "anonimo_mejora_producto": true,
+    "feedback_4_semanas": true
+  },
+  "pipeline": {
+    "estado": "protocolo_entregado",
+    "stack_sugerido": "wolverine",
+    "revisado_medico": false,
+    "fecha_entrega": "2026-06-08"
+  }
+}

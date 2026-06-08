@@ -1,0 +1,102 @@
+#!/usr/bin/env python3
+"""Tests beta_state + decision_log beta context."""
+
+import json
+import tempfile
+import unittest
+from pathlib import Path
+
+from beta_state import (
+    beta_id_from_intake,
+    compute_next_action,
+    derive_state_from_intake,
+    load_state,
+    save_state,
+    sync_from_intake,
+    transition,
+)
+from decision_log import RagDecisionEntry, log_rag_decision, read_decisions
+
+
+FIXTURE = Path(__file__).resolve().parent / "fixtures" / "caso0_intake_p1_entrega.json"
+
+
+class TestBetaState(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.intake = json.loads(FIXTURE.read_text(encoding="utf-8"))
+
+    def test_beta_id_caso0(self):
+        self.assertEqual(beta_id_from_intake(self.intake), "row-0")
+
+    def test_marcado_next_action_screening(self):
+        intake = dict(self.intake)
+        intake["pipeline"] = {"estado": "screening", "revisado_medico": False}
+        state = derive_state_from_intake(intake)
+        self.assertEqual(state.perfil, "marcado")
+        self.assertIn("Clearance", state.next_action)
+
+    def test_verde_onboarding(self):
+        intake = {
+            "meta": {"source": "tally", "pipeline_row": 2},
+            "identity": {"nombre": "Beta Test", "edad": 40, "whatsapp": "+521234567890", "ciudad": "QRO"},
+            "objetivos": {"principal": "energia", "meta_8_semanas": "más energía"},
+            "screening": {
+                "cancer_antecedente": "no",
+                "psiquiatria_tratamiento": "no",
+                "cardio_renal_hepatica": "no",
+                "bandera_activa": False,
+            },
+            "consentimiento": {"educativo_no_rx": True, "uso_datos_protocolo": True},
+            "pipeline": {"estado": "onboarding"},
+        }
+        state = derive_state_from_intake(intake)
+        self.assertEqual(state.perfil, "verde")
+        self.assertEqual(state.next_action, "Ejecutar screening + asignar stack")
+
+    def test_persist_and_transition(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            import os
+
+            os.environ["HV_BETA_STATES_DIR"] = tmp
+            state = sync_from_intake(self.intake, persist=True)
+            self.assertTrue((Path(tmp) / "row-0.json").exists())
+            transition(state, "protocolo-entregado", note="test")
+            save_state(state)
+            loaded = load_state("row-0")
+            self.assertEqual(loaded.phase, "protocolo-entregado")
+            self.assertGreaterEqual(len(loaded.history), 1)
+
+    def test_slot_overrides(self):
+        state = derive_state_from_intake(
+            self.intake,
+            slot_overrides={"clearance_medica": True, "foto_baseline": True},
+        )
+        self.assertTrue(state.slots["clearance_medica"])
+        self.assertTrue(state.slots["foto_baseline"])
+
+
+class TestDecisionLogBetaContext(unittest.TestCase):
+    def test_beta_fields_in_log(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "log.jsonl"
+            log_rag_decision(
+                RagDecisionEntry(
+                    query="NMN con litio",
+                    query_normalized="nmn litio",
+                    kb_route="longevity",
+                    gate_path="caveat",
+                    beta_id="row-0",
+                    turn_number=3,
+                    channel="whatsapp",
+                ),
+                path=path,
+            )
+            row = read_decisions(days=7, path=path)[0]
+            self.assertEqual(row["beta_id"], "row-0")
+            self.assertEqual(row["turn_number"], 3)
+            self.assertEqual(row["channel"], "whatsapp")
+
+
+if __name__ == "__main__":
+    unittest.main()

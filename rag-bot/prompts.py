@@ -134,6 +134,18 @@ def build_system_prompt(
     return "\n\n".join(sections)
 
 
-def build_user_prompt(query: str, chunks: List[Dict]) -> str:
+def build_user_prompt(
+    query: str,
+    chunks: List[Dict],
+    *,
+    frozen_context: Optional[str] = None,
+) -> str:
     context = build_context_block(chunks)
-    return f"Contexto del Knowledge Base:\n{context}\n\nPregunta del usuario: {query}"
+    parts = [f"Contexto del Knowledge Base:\n{context}"]
+    if frozen_context:
+        parts.append(
+            "PERFIL DEL CLIENTE (congelado — usar para personalizar; no inventar datos):\n"
+            f"{frozen_context}"
+        )
+    parts.append(f"Pregunta del usuario: {query}")
+    return "\n\n".join(parts)

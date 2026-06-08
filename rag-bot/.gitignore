@@ -150,6 +150,8 @@ knowledge_base/embeddings_local.json
 
 # RAG observability (runtime)
 data/decision_log.jsonl
+data/beta_states/
+data/intake_submissions/
 *.pkl
 *.pickle
 

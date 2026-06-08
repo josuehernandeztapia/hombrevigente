@@ -12,7 +12,7 @@
 **GHK** (Gly-His-Lys) es un tripeptido unido a cobre (GHK-Cu) con roles en **remodelación tisular**, síntesis de colágeno y modulación génica en fibroblastos.
 
 - Pickart L, Margolina A. Regenerative and protective actions of the GHK-Cu peptide. Int J Mol Sci. 2018. PMID: 29986520 (E2 review)
-- Pickart L, et al. GHK peptide as a natural modulator of multiple cellular pathways. BioMed Res Int. 2015. [FALTA FUENTE — PMID 26064896 era E. coli uropatógena; verificar Pickart 2015]
+- Pickart L, et al. GHK peptide as a natural modulator of multiple cellular pathways in skin regeneration. Biomed Res Int. 2015. PMID: 26236730 (E2)
 
 ---
 
@@ -28,9 +28,11 @@
 
 ## ✅ Evidencia por vía
 
-| Vía | Evidencia | Tier |
-|-----|-----------|------|
+| Vía | Evidencia | PMID / Tier |
+|-----|-----------|-------------|
 | Tópico (cremas, serums) | Mejora fotoenvejecimiento, firmeza en estudios pequeños | E3 |
+| Modulación vías celulares piel | Review pathways regeneración dérmica | 26236730 E2 |
+| Review mecanismos + datos génicos | GHK-Cu acciones regenerativas | 29986520 E2 |
 | Inyectable subcutáneo | Uso biohacking MX; literatura inyectable humana limitada | E2 comunidad |
 | Oral | Biodisponibilidad y eficacia debatidas | E2 débil |
 
@@ -38,10 +40,10 @@
 
 ---
 
-## 🏷️ Uso HV
+## 🏷️ Uso HV — Motor de Justificación
 
 **Avenida 1 (tópico / educación):**
-> "GHK-Cu tiene evidencia en **cuidado dérmico y remodelación de matriz** (E2–E3). En optimización de **piel y recuperación**, se usa tópico o en stacks orales según producto regulado como cosmético/suplemento."
+> "Tu objetivo de **textura y firmeza dérmica** encaja con evidencia de **remodelación de matriz y modulación génica en fibroblastos** (E2, PMID 26236730). En Av.1, GHK-Cu tópico como soporte cosmético-regenerativo — no sustituye procedimientos médicos ni promete rejuvenecimiento epigenético sistémico."
 
 **Avenida 2 (inyectable):**
 > "Inyecciones de GHK-Cu son práctica de biohacking con base preclínica (E2); requieren médico y vía legal."
@@ -59,16 +61,28 @@
 
 - **Cobre:** exceso sistémico teórico — hepatotoxicidad cobre en enfermedad de Wilson (E4); no aplicable a tópico usual.
 - Calidad inyectable: crítica.
+- **Oncología activa:** precaución con angiogénesis (E2 mecanismo).
 
 ---
 
 ## 📖 FAQ
 
 **¿GHK-Cu "rejuvenece" epigenéticamente?**  
-Solo en fibroblastos cultivados (E2). Lenguaje: "modulación de expresión génica en modelos celulares".
+Solo en fibroblastos cultivados (E2). Lenguaje: "modulación de expresión génica en modelos celulares". Ver `06_epigenetica_relojes_biologicos.md`.
 
 ---
 
-## Auditoría citas (2026-06-07)
-- PMID 30103415 → reemplazado por **29986520** (Pickart & Margolina, GHK-Cu regenerative actions, Int J Mol Sci 2018; el viejo era digestión de almidón)
-- PMID 26064896 → [FALTA FUENTE] (era E. coli uropatógena pediátrica; verificar Pickart BioMed Res Int 2015)
+## 📚 Referencias clave
+
+- Pickart L, Margolina A. Regenerative and protective actions of the GHK-Cu peptide in the light of the new gene data. Int J Mol Sci. 2018. PMID: 29986520 (E2)
+- Pickart L, Vasquez-Soltero JM, Margolina A. GHK peptide as a natural modulator of multiple cellular pathways in skin regeneration. Biomed Res Int. 2015. PMID: 26236730 (E2)
+
+---
+
+## Auditoría citas (2026-06-08)
+- PMID 30103415 → reemplazado por **29986520** (Pickart & Margolina, Int J Mol Sci 2018; el viejo era digestión de almidón)
+- PMID 26064896 → reemplazado por **26236730** (Pickart, Biomed Res Int 2015; el viejo era E. coli uropatógena pediátrica)
+
+## Actualización SSOT (2026-06-08)
+- Tabla evidencia por vía + motor justificación Av.1.
+- Cero huecos de citas pendientes en cuerpo del documento.

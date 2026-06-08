@@ -18,7 +18,15 @@ from typing import Dict, List, Optional, Tuple
 
 from dotenv import load_dotenv
 
+from beta_state import (
+    beta_id_from_intake,
+    derive_state_from_intake,
+    load_state,
+    record_turn,
+    save_state,
+)
 from decision_log import log_from_rag_result
+from frozen_context import build_frozen_context, gate_probe_text, resolve_intake
 from confidence_gate import (
     CAVEAT_FOOTER,
     NO_MATCH_MESSAGE,
@@ -57,7 +65,9 @@ LONGEVITY_HINTS = re.compile(
     r"\b(nmn|nad\+?|resveratrol|fisetina|quercetina|spermidina|bpc-?157|tb-?500|"
     r"ghk|tesamorelin|khavinson|homocisteína|homocisteina|vitamina\s*d|omega-?3|"
     r"magnesio|coq10|tmg|wearable|hrv|ayuno|sauna|biomarcador|longevidad|"
-    r"inflammaging|senolític|peptid|suplemento|25\(oh\)d|apo\s*b)\b",
+    r"inflammaging|senolític|peptid|suplemento|25\(oh\)d|apo\s*b|"
+    r"litio|leptina|ciática|ciatica|discopatía|discopatia|lumbar|radicular|"
+    r"pfirrmann|resonancia|rm\s*lumbar)\b",
     re.I,
 )
 INJECTABLE_PEPTIDE = re.compile(
@@ -67,7 +77,11 @@ INJECTABLE_PEPTIDE = re.compile(
 )
 PSYCH_GATE = re.compile(r"\b(litio|quetiapina|bipolar|psiquiatr)\b", re.I)
 PSYCH_COMPOUND = re.compile(r"\b(cerluten|khavinson|endoluten|neuromodul)\b", re.I)
-ONCO_GATE = re.compile(r"\b(oncológ|antecedente.*cáncer|cáncer activo|tumor)\b", re.I)
+PSYCH_LIFESTYLE = re.compile(r"\b(ayuno|fasting|16:8|intermitente)\b", re.I)
+ONCO_GATE = re.compile(
+    r"\b(oncológ\w*|antecedente\s+oncológ\w*|antecedente.*c[aá]ncer|c[aá]ncer activo|tumor|cancer)\b",
+    re.I,
+)
 SENOLYTIC = re.compile(r"\b(senolític|fisetina|d\+q|dasatinib|quercetina)\b", re.I)
 
 
@@ -102,11 +116,13 @@ def check_gates(query: str, kb_route: str) -> GateResult:
             "Agenda valoración médica.",
         )
 
-    if PSYCH_GATE.search(query) and PSYCH_COMPOUND.search(query):
+    if PSYCH_GATE.search(query) and (
+        PSYCH_COMPOUND.search(query) or PSYCH_LIFESTYLE.search(query)
+    ):
         return GateResult(
             True,
             "gate_psiquiatria",
-            "Con litio, quetiapina o condición psiquiátrica + neuromoduladores (p. ej. Cerluten/Khavinson), "
+            "Con litio, quetiapina o condición psiquiátrica + neuromoduladores o cambios de ayuno/hidratación, "
             "la decisión es exclusiva de tu psiquiatra. No ajustamos ni recomendamos por aquí.",
         )
 
@@ -266,6 +282,7 @@ def generate_answer(
     role: str = "default",
     confidence: str = "high",
     avenida_max: str = "1",
+    frozen_context: Optional[str] = None,
 ) -> str:
     from openai import OpenAI
 
@@ -275,7 +292,7 @@ def generate_answer(
         confidence=confidence,
         avenida_max=avenida_max,
     )
-    user = build_user_prompt(query, chunks)
+    user = build_user_prompt(query, chunks, frozen_context=frozen_context)
 
     client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
     response = client.chat.completions.create(
@@ -302,9 +319,16 @@ def _attach_log(
     use_llm: bool,
     t0: float,
     log: bool,
+    beta_id: Optional[str] = None,
+    turn_number: Optional[int] = None,
+    channel: Optional[str] = None,
 ) -> Dict:
     latency_ms = int((time.perf_counter() - t0) * 1000)
     result["latency_ms"] = latency_ms
+    if beta_id:
+        result["beta_id"] = beta_id
+    if turn_number is not None:
+        result["turn_number"] = turn_number
     if log:
         entry_id = log_from_rag_result(
             result,
@@ -313,10 +337,36 @@ def _attach_log(
             source=source,
             use_llm=use_llm,
             latency_ms=latency_ms,
+            beta_id=beta_id,
+            turn_number=turn_number,
+            channel=channel,
         )
         if entry_id:
             result["decision_id"] = entry_id
     return result
+
+
+def _beta_turn_context(
+    intake: Optional[Dict],
+    beta_id: Optional[str],
+    channel: Optional[str],
+) -> Tuple[Optional[str], Optional[int]]:
+    """Incrementa turno persistido; devuelve (beta_id, turn_number)."""
+    bid = beta_id
+    if intake and not bid:
+        bid = beta_id_from_intake(intake)
+    if not bid:
+        return None, None
+
+    state = load_state(bid)
+    if state is None and intake is not None:
+        state = derive_state_from_intake(intake)
+    if state is None:
+        return bid, None
+
+    record_turn(state, channel=channel or "cli")
+    save_state(state)
+    return bid, state.turn_count
 
 
 def rag_query_local(
@@ -331,11 +381,21 @@ def rag_query_local(
     verbose: bool = False,
     source: str = "cli",
     log: bool = True,
+    *,
+    intake: Optional[Dict] = None,
+    intake_path: Optional[Path | str] = None,
+    beta_id: Optional[str] = None,
+    channel: Optional[str] = None,
 ) -> Dict:
     t0 = time.perf_counter()
+    intake, beta_id = resolve_intake(intake=intake, intake_path=intake_path, beta_id=beta_id)
+    frozen = build_frozen_context(intake) if intake else ""
+    bid, turn_no = _beta_turn_context(intake, beta_id, channel)
+
     route = kb_route or detect_kb_route(query)
     query_normalized = strip_command_words(query)
-    gate = check_gates(query, route if route != "all" else "longevity")
+    probe = gate_probe_text(query, frozen)
+    gate = check_gates(probe, route if route != "all" else "longevity")
 
     if gate.triggered:
         out = {
@@ -348,11 +408,18 @@ def rag_query_local(
             "gate_path": "blocked",
             "chunks_used": 0,
         }
+        if frozen:
+            out["frozen_context"] = frozen
+        if bid:
+            out["beta_id"] = bid
+        if turn_no is not None:
+            out["turn_number"] = turn_no
         if parse:
             out["parse"] = {
                 "query_normalized": query_normalized,
                 "gate_triggered": True,
                 "gate_code": gate.code,
+                "has_frozen_context": bool(frozen),
             }
         return _attach_log(
             out,
@@ -362,6 +429,9 @@ def rag_query_local(
             use_llm=use_llm,
             t0=t0,
             log=log,
+            beta_id=bid,
+            turn_number=turn_no,
+            channel=channel,
         )
 
     index = load_index(index_path)
@@ -384,6 +454,12 @@ def rag_query_local(
             "gate_path": "escalate",
             "chunks_used": 0,
         }
+        if frozen:
+            out["frozen_context"] = frozen
+        if bid:
+            out["beta_id"] = bid
+        if turn_no is not None:
+            out["turn_number"] = turn_no
         if parse:
             out["parse"] = {
                 "query_normalized": query_normalized,
@@ -391,6 +467,7 @@ def rag_query_local(
                 "gate_triggered": False,
                 "top_score": 0.0,
                 "verdict": "escalate",
+                "has_frozen_context": bool(frozen),
             }
         return _attach_log(
             out,
@@ -400,6 +477,9 @@ def rag_query_local(
             use_llm=use_llm,
             t0=t0,
             log=log,
+            beta_id=bid,
+            turn_number=turn_no,
+            channel=channel,
         )
 
     top_score = chunks[0]["score"]
@@ -417,6 +497,7 @@ def rag_query_local(
             role=role,
             confidence=top_conf,
             avenida_max=avenida_max,
+            frozen_context=frozen or None,
         )
     else:
         answer = _format_template(query, chunks, route)
@@ -443,6 +524,13 @@ def rag_query_local(
         "chunks_used": len(chunks),
     }
 
+    if frozen:
+        result["frozen_context"] = frozen
+    if bid:
+        result["beta_id"] = bid
+    if turn_no is not None:
+        result["turn_number"] = turn_no
+
     if parse:
         result["parse"] = {
             "query_normalized": query_normalized,
@@ -451,6 +539,7 @@ def rag_query_local(
             "top_score": round(top_score, 4),
             "verdict": verdict.path,
             "verdict_reason": verdict.reason,
+            "has_frozen_context": bool(frozen),
             "chunks": [
                 {
                     "id": c["id"],
@@ -479,6 +568,9 @@ def rag_query_local(
         use_llm=use_llm,
         t0=t0,
         log=log,
+        beta_id=bid,
+        turn_number=turn_no,
+        channel=channel,
     )
 
 
@@ -499,6 +591,9 @@ def main():
     parser.add_argument("--route", choices=["servicios", "longevity", "all"])
     parser.add_argument("--no-llm", action="store_true", help="Solo retrieval + template")
     parser.add_argument("--top-k", type=int, default=5)
+    parser.add_argument("--intake", help="Ruta intake JSON (frozen context)")
+    parser.add_argument("--beta-id", help="beta_id (row-0, caso0, tally-…)")
+    parser.add_argument("--channel", default="cli")
     args = parser.parse_args()
 
     if not args.query:
@@ -511,6 +606,10 @@ def main():
         top_k=args.top_k,
         use_llm=not args.no_llm,
         verbose=True,
+        intake_path=args.intake,
+        beta_id=args.beta_id,
+        channel=args.channel,
+        log=False,
     )
     print("\n" + "=" * 60)
     print(result["answer"])

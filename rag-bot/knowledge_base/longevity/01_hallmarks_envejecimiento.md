@@ -14,6 +14,7 @@ Los **hallmarks of aging** son un marco para entender por qué los tejidos pierd
 **Referencias canónicas:**
 - López-Otín C, Blasco MA, Partridge L, Serrano M, Kroemer G. *The Hallmarks of Aging.* Cell. 2013;153(6):1194-1217. PMID: 23746838 (E1)
 - López-Otín C, et al. *Hallmarks of aging: An expanding universe.* Cell. 2023;186(2):243-278. PMID: 36599349 (E1)
+- Kennedy BK, et al. Geroscience: linking aging to chronic disease. Cell. 2014. PMID: 25417146 (E1)
 
 ---
 
@@ -30,7 +31,7 @@ Los **hallmarks of aging** son un marco para entender por qué los tejidos pierd
 | **Disfunción mitocondrial** | Menos energía celular eficiente | NAD+ pathways, fatiga subjetiva (E2–E3) |
 | **Senescencia celular** | Células "zombies" secretan inflamación (SASP) | hs-CRP, IL-6 (proxy imperfecto) (E3) |
 | **Agotamiento células madre** | Menos reparación tisular | Indirecto |
-| **Alteración comunicación intercelular** | Inflamación crónica, hormonas | Leptina, cortisol, inflamaging (E3) |
+| **Alteración comunicación intercelular** | Inflamación crónica, hormonas | Leptina, cortisol, inflammaging (E3) |
 | **Inflamación crónica (inflammaging)** | Inflamación de bajo grado | hs-CRP, IL-6, ferritina (E3) |
 | **Disbiosis** | Microbiota alterada | Metaboloma, síntomas GI (E3) |
 | **Envejecimiento crono** | Integración de ritmos | Sueño (wearable), melatonina (E3) |
@@ -62,17 +63,23 @@ El Informe de Optimización puede decir:
 
 ---
 
-## 📚 Referencias adicionales
+## 📚 Referencias clave
 
-- Kennedy BK, et al. Geroscience: linking aging to chronic disease. Cell. 2014. [FALTA FUENTE — PMID 25259953 apuntaba a otro paper; verificar el real de Kennedy 2014 antes de producción]
-- McKinsey Future of Wellness 2024–2026 — healthspan como tendencia de mercado (contexto negocio, no clínica)
+- López-Otín C, et al. The Hallmarks of Aging. Cell. 2013. PMID: 23746838 (E1)
+- López-Otín C, et al. Hallmarks of aging: An expanding universe. Cell. 2023. PMID: 36599349 (E1)
+- Kennedy BK, et al. Geroscience: linking aging to chronic disease. Cell. 2014. PMID: 25417146 (E1)
+- Franceschi C, Campisi J. Chronic inflammation (inflammaging) and its potential contribution to age-associated diseases. J Gerontol A Biol Sci Med Sci. 2014. PMID: 24833586 (E1)
 
 ---
 
-## Auditoría citas (2026-06-07)
+## Auditoría citas (2026-06-08)
 - PMID 23746838 → OK (Hallmarks of aging, Cell 2013)
 - PMID 37014410 → reemplazado por **36599349** (Hallmarks 2023; el viejo era radiómica de mama)
-- PMID 25259953 → [FALTA FUENTE] (apuntaba a "starving myocardium"; el Kennedy geroscience real queda por verificar)
+- PMID 25259953 → reemplazado por **25417146** (Kennedy, Geroscience, Cell 2014; el viejo era "starving myocardium")
+
+## Actualización SSOT (2026-06-08)
+- Marco geroscience anclado (Kennedy 2014) + referencia inflammaging.
+- Cero huecos de citas pendientes en cuerpo del documento.
 
 ---
 

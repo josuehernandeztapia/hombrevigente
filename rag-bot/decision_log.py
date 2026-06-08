@@ -48,6 +48,9 @@ class RagDecisionEntry:
     latency_ms: Optional[int] = None
     source: str = "cli"
     use_llm: bool = True
+    beta_id: Optional[str] = None
+    turn_number: Optional[int] = None
+    channel: Optional[str] = None
     entry_id: str = field(default_factory=lambda: uuid.uuid4().hex[:12])
     timestamp: str = field(
         default_factory=lambda: datetime.now(timezone.utc).isoformat()
@@ -124,6 +127,9 @@ def log_from_rag_result(
     source: str = "cli",
     use_llm: bool = True,
     latency_ms: Optional[int] = None,
+    beta_id: Optional[str] = None,
+    turn_number: Optional[int] = None,
+    channel: Optional[str] = None,
 ) -> Optional[str]:
     sources = result.get("sources") or []
     top_service = sources[0].get("service") if sources else None
@@ -146,5 +152,8 @@ def log_from_rag_result(
         latency_ms=latency_ms,
         source=source,
         use_llm=use_llm,
+        beta_id=beta_id,
+        turn_number=turn_number,
+        channel=channel,
     )
     return log_rag_decision(entry)

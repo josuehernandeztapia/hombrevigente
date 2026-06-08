@@ -10,10 +10,10 @@ señales_que_lo_activan: ["readiness <70 (escala Oura/Whoop)", "HRV bajo", "RHR 
 dosis_referencia: n/a
 evidencia:
   nivel: Observacional + validación dispositivo
-  resumen: Correlación moderada con rendimiento subjetivo; mejor uso como tendencia personal que umbral absoluto universal.
+  resumen: Correlación moderada con rendimiento subjetivo; mejor uso como tendencia personal que umbral absoluto universal. Gap E3 sin RCT de hard endpoints con readiness score propietario.
   fuentes:
     - Kinnunen H et al., 2020 — Nocturnal HR/HRV vía ring PPG vs ECG (Physiol Meas) — PMID 32217820
-    - [FALTA FUENTE — RCT con outcomes de salud (hard endpoints) usando readiness score]
+    - da Silva DF et al., 2017 — HRV-guided endurance training en mujeres no entrenadas (J Strength Cond Res) — PMID 28570494
 requiere_receta: no
 contraindicaciones: ["no sustituye evaluación clínica de fatiga patológica"]
 flag_seguridad: ninguno

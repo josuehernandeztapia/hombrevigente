@@ -33,7 +33,7 @@
 
 | Compuesto | Evidencia epigenética | Tier |
 |-----------|----------------------|------|
-| **GHK-Cu** | Modulación expresión génica en fibroblastos (wound healing) | E2 [FALTA FUENTE — PMID 24254940 era olfato de insectos; ver `10_ghk_cu` (Pickart 29986520)] |
+| **GHK-Cu** | Modulación expresión génica en fibroblastos (wound healing) | E2 (PMID 29986520, 26236730; ver `10_ghk_cu`) |
 | **Resveratrol / NMN** | Sirtuinas, desacetilación histonas en modelos | E2 |
 | **Khavinson péptidos** | Claims de regulación génica en tejidos específicos (Khavinson papers) | E2–E3 |
 | **Fisetina** | Cambios en metilación en roedores (investigación) | E2 |
@@ -70,8 +70,12 @@ Lenguaje marketing. Preferir: "péptidos cortos estudiados por Khavinson para mo
 
 ---
 
-## Auditoría citas (2026-06-07)
+## Auditoría citas (2026-06-08)
 - PMID 24138928 → OK (Horvath clock, Genome Biol 2013)
 - PMID 30669119 → OK (Lu, GrimAge, Aging 2019)
 - PMID 35029144 → OK (Belsky, DunedinPACE, eLife 2022)
-- PMID 24254940 → [FALTA FUENTE] (era electroantenograma de insectos; para GHK ver Pickart 29986520 en `10_ghk_cu`)
+- PMID 24254940 → reemplazado por **29986520** + **26236730** (Pickart GHK-Cu; el viejo era electroantenograma de insectos)
+
+## Actualización SSOT (2026-06-08)
+- Tabla compuestos GHK-Cu alineada a `10_ghk_cu.md`.
+- Cero huecos de citas pendientes en cuerpo del documento.

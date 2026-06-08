@@ -22,28 +22,33 @@
 
 1. Espermidina inhibe acetiltransferasas → desacetilación histonas → genes de autofagia (E2).
 2. **mTOR ↓** y **AMPK ↑** en modelos — paralelo con ayuno intermitente (E2).
-3. Cardioprotección y neuroprotección en roedores (E2).
-4. Estudio piloto en humanos mayores: mejora en memoria y biomarcadores cardiovasculares con suplemento de espermidina (E3).
+3. Cardioprotección y neuroprotección en roedores; extensión de vida en levaduras, moscas y ratones (E2).
+4. En humanos: señales de memoria y biomarcadores cardiovasculares en piloto RCT; asociación dieta–mortalidad en cohortes (E3).
 
 **Pamplona R, Barja G.** Mitochondrial oxidative stress, aging, and caloric restriction. Free Radic Biol Med. 2006. (contexto E1)
 
 ---
 
-## ✅ Evidencia humana (E3)
+## ✅ Estudios humanos destacados (E3)
 
-- Wirth M, et al. The effect of spermidine on memory in older adults. Cortex. 2018. [FALTA FUENTE — PMID 29890268 apuntaba a un paper de fluoróforos NIR; verificar PMID real de Wirth 2018]
-- Dietary spermidine correlates with mortalidad cardiovascular en cohortes observacionales (E3).
+| Estudio | Hallazgo | PMID |
+|---------|----------|------|
+| Wirth 2018 Cortex | RCT 3 meses en mayores con riesgo demencia: mejora memoria episódica con suplemento de espermidina | 30388439 |
+| Eisenberg 2016 Nat Med | Cardioprotección en roedores + cohorte humana: mayor ingesta dietética de espermidina asociada a menor presión y mortalidad CV | 27841876 |
+| Kouli 2018 Am J Clin Nutr | Cohorte prospectiva: mayor ingesta de espermidina ligada a menor mortalidad (incl. CV) | 29955838 |
 
-**Gap:** no hay RCT masivo de longevidad; dosis óptima humana no consensuada.
+**Gap:** no hay RCT masivo de longevidad; dosis óptima humana no consensuada; replicación de memoria pendiente en cohortes más amplias.
 
 ---
 
-## 🏷️ Uso HV (Avenida 1)
+## 🏷️ Uso HV — Motor de Justificación
 
-**Permitido:**
-> "La espermidina se investiga como modulador de **autofagia** (E2–E3). En optimización, se usa como suplemento nocturno en stacks de longevidad junto con higiene del sueño. No sustituye dieta ni evaluación médica."
+**Ejemplo con dato usuario:**
+> "Tu **sueño fragmentado** y queja de **niebla mental matutina** encajan con optimización del **eje autofagia–neuroprotección** (E1). Pilotos humanos (E3) reportan mejora de memoria episódica y señales cardiovasculares favorables con espermidina. En Av.1, **nocturno** en Stack Vigente junto con higiene del sueño y NMN — soporte nutricional, no tratamiento de demencia ni prescripción de dosis."
 
-**Dosis en mercado biohacking:** 1–20 mg/día (ilustrativo, **no prescripción HV**); validar con proveedor y médico.
+**Dosis mercado:** 1–20 mg/día — **no prescripción HV**; validar COA con proveedor y médico.
+
+**Sinergia stack C1:** NMN (mitocondria) + espermidina (autofagia) + resveratrol (SIRT1) — popular en literatura gris; **evidencia combinada humana limitada** (E2–E3).
 
 ---
 
@@ -62,6 +67,7 @@
 
 - Poliaminas y cáncer: debate teórico en oncología (E2); **antecedente oncológico → médico obligatorio**.
 - Calidad de suplemento: variabilidad; preferir COA.
+- **Litio / psiquiatría:** no sustituye ni modifica psicofármacos; clearance del médico tratante (perfil marcado HV).
 
 ---
 
@@ -70,9 +76,29 @@
 **¿Espermidina "detoxifica"?**  
 No usar lenguaje detox. Usar: "modulación de autofagia en investigación".
 
+**¿Puedo tomar espermidina con NMN?**  
+Conceptualmente complementarios (autofagia + NAD+) en Av.1; sin RCT largo de combinación en humanos (E3 gap).
+
 ---
 
-## Auditoría citas (2026-06-07)
-- PMID 30026355 → reemplazado por **29371440** (Madeo, Spermidine in health and disease, Science 2018; el viejo era virus Schmallenberg)
-- PMID 19170625 → reemplazado por **19801973** (Eisenberg, autophagy by spermidine, Nat Cell Biol 2009; el viejo no resuelve en PubMed)
-- PMID 29890268 → [FALTA FUENTE] (era fluoróforos NIR; verificar Wirth memoria real)
+## 📚 Referencias clave
+
+- Madeo F, et al. Spermidine in health and disease. Science. 2018. PMID: 29371440 (E1)
+- Eisenberg T, et al. Induction of autophagy by spermidine promotes longevity. Nat Cell Biol. 2009. PMID: 19801973 (E2)
+- Eisenberg T, et al. Cardioprotection and lifespan extension by the natural polyamine spermidine. Nat Med. 2016. PMID: 27841876 (E2–E3)
+- Wirth M, et al. The effect of spermidine on memory performance in older adults at risk for dementia. Cortex. 2018. PMID: 30388439 (E3)
+- Kouli GM, et al. Higher spermidine intake is linked to lower mortality: a prospective population-based study. Am J Clin Nutr. 2018. PMID: 29955838 (E3)
+
+---
+
+## Auditoría citas (2026-06-08)
+- PMID 30026355 → reemplazado por **29371440** (Madeo, Science 2018; el viejo era virus Schmallenberg)
+- PMID 19170625 → reemplazado por **19801973** (Eisenberg, autophagy by spermidine, Nat Cell Biol 2009)
+- PMID 29890268 → reemplazado por **30388439** (Wirth, memoria mayores, Cortex 2018; el viejo era fluoróforos NIR)
+- PMID 27841876 → OK (Eisenberg, cardioprotección + cohorte humana dieta, Nat Med 2016)
+- PMID 29955838 → OK (Kouli, mortalidad dieta espermidina, Am J Clin Nutr 2018)
+
+## Actualización SSOT (2026-06-08)
+- Tabla estudios humanos + motor justificación (sueño/energía, stack C1).
+- Cero huecos de citas pendientes en cuerpo del documento.
+- Próxima revisión: RCT memoria replicado en N>200 o meta-análisis poliaminas cardiometabólicas post-2020.

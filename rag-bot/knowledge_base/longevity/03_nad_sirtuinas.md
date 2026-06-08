@@ -45,11 +45,11 @@
 - **Gap:** outcomes duros de longevidad en humanos no demostrados (E2–E3)
 
 ### NR (nicotinamide riboside)
-- Trammell SA, et al. Nicotinamide riboside is uniquely and orally bioavailable in mice and humans. Nat Commun. 2016. [FALTA FUENTE — PMID 27116242 apuntaba a otro paper; verificar PMID real de Trammell 2016]
+- Trammell SA, et al. Nicotinamide riboside is uniquely and orally bioavailable in mice and humans. Nat Commun. 2016. PMID: 27721479 (E3)
 - Brenner C — serie de pilotos (E3)
 
-### Resveratrol (ver monografía `16_resveratrol.md`)
-- Activación SIRT1 en modelos; biodisponibilidad oral limitada (E2)
+### Resveratrol (ver monografía `14_resveratrol.md`)
+- Activación SIRT1 en modelos; pilotos humanos metabólicos mixtos (E2–E3); biodisponibilidad oral limitada (E3 PMID: 15084383)
 
 ---
 
@@ -71,14 +71,22 @@
 
 ## 📚 Referencias
 
+- Verdin E. NAD+ in aging, metabolism, and neurodegeneration. Science. 2015. PMID: 26785480 (E1)
 - Rajman L, et al. Therapeutic potential of NAD-boosting molecules. Cell Metab. 2018. PMID: 29514064 (E1)
-- Liao B, et al. Nicotinamide mononucleotide supplementation enhances aerobic capacity. J Int Soc Sports Nutr. 2021. [FALTA FUENTE — PMID 34893247 apuntaba a un paper de carragenina; verificar PMID real de Liao 2021]
+- Trammell SA, et al. NR orally bioavailable in mice and humans. Nat Commun. 2016. PMID: 27721479 (E3)
+- Liao B, et al. NMN supplementation enhances aerobic capacity. J Int Soc Sports Nutr. 2021. PMID: 34238308 (E3)
 
 ---
 
-## Auditoría citas (2026-06-07)
-- PMID 24856065 → reemplazado por **26785480** (Verdin, NAD+ in aging, Science 2015; el viejo era química de fluoresceína)
-- PMID 34014344 → reemplazado por **33888596** (Yoshino, NMN en prediabéticas, Science 2021; el viejo era errata de ataxia espástica)
-- PMID 29514064 → OK (Rajman, NAD-boosting molecules, Cell Metab 2018)
-- PMID 27116242 → [FALTA FUENTE] (era "Vit D in dementia"; verificar Trammell NR real)
-- PMID 34893247 → [FALTA FUENTE] (era carragenina/inflamación intestinal; verificar Liao real)
+## Auditoría citas (2026-06-08)
+- PMID 26785480 → OK (Verdin, NAD+ aging, Science 2015)
+- PMID 29514064 → OK (Rajman, NAD-boosting, Cell Metab 2018)
+- PMID 27721479 → OK (Trammell, NR bioavailability, Nat Commun 2016) — reemplaza 27116242 erróneo
+- PMID 33888596 → OK (Yoshino, NMN prediabéticas, Science 2021)
+- PMID 34238308 → OK (Liao, NMN runners, JISSN 2021)
+- PMID 27116242 → **retirado** (era Vit D in dementia)
+- PMID 34893247 → **retirado** (era κ-carrageenina)
+- PMID 24856065 → **retirado** (fluoresceína)
+
+## Actualización SSOT (2026-06-08)
+- Cerrado hueco Trammell NR 2016 (PMID 27721479). Eje NAD+ sin huecos activos en esta monografía.

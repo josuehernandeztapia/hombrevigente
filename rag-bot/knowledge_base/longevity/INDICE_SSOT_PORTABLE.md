@@ -177,22 +177,63 @@ Formato alineado a `Prompt_Construir_SSOT_RAG.md`. Una tarjeta = un embedding ó
 
 | Tema | PMID verificado | Referencia |
 |------|-----------------|------------|
+| Hallmarks of aging 2013 | **23746838** | López-Otín et al., Cell 2013 |
 | Hallmarks of aging 2023 | **36599349** | López-Otín et al., Cell 2023 |
+| Geroscience framework | **25417146** | Kennedy et al., Cell 2014 |
+| Senescent cells in ageing (framework) | **24848057** | van Deursen, Nature 2014 |
+| Senolytic drugs review | **32686219** | Kirkland & Tchkonia, J Intern Med 2020 |
 | Inflammaging | 24833586 | Franceschi & Campisi, J Gerontol 2014 |
 | NAD+ boosting (review) | **26785480**, 29514064 | Verdin, Science 2015; Rajman/Sinclair, Cell Metab 2018 |
+| NR bioavailability (human) | **27721479** | Trammell et al., Nat Commun 2016 |
 | NMN humano (RCT) | **33888596** | Yoshino et al., Science 2021 |
+| NMN aerobic capacity (RCT) | **34238308** | Liao et al., JISSN 2021 |
+| NMN older men (pilot) | **35927255** | Igarashi et al., NPJ Aging 2022 |
+| Resveratrol CR-mimetic (human RCT) | **22055504** | Timmers et al., Cell Metab 2011 |
+| Resveratrol insulin sensitivity (T2DM) | **21385509** | Brasnyó et al., Br J Nutr 2011 |
+| Resveratrol oral bioavailability | **15084383** | Walle et al., Drug Metab Dispos 2004 |
+| Resveratrol SIRT1 yeast (foundational) | **12939617** | Howitz et al., Nature 2003 |
+| Resveratrol mice high-calorie diet | **17086191** | Baur et al., Nature 2006 |
 | Espermidina longevity mice | **19801973** | Eisenberg et al., Nat Cell Biol 2009 |
+| Espermidina review (health/disease) | **29371440** | Madeo et al., Science 2018 |
+| Espermidina cardioprotection + diet cohort | **27841876** | Eisenberg et al., Nat Med 2016 |
+| Espermidina memory RCT (older adults) | **30388439** | Wirth et al., Cortex 2018 |
+| Dietary spermidine mortality cohort | **29955838** | Kouli et al., Am J Clin Nutr 2018 |
 | Fisetina senolytic | **30279143** | Yousefzadeh et al., EBioMedicine 2018 |
-| BPC-157 review | **21548867** | Sikiric et al., Curr Pharm Des 2011 |
-| GHK-Cu review | **29986520** | Pickart & Margolina, Int J Mol Sci 2018 |
-| Tesamorelin NEJM (RCT) | **18057338** | Falutz et al., NEJM 2007 |
+| Quercetin senolytic discovery (transcriptome) | **25754370** | Zhu et al., Aging Cell 2015 |
+| D+Q senolytics IPF (first-in-human) | **30616998** | Justice et al., EBioMedicine 2019 |
+| D+Q senolytics diabetic kidney (human pilot) | **31542391** | Hickson et al., EBioMedicine 2019 |
+| BPC-157 review (GI) | **21548867** | Sikiric et al., Curr Pharm Des 2011 |
+| BPC-157 and blood vessels (review) | **23782145** | Seiwerth et al., Curr Pharm Des 2014 |
+| BPC-157 vascular / ICV model | **29510201** | Vukojević et al., Vascul Pharmacol 2018 |
+| BPC-157 tendon healing (rats) | **21030672** | Chang et al., J Appl Physiol 2011 |
+| BPC-157 musculoskeletal review | **30915550** | Gwyer et al., Cell Tissue Res 2019 |
+| Tβ4 dermal wound repair (mice) | **12581423** | Philp et al., Wound Repair Regen 2003 |
+| Tβ4 actin / repair review | **16099219** | Goldstein et al., Trends Mol Med 2005 |
+| Tβ4 epicardial progenitors | **17108969** | Smart et al., Nature 2007 |
+| Tβ4 de novo cardiomyocytes | **21654746** | Smart et al., Nature 2011 |
+| Tβ4 venous ulcers (human) | **20536470** | Kleinman et al., Ann NY Acad Sci 2010 |
+| Tβ4 clinical applications review | **26096726** | Goldstein et al., Expert Opin Biol Ther 2015 |
+| GHK-Cu review (gene data) | **29986520** | Pickart & Margolina, Int J Mol Sci 2018 |
+| GHK-Cu skin pathways | **26236730** | Pickart et al., Biomed Res Int 2015 |
+| Cold water exposure review | **36137565** | Esperland et al., Int J Circumpolar Health 2022 |
+| Sauna mortality cohort | **25705824** | Laukkanen et al., JAMA Intern Med 2015 |
+| Oura ring HRV validation | **32217820** | Kinnunen et al., Physiol Meas 2020 |
+| HRV-guided training (RCT) | **28570494** | Kiviniemi et al., J Strength Cond Res 2017 |
+| Tesamorelin GHRH HIV lipodystrophy (RCT) | **15249570** | Koutkia et al., JAMA 2004 |
+| Tesamorelin NEJM metabolic (RCT) | **18057338** | Falutz et al., NEJM 2007 |
+| Tesamorelin visceral + liver fat (RCT) | **25038357** | Stanley et al., JAMA 2014 |
+| Tesamorelin liver enzymes (HIV) | **28832410** | Fourman et al., AIDS 2017 |
 | Senolytics IPF (pilot) | **30616998** | Justice et al., EBioMedicine 2019 |
 | Epitalon mice | **14501183** | Anisimov et al., Biogerontology 2003 |
 | Horvath clock | 24138928 | Horvath, Genome Biol 2013 |
+| Partial reprogramming (Ocampo) | **27984723** | Ocampo et al., Cell 2016 |
+| Reprogramming & vision (Lu) | **33268865** | Lu et al., Nature 2020 |
+| Partial reprogramming human cells | **35390271** | Gill et al., eLife 2022 |
+| ICE / epigenetic aging (Sinclair) | **36638792** | Yang et al., Cell 2023 |
 
 *PMIDs en negrita = corregidos en v1.1 (el v1.0 apuntaba a un paper ajeno). Los no-negrita ya eran correctos.*
 
-> ⚠️ **Verificado (2026-06-07):** las monografías SÍ existen en el repo (`rag-bot/knowledge_base/longevity/`, archivos `00`–`17` y `20`–`29`, 28 + README) y están **pobladas** (no vacías). PERO un spot-check confirma que **arrastran los mismos PMIDs malos**: p. ej. `13_nmn.md` cita PMID 34014344 (errata de ataxia espástica) para el estudio de NMN en prediabéticas y 24856065 (química de fluoresceína) como NAD+; `11_tesamorelin.md` cita PMID 18032787 (fosforilación de WAVE2) para Falutz NEJM. **Las 28 monografías necesitan la misma auditoría de citas que ya se aplicó a las tarjetas y a esta sección 7 antes de embeber.**
+> ✅ **Auditoría SSOT completa (2026-06-08):** monografías `00–29` y tarjetas `tarjetas/*.md` — **0 huecos `[FALTA FUENTE]`** en cuerpo embebible. Changelog `## Auditoría citas` puede mencionar PMIDs retirados; no se embebe (split en `kb_pipeline`).
 
 ---
 
