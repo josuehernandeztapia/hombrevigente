@@ -2,10 +2,20 @@
 
 Prototipos de alta fidelidad y SSOT de copy/tokens del producto.
 
-| Ruta | Contenido |
-|------|-----------|
-| [`handoff/`](handoff/) | Journey completo: Mapa + landing + 6 flujos app + `hv-data.jsx` + inventario de copy |
+| Ruta | Contenido | Uso |
+|------|-----------|-----|
+| [`handoff/`](handoff/) | Journey interactivo: Mapa + landing + 6 flujos + `hv-data.jsx` + inventario | Desarrollo / demo con archivos separados |
+| [`deck/`](deck/) | Flujo del producto con capturas (HTML → imprimir PDF) | Pitch, aliado médico, onboarding interno |
+| [`reel/`](reel/) | Reel 9:16 autoplay (un HTML autocontenido) | Stories, LinkedIn, eventos |
 
-**Empezar aquí:** `handoff/Mapa Vigente.html` (navegador) o `handoff/README.md` (spec de port a producción).
+**Demo interactivo:** `open handoff/Mapa\ Vigente.html`
+
+**Deck PDF:** `open deck/Flujo-producto.html` → Imprimir / Guardar como PDF
+
+**Reel:** `open reel/Reel-Vigente-9x16.html` (toca para pausar)
+
+### Demo offline (~12 MB, fuera de git)
+
+`Hombre Vigente.zip` en Downloads = HTML autocontenidos (sin depender de `.jsx` externos). Útil para compartir por AirDrop/Drive. No está en el repo por tamaño; el equivalente desarrollable es `handoff/`.
 
 Operación actual (MVP-0 manual): `estrategia_2026/MVP0_Doctrina.md`. Evidencia RAG: `rag-bot/knowledge_base/longevity/00_MARCO_SSOT_EVIDENCIA_Y_COMPLIANCE.md`.

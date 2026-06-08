@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hombre Vigente — Flujo del producto (PDF)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{ --bg:#08080A; --panel:#141417; --ink:#F3F1EC; --mid:#9A9AA0; --low:#5C5C62; --line:rgba(255,255,255,.10); --bronze:#C6A06A; --soft:rgba(198,160,106,.12); --ring:rgba(198,160,106,.32); }
+  *{ box-sizing:border-box; margin:0; padding:0; }
+  html,body{ background:var(--bg); color:var(--ink); font-family:'Montserrat',sans-serif; -webkit-font-smoothing:antialiased; }
+  .wrap{ max-width:1000px; margin:0 auto; padding:56px 48px 80px; }
+  .eyebrow{ font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:.24em; text-transform:uppercase; color:var(--bronze); display:flex; align-items:center; gap:9px; }
+  .eyebrow::before{ content:""; width:6px; height:6px; border-radius:9px; background:var(--bronze); box-shadow:0 0 9px var(--bronze); }
+  h1{ font-weight:900; font-size:46px; line-height:1; letter-spacing:-.03em; text-transform:uppercase; margin:16px 0 0; }
+  h1 .b{ color:var(--bronze); }
+  .lede{ color:var(--mid); font-size:15px; line-height:1.6; max-width:60ch; margin:16px 0 0; }
+  .stage{ margin-top:50px; break-inside:avoid; }
+  .stage-h{ display:flex; align-items:baseline; gap:14px; margin-bottom:6px; }
+  .stage-n{ font-family:'IBM Plex Mono',monospace; font-size:13px; color:var(--bronze); font-weight:500; }
+  .stage-t{ font-weight:900; font-size:24px; letter-spacing:-.02em; text-transform:uppercase; }
+  .stage-d{ color:var(--mid); font-size:13.5px; line-height:1.55; margin:4px 0 22px; max-width:64ch; }
+  .row{ display:flex; gap:18px; flex-wrap:wrap; }
+  .shot{ width:230px; }
+  .shot img{ width:100%; display:block; border-radius:20px; border:1px solid var(--line); background:#000; }
+  .cap{ font-family:'IBM Plex Mono',monospace; font-size:10.5px; letter-spacing:.04em; color:var(--mid); margin-top:9px; text-align:center; }
+  .cap b{ color:var(--ink); font-weight:600; }
+  .full img{ width:100%; border-radius:16px; border:1px solid var(--line); display:block; }
+  hr{ border:none; border-top:1px solid var(--line); margin:48px 0 0; }
+  .foot{ margin-top:40px; color:var(--low); font-family:'IBM Plex Mono',monospace; font-size:10.5px; line-height:1.7; }
+  @media print{
+    @page{ margin:12mm; }
+    body{ background:#fff; }
+    .wrap{ padding:0; max-width:100%; }
+    .stage{ break-inside:avoid; }
+    .shot img,.full img{ -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="eyebrow">Flujo del producto · México · Demo de diseño</div>
+  <h1>Hombre <span class="b">Vigente</span></h1>
+  <p class="lede">El journey completo de longevidad gestionada, pantalla por pantalla. Demo de alta fidelidad en bronce (base noir). Contenido ilustrativo — no es diagnóstico ni tratamiento médico.</p>
+
+  <div class="stage">
+    <div class="stage-h"><span class="stage-n">01</span><span class="stage-t">Captación</span></div>
+    <div class="stage-d">Landing pública de "longevidad gestionada". Posicionamiento del wedge, tabla comparativa y escaneo gratis → WhatsApp.</div>
+    <div class="full"><img src="assets/landing.png" alt="Landing"></div>
+    <div class="cap" style="text-align:left;margin-top:10px"><b>Landing Vigente</b> · "No te vendemos un vial. Te damos un plan con médico."</div>
+  </div>
+
+  <hr>
+  <div class="stage">
+    <div class="stage-h"><span class="stage-n">02</span><span class="stage-t">Diagnóstico</span></div>
+    <div class="stage-d">Onboarding de 7 pantallas que genera el Índice Vigente™ y rutea a Av.1 (sin receta) o Av.2 (médica).</div>
+    <div class="row">
+      <div class="shot"><img src="assets/02-onb.png" alt=""><div class="cap"><b>Bienvenida</b><br>empieza por datos</div></div>
+      <div class="shot"><img src="assets/03-onb.png" alt=""><div class="cap"><b>Tu historial</b><br>foto · labs · wearable</div></div>
+      <div class="shot"><img src="assets/04-onb.png" alt=""><div class="cap"><b>Índice Vigente™</b><br>score 68 · señales</div></div>
+      <div class="shot"><img src="assets/05-onb.png" alt=""><div class="cap"><b>Tu siguiente paso</b><br>routing Av.1 / Av.2</div></div>
+    </div>
+  </div>
+
+  <hr>
+  <div class="stage">
+    <div class="stage-h"><span class="stage-n">03a</span><span class="stage-t">Conversión · Av.1 (sin receta)</span></div>
+    <div class="stage-d">Resultado del escaneo → elegir programa → checkout (pago MX) → confirmación. Suplementos con COA.</div>
+    <div class="row">
+      <div class="shot"><img src="assets/02-conv.png" alt=""><div class="cap"><b>Escaneo</b><br>lectura inicial</div></div>
+      <div class="shot"><img src="assets/03-conv.png" alt=""><div class="cap"><b>Programas</b><br>elige profundidad</div></div>
+      <div class="shot"><img src="assets/04-conv.png" alt=""><div class="cap"><b>Checkout</b><br>Tarjeta·SPEI·OXXO</div></div>
+      <div class="shot"><img src="assets/05-conv.png" alt=""><div class="cap"><b>Confirmación</b><br>"Ya eres Vigente"</div></div>
+    </div>
+  </div>
+
+  <hr>
+  <div class="stage">
+    <div class="stage-h"><span class="stage-n">03b</span><span class="stage-t">Conversión · Av.2 (vía médica)</span></div>
+    <div class="stage-d">Elegibilidad → agendar teleconsulta → receta firmada + magistral con COA → confirmación. El médico decide y firma.</div>
+    <div class="row">
+      <div class="shot"><img src="assets/01-tele.png" alt=""><div class="cap"><b>Elegibilidad</b><br>tu caso pasa por médico</div></div>
+      <div class="shot"><img src="assets/02-tele.png" alt=""><div class="cap"><b>Agendar</b><br>teleconsulta</div></div>
+      <div class="shot"><img src="assets/03-tele.png" alt=""><div class="cap"><b>Receta + Magistral</b><br>firmada · COA por lote</div></div>
+      <div class="shot"><img src="assets/04-tele.png" alt=""><div class="cap"><b>Confirmación</b><br>"el médico está contigo"</div></div>
+    </div>
+  </div>
+
+  <hr>
+  <div class="stage">
+    <div class="stage-h"><span class="stage-n">04</span><span class="stage-t">Recurrencia · el loop</span></div>
+    <div class="stage-d">Dashboard → check-in semanal → ajuste (el médico aprueba) → membresía. Datos reales, re-test trimestral, data moat.</div>
+    <div class="row">
+      <div class="shot"><img src="assets/01-seg.png" alt=""><div class="cap"><b>Dashboard</b><br>−28% inflamación</div></div>
+      <div class="shot"><img src="assets/02-seg.png" alt=""><div class="cap"><b>Check-in</b><br>por WhatsApp</div></div>
+      <div class="shot"><img src="assets/03-seg.png" alt=""><div class="cap"><b>Ajuste & Membresía</b><br>Esencial / Plus</div></div>
+    </div>
+  </div>
+
+  <hr>
+  <div class="stage">
+    <div class="stage-h"><span class="stage-n">✦</span><span class="stage-t">Transversal · Confianza + Canal</span></div>
+    <div class="stage-d">Confianza (Caso #1 + evidencia citada con PMIDs) y el canal concierge por WhatsApp que opera todo el journey.</div>
+    <div class="row">
+      <div class="shot"><img src="assets/01-conf.png" alt=""><div class="cap"><b>Por qué creerte</b><br>4 pilares</div></div>
+      <div class="shot"><img src="assets/03-conf.png" alt=""><div class="cap"><b>Caso #1</b><br>fundador, con datos</div></div>
+      <div class="shot"><img src="assets/04-conf.png" alt=""><div class="cap"><b>Evidencia citada</b><br>Fuerte/Moderada + PMID</div></div>
+      <div class="shot"><img src="assets/canal.png" alt=""><div class="cap"><b>WhatsApp concierge</b><br>entrega de lectura</div></div>
+    </div>
+  </div>
+
+  <p class="foot">Hombre Vigente · demo de diseño en bronce (noir + acento). Contenido ilustrativo; no garantiza resultados. La Avenida 2 (prescripción) requiere valoración y firma de un médico responsable. Médico y cédula mostrados son un ejemplo. Pendiente antes de live: Aviso de Privacidad (LFPDPPP) y responsable sanitario real.</p>
+</div>
+</body>
+</html>
