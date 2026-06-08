@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hombre Vigente — Longevidad Gestionada para el Hombre</title>
+<meta name="description" content="Longevidad gestionada: diagnóstico objetivo, protocolo personalizado, médico responsable y seguimiento con datos. Optimización y bienestar para el hombre en México. No es un vial con disclaimer — es acompañamiento serio.">
+
+<!-- Open Graph / WhatsApp / redes -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="Hombre Vigente — Longevidad Gestionada">
+<meta property="og:description" content="Diagnóstico objetivo + protocolo personalizado + médico + seguimiento. Optimización seria, no un vial con disclaimer.">
+<meta property="og:image" content="https://res.cloudinary.com/dytmjjb9l/image/upload/v1760670284/3D_lounge_with_leather_sofas_coffee_whisky_bar_webinar_screen_modern_masculine_design._Upscale_waiting_area_or_consultation_space_with_premium_finishes_ambient_lighting_and_comfortable_seating_for_client_consultations_or_small_group_pr_ck1jka.png">
+<meta property="og:locale" content="es_MX">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Hombre Vigente — Longevidad Gestionada">
+<meta name="twitter:description" content="Optimización seria con médico, diagnóstico y seguimiento. No un vial con disclaimer.">
+
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90' font-weight='900' fill='%23C6A06A'>V</text></svg>">
+
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700;900&display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    --bg:#0B0B0C; --panel:#141416; --ink:#ECECEE; --muted:#9A9AA0;
+    --green:#C6A06A; --gold:#C9A86A; --line:#26262A;
+  }
+  body{font-family:'Montserrat',sans-serif;background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased;}
+  .display{font-weight:900;letter-spacing:-.03em;text-transform:uppercase;line-height:.95;}
+  .acc{color:var(--green);}
+  .gold{color:var(--gold);}
+  .panel{background:var(--panel);border:1px solid var(--line);}
+  .glass{background:rgba(20,20,22,.6);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid rgba(38,38,42,.7);}
+  .hero-bg{
+    position:relative;
+    background:
+      radial-gradient(900px 520px at 78% -8%, rgba(198,160,106,.14), transparent 60%),
+      radial-gradient(720px 520px at 8% 112%, rgba(201,168,106,.06), transparent 60%),
+      linear-gradient(180deg,#0B0B0C 0%,#0E0E11 58%,#0B0B0C 100%);
+  }
+  .hero-bg::before{
+    content:"";position:absolute;inset:0;pointer-events:none;z-index:0;
+    background-image:
+      linear-gradient(rgba(255,255,255,.026) 1px,transparent 1px),
+      linear-gradient(90deg,rgba(255,255,255,.026) 1px,transparent 1px);
+    background-size:46px 46px;
+    -webkit-mask-image:radial-gradient(ellipse 70% 60% at 50% 32%,#000,transparent 78%);
+    mask-image:radial-gradient(ellipse 70% 60% at 50% 32%,#000,transparent 78%);
+  }
+  .hero-bg > *{position:relative;z-index:1;}
+  .btn-primary{display:inline-block;background:var(--green);color:#0D0D0D;font-weight:800;padding:1rem 2rem;border-radius:9999px;transition:.25s;}
+  .btn-primary:hover{filter:brightness(1.08);transform:translateY(-2px);}
+  .btn-ghost{display:inline-block;border:1.5px solid var(--line);color:var(--ink);font-weight:700;padding:1rem 2rem;border-radius:9999px;transition:.25s;}
+  .btn-ghost:hover{border-color:var(--green);color:var(--green);}
+  .chip{display:inline-block;font-size:.72rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--green);border:1px solid rgba(198,160,106,.4);padding:.3rem .7rem;border-radius:9999px;}
+  .marquee{overflow:hidden;background:#0F0F11;border-top:1px solid var(--line);border-bottom:1px solid var(--line);}
+  .marquee-content{display:flex;white-space:nowrap;animation:scroll 28s linear infinite;}
+  .marquee:hover .marquee-content{animation-play-state:paused;}
+  .marquee-item{flex-shrink:0;padding:.9rem 2rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);font-size:.95rem;}
+  .marquee-item b{color:var(--green);}
+  @keyframes scroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+  .step-n{font-weight:900;color:var(--green);font-size:1.5rem;}
+  input,select,textarea{background:#0F0F11;border:1px solid var(--line);color:var(--ink);border-radius:.6rem;padding:.7rem .9rem;width:100%;}
+  input:focus,select:focus,textarea:focus{outline:none;border-color:var(--green);}
+  label{font-size:.8rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;}
+  .tbl td,.tbl th{border:1px solid var(--line);padding:.8rem 1rem;text-align:left;font-size:.92rem;}
+  .tbl th{background:#0F0F11;text-transform:uppercase;font-size:.72rem;letter-spacing:.08em;color:var(--muted);}
+  .yes{color:var(--green);font-weight:700;}.no{color:#6b6b70;}
+</style>
+</head>
+<body>
+
+<template id="__bundler_thumbnail">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+    <rect width="100" height="100" fill="#08080A"/>
+    <text x="50" y="44" text-anchor="middle" font-family="Montserrat,sans-serif" font-size="22" font-weight="900" fill="#F3F1EC">HV</text>
+    <rect x="34" y="56" width="32" height="4" rx="2" fill="#C6A06A"/>
+  </svg>
+</template>
+
+<!-- Header -->
+<header id="inicio" class="fixed top-0 inset-x-0 z-50 bg-black/55 backdrop-blur-sm border-b border-[#1c1c1f]">
+  <div class="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
+    <a href="#inicio" class="text-xl display">Hombre <span class="font-normal lowercase tracking-tight">vigente</span></a>
+    <nav class="hidden md:flex items-center gap-7 text-sm font-bold">
+      <a href="#como" class="text-gray-300 hover:text-white">Cómo funciona</a>
+      <a href="#oferta" class="text-gray-300 hover:text-white">Programas</a>
+      <a href="#confianza" class="text-gray-300 hover:text-white">Confianza</a>
+      <a href="#club" class="text-gray-300 hover:text-white">El Club</a>
+      <a href="#escaneo" class="btn-primary !py-2 !px-5 text-sm">Escaneo gratis</a>
+    </nav>
+    <button id="mb" class="md:hidden text-white" aria-label="Menú"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg></button>
+  </div>
+  <div id="mm" class="hidden md:hidden px-6 pb-4 bg-black/90 space-y-2">
+    <a href="#como" class="block py-1 text-gray-300">Cómo funciona</a>
+    <a href="#oferta" class="block py-1 text-gray-300">Programas</a>
+    <a href="#confianza" class="block py-1 text-gray-300">Confianza</a>
+    <a href="#club" class="block py-1 text-gray-300">El Club</a>
+    <a href="#escaneo" class="block py-1 acc font-bold">Escaneo gratis</a>
+  </div>
+</header>
+
+<main>
+<!-- HERO -->
+<section class="hero-bg min-h-screen flex items-center pt-24 pb-16">
+  <div class="max-w-6xl mx-auto px-6 text-center">
+    <span class="chip mb-6">Longevidad gestionada · México</span>
+    <h1 class="display text-4xl md:text-6xl text-white mt-4">No te vendemos un vial.<br>Te damos un <span class="acc">plan con médico.</span></h1>
+    <p class="text-lg md:text-xl text-gray-300 max-w-2xl mx-auto mt-7">
+      Diagnóstico objetivo, protocolo personalizado, <b class="text-white">médico responsable</b> y seguimiento con tus datos. Optimización y energía para el hombre — seria, medible y acompañada.
+    </p>
+    <p class="text-sm text-gray-500 italic max-w-xl mx-auto mt-4">El gris te manda un frasco con "research use only". Nosotros ponemos cara, criterio clínico y trazabilidad.</p>
+    <div class="flex flex-col sm:flex-row gap-3 justify-center mt-9">
+      <a href="#escaneo" class="btn-primary">Empieza con tu Escaneo Vigente gratis</a>
+      <a href="#como" class="btn-ghost">Ver cómo funciona</a>
+    </div>
+  </div>
+</section>
+
+<!-- Ticker -->
+<div class="marquee py-1">
+  <div class="marquee-content">
+    <span class="marquee-item"><b>✓</b> Médico responsable, no anónimos</span>
+    <span class="marquee-item"><b>✓</b> Diagnóstico con tus labs y wearable</span>
+    <span class="marquee-item"><b>✓</b> Insumo vía farmacia magistral con receta</span>
+    <span class="marquee-item"><b>✓</b> Seguimiento y re-test</span>
+    <span class="marquee-item"><b>✓</b> Evidencia citada, no marketing</span>
+    <span class="marquee-item"><b>✓</b> Médico responsable, no anónimos</span>
+    <span class="marquee-item"><b>✓</b> Diagnóstico con tus labs y wearable</span>
+    <span class="marquee-item"><b>✓</b> Insumo vía farmacia magistral con receta</span>
+    <span class="marquee-item"><b>✓</b> Seguimiento y re-test</span>
+    <span class="marquee-item"><b>✓</b> Evidencia citada, no marketing</span>
+  </div>
+</div>
+
+<!-- POR QUÉ GESTIONADA -->
+<section class="py-20 md:py-28 max-w-6xl mx-auto px-6">
+  <div class="text-center mb-14">
+    <span class="chip">Por qué "gestionada"</span>
+    <h2 class="display text-3xl md:text-5xl text-white mt-5">Mismo mercado.<br>Distinta liga.</h2>
+    <p class="text-gray-400 max-w-2xl mx-auto mt-5">Hay una ola de longevidad en México. Casi todos la surfean por abajo: un frasco + un disclaimer. Nosotros la surfeamos por arriba: protocolo gestionado con médico, diagnóstico y datos.</p>
+  </div>
+  <div class="overflow-x-auto">
+    <table class="tbl w-full border-collapse">
+      <thead><tr><th></th><th>Tienda gris (vial)</th><th>Clínica US</th><th class="!text-[var(--green)]">Hombre Vigente</th></tr></thead>
+      <tbody>
+        <tr><td class="font-bold">Qué recibes</td><td>Vial + "research use only"</td><td>Programa caro en inglés</td><td class="yes">Protocolo gestionado</td></tr>
+        <tr><td class="font-bold">Médico</td><td class="no">No ("no damos asesoría")</td><td class="yes">Sí (tercerizado)</td><td class="yes">Médico responsable propio</td></tr>
+        <tr><td class="font-bold">Diagnóstico</td><td class="no">Ninguno</td><td class="yes">Labs</td><td class="yes">Labs + wearable + escaneo</td></tr>
+        <tr><td class="font-bold">Insumo</td><td class="no">Importación gris</td><td>Farmacia</td><td class="yes">Magistral con receta + COA</td></tr>
+        <tr><td class="font-bold">Seguimiento</td><td class="no">Ninguno</td><td>Limitado</td><td class="yes">Continuo + re-test</td></tr>
+        <tr><td class="font-bold">Confianza</td><td class="no">Baja (anónimo)</td><td>Media</td><td class="yes">Cara + médico + trazabilidad</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- CÓMO FUNCIONA (LOOP) -->
+<section id="como" class="py-20 md:py-28 bg-[#101012] border-y border-[#1c1c1f]">
+  <div class="max-w-6xl mx-auto px-6">
+    <div class="text-center mb-14">
+      <span class="chip">El método</span>
+      <h2 class="display text-3xl md:text-5xl text-white mt-5">Un loop, no una venta</h2>
+      <p class="text-gray-400 max-w-2xl mx-auto mt-5">El diagnóstico te rutea: la mayoría optimiza con hábitos y suplementos (sin receta); quien califica pasa por médico antes de cualquier insumo de prescripción.</p>
+    </div>
+    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+      <div class="panel rounded-xl p-6"><div class="step-n">01</div><h3 class="font-bold text-white mt-2">Diagnóstico</h3><p class="text-gray-400 text-sm mt-2">Cuestionario + tus labs + wearable + (opcional) escaneo. Una lectura objetiva, no opiniones.</p></div>
+      <div class="panel rounded-xl p-6"><div class="step-n">02</div><h3 class="font-bold text-white mt-2">Protocolo personalizado</h3><p class="text-gray-400 text-sm mt-2">Recomendación justificada con evidencia citada (no "porque sí"). Lenguaje de optimización, no promesas.</p></div>
+      <div class="panel rounded-xl p-6"><div class="step-n">03</div><h3 class="font-bold text-white mt-2">Receta — el médico decide</h3><p class="text-gray-400 text-sm mt-2">Si tu caso lo amerita, un médico responsable evalúa y prescribe. El software justifica; el médico firma.</p></div>
+      <div class="panel rounded-xl p-6"><div class="step-n">04</div><h3 class="font-bold text-white mt-2">Insumo vía magistral</h3><p class="text-gray-400 text-sm mt-2">Farmacia magistral prepara bajo receta, con COA. Nada de importación gris.</p></div>
+      <div class="panel rounded-xl p-6"><div class="step-n">05</div><h3 class="font-bold text-white mt-2">Seguimiento con datos</h3><p class="text-gray-400 text-sm mt-2">Wearable + check-ins + mapas térmicos. Vemos qué funciona en ti, no en un promedio.</p></div>
+      <div class="panel rounded-xl p-6"><div class="step-n">06</div><h3 class="font-bold text-white mt-2">Re-test y ajuste</h3><p class="text-gray-400 text-sm mt-2">Re-medimos y afinamos. El loop que da resultados y construye confianza.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- GANCHO / ESCANEO (captura de lead → WhatsApp) -->
+<section id="escaneo" class="py-20 md:py-28 max-w-3xl mx-auto px-6">
+  <div class="text-center mb-10">
+    <span class="chip">Tu punto de partida · Gratis</span>
+    <h2 class="display text-3xl md:text-5xl text-white mt-5">Escaneo Vigente</h2>
+    <p class="text-gray-400 max-w-xl mx-auto mt-5">3 datos y te devolvemos una lectura inicial de tu <b class="text-white">Índice Vigente™</b> + una mini-recomendación. Sin costo, sin compromiso.</p>
+  </div>
+  <form id="leadForm" class="panel rounded-2xl p-6 md:p-8 space-y-5">
+    <div><label for="nombre">Nombre</label><input id="nombre" name="nombre" required placeholder="Tu nombre"></div>
+    <div class="grid grid-cols-2 gap-4">
+      <div><label for="edad">Edad</label><input id="edad" name="edad" type="number" min="18" max="99" required placeholder="44"></div>
+      <div><label for="ciudad">Ciudad</label><input id="ciudad" name="ciudad" placeholder="Querétaro"></div>
+    </div>
+    <div><label for="objetivo">Objetivo principal</label>
+      <select id="objetivo" name="objetivo" required>
+        <option value="">Elige uno…</option>
+        <option>Energía / rendimiento</option>
+        <option>Recomposición corporal</option>
+        <option>Recuperación / dolor</option>
+        <option>Piel y estética</option>
+        <option>Longevidad general</option>
+      </select>
+    </div>
+    <div class="grid grid-cols-2 gap-4">
+      <div><label for="labs">¿Labs recientes?</label><select id="labs" name="labs"><option>No</option><option>Sí</option></select></div>
+      <div><label for="wearable">¿Usas wearable?</label><select id="wearable" name="wearable"><option>No</option><option>Oura</option><option>Apple Watch</option><option>Whoop</option><option>Otro</option></select></div>
+    </div>
+    <button type="submit" class="btn-primary w-full text-center">Enviar y continuar por WhatsApp →</button>
+    <p class="text-xs text-gray-500 text-center">Al enviar, abrimos WhatsApp con tus respuestas para darte tu lectura. No es diagnóstico médico.</p>
+  </form>
+</section>
+
+<!-- OFERTA / PROGRAMAS -->
+<section id="oferta" class="py-20 md:py-28 bg-[#101012] border-y border-[#1c1c1f]">
+  <div class="max-w-6xl mx-auto px-6">
+    <div class="text-center mb-14">
+      <span class="chip">Programas</span>
+      <h2 class="display text-3xl md:text-5xl text-white mt-5">Misma marca,<br>distinta profundidad</h2>
+      <p class="text-gray-400 max-w-2xl mx-auto mt-5">Empiezas gratis. Subes según tu objetivo y tu disposición. Los péptidos de prescripción solo por la vía médica.</p>
+    </div>
+    <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-5">
+      <div class="panel rounded-xl p-6">
+        <p class="chip">Gancho</p>
+        <h3 class="font-bold text-white text-xl mt-3">Escaneo Vigente</h3>
+        <p class="gold font-bold mt-1">Gratis</p>
+        <p class="text-gray-400 text-sm mt-3">Cuestionario + Índice Vigente™ + mini-recomendación. Tu entrada al ecosistema.</p>
+      </div>
+      <div class="panel rounded-xl p-6">
+        <p class="chip">Av. 1 · sin receta</p>
+        <h3 class="font-bold text-white text-xl mt-3">Diagnóstico + Stack Vigente</h3>
+        <p class="gold font-bold mt-1">Diagnóstico desde ~$1,490 · Stack desde ~$899/mes</p>
+        <p class="text-gray-400 text-sm mt-3">Labs interpretados + protocolo + suplementos de optimización curados con COA.</p>
+      </div>
+      <div class="panel rounded-xl p-6 ring-1 ring-[var(--green)]">
+        <p class="chip">Recurrencia</p>
+        <h3 class="font-bold text-white text-xl mt-3">Membresía Vigente</h3>
+        <p class="gold font-bold mt-1">~$899–2,499/mes</p>
+        <p class="text-gray-400 text-sm mt-3">Seguimiento con wearable, ajustes trimestrales, labs incluidos (Plus) y descuentos.</p>
+      </div>
+      <div class="panel rounded-xl p-6">
+        <p class="chip">Av. 2 · médico</p>
+        <h3 class="font-bold text-white text-xl mt-3">Protocolo Vigente Pro</h3>
+        <p class="gold font-bold mt-1">Premium · bajo prescripción</p>
+        <p class="text-gray-400 text-sm mt-3">Teleconsulta + receta + péptidos vía magistral + seguimiento. Solo si calificas y el médico aprueba.</p>
+      </div>
+    </div>
+    <p class="text-xs text-gray-600 text-center mt-6">Precios ilustrativos, en MXN, sujetos a cotización. La Avenida 2 (prescripción) requiere valoración y firma de un médico responsable.</p>
+  </div>
+</section>
+
+<!-- CONFIANZA / TRANSPARENCIA -->
+<section id="confianza" class="py-20 md:py-28 max-w-6xl mx-auto px-6">
+  <div class="text-center mb-14">
+    <span class="chip">Confianza = el producto</span>
+    <h2 class="display text-3xl md:text-5xl text-white mt-5">Por qué creerte</h2>
+  </div>
+  <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
+    <div class="glass rounded-xl p-6"><h3 class="font-bold text-white">Médico responsable</h3><p class="text-gray-400 text-sm mt-2">Cédula real. Toda prescripción la decide y firma un profesional — no un bot, no un anónimo.</p></div>
+    <div class="glass rounded-xl p-6"><h3 class="font-bold text-white">COA por lote</h3><p class="text-gray-400 text-sm mt-2">Cada insumo con certificado de análisis. Transparencia tipo Blueprint, no "confía en mí".</p></div>
+    <div class="glass rounded-xl p-6"><h3 class="font-bold text-white">Evidencia citada</h3><p class="text-gray-400 text-sm mt-2">Cada recomendación se justifica con literatura real y verificable, marcando el nivel de evidencia. Construido sobre datos, no marketing.</p></div>
+    <div class="glass rounded-xl p-6"><h3 class="font-bold text-white">Caso #1: el fundador</h3><p class="text-gray-400 text-sm mt-2">Documentamos nuestro propio protocolo — labs, energía, recuperación, mapas térmicos. Lo que pedimos, lo vivimos.</p></div>
+  </div>
+</section>
+
+<!-- TÉRMICO -->
+<section class="py-20 md:py-28 bg-[#101012] border-y border-[#1c1c1f]">
+  <div class="max-w-6xl mx-auto px-6 grid md:grid-cols-2 gap-12 items-center">
+    <div>
+      <span class="chip">Diferenciador físico · Peldaño 3</span>
+      <h2 class="display text-3xl md:text-5xl text-white mt-5">Escaneo térmico + RGB</h2>
+      <p class="text-gray-400 mt-5">Una capa que el resto no tiene: medimos <b class="text-white">inflamación y perfusión</b> (lo que una foto no ve) como herramienta de <b class="text-white">seguimiento de optimización</b> — comparando tus mapas antes/después. </p>
+      <p class="text-gray-500 text-sm mt-4 italic">Es una medición adjunta de bienestar (ΔT relativo), no un diagnóstico médico.</p>
+    </div>
+    <div class="glass rounded-2xl p-6">
+      <div class="grid grid-cols-2 gap-4 text-center">
+        <div class="panel rounded-xl py-8"><div class="acc text-3xl font-black">ΔT</div><p class="text-gray-400 text-xs mt-2">Asimetría / inflamación</p></div>
+        <div class="panel rounded-xl py-8"><div class="acc text-3xl font-black">RGB</div><p class="text-gray-400 text-xs mt-2">Piel · textura · manchas</p></div>
+        <div class="panel rounded-xl py-8"><div class="acc text-3xl font-black">↑↓</div><p class="text-gray-400 text-xs mt-2">Antes / después</p></div>
+        <div class="panel rounded-xl py-8"><div class="acc text-3xl font-black">∞</div><p class="text-gray-400 text-xs mt-2">Seguimiento longitudinal</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PAGO MX -->
+<section class="py-16 max-w-6xl mx-auto px-6 text-center">
+  <p class="text-gray-500 text-sm uppercase tracking-widest font-bold mb-5">Pago pensado para México</p>
+  <div class="flex flex-wrap justify-center gap-3 text-sm font-bold">
+    <span class="panel rounded-full px-5 py-2">Tarjeta</span>
+    <span class="panel rounded-full px-5 py-2">SPEI</span>
+    <span class="panel rounded-full px-5 py-2">OXXO</span>
+    <span class="panel rounded-full px-5 py-2">Meses sin intereses</span>
+    <span class="panel rounded-full px-5 py-2">Kueski / Aplazo</span>
+  </div>
+</section>
+
+<!-- CLUB / FASE 2 -->
+<section id="club" class="py-20 md:py-28 bg-[#101012] border-y border-[#1c1c1f]">
+  <div class="max-w-6xl mx-auto px-6 grid md:grid-cols-2 gap-12 items-center">
+    <div>
+      <span class="chip gold-chip" style="color:var(--gold);border-color:rgba(201,168,106,.4)">Fase 2 · Próximamente</span>
+      <h2 class="display text-3xl md:text-5xl text-white mt-5">El Club físico</h2>
+      <p class="text-gray-300 mt-5">Un <b class="text-white">Classic Tech Lounge</b>: el antídoto al ambiente clínico y estéril. Tu plan se discute con expertos, café o whisky en mano — la calidez de un club de caballeros con la precisión de un laboratorio. Y la capa estética (HIFU, RF, fillers, grooming) que financiamos con el digital.</p>
+      <p class="text-gray-400 mt-4">Primero construimos el ecosistema digital y la confianza. El lounge llega después — financiado, no apresurado.</p>
+      <a href="#escaneo" class="btn-ghost mt-7">Entra ahora por el camino digital</a>
+    </div>
+    <div class="glass rounded-2xl p-3">
+      <img src="https://res.cloudinary.com/dytmjjb9l/image/upload/v1760670284/3D_lounge_with_leather_sofas_coffee_whisky_bar_webinar_screen_modern_masculine_design._Upscale_waiting_area_or_consultation_space_with_premium_finishes_ambient_lighting_and_comfortable_seating_for_client_consultations_or_small_group_pr_ck1jka.png" alt="Classic Tech Lounge — sofás de piel, café y bar" class="w-full h-72 md:h-96 object-cover rounded-xl border border-[#26262A]">
+    </div>
+  </div>
+</section>
+
+<!-- CTA FINAL -->
+<section class="py-20 md:py-28 max-w-3xl mx-auto px-6 text-center">
+  <h2 class="display text-3xl md:text-5xl text-white">¿Listo para dejar de adivinar?</h2>
+  <p class="text-gray-400 mt-5 mb-9">Empieza con tu Escaneo Vigente gratis. En minutos tienes una lectura objetiva y el siguiente paso claro.</p>
+  <div class="flex flex-col sm:flex-row gap-3 justify-center">
+    <a href="Onboarding%20Vigente.html" class="btn-primary">Hacer mi Escaneo gratis</a>
+    <a href="https://wa.me/524422022540?text=Hola%2C%20quiero%20saber%20m%C3%A1s%20de%20Hombre%20Vigente" target="_blank" rel="noopener" class="btn-ghost">Hablar por WhatsApp</a>
+  </div>
+</section>
+</main>
+
+<!-- FOOTER -->
+<footer class="border-t border-[#1c1c1f] py-10">
+  <div class="max-w-6xl mx-auto px-6 text-center text-gray-500">
+    <p class="display text-lg text-white mb-4">Hombre <span class="font-normal lowercase">vigente</span></p>
+    <div class="flex justify-center gap-6 mb-6">
+      <a href="https://www.instagram.com/hombrevigente?igsh=MXcyOWoyMmJuazRvdQ==" target="_blank" rel="noopener" aria-label="Instagram" class="hover:text-white"><svg class="w-6 h-6" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.16c3.2 0 3.58.01 4.85.07 3.25.15 4.77 1.69 4.92 4.92.06 1.27.07 1.65.07 4.85s-.01 3.58-.07 4.85c-.15 3.23-1.66 4.77-4.92 4.92-1.27.06-1.64.07-4.85.07s-3.58-.01-4.85-.07c-3.25-.15-4.77-1.69-4.92-4.92C2.17 15.58 2.16 15.2 2.16 12s.01-3.58.07-4.85C2.38 3.92 3.9 2.38 7.15 2.23 8.42 2.17 8.8 2.16 12 2.16M12 0C8.74 0 8.33.01 7.05.07 2.7.27.27 2.69.07 7.05.01 8.33 0 8.74 0 12s.01 3.67.07 4.95c.2 4.36 2.62 6.78 6.98 6.98C8.33 23.99 8.74 24 12 24s3.67-.01 4.95-.07c4.35-.2 6.78-2.62 6.98-6.98.06-1.28.07-1.69.07-4.95s-.01-3.67-.07-4.95c-.2-4.35-2.62-6.78-6.98-6.98C15.67.01 15.26 0 12 0zm0 5.84a6.16 6.16 0 100 12.32 6.16 6.16 0 000-12.32zM12 16a4 4 0 110-8 4 4 0 010 8zm6.41-11.85a1.44 1.44 0 100 2.88 1.44 1.44 0 000-2.88z"/></svg></a>
+      <a href="https://www.facebook.com/share/1Ba7msMDTD/?mibextid=wwXIfr" target="_blank" rel="noopener" aria-label="Facebook" class="hover:text-white"><svg class="w-6 h-6" viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.07C24 5.44 18.63.07 12 .07S0 5.44 0 12.07c0 5.99 4.39 10.95 10.13 11.85v-8.38H7.08v-3.47h3.05V9.43c0-3.01 1.79-4.67 4.53-4.67 1.31 0 2.69.24 2.69.24v2.95h-1.51c-1.49 0-1.96.93-1.96 1.87v2.25h3.33l-.53 3.47h-2.8v8.38C19.61 23.02 24 18.06 24 12.07z"/></svg></a>
+    </div>
+    <p class="text-xs max-w-2xl mx-auto leading-relaxed">Información educativa de optimización y bienestar. No constituye diagnóstico ni tratamiento médico. Ante patología, embarazo, uso de psicofármacos o antecedentes oncológicos, consulta a tu médico. Los insumos de Avenida 2 requieren valoración, prescripción y farmacia autorizada. El escaneo térmico es una herramienta adjunta de seguimiento, no un diagnóstico.</p>
+    <p class="mt-5">&copy; 2026 Hombre Vigente. Todos los derechos reservados.</p>
+  </div>
+</footer>
+
+<script>
+document.addEventListener('DOMContentLoaded',()=>{
+  // menú móvil
+  const mb=document.getElementById('mb'),mm=document.getElementById('mm');
+  mb.addEventListener('click',()=>mm.classList.toggle('hidden'));
+  mm.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>mm.classList.add('hidden')));
+
+  // captura de lead -> WhatsApp prellenado
+  const WA='524422022540';
+  const f=document.getElementById('leadForm');
+  f.addEventListener('submit',e=>{
+    e.preventDefault();
+    const g=id=>document.getElementById(id).value.trim();
+    const msg=
+`*Escaneo Vigente — nuevo lead*
+Nombre: ${g('nombre')}
+Edad: ${g('edad')}
+Ciudad: ${g('ciudad')||'-'}
+Objetivo: ${g('objetivo')}
+Labs recientes: ${g('labs')}
+Wearable: ${g('wearable')}
+
+Quiero mi lectura del Índice Vigente.`;
+    window.open(`https://wa.me/${WA}?text=${encodeURIComponent(msg)}`,'_blank');
+  });
+});
+</script>
+</body>
+</html>
