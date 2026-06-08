@@ -1,9 +1,9 @@
-# HV — Golden Set RAG (20 escenarios)
+# HV — Golden Set RAG (24 escenarios)
 
-**Versión:** 1.0
-**Generado:** 2026-06-07
+**Versión:** 1.1
+**Generado:** 2026-06-08
 **Propósito:** Regresión del motor RAG local (gates + routing + retrieval + confianza).
-**Cobertura:** Gates P0 (5) + Longevity (8) + Servicios (7) = 20 escenarios.
+**Cobertura:** Gates P0 (5) + Longevity (8) + Servicios (7) + Promovido (2) + Tráfico (2) = 24 escenarios.
 
 ---
 
@@ -15,7 +15,7 @@
 - **Respuesta esperada:** rasgos verificables (answer, sources, gate_path, kb_route)
 - **Criticidad:** P0 (seguridad/legal), P1 (calidad UX)
 
-Prefijos: `G` gates · `L` longevity · `S` servicios
+Prefijos: `G` gates · `L` longevity · `S` servicios · `P` promovido · `T` tráfico real
 
 ---
 
@@ -254,3 +254,46 @@ Prefijos: `G` gates · `L` longevity · `S` servicios
 - source o answer menciona fragmento de la respuesta promovida
 **Criticidad:** P1
 **Notas:** Auto-generated log_id=? 2026-06-07T23:35:06.102098+00:00
+
+---
+
+## Tráfico real (T)
+
+### T-001: tráfico real
+
+**Pregunta:** `¿cuánto cuesta HIFU?`
+**Topic:** traffic-¿ hifu?
+**Modo:** retrieval
+**Ruta esperada:** servicios
+**Respuesta esperada:**
+- kb_route servicios
+- gate_path auto
+- source contiene HIFU
+**Criticidad:** P1
+**Notas:** Auto from log freq=2 success=2 2026-06-08T00:39:55.413045+00:00
+
+### T-002: tráfico real
+
+**Pregunta:** `depilación láser piernas`
+**Topic:** traffic-depilación láser piernas
+**Modo:** retrieval
+**Ruta esperada:** servicios
+**Respuesta esperada:**
+- kb_route servicios
+- gate_path caveat
+- source contiene Depilación Láser
+**Criticidad:** P1
+**Notas:** Auto from log freq=2 success=2 2026-06-08T00:39:55.413059+00:00
+
+
+### P-002: pregunta auto-promovida
+
+**Pregunta:** `aceptan amex`
+**Topic:** auto-promoted
+**Modo:** retrieval
+**Ruta esperada:** servicios
+**Respuesta esperada:**
+- kb_route servicios
+- source o answer menciona fragmento de la respuesta promovida
+**Criticidad:** P1
+**Notas:** Auto-generated log_id=4356326e9b40 2026-06-08T00:40:30.378186+00:00

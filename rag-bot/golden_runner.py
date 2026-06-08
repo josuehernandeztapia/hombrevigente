@@ -167,7 +167,7 @@ def main():
     failures: List[Dict[str, Any]] = []
 
     for sc in scenarios:
-        if not full and sc["id"].startswith("P-"):
+        if not full and sc["id"].startswith(("P-", "T-")):
             continue
         ok, detail = run_scenario(sc, full=full, use_llm=args.llm)
         status = "PASS" if ok else "FAIL"

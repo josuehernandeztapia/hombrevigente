@@ -162,6 +162,91 @@ class TestGapsReportScript(unittest.TestCase):
             self.assertIn("Knowledge Gaps", files[0].read_text(encoding="utf-8"))
 
 
+class TestExpandGoldenFromLog(unittest.TestCase):
+    def test_adds_traffic_scenarios(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            log_path = Path(tmp) / "log.jsonl"
+            golden_md = Path(tmp) / "golden.md"
+            golden_md.write_text(
+                "# Golden\n\n### G-001: gate test\n\n**Pregunta:** `test`\n"
+                "**Topic:** t\n**Modo:** gate\n**Respuesta esperada:**\n- NO debe activar gate\n"
+                "**Criticidad:** P1\n",
+                encoding="utf-8",
+            )
+            entries = [
+                {
+                    "timestamp": "2026-06-07T12:00:00+00:00",
+                    "query": "botox entrecejo precio",
+                    "query_normalized": "botox entrecejo precio",
+                    "kb_route": "servicios",
+                    "gate_path": "caveat",
+                    "top_score": 0.58,
+                    "chunks_used": 5,
+                    "top_service": "Botox (Toxina Botulínica Tipo A)",
+                },
+                {
+                    "timestamp": "2026-06-07T12:01:00+00:00",
+                    "query": "precio botox entrecejo",
+                    "query_normalized": "botox entrecejo precio",
+                    "kb_route": "servicios",
+                    "gate_path": "caveat",
+                    "top_score": 0.55,
+                    "chunks_used": 5,
+                    "top_service": "Botox (Toxina Botulínica Tipo A)",
+                },
+            ]
+            log_path.write_text(
+                "\n".join(json.dumps(e) for e in entries) + "\n",
+                encoding="utf-8",
+            )
+            r = subprocess.run(
+                [
+                    sys.executable,
+                    "scripts/expand_golden_from_log.py",
+                    "--log-path",
+                    str(log_path),
+                    "--golden-md",
+                    str(golden_md),
+                    "--min-frequency",
+                    "2",
+                    "--max",
+                    "3",
+                ],
+                cwd=Path(__file__).resolve().parent,
+                capture_output=True,
+                text=True,
+            )
+            self.assertEqual(r.returncode, 0, r.stderr + r.stdout)
+            text = golden_md.read_text(encoding="utf-8")
+            self.assertIn("### T-001:", text)
+            self.assertIn("botox entrecejo precio", text)
+            self.assertIn("Tráfico real (T)", text)
+
+
+class TestPromoteE2e(unittest.TestCase):
+    def test_dry_run_local(self):
+        r = subprocess.run(
+            [
+                sys.executable,
+                "scripts/promote_e2e.py",
+                "--dry-run",
+                "--question",
+                "¿Aceptan AMEX?",
+                "--answer",
+                "Sí, Visa, Mastercard y AMEX.",
+                "--kb-route",
+                "servicios",
+                "--skip-embed",
+                "--skip-verify",
+            ],
+            cwd=Path(__file__).resolve().parent,
+            capture_output=True,
+            text=True,
+        )
+        self.assertEqual(r.returncode, 0, r.stderr + r.stdout)
+        self.assertIn("promote_e2e OK", r.stdout)
+
+
 class TestEnvThresholds(unittest.TestCase):
     def test_cosine_from_env(self):
         with mock.patch.dict(os.environ, {"HV_COSINE_HIGH": "0.75", "HV_COSINE_MIN": "0.60"}):

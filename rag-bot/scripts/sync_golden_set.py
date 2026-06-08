@@ -13,7 +13,13 @@ import sys
 from datetime import datetime, timezone
 from pathlib import Path
 
-PROFILE_PREFIX = {"G": "gate", "L": "longevity", "S": "servicios", "P": "promoted"}
+PROFILE_PREFIX = {
+    "G": "gate",
+    "L": "longevity",
+    "S": "servicios",
+    "P": "promoted",
+    "T": "traffic",
+}
 
 
 def field(block: str, name: str, multiline: bool = False):
@@ -29,7 +35,7 @@ def field(block: str, name: str, multiline: bool = False):
 
 
 def parse_scenario_block(block: str) -> dict | None:
-    header_match = re.match(r"^###\s+([GLSP]-\d{3}):\s+(.+?)\n", block)
+    header_match = re.match(r"^###\s+([GLSPT]-\d{3}):\s+(.+?)\n", block)
     if not header_match:
         return None
 
@@ -106,10 +112,10 @@ def parse_scenario_block(block: str) -> dict | None:
 
 def parse_md(md_path: Path) -> list[dict]:
     content = md_path.read_text(encoding="utf-8")
-    blocks = re.split(r"(?=^###\s+[GLSP]-\d{3}:)", content, flags=re.MULTILINE)
+    blocks = re.split(r"(?=^###\s+[GLSPT]-\d{3}:)", content, flags=re.MULTILINE)
     scenarios = []
     for block in blocks:
-        if not re.match(r"^###\s+[GLSP]-\d{3}:", block):
+        if not re.match(r"^###\s+[GLSPT]-\d{3}:", block):
             continue
         parsed = parse_scenario_block(block)
         if parsed:

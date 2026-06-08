@@ -15,4 +15,11 @@ python embed_kb_local.py --source all
 
 P: ¿Horario del lounge?
 R: Lun-Sáb 9-20h por cita.
+## aceptan amex
+
+**Ruta KB:** servicios
+**Promovido:** 2026-06-08T00:40:30.377939+00:00
+
+P: aceptan amex
+R: Sí, aceptamos Visa, Mastercard y American Express (AMEX).
 

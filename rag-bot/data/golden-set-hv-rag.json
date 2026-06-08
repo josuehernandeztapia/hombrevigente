@@ -1,8 +1,8 @@
 {
   "version": "1.0",
-  "generated_at": "2026-06-07T23:35:14.550791+00:00",
+  "generated_at": "2026-06-08T00:40:30.467982+00:00",
   "source_md": "docs/qa/golden-set-hv-rag.md",
-  "total_scenarios": 21,
+  "total_scenarios": 24,
   "scenarios": [
     {
       "id": "G-001",
@@ -491,6 +491,80 @@
       "profile": "promoted",
       "title": "pregunta auto-promovida",
       "question": "¿Horario del lounge?",
+      "topic": "auto-promoted",
+      "mode": "retrieval",
+      "expected_traits": [
+        "kb_route servicios",
+        "source o answer menciona fragmento de la respuesta promovida"
+      ],
+      "parsed": {
+        "must_contain_any": [
+          "source o answer menciona fragmento de la respuesta promovida"
+        ],
+        "must_not_contain": [],
+        "expected_gate": null,
+        "no_gate": false,
+        "expected_route": "servicios",
+        "expected_gate_path": null,
+        "expected_gate_path_any": null
+      },
+      "criticality": "P1"
+    },
+    {
+      "id": "T-001",
+      "profile": "traffic",
+      "title": "tráfico real",
+      "question": "¿cuánto cuesta HIFU?",
+      "topic": "traffic-¿ hifu?",
+      "mode": "retrieval",
+      "expected_traits": [
+        "kb_route servicios",
+        "gate_path auto",
+        "source contiene HIFU"
+      ],
+      "parsed": {
+        "must_contain_any": [
+          "HIFU"
+        ],
+        "must_not_contain": [],
+        "expected_gate": null,
+        "no_gate": false,
+        "expected_route": "servicios",
+        "expected_gate_path": "auto",
+        "expected_gate_path_any": null
+      },
+      "criticality": "P1"
+    },
+    {
+      "id": "T-002",
+      "profile": "traffic",
+      "title": "tráfico real",
+      "question": "depilación láser piernas",
+      "topic": "traffic-depilación láser piernas",
+      "mode": "retrieval",
+      "expected_traits": [
+        "kb_route servicios",
+        "gate_path caveat",
+        "source contiene Depilación Láser"
+      ],
+      "parsed": {
+        "must_contain_any": [
+          "Depilación Láser"
+        ],
+        "must_not_contain": [],
+        "expected_gate": null,
+        "no_gate": false,
+        "expected_route": "servicios",
+        "expected_gate_path": "caveat",
+        "expected_gate_path_any": null
+      },
+      "criticality": "P1"
+    },
+    {
+      "id": "P-002",
+      "profile": "promoted",
+      "title": "pregunta auto-promovida",
+      "question": "aceptan amex",
       "topic": "auto-promoted",
       "mode": "retrieval",
       "expected_traits": [
