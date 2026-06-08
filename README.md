@@ -25,7 +25,7 @@ Repositorio del ecosistema **Hombre Vigente**: club de estética regenerativa ma
 ## Por dónde empezar
 
 1. **Estrategia** → [`estrategia_2026/SINTESIS_Relato_Unificado_HombreVigente.md`](estrategia_2026/SINTESIS_Relato_Unificado_HombreVigente.md)
-2. **Lanzar MVP-0** → [`estrategia_2026/MVP0_Playbook.md`](estrategia_2026/MVP0_Playbook.md)
+2. **Lanzar MVP-0** → [`estrategia_2026/MVP0_Playbook.md`](estrategia_2026/MVP0_Playbook.md) · **Sprint actual** → [`estrategia_2026/SPRINT_01_MVP0_Concierge.md`](estrategia_2026/SPRINT_01_MVP0_Concierge.md)
 3. **Auditoría honesta** → [`estrategia_2026/Revision_Quirurgica_Repo_HombreVigente.md`](estrategia_2026/Revision_Quirurgica_Repo_HombreVigente.md)
 4. **RAG** → [`rag-bot/README.md`](rag-bot/README.md)
 5. **Qué hay archivado** → [`archive/README.md`](archive/README.md)
