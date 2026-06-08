@@ -14,6 +14,8 @@ Prototipos de alta fidelidad y SSOT de copy/tokens del producto.
 
 **Reel:** `open reel/Reel-Vigente-9x16.html` (toca para pausar)
 
+**Reel MP4 (Instagram):** `cd reel && npm install && npx playwright install chromium && brew install ffmpeg && npm run export` → `reel/Reel-Vigente-9x16.mp4`
+
 ### Demo offline (~12 MB, fuera de git)
 
 `Hombre Vigente.zip` en Downloads = HTML autocontenidos (sin depender de `.jsx` externos). Útil para compartir por AirDrop/Drive. No está en el repo por tamaño; el equivalente desarrollable es `handoff/`.

@@ -65,9 +65,6 @@
     padding:30px 70px; border-radius:999px; }
   .card .small{ font-family:'IBM Plex Mono',monospace; font-size:22px; color:#5C5C62; margin-top:54px; letter-spacing:.04em; }
 
-  /* tap hint */
-  .hint{ position:absolute; bottom:46px; left:0; right:0; text-align:center; z-index:40;
-    font-family:'IBM Plex Mono',monospace; font-size:20px; color:#5C5C62; letter-spacing:.1em; }
 </style>
 </head>
 <body>
@@ -104,7 +101,6 @@
     <!-- chrome -->
     <div class="topbar" id="topbar"><span class="dot"></span><span class="logo">Hombre <b>Vigente</b></span></div>
     <div class="prog" id="prog"></div>
-    <div class="hint" id="hint">toca para pausar · se reproduce solo</div>
   </div>
 </div>
 
@@ -133,7 +129,7 @@ const kickEl = document.getElementById('kick');
 const lineEl = document.getElementById('line');
 const intro = document.getElementById('intro');
 const outro = document.getElementById('outro');
-const hint = document.getElementById('hint');
+const EXPORT = new URLSearchParams(location.search).has('export');
 
 // build scene + progress nodes
 const nodes = SCENES.map((s,i) => {
@@ -175,21 +171,36 @@ function show(n){
     capEl.style.opacity=0; void capEl.offsetWidth;
     capEl.style.transition='opacity .5s ease .25s'; capEl.style.opacity=1;
   }
-  try{ localStorage.setItem('hv_reel', String(n)); }catch(e){}
-  if (!paused){ clearTimeout(timer); timer = setTimeout(()=> show((n+1) % nodes.length), s.dur); }
+  if (!EXPORT){ try{ localStorage.setItem('hv_reel', String(n)); }catch(e){} }
+  if (!paused){
+    clearTimeout(timer);
+    timer = setTimeout(()=>{
+      const next = n + 1;
+      if (EXPORT && next >= nodes.length){
+        window.HV_REEL = { cycleComplete: true, totalMs: SCENES.reduce((a,s)=>a+(s.dur||0),0) };
+        return;
+      }
+      show(next % nodes.length);
+    }, s.dur);
+  }
 }
 
-document.getElementById('stage').addEventListener('click', ()=>{
-  paused = !paused;
-  hint.textContent = paused ? 'pausado · toca para continuar' : 'toca para pausar · se reproduce solo';
-  if (paused){ clearTimeout(timer); }
-  else { show((idx+1) % nodes.length); }
-});
+if (!EXPORT){
+  document.getElementById('stage').addEventListener('click', ()=>{
+    paused = !paused;
+    if (paused){ clearTimeout(timer); }
+    else { show((idx+1) % nodes.length); }
+  });
+}
 
 let start = 0;
-try{ const v = parseInt(localStorage.getItem('hv_reel')||'0',10); if(!isNaN(v)&&v<nodes.length) start=v; }catch(e){}
-window.addEventListener('load', ()=> setTimeout(()=> show(start), 250));
-show(start);
+if (!EXPORT){ try{ const v = parseInt(localStorage.getItem('hv_reel')||'0',10); if(!isNaN(v)&&v<nodes.length) start=v; }catch(e){} }
+window.HV_REEL = { cycleComplete: false, totalMs: SCENES.reduce((a,s)=>a+(s.dur||0),0) };
+window.addEventListener('load', ()=> setTimeout(()=>{
+  if (EXPORT) window.HV_REEL.startedAt = performance.now();
+  show(EXPORT ? 0 : start);
+}, EXPORT ? 400 : 250));
+if (!EXPORT) show(start);
 </script>
 </body>
 </html>
