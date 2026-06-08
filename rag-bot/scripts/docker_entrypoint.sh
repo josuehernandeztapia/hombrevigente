@@ -9,6 +9,11 @@ mkdir -p "$(dirname "$INDEX_PATH")"
 if [ -n "${OPENAI_API_KEY:-}" ]; then
   echo "[entrypoint] sync embeddings → ${INDEX_PATH}"
   python embed_kb_local.py --source all --output "${INDEX_PATH}"
+  if [ "${HV_RETRIEVAL_BACKEND:-json}" = "pgvector" ] && [ -n "${HV_DATABASE_URL:-}" ]; then
+    echo "[entrypoint] sync pgvector (Neon hv_*)"
+    python embed_kb_pgvector.py --from-json "${INDEX_PATH}" --trigger fly-entrypoint || \
+      echo "[entrypoint] WARN: pgvector sync failed — json fallback active"
+  fi
 else
   echo "[entrypoint] WARN: OPENAI_API_KEY unset"
 fi
