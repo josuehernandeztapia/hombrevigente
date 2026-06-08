@@ -1,6 +1,6 @@
 ---
 lane: auto
-platforms: [instagram, facebook, x]
+platforms: [instagram]
 date: 2026-06-11
 image_url: ""
 ---
