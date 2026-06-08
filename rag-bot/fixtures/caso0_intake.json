@@ -1,0 +1,57 @@
+{
+  "meta": {
+    "submitted_at": "2026-06-08T00:00:00+00:00",
+    "source": "caso0",
+    "pipeline_row": 0
+  },
+  "identity": {
+    "nombre": "Beta Cero",
+    "edad": 44,
+    "whatsapp": "+524421000000",
+    "ciudad": "Querétaro",
+    "peso_kg": 62,
+    "estatura_cm": 169
+  },
+  "objetivos": {
+    "principal": "recuperacion_dolor",
+    "secundarios": ["estetica", "longevidad", "energia", "grasa_visceral"],
+    "meta_8_semanas": "Romper el ciclo de ciática recurrente, recuperar energía y mejorar estética",
+    "urgencia_1_5": 5
+  },
+  "lifestyle": {
+    "energia_1_5": 3,
+    "sueno_1_5": 3,
+    "dias_entreno_semana": 2,
+    "dolor_recurrente": "Ciática lumbar L4-S1, recurrente cada ~2 meses. RM feb-2025: discopatía Pfirrmann IV.",
+    "suplementos_actuales": "Litio carbonato, quetiapina XR (bipolar)"
+  },
+  "screening": {
+    "cancer_antecedente": "si",
+    "psiquiatria_tratamiento": "si",
+    "cardio_renal_hepatica": "no",
+    "medicacion_cronica": "Litio carbonato, quetiapina XR",
+    "alergias": "",
+    "embarazo_lactancia_menor": false,
+    "medico_cabecera": "si",
+    "bandera_activa": true,
+    "bandera_detalle": "antecedente oncológico; psiquiatría/medicación (litio, etc.)"
+  },
+  "data_moat": {
+    "foto_subida": false,
+    "labs_subidos": true,
+    "wearable_usa": false,
+    "wearable_dispositivo": "",
+    "wearable_promedios_7d": ""
+  },
+  "consentimiento": {
+    "educativo_no_rx": true,
+    "uso_datos_protocolo": true,
+    "anonimo_mejora_producto": true,
+    "feedback_4_semanas": true
+  },
+  "pipeline": {
+    "estado": "screening",
+    "stack_sugerido": "wolverine",
+    "revisado_medico": false
+  }
+}
