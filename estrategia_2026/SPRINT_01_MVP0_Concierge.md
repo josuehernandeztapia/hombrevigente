@@ -46,6 +46,7 @@
 - [ ] Probar una vez: `python scripts/concierge_mvp.py "¿cuánto cuesta HIFU?"`.
 - [ ] Etiquetas WhatsApp Business: `lead`, `onboarding`, `protocolo-entregado`, `semana-1`…`semana-4`, `escalate-humano`.
 - [ ] Carpeta privada para fotos/labs (Drive cifrado o local; nunca en repo git).
+- [x] **Caso #0** fila #0 en Pipeline + [`MVP0_Caso0_Baseline.md`](MVP0_Caso0_Baseline.md).
 
 ### Día 3–7 · Reclutamiento + primeras entregas
 

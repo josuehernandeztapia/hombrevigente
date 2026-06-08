@@ -137,7 +137,7 @@ Esto es lo que te separa del gray market — y lo que te protege legalmente. **L
 - [ ] Crear form en Tally (pegar `MVP0_Cuestionario.md`).
 - [ ] Configurar WhatsApp Business (número dedicado, etiquetas, respuestas rápidas con los scripts).
 - [ ] Subir el tracker a Google Sheets.
-- [ ] Tú arrancas tu propio protocolo como Caso #1 (si no lo has hecho) — eres el beta #0.
+- [x] Tú arrancas tu propio protocolo como **Caso #0** — ver `MVP0_Caso0_Baseline.md` + fila #0 en tracker.
 
 **Semana 1:**
 - [ ] Reclutar (script #1) hasta tener 5–10 confirmados.
