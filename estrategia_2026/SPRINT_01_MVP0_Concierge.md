@@ -175,6 +175,7 @@ curl -H "x-admin-pin: $HV_ADMIN_PIN" \
 
 | Archivo | Uso |
 |---------|-----|
+| `MVP0_User_Histories.md` | Historias de usuario MVP-0 (HU-001…) |
 | `MVP0_Playbook.md` | Flujo end-to-end betas |
 | `MVP0_WhatsApp_Scripts.md` | Respuestas rápidas |
 | `MVP0_Beta_Tracker.xlsx` | Pipeline + RAG Concierge + Check-ins |
