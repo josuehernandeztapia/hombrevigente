@@ -4,9 +4,10 @@ Prototipos de alta fidelidad y SSOT de copy/tokens del producto.
 
 | Ruta | Contenido | Uso |
 |------|-----------|-----|
-| [`handoff/`](handoff/) | Journey interactivo: Mapa + landing + 6 flujos + `hv-data.jsx` + inventario | Desarrollo / demo con archivos separados |
+| [`handoff/`](handoff/) | Journey interactivo: Mapa + landing + 6 flujos + `hv-data.jsx` + inventario + `COMPLIANCE.md` | Desarrollo / demo con archivos separados |
 | [`deck/`](deck/) | Flujo del producto con capturas (HTML → imprimir PDF) | Pitch, aliado médico, onboarding interno |
 | [`reel/`](reel/) | Reel 9:16 autoplay (un HTML autocontenido) | Stories, LinkedIn, eventos |
+| [`KICKOFF.md`](KICKOFF.md) | Brief dev M0–M5 (stack, milestones, compliance) | Arranque equipo / Claude Code |
 
 **Demo interactivo:** `open handoff/Mapa\ Vigente.html`
 

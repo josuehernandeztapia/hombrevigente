@@ -31,7 +31,7 @@ function S1Bienvenida({ go }) {
         <span style={{ fontFamily:MONO, fontSize:11, color:t.mid }}>Continúas tu conversación de WhatsApp</span>
       </div>
       <Head2 kicker="Onboarding · Guiado" title={<>Empecemos por los datos,<br/>no por opiniones</>}
-        sub={<>En 7 pasos construimos tu <em style={{ fontStyle:'normal', color:t.hi, fontWeight:700 }}>Índice Vigente™</em>: una lectura objetiva de tu punto de partida. Con eso, un protocolo personalizado y, si tu caso lo amerita, la valoración de un médico.</>} />
+        sub={<>En 7 pasos construimos tu <em style={{ fontStyle:'normal', color:t.hi, fontWeight:700 }}>Índice Vigente</em>: una lectura objetiva de tu punto de partida. Con eso, un protocolo personalizado y, si tu caso lo amerita, la valoración de un médico.</>} />
       <div className="hv-rise" style={{ display:'flex', flexDirection:'column', gap:10, marginTop:22, animationDelay:'.08s' }}>
         {BIENVENIDA_BULLETS.map((b,i) => (
           <div key={i} style={{ display:'flex', alignItems:'center', gap:12 }}>
@@ -311,16 +311,20 @@ function S6Indice({ go }) {
   const R=40, C=2*Math.PI*R;
   return (
     <Pad2>
-      <Head2 kicker="Tu lectura · Informe de optimización" title="Tu Índice Vigente™"
+      <Head2 kicker="Tu lectura · Informe de optimización" title="Tu Índice Vigente"
         sub="Tu lectura de partida — un punto de referencia para optimizar y volver a medir. No es un diagnóstico médico." />
       <GlassCard className="hv-rise" pad={18} style={{ display:'flex', alignItems:'center', gap:18, marginBottom:14 }}>
-        <svg width="96" height="96" viewBox="0 0 96 96" style={{ flexShrink:0 }}>
-          <circle cx="48" cy="48" r={R} fill="none" stroke={t.line} strokeWidth="7" />
-          <circle cx="48" cy="48" r={R} fill="none" stroke={t.accent} strokeWidth="7" strokeLinecap="round"
-            strokeDasharray={C} strokeDashoffset={C*(1-INDEX_SCORE/100)} transform="rotate(-90 48 48)" style={{ transition:'stroke-dashoffset 1s' }} />
-          <text x="48" y="50" textAnchor="middle" fontFamily={SANS} fontSize="26" fontWeight="900" fill={t.hi}>{INDEX_SCORE}</text>
-          <text x="48" y="65" textAnchor="middle" fontFamily={MONO} fontSize="9" fill={t.low}>/ 100</text>
-        </svg>
+        <div style={{ position:'relative', flexShrink:0 }}>
+          <svg width="96" height="96" viewBox="0 0 96 96">
+            <circle cx="48" cy="48" r={R} fill="none" stroke={t.line} strokeWidth="7" />
+            <circle cx="48" cy="48" r={R} fill="none" stroke={t.accent} strokeWidth="7" strokeLinecap="round"
+              strokeDasharray={C} strokeDashoffset={C*(1-INDEX_SCORE/100)} transform="rotate(-90 48 48)" style={{ transition:'stroke-dashoffset 1s' }} />
+            <text x="48" y="50" textAnchor="middle" fontFamily={SANS} fontSize="26" fontWeight="900" fill={t.hi}>{INDEX_SCORE}</text>
+            <text x="48" y="65" textAnchor="middle" fontFamily={MONO} fontSize="9" fill={t.low}>/ 100</text>
+          </svg>
+          <span style={{ position:'absolute', bottom:-2, left:'50%', transform:'translateX(-50%)', fontFamily:MONO, fontSize:8,
+            letterSpacing:'0.08em', textTransform:'uppercase', color:t.low, whiteSpace:'nowrap' }}>Ilustrativo · ejemplo</span>
+        </div>
         <div>
           <div style={{ fontFamily:SANS, fontWeight:800, fontSize:16, color:t.hi }}>Punto de partida</div>
           <div style={{ fontFamily:SANS, fontSize:12.5, color:t.mid, marginTop:5, lineHeight:1.45 }}>4 señales clave para optimizar. Volvemos a medir en 8 semanas.</div>

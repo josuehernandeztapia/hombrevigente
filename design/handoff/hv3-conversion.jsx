@@ -28,13 +28,17 @@ function C1Resultado({ go }) {
       <Head3 kicker="Tu lectura inicial · Gratis" title="Tu Escaneo Vigente"
         sub="Esto es tu punto de partida con los 3 datos que diste. La lectura a fondo viene en el diagnóstico completo." />
       <GlassCard className="hv-rise" pad={18} style={{ display:'flex', alignItems:'center', gap:18, marginBottom:14 }}>
-        <svg width="96" height="96" viewBox="0 0 96 96" style={{ flexShrink:0 }}>
-          <circle cx="48" cy="48" r={R} fill="none" stroke={t.line} strokeWidth="7" />
-          <circle cx="48" cy="48" r={R} fill="none" stroke={t.accent} strokeWidth="7" strokeLinecap="round"
-            strokeDasharray={C} strokeDashoffset={C*(1-SCAN.score/100)} transform="rotate(-90 48 48)" style={{ transition:'stroke-dashoffset 1s' }} />
-          <text x="48" y="50" textAnchor="middle" fontFamily={SANS} fontSize="26" fontWeight="900" fill={t.hi}>{SCAN.score}</text>
-          <text x="48" y="65" textAnchor="middle" fontFamily={MONO} fontSize="9" fill={t.low}>/ 100</text>
-        </svg>
+        <div style={{ position:'relative', flexShrink:0 }}>
+          <svg width="96" height="96" viewBox="0 0 96 96">
+            <circle cx="48" cy="48" r={R} fill="none" stroke={t.line} strokeWidth="7" />
+            <circle cx="48" cy="48" r={R} fill="none" stroke={t.accent} strokeWidth="7" strokeLinecap="round"
+              strokeDasharray={C} strokeDashoffset={C*(1-SCAN.score/100)} transform="rotate(-90 48 48)" style={{ transition:'stroke-dashoffset 1s' }} />
+            <text x="48" y="50" textAnchor="middle" fontFamily={SANS} fontSize="26" fontWeight="900" fill={t.hi}>{SCAN.score}</text>
+            <text x="48" y="65" textAnchor="middle" fontFamily={MONO} fontSize="9" fill={t.low}>/ 100</text>
+          </svg>
+          <span style={{ position:'absolute', bottom:-2, left:'50%', transform:'translateX(-50%)', fontFamily:MONO, fontSize:8,
+            letterSpacing:'0.08em', textTransform:'uppercase', color:t.low, whiteSpace:'nowrap' }}>Ilustrativo · ejemplo</span>
+        </div>
         <div style={{ display:'flex', flexDirection:'column', gap:7 }}>
           {SCAN.signals.map(s => (
             <div key={s.k} style={{ display:'flex', alignItems:'center', gap:8 }}>

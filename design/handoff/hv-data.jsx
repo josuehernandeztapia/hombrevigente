@@ -352,7 +352,7 @@ const WA_THREADS = [
   { id:'lectura', title:'Entrega de lectura', sub:'Top of funnel · tras el escaneo',
     msgs:[
       { s:'b', t:'¡Listo, Juan! Tu Escaneo Vigente está hecho. 👇' },
-      { s:'b', t:'Tu Índice de partida: 64/100. Lo que más mueve la aguja para ti: recuperación y energía.' },
+      { s:'b', t:'Tu Índice de partida: 64/100 (ilustrativo). Lo que más mueve la aguja para ti: recuperación y energía.' },
       { s:'b', kind:'card', card:{ title:'Stack Vigente', sub:'Sin receta · con COA', tags:['NMN','Omega-3','Creatina','+2 más'] } },
       { s:'b', t:'¿Quieres activar tu protocolo o ver el detalle primero?' },
       { s:'u', t:'Ver el detalle' },
