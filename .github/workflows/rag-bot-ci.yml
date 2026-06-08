@@ -1,0 +1,49 @@
+# HV RAG — regresión rápida en cada PR (sin API key)
+name: RAG bot CI
+
+on:
+  pull_request:
+    paths:
+      - 'rag-bot/**'
+      - '.github/workflows/rag-bot-ci.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'rag-bot/**'
+      - '.github/workflows/rag-bot-ci.yml'
+
+concurrency:
+  group: rag-bot-ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  gates-and-unit:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: rag-bot
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: pip
+          cache-dependency-path: rag-bot/requirements-rag-ci.txt
+
+      - name: Install dependencies
+        run: pip install -r requirements-rag-ci.txt
+
+      - name: Unit tests
+        run: |
+          python test_rag_local.py
+          python test_observability.py
+
+      - name: Golden set (gates-only)
+        run: python golden_runner.py --gates-only
+
+      - name: Pgvector scaffold tests
+        run: python test_pgvector_scaffold.py

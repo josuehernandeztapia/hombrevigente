@@ -1,0 +1,16 @@
+.env
+.env.*
+!.env.example
+.git
+.github
+__pycache__
+*.py[cod]
+.pytest_cache
+.venv
+venv
+data/decision_log.jsonl
+knowledge_base/embeddings_local.json
+*.db
+*.sqlite
+docs/qa/knowledge-gaps-*.md
+terminals

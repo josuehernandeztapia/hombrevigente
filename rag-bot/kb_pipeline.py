@@ -6,6 +6,7 @@ Compartido por embed_kb_local.py y rag_retrieval_local.py.
 from __future__ import annotations
 
 import hashlib
+import os
 import re
 from pathlib import Path
 from typing import Dict, List, Optional
@@ -15,6 +16,23 @@ LONGEVITY_DIR = Path("knowledge_base/longevity")
 
 TIER_WEIGHTS = {"E1": 0.85, "E2": 0.70, "E3": 0.80, "E4": 0.95, "E5": 0.90, "E0": 0.30}
 CONFIDENCE_WEIGHTS = {"alta": 0.95, "media": 0.75, "baja": 0.50}
+
+
+def _env_float(name: str, default: float) -> float:
+    raw = os.getenv(name)
+    if not raw or not str(raw).strip():
+        return default
+    try:
+        return float(raw)
+    except ValueError:
+        return default
+
+
+# Calibración retrieval — tunable sin redeploy (patrón CMU PARTES_MERCADO_*)
+COSINE_HIGH = _env_float("HV_COSINE_HIGH", 0.70)
+COSINE_MIN = _env_float("HV_COSINE_MIN", 0.55)
+SCORE_COSINE_WEIGHT = _env_float("HV_SCORE_COSINE_WEIGHT", 0.7)
+SCORE_META_WEIGHT = _env_float("HV_SCORE_META_WEIGHT", 0.3)
 
 
 def content_hash(text: str) -> str:
@@ -198,10 +216,53 @@ def load_tarjetas_from_dir(base_dir: Path, kb_type: str = "longevity") -> List[D
     return documents
 
 
+def load_faq_promoted(faq_path: Path) -> List[Dict]:
+    """Carga entradas promovidas por Knowledge Loop (FAQ_PROMOTED.md)."""
+    if not faq_path.exists():
+        return []
+    content = faq_path.read_text(encoding="utf-8")
+    chunks: List[Dict] = []
+    for idx, block in enumerate(re.split(r"\n## ", content)):
+        if idx == 0 or "P:" not in block:
+            continue
+        route_match = re.search(r"\*\*Ruta KB:\*\*\s*(\w+)", block)
+        kb_type = route_match.group(1) if route_match else "longevity"
+        q_match = re.search(r"^P:\s*(.+)$", block, re.MULTILINE)
+        r_match = re.search(r"^R:\s*(.+)$", block, re.MULTILINE)
+        if not q_match or not r_match:
+            continue
+        text = f"P: {q_match.group(1).strip()}\nR: {r_match.group(1).strip()}"
+        chunks.append({
+            "id": f"faq_promoted_{idx}",
+            "text": text,
+            "content_hash": content_hash(text),
+            "metadata": {
+                "kb_type": kb_type,
+                "doc_subtype": "faq_promoted",
+                "categoria": "FAQ",
+                "avenida_hv": "1",
+                "evidencia_tier": "E3",
+                "precio_base": 0,
+                "confianza": "media",
+                "flag_seguridad": "ninguno",
+                "tarjeta_id": "",
+                "has_falta_fuente": False,
+                "service_id": f"faq_{idx}",
+                "service_name": "FAQ Promovido",
+                "section_title": q_match.group(1).strip()[:80],
+                "section_index": idx,
+                "chunk_type": "faq",
+                "source_file": str(faq_path),
+            },
+        })
+    return chunks
+
+
 def load_all_chunks(source: str = "all", base_path: Optional[Path] = None) -> List[Dict]:
     root = base_path or Path(".")
     servicios_dir = root / SERVICIOS_DIR
     longevity_dir = root / LONGEVITY_DIR
+    faq_path = root / "knowledge_base" / "FAQ_PROMOTED.md"
     chunks: List[Dict] = []
 
     if source in ("servicios", "all"):
@@ -215,5 +276,11 @@ def load_all_chunks(source: str = "all", base_path: Optional[Path] = None) -> Li
         if tarjetas_dir.is_dir():
             for doc in load_tarjetas_from_dir(tarjetas_dir):
                 chunks.extend(chunk_document(doc))
+
+    if source in ("servicios", "longevity", "all"):
+        for faq_chunk in load_faq_promoted(faq_path):
+            kb = faq_chunk["metadata"]["kb_type"]
+            if source == "all" or source == kb:
+                chunks.append(faq_chunk)
 
     return chunks

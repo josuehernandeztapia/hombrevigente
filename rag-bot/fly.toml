@@ -1,0 +1,56 @@
+# Fly.io — Hombre Vigente RAG API
+# Bootstrap (una vez):
+#   cd rag-bot
+#   fly apps create hv-rag-api --org personal   # si no existe
+#   fly secrets set OPENAI_API_KEY="sk-..." HV_ADMIN_PIN="..." --app hv-rag-api
+#   fly deploy
+#
+# Neon (después): fly secrets set HV_DATABASE_URL="postgresql://..." HV_RETRIEVAL_BACKEND=pgvector
+
+app = "hv-rag-api"
+primary_region = "dfw"
+
+[build]
+  dockerfile = "Dockerfile"
+
+[env]
+  PORT = "8080"
+  ENVIRONMENT = "production"
+  HV_RETRIEVAL_BACKEND = "pgvector"
+  HV_DECISION_LOG_ENABLED = "true"
+  HV_DECISION_LOG_PATH = "/data/decision_log.jsonl"
+  HV_EMBEDDINGS_INDEX = "/data/embeddings_local.json"
+
+[mounts]
+  source = "hv_rag_data"
+  destination = "/data"
+
+[http_service]
+  internal_port = 8080
+  force_https = true
+  auto_stop_machines = "stop"
+  auto_start_machines = true
+  min_machines_running = 0
+  processes = ["app"]
+
+  [http_service.concurrency]
+    type = "connections"
+    hard_limit = 25
+    soft_limit = 20
+
+[checks]
+  [checks.health]
+    type = "http"
+    port = 8080
+    path = "/api/health"
+    interval = "30s"
+    timeout = "10s"
+    grace_period = "300s"
+
+[[vm]]
+  memory = "1gb"
+  cpu_kind = "shared"
+  cpus = 1
+
+[processes]
+  app = "scripts/docker_entrypoint.sh"

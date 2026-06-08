@@ -147,6 +147,9 @@ qdrant_storage/
 # Embeddings cache
 embeddings_cache/
 knowledge_base/embeddings_local.json
+
+# RAG observability (runtime)
+data/decision_log.jsonl
 *.pkl
 *.pickle
 

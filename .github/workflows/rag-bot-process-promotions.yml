@@ -1,0 +1,127 @@
+# HV Knowledge Loop — procesa promotions pendientes y abre PR
+name: RAG bot process promotions
+
+on:
+  schedule:
+    - cron: '0 15 * * *'  # 15:00 UTC diario
+  workflow_dispatch:
+
+concurrency:
+  group: rag-bot-process-promotions
+  cancel-in-progress: false
+
+jobs:
+  process:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    defaults:
+      run:
+        working-directory: rag-bot
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: pip
+          cache-dependency-path: rag-bot/requirements-rag-ci.txt
+
+      - name: Install dependencies
+        run: pip install -r requirements-rag-ci.txt
+
+      - name: Pull pending promotions from prod (optional)
+        env:
+          HV_RAG_API_URL: ${{ vars.HV_RAG_API_URL }}
+          HV_ADMIN_PIN: ${{ secrets.HV_ADMIN_PIN }}
+        run: |
+          set -euo pipefail
+          if [ -z "${HV_RAG_API_URL:-}" ] || [ -z "${HV_ADMIN_PIN:-}" ]; then
+            echo "Skip prod fetch (HV_RAG_API_URL / HV_ADMIN_PIN not set) — using repo file"
+            exit 0
+          fi
+          HTTP=$(curl -sL -o /tmp/pendings.json -w "%{http_code}" \
+            -H "x-admin-pin: ${HV_ADMIN_PIN}" \
+            "${HV_RAG_API_URL%/}/admin/knowledge/pending")
+          echo "HTTP ${HTTP}"
+          if [ "${HTTP}" != "200" ]; then
+            cat /tmp/pendings.json || true
+            echo "WARN: prod fetch failed — using local pending file if present"
+            exit 0
+          fi
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          data = json.loads(Path("/tmp/pendings.json").read_text(encoding="utf-8"))
+          out = data.get("promotions", [])
+          Path("data/knowledge-promotions-pending.json").write_text(
+              json.dumps(out, indent=2, ensure_ascii=False) + "\n",
+              encoding="utf-8",
+          )
+          print(f"Fetched {len(out)} promotion(s) from prod")
+          PY
+
+      - name: Process promotions
+        id: process
+        run: |
+          set -euo pipefail
+          PENDING=$(python3 -c "import json; from pathlib import Path; p=Path('data/knowledge-promotions-pending.json'); print(len(json.loads(p.read_text())) if p.exists() else 0)")
+          echo "pending_count=${PENDING}" >> "$GITHUB_OUTPUT"
+          if [ "${PENDING}" = "0" ]; then
+            echo "No pending promotions. Exit 0."
+            exit 0
+          fi
+          python3 scripts/process_knowledge_promotions.py
+
+      - name: Regenerate golden-set JSON
+        if: steps.process.outputs.pending_count != '0'
+        run: python3 scripts/sync_golden_set.py --validate
+
+      - name: Golden gates regression
+        if: steps.process.outputs.pending_count != '0'
+        run: python3 golden_runner.py --gates-only
+
+      - name: Detect changes
+        id: diff
+        run: |
+          if [ -n "$(git status --porcelain)" ]; then
+            echo "changes=true" >> $GITHUB_OUTPUT
+            git status --porcelain
+          else
+            echo "changes=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Create PR with promotions applied
+        if: steps.diff.outputs.changes == 'true'
+        uses: peter-evans/create-pull-request@v6
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: "feat(rag-bot): aplica knowledge promotions pendientes"
+          title: "feat(rag-bot): aplica promotions al FAQ + golden set"
+          body: |
+            Auto-generated PR from `rag-bot-process-promotions.yml`.
+
+            Procesó `rag-bot/data/knowledge-promotions-pending.json` (staging del endpoint
+            `POST /admin/knowledge/promote`).
+
+            Cambios típicos:
+            - `rag-bot/knowledge_base/FAQ_PROMOTED.md`
+            - `rag-bot/docs/qa/golden-set-hv-rag.md`
+            - `rag-bot/data/golden-set-hv-rag.json`
+
+            Review:
+            1. Verifica preguntas legítimas (no spam / en scope HV)
+            2. Verifica respuestas correctas y autoritativas
+            3. Merge cuando estés conforme
+
+            Post-merge: `rag-bot-nightly.yml` re-embede el índice (`embed_kb_local.py --source all`).
+          branch: rag-bot/promotions-${{ github.run_number }}
+          delete-branch: true
+          labels: |
+            automated
+            knowledge-loop
+            rag-bot

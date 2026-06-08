@@ -20,7 +20,12 @@ from kb_pipeline import load_all_chunks
 
 load_dotenv()
 
-DEFAULT_OUTPUT = Path("knowledge_base/embeddings_local.json")
+def _default_output() -> Path:
+    raw = os.getenv("HV_EMBEDDINGS_INDEX", "knowledge_base/embeddings_local.json")
+    return Path(raw)
+
+
+DEFAULT_OUTPUT = _default_output()
 EMBEDDING_MODEL = "text-embedding-3-small"
 EMBEDDING_DIMS = 1536
 

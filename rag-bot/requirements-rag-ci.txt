@@ -1,0 +1,2 @@
+# Minimal deps for rag-bot CI (gates-only + unit tests)
+python-dotenv>=1.0.0

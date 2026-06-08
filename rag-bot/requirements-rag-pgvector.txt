@@ -1,0 +1,2 @@
+-r requirements-rag-nightly.txt
+psycopg[binary]>=3.1.18

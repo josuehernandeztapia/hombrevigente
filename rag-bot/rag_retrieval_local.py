@@ -11,17 +11,39 @@ import json
 import math
 import os
 import re
+import time
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Dict, List, Optional, Tuple
 
 from dotenv import load_dotenv
 
-from kb_pipeline import CONFIDENCE_WEIGHTS, TIER_WEIGHTS
+from decision_log import log_from_rag_result
+from confidence_gate import (
+    CAVEAT_FOOTER,
+    NO_MATCH_MESSAGE,
+    decide_rag_path,
+    score_to_confidence,
+)
+from kb_pipeline import (
+    CONFIDENCE_WEIGHTS,
+    COSINE_HIGH,
+    COSINE_MIN,
+    SCORE_COSINE_WEIGHT,
+    SCORE_META_WEIGHT,
+    TIER_WEIGHTS,
+)
+from prompts import build_system_prompt, build_user_prompt
+from query_preprocess import strip_command_words
 
 load_dotenv()
 
-DEFAULT_INDEX = Path("knowledge_base/embeddings_local.json")
+def _default_index_path() -> Path:
+    raw = os.getenv("HV_EMBEDDINGS_INDEX", "knowledge_base/embeddings_local.json")
+    return Path(raw)
+
+
+DEFAULT_INDEX = _default_index_path()
 EMBEDDING_MODEL = "text-embedding-3-small"
 LLM_MODEL = "gpt-4o-mini"
 
@@ -120,15 +142,7 @@ def _combined_score(cosine: float, meta: Dict) -> float:
     tier_w = _tier_weight(meta.get("evidencia_tier", "unknown"))
     if meta.get("doc_subtype") == "tarjeta":
         tier_w = max(tier_w, _confidence_weight(meta.get("confianza", "media")))
-    return 0.7 * cosine + 0.3 * tier_w
-
-
-def _confidence_label(score: float) -> str:
-    if score >= 0.70:
-        return "high"
-    if score >= 0.55:
-        return "medium"
-    return "low"
+    return SCORE_COSINE_WEIGHT * cosine + SCORE_META_WEIGHT * tier_w
 
 
 def load_index(path: Path = DEFAULT_INDEX) -> Dict:
@@ -140,16 +154,54 @@ def load_index(path: Path = DEFAULT_INDEX) -> Dict:
         return json.load(f)
 
 
-def embed_query(query: str) -> List[float]:
+def embed_query(query: str, *, preprocess: bool = True) -> List[float]:
     from openai import OpenAI
 
+    text = strip_command_words(query) if preprocess else query
     client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
     response = client.embeddings.create(
         model=EMBEDDING_MODEL,
-        input=query,
+        input=text,
         encoding_format="float",
     )
     return response.data[0].embedding
+
+
+def _retrieval_backend() -> str:
+    return os.getenv("HV_RETRIEVAL_BACKEND", "json").lower()
+
+
+def retrieve_chunks(
+    query: str,
+    index: Dict,
+    *,
+    kb_route: str = "all",
+    top_k: int = 5,
+    avenida_max: str = "1",
+    min_confidence: str = "medium",
+) -> List[Dict]:
+    if _retrieval_backend() == "pgvector":
+        try:
+            from pgvector_retrieval import is_pgvector_configured, retrieve_pgvector
+
+            if is_pgvector_configured():
+                return retrieve_pgvector(
+                    query,
+                    kb_route=kb_route,
+                    top_k=top_k,
+                    avenida_max=avenida_max,
+                    min_confidence=min_confidence,
+                )
+        except Exception as e:
+            print(f"[rag] pgvector fallback → json: {e}")
+    return retrieve(
+        query,
+        index,
+        kb_route=kb_route,
+        top_k=top_k,
+        avenida_max=avenida_max,
+        min_confidence=min_confidence,
+    )
 
 
 def retrieve(
@@ -183,7 +235,7 @@ def retrieve(
 
         cosine = _cosine(query_vec, emb)
         combined = _combined_score(cosine, meta)
-        conf = _confidence_label(combined)
+        conf = score_to_confidence(combined)
 
         if kb_route == "longevity" and conf == "low":
             continue
@@ -206,36 +258,65 @@ def retrieve(
     return candidates[:top_k]
 
 
-def generate_answer(query: str, chunks: List[Dict], kb_route: str) -> str:
+def generate_answer(
+    query: str,
+    chunks: List[Dict],
+    kb_route: str,
+    *,
+    role: str = "default",
+    confidence: str = "high",
+    avenida_max: str = "1",
+) -> str:
     from openai import OpenAI
 
-    context = "\n\n---\n\n".join(
-        f"**{c['service_name']}** — {c['section_title']}\n{c['text'][:3500]}"
-        for c in chunks
+    system = build_system_prompt(
+        kb_route,
+        role=role,
+        confidence=confidence,
+        avenida_max=avenida_max,
     )
-
-    if kb_route == "longevity":
-        system = """Eres el Motor de Recomendación Justificada de Hombre Vigente (longevidad/wellness).
-Responde SOLO con el contexto proporcionado. Cita tiers (E1–E5) cuando aparezcan.
-PROHIBIDO: prescribir, dosificar, curar, tratar, diagnosticar.
-Usa lenguaje educativo de optimización. Si falta evidencia, dilo explícitamente.
-Disclaimer al final: información educativa, no sustituye médico."""
-    else:
-        system = """Eres asistente de servicios estéticos Hombre Vigente.
-Responde con el contexto del Knowledge Base. Incluye precios en MXN cuando estén.
-No inventes información. Audiencia: hombres 30–60 años."""
+    user = build_user_prompt(query, chunks)
 
     client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
     response = client.chat.completions.create(
         model=LLM_MODEL,
         messages=[
             {"role": "system", "content": system},
-            {"role": "user", "content": f"Contexto:\n{context}\n\nPregunta: {query}"},
+            {"role": "user", "content": user},
         ],
         temperature=0.3,
         max_tokens=800,
     )
-    return response.choices[0].message.content
+    answer = response.choices[0].message.content or ""
+    if confidence == "medium" and CAVEAT_FOOTER.strip() not in answer:
+        answer += CAVEAT_FOOTER
+    return answer
+
+
+def _attach_log(
+    result: Dict,
+    *,
+    query_normalized: str,
+    role: str,
+    source: str,
+    use_llm: bool,
+    t0: float,
+    log: bool,
+) -> Dict:
+    latency_ms = int((time.perf_counter() - t0) * 1000)
+    result["latency_ms"] = latency_ms
+    if log:
+        entry_id = log_from_rag_result(
+            result,
+            query_normalized=query_normalized,
+            role=role,
+            source=source,
+            use_llm=use_llm,
+            latency_ms=latency_ms,
+        )
+        if entry_id:
+            result["decision_id"] = entry_id
+    return result
 
 
 def rag_query_local(
@@ -245,24 +326,47 @@ def rag_query_local(
     top_k: int = 5,
     avenida_max: str = "1",
     use_llm: bool = True,
+    role: str = "default",
+    parse: bool = False,
     verbose: bool = False,
+    source: str = "cli",
+    log: bool = True,
 ) -> Dict:
+    t0 = time.perf_counter()
     route = kb_route or detect_kb_route(query)
+    query_normalized = strip_command_words(query)
     gate = check_gates(query, route if route != "all" else "longevity")
 
     if gate.triggered:
-        return {
+        out = {
             "query": query,
             "kb_route": route,
             "gate": gate.code,
             "answer": gate.message,
             "sources": [],
             "confidence": "blocked",
+            "gate_path": "blocked",
+            "chunks_used": 0,
         }
+        if parse:
+            out["parse"] = {
+                "query_normalized": query_normalized,
+                "gate_triggered": True,
+                "gate_code": gate.code,
+            }
+        return _attach_log(
+            out,
+            query_normalized=query_normalized,
+            role=role,
+            source=source,
+            use_llm=use_llm,
+            t0=t0,
+            log=log,
+        )
 
     index = load_index(index_path)
     search_route = route if route != "all" else "all"
-    chunks = retrieve(
+    chunks = retrieve_chunks(
         query,
         index,
         kb_route=search_route,
@@ -271,25 +375,60 @@ def rag_query_local(
     )
 
     if not chunks:
-        return {
+        out = {
             "query": query,
             "kb_route": route,
-            "answer": "No encontré evidencia suficiente en el KB para responder con confianza.",
+            "answer": NO_MATCH_MESSAGE,
             "sources": [],
             "confidence": "low",
+            "gate_path": "escalate",
+            "chunks_used": 0,
         }
+        if parse:
+            out["parse"] = {
+                "query_normalized": query_normalized,
+                "detected_route": route,
+                "gate_triggered": False,
+                "top_score": 0.0,
+                "verdict": "escalate",
+            }
+        return _attach_log(
+            out,
+            query_normalized=query_normalized,
+            role=role,
+            source=source,
+            use_llm=use_llm,
+            t0=t0,
+            log=log,
+        )
 
+    top_score = chunks[0]["score"]
     top_conf = chunks[0]["confidence"]
-    answer = (
-        generate_answer(query, chunks, route if route != "all" else chunks[0]["kb_type"])
-        if use_llm and os.getenv("OPENAI_API_KEY")
-        else _format_template(query, chunks, route)
-    )
+    verdict = decide_rag_path(top_score)
+    gen_route = route if route != "all" else chunks[0]["kb_type"]
+
+    if verdict.path == "escalate":
+        answer = NO_MATCH_MESSAGE
+    elif use_llm and os.getenv("OPENAI_API_KEY"):
+        answer = generate_answer(
+            query,
+            chunks,
+            gen_route,
+            role=role,
+            confidence=top_conf,
+            avenida_max=avenida_max,
+        )
+    else:
+        answer = _format_template(query, chunks, route)
 
     result = {
         "query": query,
         "kb_route": route,
+        "role": role,
         "confidence": top_conf,
+        "gate_path": verdict.path,
+        "gate_reason": verdict.reason,
+        "thresholds": {"COSINE_HIGH": COSINE_HIGH, "COSINE_MIN": COSINE_MIN},
         "answer": answer,
         "sources": [
             {
@@ -304,12 +443,43 @@ def rag_query_local(
         "chunks_used": len(chunks),
     }
 
+    if parse:
+        result["parse"] = {
+            "query_normalized": query_normalized,
+            "detected_route": route,
+            "gate_triggered": False,
+            "top_score": round(top_score, 4),
+            "verdict": verdict.path,
+            "verdict_reason": verdict.reason,
+            "chunks": [
+                {
+                    "id": c["id"],
+                    "service": c["service_name"],
+                    "section": c["section_title"],
+                    "score": round(c["score"], 4),
+                    "cosine": round(c["cosine"], 4),
+                    "confidence": c["confidence"],
+                    "kb_type": c.get("kb_type"),
+                    "tier": c.get("metadata", {}).get("evidencia_tier"),
+                }
+                for c in chunks
+            ],
+        }
+
     if verbose:
         print(f"route={route} confidence={top_conf} chunks={len(chunks)}")
         for c in chunks[:3]:
             print(f"  - {c['service_name']} | {c['section_title']} | {c['score']:.3f}")
 
-    return result
+    return _attach_log(
+        result,
+        query_normalized=query_normalized,
+        role=role,
+        source=source,
+        use_llm=use_llm,
+        t0=t0,
+        log=log,
+    )
 
 
 def _format_template(query: str, chunks: List[Dict], route: str) -> str:
