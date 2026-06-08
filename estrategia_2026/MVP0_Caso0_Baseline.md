@@ -4,7 +4,7 @@
 
 **Fuente labs/imagen:** `~/Downloads/longevity/Estudios_Medicos/` (no commitear PDFs al repo).
 
-**Protocolo borrador:** [`MVP0_Caso0_Protocolo.md`](MVP0_Caso0_Protocolo.md) — pendiente firma médico.
+**Protocolo:** [`MVP0_Caso0_Protocolo.md`](MVP0_Caso0_Protocolo.md) · **P1 entrega:** [`MVP0_Caso0_P1_Entrega.md`](MVP0_Caso0_P1_Entrega.md) — médico en cola.
 
 ---
 
@@ -13,11 +13,11 @@
 | Campo | Valor |
 |-------|-------|
 | Nombre | Juan Josué Hernández Tapia |
-| WhatsApp | `[completar]` |
+| WhatsApp | +52 442 202 2540 |
 | Edad | 44 |
 | Ciudad | Querétaro (Bajío) |
 | Objetivo principal | Ciática / columna lumbar + energía + estética + longevidad |
-| Estado tracker | `Baseline en curso` — labs ✅ imagen ✅ foto ⏳ |
+| Estado tracker | `protocolo_entregado` (P1) — labs ✅ imagen ✅ foto ⏳ |
 
 ---
 
@@ -72,14 +72,14 @@
 
 ## 5. Subjetivo día 0 (completar tú)
 
-| | Hoy `[ ]` |
+| | 2026-06-07 `[x]` |
 |---|-----|
-| Energía (1–5) | |
-| Sueño (1–5) | |
-| Ánimo (1–5) | |
-| Dolor ciática (1–5) | |
-| Peso (kg) | ~60–64 (actualizar) |
-| Cintura (cm) | |
+| Energía (1–5) | 3 |
+| Sueño (1–5) | 4 |
+| Ánimo (1–5) | 3 |
+| Dolor ciática (1–5) | 4 |
+| Peso (kg) | 65 |
+| Cintura (cm) | 92 |
 
 ### Foto baseline — checklist 3 minutos
 
@@ -95,8 +95,8 @@
 
 **Cada semana (check-in):** mismo lugar, misma hora, mismos nombres con fecha nueva (`2026-06-15_frente.jpg`, etc.).
 
-- [ ] Pasos 1–5 hechos
-- [ ] Carpeta creada: `~/HombreVigente-Caso0/baseline-2026-06/`
+- [x] Pasos 1–5 hechos (foto 2026-06-07)
+- [x] Carpeta creada: `~/HombreVigente-Caso0/baseline-2026-06/`
 
 ### Wearable
 - [ ] Dispositivo: `[ ]` · HRV / sueño 7d: `[ ]`
@@ -122,10 +122,11 @@
 ## 7. Próximos pasos
 
 1. [x] Labs + imagen indexados (esta nota).
-2. [ ] Foto baseline + subjetivo §5.
-3. [ ] Llenar Tally (misma UX que beta).
-4. [ ] Enviar `MVP0_Caso0_Protocolo.md` a médico aliado + psiquiatra (litio).
-5. [ ] Tras firma → tracker `Protocolo entregado` + semana 1 check-in.
+2. [x] Foto baseline + subjetivo día 0 (2026-06-07).
+3. [x] Tally Caso #0 (gbAO6Yl).
+4. [x] Entrega protocolo P1 — ver `MVP0_Caso0_P1_Entrega.md` (WA #4).
+5. [x] Psiquiatra clearance 2026-06-07 · [ ] médico aliado HV.
+6. [ ] Check-in semana 1 (WA #5, +7 días).
 
 ---
 

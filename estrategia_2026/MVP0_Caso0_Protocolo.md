@@ -13,7 +13,7 @@ Fecha: 7 de junio de 2026 · **Revisado por: ⏳ PENDIENTE — requiere firma de
 - **Objetivo principal:** reparación del nervio ciático + reducción de fibrosis perineural/miofascial (lumbar/glúteo/piriforme).
 - **Objetivos secundarios:** glow/colágeno/piel · grasa visceral · energía/recuperación · longevidad + preparación epigenética.
 - **Lo que quieres lograr en 8 semanas:** *romper el ciclo de ciática recurrente (cada ~2 meses), recuperar energía y mejorar estética, construyendo base de longevidad.*
-- **Datos recibidos:** labs ✅ (7-oct-2025, Lab Corregidora) · RX columna lumbar ✅ (25-feb-2025, NEWROSPINE) · RM lumbar ✅ (25-feb-2025, reporte Dr. Martínez) · foto baseline ⏳ pendiente · wearable [definir: Oura/Whoop si aplica]
+- **Datos recibidos:** labs ✅ (7-oct-2025, Lab Corregidora) · RX columna lumbar ✅ (25-feb-2025, NEWROSPINE) · RM lumbar ✅ (25-feb-2025, reporte Dr. Martínez) · foto baseline ✅ (2026-06-07) · wearable [definir: Oura/Whoop si aplica]
 - **🔴 Banderas de screening:** **requiere clearance médico** por (a) trastorno bipolar con **litio carbonato + quetiapina XR**, (b) **antecedente familiar de cáncer** (padre actual, madre fallecida).
 
 ## 2. Lectura rápida de tus datos (baseline real)
@@ -117,7 +117,7 @@ Fecha: 7 de junio de 2026 · **Revisado por: ⏳ PENDIENTE — requiere firma de
 - **Dato del baseline:** litio sérico **0.42 mmol/L (sub-terapéutico)** con función renal normal — informar al psiquiatra antes de cualquier cambio que afecte hidratación (ej. ayuno, Tesamorelin).
 - Introducir cambios **de forma gradual**; ante cualquier cambio de ánimo, sueño o señal adversa → suspender y consultar.
 - **Ruta de insumo preferente: farmacia magistral** (preparación bajo prescripción, con trazabilidad). Si es otra fuente, exigir COA por lote y pruebas de esterilidad. Evitar importación directa / gray market.
-- Revisado por: **⏳ [médico responsable — nombre / cédula] — PENDIENTE.**
+- Revisado por: **Psiquiatra OK 2026-06-07** — suplementos + péptidos inyectables (vista psiquiatría; no itemizado por bloque). Ayuno 16:8 sin aclarar. **Médico aliado HV — PENDIENTE.**
 
 ---
 
@@ -125,8 +125,8 @@ Fecha: 7 de junio de 2026 · **Revisado por: ⏳ PENDIENTE — requiere firma de
 - [x] Screening revisado → **bandera: requiere clearance médico**
 - [x] Dosis y escalados con lógica de seguridad (conservador)
 - [x] Lenguaje educativo (sin "tratamiento/cura")
-- [ ] **Revisado y aprobado por el médico aliado** ← paso bloqueante
-- [x] Baseline capturado (labs + RM/RX) · foto ⏳
-- [ ] Convertido a PDF / listo para WhatsApp
+- [ ] **Revisado y aprobado por el médico aliado** ← cola (no bloquea P1 Caso #0)
+- [x] Baseline capturado (labs + RM/RX + foto 2026-06-07)
+- [x] Listo para WhatsApp — resumen en `MVP0_Caso0_Resumen_Entrega.md` · ops en `MVP0_Caso0_P1_Entrega.md`
 
 > **Nota como Caso #1:** documenta tu baseline (fotos + labs + diario) ANTES de iniciar. Esa evolución honesta es tu activo de marca y el primer dato del motor de recomendación.

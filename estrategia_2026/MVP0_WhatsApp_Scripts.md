@@ -1,6 +1,12 @@
 # Scripts de WhatsApp — Hombre Vigente (MVP-0)
 
-**Cómo usarlos:** guárdalos como "respuestas rápidas" en WhatsApp Business. Personaliza los `[corchetes]`. Tono: cercano, directo, de confianza — como un amigo que sabe del tema, no como vendedor.
+**Canal real (jun 2026):** tu **WhatsApp personal** a contactos de confianza. **No** hay número HV dedicado, **no** Twilio, **no** API. Copiar/pegar manual.
+
+**Caso #0:** Notas, email a ti mismo, o WA “mensaje a ti mismo”.
+
+**MVP-1+:** cuando exista número + 360dialog, estos mismos textos pasan a respuestas rápidas / plantillas.
+
+**Cómo usarlos hoy:** copia el bloque, personaliza `[corchetes]`, envía desde tu cel. Tono: cercano, directo — como un amigo que sabe del tema, no como vendedor.
 
 ---
 
@@ -12,15 +18,19 @@
 >
 > Estoy tomando **5–10 personas gratis** a cambio de tu feedback honesto durante 4 semanas. ¿Te late entrar?
 
-**Si dice que sí:**
-> Va 🙌 Llena esto (5 min, desde el cel): [link Tally]
-> En 24–48h te mando tu protocolo personalizado, ya revisado por nuestro médico.
+**Si dice que sí (médico aliado con SLA):**
+> Va 🙌 Llena esto (5 min, desde el cel): https://tally.so/r/5BVeRd
+> En 24–48h te mando tu protocolo, después de revisión médica.
+
+**Si dice que sí (sin médico aliado aún — MVP-0 honesto):**
+> Va 🙌 Llena esto (5 min): https://tally.so/r/5BVeRd
+> Te armo el protocolo en 24–48h. Es educativo y conservador; si hay tema de salud delicado, lo alineamos con tu médico antes de que inicies nada.
 
 ---
 
 ## #2 · Recordatorio de onboarding (si no llena el form en 2 días)
 
-> [nombre] te dejo de nuevo el link por si se te pasó 😉 son 5 min: [link Tally]. En cuanto lo llenes arranco con tu protocolo.
+> [nombre] te dejo de nuevo el link por si se te pasó 😉 son 5 min: https://tally.so/r/5BVeRd. En cuanto lo llenes arranco con tu protocolo.
 
 ---
 
@@ -81,6 +91,9 @@
 
 ---
 
-## Etiquetas sugeridas en WhatsApp Business (estados del beta)
+## Etiquetas (estados del beta)
+
+**Hoy:** columna **Estado** en Google Sheets (`MVP0_Beta_Tracker.xlsx`).  
+**Cuando tengas WA Business app** en número dedicado: mismas etiquetas en la app.
 
 `Invitado` · `Onboarding enviado` · `Datos recibidos` · `En revisión médica` · `Protocolo entregado` · `Semana 1-2-3-4` · `Feedback recibido` · `Convertiría a pago` · `Referido`

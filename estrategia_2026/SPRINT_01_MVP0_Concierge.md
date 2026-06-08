@@ -26,7 +26,7 @@
 | # | Entregable | Dueño | DoD |
 |---|------------|-------|-----|
 | E1 | Médico aliado confirma revisión de protocolos | Juan | Nombre + SLA 48h por protocolo |
-| E2 | Tally publicado (`MVP0_Cuestionario.md`) | Juan | Link funcional + prueba tú mismo |
+| E2 | Tally publicado (`MVP0_Cuestionario.md`) | Juan | ✅ https://tally.so/r/5BVeRd (Caso #0 gbAO6Yl) |
 | E3 | Tracker en Google Sheets (`MVP0_Beta_Tracker.xlsx`) | Juan | Hoja Pipeline + RAG Concierge activas |
 | E4 | 5–10 invitaciones enviadas (script #1) | Juan | Registradas en Pipeline |
 | E5 | Caso #0 (tú) con baseline documentado | Juan | Fila #0 en Pipeline + foto/labs si aplica |
@@ -41,7 +41,7 @@
 ### Día 0–2 · Setup (bloqueantes)
 
 - [ ] Confirmar médico aliado (si no hay → **no reclutar betas**, solo Caso #0).
-- [ ] Tally + link guardado en respuestas rápidas WhatsApp.
+- [x] Tally + link guardado en respuestas rápidas WhatsApp → https://tally.so/r/5BVeRd
 - [ ] Subir tracker a Google Sheets; compartir solo con médico (view/edit según necesidad).
 - [ ] Probar una vez: `python scripts/concierge_mvp.py "¿cuánto cuesta HIFU?"`.
 - [ ] Etiquetas WhatsApp Business: `lead`, `onboarding`, `protocolo-entregado`, `semana-1`…`semana-4`, `escalate-humano`.

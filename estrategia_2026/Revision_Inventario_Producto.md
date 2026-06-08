@@ -2,6 +2,15 @@
 
 **Junio 2026 · para el dueño + peer.** Revisión del `Inventario Hombre Vigente.md` (landing, onboarding, conversión Av.1/Av.2, seguimiento, confianza, canal). El producto está completo y coherente; esto es lo que hay que corregir antes de live, por prioridad.
 
+> **ESTADO (actualización 2026-06-08 — verificado contra el inventario revisado):**
+> - ✅ **#1 Escala de evidencia** — RESUELTO (lenguaje plano Fuerte/Moderada/Emergente; E-tags fuera de biomarcadores en P06).
+> - ✅ **#2 Evidencia citada** — RESUELTO (PMIDs reales, incluido Creatina → Kreider 2017, PMID 28615996, verificado).
+> - ✅ **#3 Receta/cédula** — RESUELTO en copy (médico/cédula etiquetados "ejemplo"; "Wolverine Stack" → "Protocolo magistral de reparación"). *Pendiente mundo real: responsable sanitario real (médico+cédula+contrato) antes de operar Av.2.*
+> - ✅ **#4 Ajuste Rx** — RESUELTO ("el modelo sugiere; tu médico aprueba"; despersonalizado).
+> - ✅ **#5 Menores** — Stack reconciliado ("+2 más"). *Pendiente mundo real: redactar el Aviso de Privacidad (LFPDPPP).*
+>
+> **Solo quedan 2 pendientes del mundo real (no de copy):** Aviso de Privacidad (LFPDPPP) · responsable sanitario real (médico+cédula+contrato, para Av.2).
+
 ---
 
 ## 🔴 1. Escala de evidencia — inversión + contradicción interna (CRÍTICO)
@@ -57,7 +66,7 @@ Reemplazar en `Inventario Hombre Vigente.html` **y** en la pantalla real `Confia
 **Ingredientes — los 6 `<li>` → estos (tier honesto + fuente verificada):**
 ```html
 <li class="lv1"><strong>Omega-3</strong> · Baja inflamación (hs-CRP) · <strong>Fuerte</strong> — Calder 2017, PMID 28900017</li>
-<li class="lv1"><strong>Creatina</strong> · Fuerza y cognición · <strong>Fuerte</strong> — meta-análisis (PMID por verificar)</li>
+<li class="lv1"><strong>Creatina</strong> · Fuerza y cognición · <strong>Fuerte</strong> — Kreider 2017 (ISSN position stand), PMID 28615996</li>
 <li class="lv1"><strong>NMN</strong> · Sube NAD+ · <strong>Moderada</strong> — Yoshino 2021, PMID 33888596</li>
 <li class="lv1"><strong>Espermidina</strong> · Autofagia · <strong>Moderada</strong> — Eisenberg 2009, PMID 19801973</li>
 <li class="lv1"><strong>GHK-Cu</strong> · Remodelación de colágeno · <strong>Emergente</strong> — Pickart 2018, PMID 29986520</li>

@@ -35,14 +35,17 @@ Pediste analizar conveniencia. Esta es la comparación y el veredicto. **Regla r
 
 **→ Usa Tally.** Es el único que combina gratis + ilimitado + subida de archivos sin fricción. Crea el form pegando el cuestionario del archivo `MVP0_Cuestionario.md`.
 
+**Link MVP-0 (vivo):** https://tally.so/r/5BVeRd
+
 ### Entrega y seguimiento
 
 | Herramienta | Costo | Por qué |
 |-------------|-------|---------|
-| **WhatsApp Business (app)** | Gratis | ✅ **Recomendado.** Etiquetas (estados de beta), respuestas rápidas (scripts guardados), listas de difusión, catálogo. Encaja con el comportamiento del mercado MX. **No** necesitas la API todavía. |
-| WhatsApp API / Twilio | $ | Sobra para 5–10 personas. Es para cuando automatices (MVP-1+). |
+| **WhatsApp personal (tu cel)** | Gratis | ✅ **Lo que usas hoy.** DM a betas de confianza; scripts copy-paste. Sin número HV ni Twilio todavía. |
+| **WhatsApp Business (app)** | Gratis | **Opcional Fase 0** — solo si sacas un número dedicado. Etiquetas + respuestas rápidas. |
+| WhatsApp API / Twilio / 360dialog | $ | **Fase 1+.** No operando en MVP-0. |
 
-**→ Usa WhatsApp Business app** en un número dedicado al proyecto. Configura las "respuestas rápidas" con los scripts de `MVP0_WhatsApp_Scripts.md` y las "etiquetas" con los estados del tracker.
+**→ Hoy:** WA personal + Sheets (estados) + scripts en `MVP0_WhatsApp_Scripts.md`. Número dedicado y API cuando automatices.
 
 ### Tracker de betas
 
@@ -66,7 +69,7 @@ El canal más limpio y profesional para el insumo en México son las **farmacias
 
 ### Stack final recomendado (todo gratis, lanzable esta semana)
 
-> **Tally** (onboarding) → **Google Sheets** (tracker) → **tú + LLM + médico aliado** (protocolo) → **WhatsApp Business** (entrega + seguimiento). Pago: diferido (Mercado Pago cuando conviertas).
+> **Tally** (onboarding) → **Google Sheets** (tracker) → **tú + LLM + médico aliado** (protocolo) → **WA personal / Notas** (entrega + seguimiento). Sin API. Pago: diferido (MVP-1+).
 
 ---
 
@@ -135,7 +138,7 @@ Esto es lo que te separa del gray market — y lo que te protege legalmente. **L
 **Semana 0 (setup, 1–2 días):**
 - [ ] Confirmar médico aliado que revisa protocolos.
 - [ ] Crear form en Tally (pegar `MVP0_Cuestionario.md`).
-- [ ] Configurar WhatsApp Business (número dedicado, etiquetas, respuestas rápidas con los scripts).
+- [ ] Scripts en Notas o documento accesible desde el cel (número HV / WA Business = opcional, no bloqueante).
 - [ ] Subir el tracker a Google Sheets.
 - [x] Tú arrancas tu propio protocolo como **Caso #0** — ver `MVP0_Caso0_Baseline.md` + fila #0 en tracker.
 
