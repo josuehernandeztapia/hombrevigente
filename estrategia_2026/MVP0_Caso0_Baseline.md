@@ -81,9 +81,22 @@
 | Peso (kg) | ~60–64 (actualizar) |
 | Cintura (cm) | |
 
-### Foto baseline
-- [ ] Frente + perfil, misma luz
-- [ ] Ruta: `~/HombreVigente-Caso0/baseline-2026-06/`
+### Foto baseline — checklist 3 minutos
+
+**Antes (una sola vez):** elige un rincón con luz de ventana (mañana ideal). Pega cinta en el piso donde irán tus pies. Apoya el celular a ~2 m, altura del ombligo (estante/libros), modo **foto normal** (sin filtro, sin retrato).
+
+| Paso | Qué haces | Tiempo |
+|------|-----------|--------|
+| **1** | Párate en la cinta, pies separados al ancho de hombros, brazos sueltos, mira al frente. Temporizador **10 s** → **frente**. | 30 s |
+| **2** | Sin mover los pies, gira 90° (perfil derecho). Misma postura → **perfil**. | 30 s |
+| **3** | Repite paso 2 al otro lado (perfil izquierdo) — opcional pero útil para postura/ciática. | 30 s |
+| **4** | Guarda en `~/HombreVigente-Caso0/baseline-2026-06/` como `YYYY-MM-DD_frente.jpg` y `_perfil.jpg` (fecha de hoy). | 30 s |
+| **5** | Anota abajo 1 línea: piel/postura hoy + las 4 escalas 1–5. Tracker → **Datos: foto** = `Sí`. | 60 s |
+
+**Cada semana (check-in):** mismo lugar, misma hora, mismos nombres con fecha nueva (`2026-06-15_frente.jpg`, etc.).
+
+- [ ] Pasos 1–5 hechos
+- [ ] Carpeta creada: `~/HombreVigente-Caso0/baseline-2026-06/`
 
 ### Wearable
 - [ ] Dispositivo: `[ ]` · HRV / sueño 7d: `[ ]`
