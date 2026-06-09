@@ -4,7 +4,9 @@ HV RAG API — POST/GET /rag/query + health check (Fly-ready).
 
 from __future__ import annotations
 
+import json
 import os
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Literal, Optional
 
@@ -27,6 +29,10 @@ from knowledge_promote import load_pending, remove_pending, submit_promotion
 from newsletter_approval_dispatch import dispatch_pulso_approval
 from newsletter_approval_token import verify_token
 from rag_retrieval_local import rag_query_local  # noqa: E402
+from traces import get_trace_stats, read_traces  # noqa: E402
+from signal_detector import BetaSignalDetector  # noqa: E402
+from action_handler import load_pending_actions, run_detect_and_act, get_proactive_health_trend  # noqa: E402
+from feature_flags import list_active_flags, is_enabled  # noqa: E402  # Guía Capa 5
 
 app = FastAPI(
     title="Hombre Vigente RAG API",
@@ -129,7 +135,30 @@ def health():
     intake, _ = resolve_intake(beta_id="row-0")
     beta_fixture_ok = intake is not None
 
+    # Fase 1: reportar el backend de estado operativo
+    state_persistence = os.getenv("HV_STATE_PERSISTENCE", "files")
+    postgres_state_ok = False
+    try:
+        from state_persistence import _is_postgres_available
+
+        postgres_state_ok = _is_postgres_available()
+    except Exception:
+        pass
+
     ok = index_ok and beta_fixture_ok
+
+    # Fase 5: señal de si hay señales proactivas pendientes (best effort, no bloquea)
+    signal_count = 0
+    try:
+        detector = BetaSignalDetector()
+        signal_count = len(detector.scan())
+    except Exception:
+        pass
+
+    # Per Guía Agéntica: report strong opinion on SSOT
+    ssot_postgres = state_persistence == "postgres" and postgres_state_ok
+    ssot_status = "postgres" if ssot_postgres else state_persistence
+
     return {
         "status": "ok" if ok else "degraded",
         "index_loaded": index_ok,
@@ -138,6 +167,17 @@ def health():
         "beta_states_writable": states_writable,
         "beta_fixture_row_0": beta_fixture_ok,
         "retrieval_backend": os.getenv("HV_RETRIEVAL_BACKEND", "json"),
+        "state_persistence": state_persistence,
+        "postgres_state_configured": postgres_state_ok,
+        "traces_enabled": os.getenv("HV_TRACES_ENABLED", "true"),
+        "pending_signals": signal_count,
+        "pending_actions": len(load_pending_actions(limit=1000)),
+        "ssot": ssot_status,
+        "ssot_postgres_recommended": not ssot_postgres,
+        "agent_status_endpoint": "/admin/agent_status (PIN)",
+        "calibrate_endpoint": "/admin/calibrate (PIN, runs drift + baseline + health log)",
+        "feature_flags": list_active_flags(),
+        "feature_flags_note": "HV_FEATURE_XXX=false to disable (default ON). See feature_flags.py",
     }
 
 
@@ -236,6 +276,270 @@ def knowledge_pending_delete(
     if not removed:
         raise HTTPException(status_code=404, detail="promotion not found")
     return {"success": True, "removed_id": promotion_id, "remaining": remaining}
+
+
+# ------------------------------------------------------------------
+# Fase 3 — Admin traces (Capa 2 de la Guía Agéntica)
+# 4 endpoints mínimos PIN-gated
+# ------------------------------------------------------------------
+
+@app.get("/admin/traces")
+def admin_traces(
+    limit: int = Query(50, ge=1, le=200),
+    beta_id: Optional[str] = Query(None),
+    role: Optional[str] = Query(None),
+    errors_only: bool = Query(False),
+    pin: str = Query(""),
+    x_admin_pin: Optional[str] = Header(None, alias="x-admin-pin"),
+):
+    _require_admin_pin(pin, x_admin_pin)
+    traces = read_traces(limit=limit, beta_id=beta_id, role=role, errors_only=errors_only)
+    return {"count": len(traces), "traces": traces}
+
+
+@app.get("/admin/traces/stats")
+def admin_traces_stats(
+    window_hours: int = Query(24, ge=1, le=720),
+    pin: str = Query(""),
+    x_admin_pin: Optional[str] = Header(None, alias="x-admin-pin"),
+):
+    _require_admin_pin(pin, x_admin_pin)
+    stats = get_trace_stats(window_hours=window_hours)
+    return stats
+
+
+@app.get("/admin/traces/beta/{beta_id}")
+def admin_traces_by_beta(
+    beta_id: str,
+    limit: int = Query(50, ge=1, le=200),
+    pin: str = Query(""),
+    x_admin_pin: Optional[str] = Header(None, alias="x-admin-pin"),
+):
+    _require_admin_pin(pin, x_admin_pin)
+    traces = read_traces(limit=limit, beta_id=beta_id)
+    return {"beta_id": beta_id, "count": len(traces), "traces": traces}
+
+
+@app.get("/admin/traces/{trace_id}")
+def admin_trace_by_id(
+    trace_id: str,
+    pin: str = Query(""),
+    x_admin_pin: Optional[str] = Header(None, alias="x-admin-pin"),
+):
+    _require_admin_pin(pin, x_admin_pin)
+    # simple: buscamos por id (bigint como string)
+    all_traces = read_traces(limit=1)  # ineficiente pero para MVP; en prod se haría query directa
+    for t in all_traces:
+        if str(t.get("id")) == str(trace_id):
+            return t
+    # fallback: intentar leer más
+    more = read_traces(limit=200)
+    for t in more:
+        if str(t.get("id")) == str(trace_id):
+            return t
+    raise HTTPException(status_code=404, detail="trace not found")
+
+
+# Fase 5/6 — Admin para señales proactivas + acciones (cierre del loop detectar -> actuar)
+@app.get("/admin/signals")
+def admin_signals(
+    pin: str = Query(""),
+    x_admin_pin: Optional[str] = Header(None, alias="x-admin-pin"),
+):
+    _require_admin_pin(pin, x_admin_pin)
+    detector = BetaSignalDetector()
+    signals = [s.to_dict() for s in detector.scan()]
+    return {"count": len(signals), "signals": signals}
+
+
+@app.get("/admin/pending_actions")
+def admin_pending_actions(
+    limit: int = Query(50, ge=1, le=200),
+    pin: str = Query(""),
+    x_admin_pin: Optional[str] = Header(None, alias="x-admin-pin"),
+):
+    _require_admin_pin(pin, x_admin_pin)
+    actions = load_pending_actions(limit=limit)
+    return {"count": len(actions), "actions": actions}
+
+
+@app.post("/admin/signals/run")
+def admin_run_detect_and_act(
+    pin: str = Query(""),
+    x_admin_pin: Optional[str] = Header(None, alias="x-admin-pin"),
+):
+    _require_admin_pin(pin, x_admin_pin)
+    actions = run_detect_and_act()
+    return {"count": len(actions), "actions": actions}
+
+
+@app.post("/admin/pending_actions/execute")
+def admin_execute_pending_actions(
+    dry_run: bool = Query(False),
+    beta_id: Optional[str] = Query(None),
+    force: bool = Query(False, description="Bypass is_healthy gate (ops emergency only)"),
+    pin: str = Query(""),
+    x_admin_pin: Optional[str] = Header(None, alias="x-admin-pin"),
+):
+    _require_admin_pin(pin, x_admin_pin)
+    from action_handler import execute_all_pending
+    results = execute_all_pending(dry_run=dry_run, beta_id=beta_id, force=force)
+    return {"executed_count": len(results), "actions": results}
+
+
+@app.get("/admin/metrics")
+def admin_metrics(
+    pin: str = Query(""),
+    x_admin_pin: Optional[str] = Header(None, alias="x-admin-pin"),
+):
+    _require_admin_pin(pin, x_admin_pin)
+    from action_handler import compute_agent_metrics
+    return compute_agent_metrics()
+
+
+@app.post("/admin/calibrate")
+def admin_calibrate(
+    sample: int = Query(0, ge=0, le=1000),
+    pin: str = Query(""),
+    x_admin_pin: Optional[str] = Header(None, alias="x-admin-pin"),
+):
+    _require_admin_pin(pin, x_admin_pin)
+    # Dynamic import to avoid path issues (calibrate is in scripts/)
+    import importlib.util
+    from pathlib import Path
+    _ROOT = Path(__file__).resolve().parent.parent
+    cal_path = _ROOT / "scripts" / "calibrate_proactive.py"
+    spec = importlib.util.spec_from_file_location("calibrate_proactive", cal_path)
+    cal = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(cal)
+    report = cal.run_calibration(sample_size=sample, use_json=False)
+    # Log health as part of learning loop (Aprende)
+    try:
+        from action_handler import log_proactive_health_score
+        log_proactive_health_score()
+    except Exception:
+        pass
+    return {"status": "ok", "report": report}
+
+
+@app.get("/admin/simulate")
+def admin_simulate_proactive(
+    beta_id: str = Query(...),
+    pin: str = Query(""),
+    x_admin_pin: Optional[str] = Header(None, alias="x-admin-pin"),
+):
+    _require_admin_pin(pin, x_admin_pin)
+    from action_handler import simulate_proactive_for_beta
+    return simulate_proactive_for_beta(beta_id)
+
+
+@app.get("/admin/agent_status")
+def admin_agent_status(
+    pin: str = Query(""),
+    x_admin_pin: Optional[str] = Header(None, alias="x-admin-pin"),
+):
+    _require_admin_pin(pin, x_admin_pin)
+
+    # Traces aggregates (últimas 24h por defecto)
+    trace_stats = get_trace_stats(window_hours=24)
+
+    # Proactive debt
+    pending = load_pending_actions(limit=1000)
+    pending_count = len([p for p in pending if p.get("status") == "pending"])
+
+    # Last calibration (si existe)
+    calibration = {}
+    try:
+        from pathlib import Path
+        cal_path = Path("data/proactive_calibration.json")
+        if cal_path.exists():
+            calibration = json.loads(cal_path.read_text(encoding="utf-8"))
+    except Exception:
+        pass
+
+    # Last scheduled proactive run (from run_proactive_nightly.py)
+    last_proactive_run = {}
+    try:
+        from pathlib import Path
+        run_path = Path(os.getenv("HV_PENDING_ACTIONS_DIR", "data/pending_actions")) / "last_proactive_run.json"
+        if run_path.exists():
+            last_proactive_run = json.loads(run_path.read_text(encoding="utf-8"))
+    except Exception:
+        pass
+
+    # Proactive Health Score (new consolidated signal)
+    health = {}
+    try:
+        from action_handler import compute_proactive_health_score
+        health = compute_proactive_health_score()
+    except Exception:
+        health = {"score": None, "error": "could not compute"}
+
+    # SSOT status
+    ssot = {
+        "mode": os.getenv("HV_STATE_PERSISTENCE", "files"),
+        "postgres_configured": bool(os.getenv("HV_DATABASE_URL") or os.getenv("DATABASE_URL")),
+    }
+
+    return {
+        "generated_at": datetime.now(timezone.utc).isoformat(),
+        "traces_24h": trace_stats,
+        "proactive": {
+            "pending_actions": pending_count,
+            "last_calibration": {
+                "calibrated_at": calibration.get("calibrated_at"),
+                "total_triggered": calibration.get("summary", {}).get("total_triggered"),
+                "drift": calibration.get("drift"),
+            },
+            "last_scheduled_run": last_proactive_run,
+            "health_score": health,
+            "health_trend": get_proactive_health_trend(limit=5),
+        },
+        "ssot": ssot,
+        "feature_flags": list_active_flags(),
+        "recommendations": [
+            "Usa HV_STATE_PERSISTENCE=postgres en producción.",
+            "Corre calibrate_proactive.py semanalmente.",
+            "Revisa /admin/pending_actions y ejecútalos con el script correspondiente.",
+            "Usa HV_FEATURE_XXX=false para deshabilitar branches (default ON, rollback <5s).",
+        ],
+    }
+
+
+@app.get("/admin/betas")
+def admin_betas(
+    pin: str = Query(""),
+    x_admin_pin: Optional[str] = Header(None, alias="x-admin-pin"),
+):
+    _require_admin_pin(pin, x_admin_pin)
+    from state_persistence import list_all_betas
+    from action_handler import load_pending_actions
+
+    betas_raw = list_all_betas()
+    pending = {a["beta_id"]: a for a in load_pending_actions(limit=500) if a.get("status") == "pending"}
+
+    enriched = []
+    for b in betas_raw:
+        bid = b.get("beta_id")
+        pending_action = pending.get(bid)
+        enriched.append({
+            "beta_id": bid,
+            "phase": b.get("phase"),
+            "next_action": b.get("next_action"),
+            "progress": _compute_simple_progress(b.get("slots", {})),
+            "last_active_at": b.get("last_active_at"),
+            "turn_count": b.get("turn_count", 0),
+            "pending_action": pending_action,
+        })
+
+    return {"count": len(enriched), "betas": enriched}
+
+
+def _compute_simple_progress(slots: dict) -> float:
+    if not slots:
+        return 0.0
+    done = sum(1 for v in slots.values() if v)
+    return round(done / len(slots), 2)
 
 
 def _approval_page(ok: bool, message: str) -> str:

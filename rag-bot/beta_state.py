@@ -1,9 +1,16 @@
 """
 Estado operativo por beta (S2) — fase Pipeline + next_action + slots.
 
-Persistencia JSON en data/beta_states/{beta_id}.json (no PHI clínico).
-"""
+Fase 1 (Guía Agéntica Estándar):
+- Persistencia dual (files + postgres) detrás de HV_STATE_PERSISTENCE.
+- hv_beta_states (state_data JSONB + state_version) es el SSOT cuando el flag apunta a postgres.
+- Slots: se derivan desde intake en sync/derive (modelo actual), pero se persisten tal cual en state_data.
+- turn_count: se mantiene denormalizado en el state (lectura rápida). El SSOT atómico vendrá de hv_agent_traces (Fase 3).
+- Política de lectura: postgres gana cuando HV_STATE_PERSISTENCE=postgres|dual y DB disponible.
+  Fallback a archivos solo en error (degradación ruidosa).
 
+La lógica de derivación de slots y compute_next_action NO cambia.
+"""
 from __future__ import annotations
 
 import json
@@ -13,6 +20,15 @@ from dataclasses import asdict, dataclass, field
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Dict, List, Optional
+
+# Fase 1 persistence layer (Guía Agéntica Estándar)
+from state_persistence import (
+    StateVersionConflictError,
+    ensure_last_active,
+    get_current_version,
+    load_state as _persisted_load,
+    save_state as _persisted_save,
+)
 
 PHASES = (
     "lead",
@@ -174,19 +190,75 @@ def derive_state_from_intake(
 
 
 def save_state(state: BetaState, path: Optional[Path] = None) -> Path:
-    dest = path or (_states_dir() / f"{state.beta_id}.json")
-    dest.parent.mkdir(parents=True, exist_ok=True)
-    state.updated_at = _utc_now()
-    dest.write_text(json.dumps(state.to_dict(), ensure_ascii=False, indent=2), encoding="utf-8")
-    return dest
+    """
+    Guarda el estado.
+
+    Fase 1:
+    - Si se pasa `path` explícito (tests que fuerzan directorio temporal) → comportamiento legacy en archivo.
+    - En el resto de casos delega a la capa de persistencia (state_persistence.py) que respeta
+      HV_STATE_PERSISTENCE y la política de lectura/escritura dual.
+    """
+    state_dict = state.to_dict()
+    state_dict = ensure_last_active(state_dict)
+
+    if path is not None:
+        # Modo legacy forzado por tests / CLI con --path
+        dest = path
+        dest.parent.mkdir(parents=True, exist_ok=True)
+        state.updated_at = _utc_now()
+        dest.write_text(json.dumps(state_dict, ensure_ascii=False, indent=2), encoding="utf-8")
+        return dest
+
+    # Camino normal Fase 1
+    try:
+        # Obtenemos versión actual para optimistic lock cuando corresponda
+        current_version = get_current_version(state.beta_id)
+        _persisted_save(
+            state.beta_id,
+            state_dict,
+            expected_version=current_version,
+            also_write_file=False,  # el módulo de persistencia decide según el flag
+        )
+    except StateVersionConflictError:
+        # Reintento único (patrón guía). En Fase 1 simplemente re-escribimos con la versión fresca.
+        fresh_version = get_current_version(state.beta_id)
+        _persisted_save(
+            state.beta_id,
+            state_dict,
+            expected_version=fresh_version,
+            also_write_file=False,
+        )
+
+    # Devolvemos un path "virtual" para compatibilidad de firma (el caller rara vez lo usa)
+    return _states_dir() / f"{state.beta_id}.json"
 
 
 def load_state(beta_id: str, path: Optional[Path] = None) -> Optional[BetaState]:
-    dest = path or (_states_dir() / f"{beta_id}.json")
-    if not dest.exists():
+    """
+    Carga el estado.
+
+    Fase 1:
+    - Si se pasa `path` explícito → lee solo del archivo (tests).
+    - En el resto delega a la capa de persistencia (respeta HV_STATE_PERSISTENCE + política postgres-first).
+    """
+    if path is not None:
+        if not path.exists():
+            return None
+        data = json.loads(path.read_text(encoding="utf-8"))
+        return BetaState(**data)
+
+    data = _persisted_load(beta_id)
+    if data is None:
         return None
-    data = json.loads(dest.read_text(encoding="utf-8"))
-    return BetaState(**data)
+
+    # BetaState(**data) puede fallar si hay keys extra (ej. _state_version antigua).
+    # Limpiamos keys internas conocidas.
+    clean = {k: v for k, v in data.items() if not k.startswith("_")}
+    try:
+        return BetaState(**clean)
+    except TypeError:
+        # Tolerancia durante transición (campos nuevos como last_active_at ya están en el dict)
+        return BetaState(**{k: v for k, v in clean.items() if k in BetaState.__dataclass_fields__})
 
 
 def transition(
@@ -216,8 +288,23 @@ def record_turn(
     channel: str = "cli",
     increment: int = 1,
 ) -> BetaState:
+    """
+    Fase 2: Delega la mutación a StateManager cuando sea posible (para optimistic lock + last_active).
+    Mantiene la firma legacy para compatibilidad con tests y CLI.
+    """
+    # Actualizamos el objeto en memoria (para callers que usan el BetaState devuelto)
     state.turn_count += increment
     state.last_channel = channel
+
+    # Disparamos la persistencia a través de StateManager (Fase 2) — import lazy para evitar circularidad
+    try:
+        from state_manager import state_manager as _sm
+        _sm.record_turn(state.beta_id, channel=channel, increment=increment)
+    except Exception:
+        # Si falla (ej. sin DB en modo files estricto), el objeto en memoria ya está actualizado
+        # y la persistencia legacy (a través de save_state posterior) se encargará.
+        pass
+
     return state
 
 
@@ -249,4 +336,10 @@ def sync_from_intake(
     fresh = record_turn(fresh, channel=channel)
     if persist:
         save_state(fresh)
+
+    # Fase 1 aclaraciones (respuestas al usuario) — actualizado:
+    # 1. Modelo de slots: derivados (_slot_snapshot desde intake) pero se persisten en state_data.
+    # 2. SSOT de turn_number: implementado vía next_turn_number() de hv_agent_traces (atomic query); state mantiene denormalizado para lecturas rápidas.
+    # 3. Política de lectura en dual-write: postgres-first implementada en state_persistence.py (fallback solo en error).
+    # 4. TRAJ-HV-005 no cubre ReentryHandler temporal → cubierto por TRAJ-HV-010 (force-old-last-active + compute_resume_message).
     return fresh

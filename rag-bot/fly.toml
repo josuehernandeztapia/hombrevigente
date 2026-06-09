@@ -22,6 +22,10 @@ primary_region = "dfw"
   HV_BETA_STATES_DIR = "/data/beta_states"
   HV_EMBEDDINGS_INDEX = "/data/embeddings_local.json"
 
+  # Estado operativo: hv_beta_states en Postgres = SSOT (Guía Agéntica)
+  # Recomendado: HV_STATE_PERSISTENCE=postgres
+  # HV_DATABASE_URL se setea vía secrets / bootstrap
+
 [mounts]
   source = "hv_rag_data"
   destination = "/data"

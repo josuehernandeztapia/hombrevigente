@@ -98,5 +98,30 @@ class TestDecisionLogBetaContext(unittest.TestCase):
             self.assertEqual(row["channel"], "whatsapp")
 
 
+class TestProactiveGolden(unittest.TestCase):
+    def test_generate_action_for_signal_deterministic(self):
+        """Basic golden regression for action generation (protects Capa 5/6 logic).
+        Uses data/proactive-golden.json (like RAG golden). low_progress may include optional RAG enrichment (Capa 4).
+        """
+        import json
+        from pathlib import Path
+        from signal_detector import BetaSignal
+        from action_handler import generate_action_for_signal
+        golden_path = Path(__file__).resolve().parent / "data" / "proactive-golden.json"
+        golden = json.loads(golden_path.read_text(encoding="utf-8"))
+        samples = [
+            BetaSignal(beta_id="g-1", signal_type="no_activity_72h", severity="medium", context={}),
+            BetaSignal(beta_id="g-2", signal_type="stalled_onboarding", severity="high", context={}),
+            BetaSignal(beta_id="g-3", signal_type="low_progress", severity="low", context={}),
+            BetaSignal(beta_id="g-4", signal_type="missing_labs", severity="medium", context={}),
+        ]
+        for i, sig in enumerate(samples):
+            action = generate_action_for_signal(sig)
+            g = golden[i]
+            self.assertEqual(action.get("action_type"), g["action_type"])
+            self.assertTrue(action.get("suggested_message", "").startswith(g["suggested_message_starts_with"]))
+            self.assertEqual(bool(action.get("resume_context")), g["has_resume_context"])
+
+
 if __name__ == "__main__":
     unittest.main()

@@ -151,6 +151,10 @@ knowledge_base/embeddings_local.json
 # RAG observability (runtime)
 data/decision_log.jsonl
 data/beta_states/
+data/pending_actions/*.jsonl
+data/pending_actions/last_proactive_run.json
+data/proactive_calibration.json
+data/proactive_health_history.jsonl
 data/intake_submissions/
 *.pkl
 *.pickle

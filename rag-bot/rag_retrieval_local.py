@@ -14,18 +14,21 @@ import re
 import time
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Optional, Tuple, cast
 
 from dotenv import load_dotenv
 
 from beta_state import (
     beta_id_from_intake,
     derive_state_from_intake,
-    load_state,
-    record_turn,
-    save_state,
 )
 from decision_log import log_from_rag_result
+
+# Fase 2: StateManager como capa central para mutaciones de estado
+from state_manager import state_manager as sm
+from traces import build_turn_payload, persist_turn_trace
+from reentry import compute_hours_away, get_resume_context
+from feature_flags import is_enabled  # Guía Capa 5 (default ON)
 from frozen_context import build_frozen_context, gate_probe_text, resolve_intake
 from confidence_gate import (
     CAVEAT_FOOTER,
@@ -283,7 +286,8 @@ def generate_answer(
     confidence: str = "high",
     avenida_max: str = "1",
     frozen_context: Optional[str] = None,
-) -> str:
+) -> Tuple[str, Dict[str, Any]]:
+    """Calls the LLM and returns (answer, llm_call_dict) with real usage tokens for accurate traces + cost."""
     from openai import OpenAI
 
     system = build_system_prompt(
@@ -307,7 +311,15 @@ def generate_answer(
     answer = response.choices[0].message.content or ""
     if confidence == "medium" and CAVEAT_FOOTER.strip() not in answer:
         answer += CAVEAT_FOOTER
-    return answer
+
+    # Capture real usage for traces + cost calculation (Guía Capa 2)
+    usage = getattr(response, "usage", None)
+    llm_call = {
+        "model": getattr(response, "model", LLM_MODEL),
+        "prompt_tokens": getattr(usage, "prompt_tokens", None) if usage else None,
+        "completion_tokens": getattr(usage, "completion_tokens", None) if usage else None,
+    }
+    return answer, llm_call
 
 
 def _attach_log(
@@ -351,22 +363,33 @@ def _beta_turn_context(
     beta_id: Optional[str],
     channel: Optional[str],
 ) -> Tuple[Optional[str], Optional[int]]:
-    """Incrementa turno persistido; devuelve (beta_id, turn_number)."""
+    """
+    Fase 2: Usa StateManager para registrar el turno (optimistic lock + last_active_at).
+    Mantiene compatibilidad con intake derivado cuando no existe estado previo.
+    """
     bid = beta_id
     if intake and not bid:
         bid = beta_id_from_intake(intake)
     if not bid:
         return None, None
 
-    state = load_state(bid)
-    if state is None and intake is not None:
-        state = derive_state_from_intake(intake)
-    if state is None:
-        return bid, None
+    try:
+        # Prefer StateManager (Fase 2). Esto hace record_turn + persist con version handling.
+        state_dict = sm.record_turn(bid, channel=channel or "cli")
+        turn_no = state_dict.get("turn_count")
+        return bid, turn_no
+    except Exception:
+        # Fallback defensivo al comportamiento pre-Fase 2 (para no romper flujos durante transición)
+        from beta_state import load_state as _legacy_load, derive_state_from_intake as _legacy_derive, record_turn as _legacy_record, save_state as _legacy_save
 
-    record_turn(state, channel=channel or "cli")
-    save_state(state)
-    return bid, state.turn_count
+        state = _legacy_load(bid)
+        if state is None and intake is not None:
+            state = _legacy_derive(intake)
+        if state is None:
+            return bid, None
+        _legacy_record(state, channel=channel or "cli")
+        _legacy_save(state)
+        return bid, getattr(state, "turn_count", None)
 
 
 def rag_query_local(
@@ -391,6 +414,29 @@ def rag_query_local(
     intake, beta_id = resolve_intake(intake=intake, intake_path=intake_path, beta_id=beta_id)
     frozen = build_frozen_context(intake) if intake else ""
     bid, turn_no = _beta_turn_context(intake, beta_id, channel)
+
+    # Fase 3: snapshot antes del turno (para state_before en traces)
+    state_before = None
+    try:
+        state_before, _ = sm.get_state(bid) if bid else (None, None)
+    except Exception:
+        pass
+
+    # Fase 4: ReentryHandler — detectar si el usuario regresa después de tiempo
+    resume_message = None
+    if bid and state_before:
+        try:
+            hours = compute_hours_away(state_before)
+            if hours is not None:
+                resume_message = get_resume_context(state_before)
+                if resume_message:
+                    # Inyectamos en frozen_context para que el LLM y los gates lo vean
+                    if frozen:
+                        frozen = f"{resume_message}\n\n{frozen}"
+                    else:
+                        frozen = resume_message
+        except Exception:
+            pass
 
     route = kb_route or detect_kb_route(query)
     query_normalized = strip_command_words(query)
@@ -421,7 +467,7 @@ def rag_query_local(
                 "gate_code": gate.code,
                 "has_frozen_context": bool(frozen),
             }
-        return _attach_log(
+        result = _attach_log(
             out,
             query_normalized=query_normalized,
             role=role,
@@ -433,6 +479,26 @@ def rag_query_local(
             turn_number=turn_no,
             channel=channel,
         )
+        # Fase 3: full trace (fire-and-forget)
+        try:
+            payload = build_turn_payload(
+                beta_id=bid,
+                turn_number=turn_no,
+                role=role,
+                phase=(state_before or {}).get("phase") if state_before else None,
+                input_body=query,
+                branch_taken=f"gate_{gate.code}",
+                output_body=gate.message,
+                latency_ms=result.get("latency_ms"),
+                state_before=state_before,
+                state_after=None,
+                success=True,
+                channel=channel,
+            )
+            persist_turn_trace(payload)
+        except Exception:
+            pass
+        return result
 
     index = load_index(index_path)
     search_route = route if route != "all" else "all"
@@ -469,7 +535,7 @@ def rag_query_local(
                 "verdict": "escalate",
                 "has_frozen_context": bool(frozen),
             }
-        return _attach_log(
+        result = _attach_log(
             out,
             query_normalized=query_normalized,
             role=role,
@@ -481,16 +547,36 @@ def rag_query_local(
             turn_number=turn_no,
             channel=channel,
         )
+        try:
+            payload = build_turn_payload(
+                beta_id=bid,
+                turn_number=turn_no,
+                role=role,
+                phase=(state_before or {}).get("phase") if state_before else None,
+                input_body=query,
+                branch_taken="rag_escalate_no_chunks",
+                output_body=NO_MATCH_MESSAGE,
+                latency_ms=result.get("latency_ms"),
+                state_before=state_before,
+                state_after=None,
+                success=True,
+                channel=channel,
+            )
+            persist_turn_trace(payload)
+        except Exception:
+            pass
+        return result
 
     top_score = chunks[0]["score"]
     top_conf = chunks[0]["confidence"]
     verdict = decide_rag_path(top_score)
     gen_route = route if route != "all" else chunks[0]["kb_type"]
 
+    llm_call = None
     if verdict.path == "escalate":
         answer = NO_MATCH_MESSAGE
-    elif use_llm and os.getenv("OPENAI_API_KEY"):
-        answer = generate_answer(
+    elif use_llm and os.getenv("OPENAI_API_KEY") and is_enabled("RAG_LLM", default=True):
+        answer, llm_call = generate_answer(
             query,
             chunks,
             gen_route,
@@ -501,6 +587,9 @@ def rag_query_local(
         )
     else:
         answer = _format_template(query, chunks, route)
+        if use_llm and not is_enabled("RAG_LLM", default=True):
+            # still record that LLM was requested but flag-disabled
+            llm_call = {"model": "gpt-4o-mini", "prompt_tokens": 0, "completion_tokens": 0, "note": "disabled_by_feature_flag"}
 
     result = {
         "query": query,
@@ -530,6 +619,9 @@ def rag_query_local(
         result["beta_id"] = bid
     if turn_no is not None:
         result["turn_number"] = turn_no
+    if resume_message:
+        result["resume_message"] = resume_message
+        result["reentry_band"] = "detected"  # el detalle real viene en frozen si aplica
 
     if parse:
         result["parse"] = {
@@ -560,7 +652,7 @@ def rag_query_local(
         for c in chunks[:3]:
             print(f"  - {c['service_name']} | {c['section_title']} | {c['score']:.3f}")
 
-    return _attach_log(
+    result = _attach_log(
         result,
         query_normalized=query_normalized,
         role=role,
@@ -572,6 +664,46 @@ def rag_query_local(
         turn_number=turn_no,
         channel=channel,
     )
+
+    # Fase 3: full reasoning trace (fire-and-forget)
+    try:
+        state_after = None
+        if bid:
+            try:
+                state_after, _ = sm.get_state(bid)
+            except Exception:
+                pass
+
+        branch = f"rag_{result.get('gate_path', 'auto')}"
+        if result.get("gate_path") == "escalate":
+            branch = "rag_escalate_low_confidence"
+
+        # Use real llm_call data (with tokens) when we actually called the LLM
+        llm_calls = [llm_call] if llm_call else []
+
+        payload = build_turn_payload(
+            beta_id=bid,
+            turn_number=turn_no,
+            role=role,
+            phase=(state_before or {}).get("phase") if state_before else None,
+            input_body=query,
+            branch_taken=branch,
+            output_body=result.get("answer", ""),
+            output_confidence=result.get("confidence"),
+            latency_ms=result.get("latency_ms"),
+            llm_calls=llm_calls,
+            state_before=state_before,
+            state_after=state_after,
+            success=True,
+            channel=channel,
+        )
+        if resume_message:
+            payload["branch_taken"] = "reentry_" + branch
+        persist_turn_trace(payload)
+    except Exception:
+        pass
+
+    return result
 
 
 def _format_template(query: str, chunks: List[Dict], route: str) -> str:

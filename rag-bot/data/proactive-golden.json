@@ -1,0 +1,30 @@
+[
+  {
+    "signal_type": "no_activity_72h",
+    "action_type": "reengage",
+    "phase": "unknown",
+    "suggested_message_starts_with": "Hola, notamos que tu protocolo en unknown lleva un tiempo sin movimiento. Comple",
+    "has_resume_context": false
+  },
+  {
+    "signal_type": "stalled_onboarding",
+    "action_type": "tally_reminder",
+    "phase": "unknown",
+    "suggested_message_starts_with": "Para avanzar en tu onboarding necesitamos que completes el Tally. Completar Tall",
+    "has_resume_context": false
+  },
+  {
+    "signal_type": "low_progress",
+    "action_type": "checkin",
+    "phase": "unknown",
+    "suggested_message_starts_with": "Vemos que llevas unknown con progreso parcial. Completar Tally (8 min). \u00bfC\u00f3mo te",
+    "has_resume_context": false
+  },
+  {
+    "signal_type": "missing_labs",
+    "action_type": "labs_reminder",
+    "phase": "unknown",
+    "suggested_message_starts_with": "Para personalizar mejor tu protocolo necesitamos tus labs recientes. \u00bfPuedes sub",
+    "has_resume_context": false
+  }
+]

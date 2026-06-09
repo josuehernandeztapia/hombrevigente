@@ -65,3 +65,31 @@ jobs:
           name: embeddings-local-debug
           path: rag-bot/knowledge_base/embeddings_local.json
           retention-days: 3
+
+  proactive-dry:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: rag-bot
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: pip
+          cache-dependency-path: rag-bot/requirements-rag-nightly.txt
+
+      - name: Install dependencies
+        run: pip install -r requirements-rag-nightly.txt
+
+      - name: Proactive dry cycle + calibration + golden regression (Aprende loop + health gate + deterministic protection in scheduled context)
+        run: |
+          python scripts/run_proactive_nightly.py --dry-run --sample 5
+          python scripts/calibrate_proactive.py --sample 5
+          python scripts/proactive_golden.py
+          echo "Scheduled proactive golden regression passed (via scripts/proactive_golden.py)"
+          echo "Proactive dry + richer calibration (with message drift) + golden OK. Health gate and flags exercised."

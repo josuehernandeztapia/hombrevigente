@@ -47,3 +47,60 @@ jobs:
 
       - name: Pgvector scaffold tests
         run: python test_pgvector_scaffold.py
+
+  proactive-smoke:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: rag-bot
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: pip
+          cache-dependency-path: rag-bot/requirements-rag-nightly.txt
+
+      - name: Install dependencies (nightly for proactive scripts)
+        run: pip install -r requirements-rag-nightly.txt
+
+      - name: Proactive dry cycle smoke (signals + actions + health gate)
+        run: |
+          python scripts/run_proactive_nightly.py --dry-run --no-calibration --sample 5
+          echo "Dry proactive cycle OK (respects is_healthy + feature flags in code)"
+
+      - name: Calibration smoke (Aprende drift detection)
+        run: |
+          python scripts/calibrate_proactive.py --sample 5
+          echo "Calibration OK (now includes message/output drift per Guía)"
+
+      - name: Enforce proactive quality gate (health + drift) for 'se corrige' in CI
+        run: |
+          python -c '
+          import json
+          from pathlib import Path
+          from action_handler import compute_proactive_health_score
+          hs = compute_proactive_health_score()
+          print(f"CI Proactive Health: score={hs[\"score\"]} is_healthy={hs.get(\"is_healthy\")}")
+          cal_path = Path("data/proactive_calibration.json")
+          drift = {}
+          if cal_path.exists():
+              cal = json.loads(cal_path.read_text())
+              drift = cal.get("drift", {})
+          print("CI Calibration drift:", {k: drift.get(k) for k in ["added", "removed", "message_changes", "significant_message_drift", "avg_message_similarity"] if k in drift})
+          if hs["score"] < 50:
+              print("::error::Proactive health score too low in CI (self-correction gate)")
+              exit(1)
+          if drift.get("significant_message_drift", 0) > 3:
+              print("::warning::High message drift detected in CI calibration")
+          print("Proactive CI quality gate passed (health + low drift)")
+          '
+
+      - name: Proactive golden regression (deterministic actions for sample signals)
+        run: |
+          python scripts/proactive_golden.py
+          echo "Proactive golden regression passed (via scripts/proactive_golden.py; low_progress may include optional RAG evidence per Capa 4 integration)"

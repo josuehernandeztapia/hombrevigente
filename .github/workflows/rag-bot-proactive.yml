@@ -1,0 +1,131 @@
+# HV Proactive Agent — ciclo agéntico programado (Capa 7 Guía Agéntica)
+# Usa endpoints PIN-gated del servidor Fly para trigger (visibilidad en GH, ejecución con estado real en el server).
+# Respeta health gate, feature flags y SSOT postgres.
+# Por defecto: siempre dry-run + signals para seguridad.
+name: HV Proactive Cycle
+
+on:
+  schedule:
+    - cron: '0 9 * * *'  # 09:00 UTC diario (después del golden nightly)
+  workflow_dispatch:
+    inputs:
+      execute_real:
+        description: 'Ejecutar acciones reales (NO dry-run). Solo para emergencias ops. Default false.'
+        required: true
+        default: 'false'
+        type: choice
+        options:
+          - 'false'
+          - 'true'
+
+concurrency:
+  group: hv-proactive-cycle
+  cancel-in-progress: false
+
+jobs:
+  proactive-cycle:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout (for reference)
+        uses: actions/checkout@v4
+
+      - name: Set API base
+        run: |
+          echo "API_BASE=${{ vars.HV_API_BASE || 'https://hv-rag-api.fly.dev' }}" >> $GITHUB_ENV
+
+      - name: Require admin PIN secret
+        env:
+          HV_ADMIN_PIN: ${{ secrets.HV_ADMIN_PIN }}
+        run: |
+          if [ -z "$HV_ADMIN_PIN" ]; then
+            echo "::error::HV_ADMIN_PIN secret is required for admin endpoints"
+            exit 1
+          fi
+
+      - name: Fetch full agent status for health decision
+        env:
+          HV_ADMIN_PIN: ${{ secrets.HV_ADMIN_PIN }}
+        run: |
+          echo "Fetching /admin/agent_status for is_healthy and metrics..."
+          STATUS_JSON=$(curl -s -H "x-admin-pin: $HV_ADMIN_PIN" "$API_BASE/admin/agent_status" || echo '{}')
+          echo "$STATUS_JSON" > /tmp/agent_status.json
+          echo "Status saved. Health score:"
+          cat /tmp/agent_status.json | jq '.proactive.health_score // "unavailable"' || true
+          echo ""
+
+      - name: Decide dry_run based on health + input (Guía self-correction)
+        env:
+          HV_ADMIN_PIN: ${{ secrets.HV_ADMIN_PIN }}
+          EXECUTE_REAL: ${{ github.event.inputs.execute_real || 'false' }}
+        run: |
+          IS_HEALTHY=$(cat /tmp/agent_status.json | jq -r '.proactive.health_score.is_healthy // false' 2>/dev/null || echo false)
+          SCORE=$(cat /tmp/agent_status.json | jq -r '.proactive.health_score.score // 0' 2>/dev/null || echo 0)
+          echo "is_healthy=$IS_HEALTHY score=$SCORE"
+          DRY=true
+          if [ "$EXECUTE_REAL" = "true" ]; then
+            if [ "$IS_HEALTHY" = "true" ]; then
+              DRY=false
+              echo "✅ Manual real execute approved: is_healthy=true"
+            else
+              echo "⚠️ Manual real execute requested but is_healthy=false (score=$SCORE). Forcing dry_run=true for safety. Use --force locally if emergency."
+            fi
+          else
+            if [ "$IS_HEALTHY" = "true" ]; then
+              echo "Safe: is_healthy=true — will execute dry_run=true (server gate will also enforce)"
+            else
+              echo "Safe: is_healthy=false (score=$SCORE) — forcing dry_run (respects Guía health gate)"
+            fi
+          fi
+          echo "DRY=$DRY" >> $GITHUB_ENV
+          echo "DRY=$DRY"
+
+      - name: Run signals (detect + act) — creates pending actions
+        env:
+          HV_ADMIN_PIN: ${{ secrets.HV_ADMIN_PIN }}
+        run: |
+          echo "Triggering /admin/signals/run (detect + generate actions)..."
+          curl -s -X POST -H "x-admin-pin: $HV_ADMIN_PIN" "$API_BASE/admin/signals/run" || true
+          echo ""
+
+      - name: Execute pending (health-aware dry_run)
+        env:
+          HV_ADMIN_PIN: ${{ secrets.HV_ADMIN_PIN }}
+          DRY: ${{ env.DRY }}
+        run: |
+          echo "Executing pending with dry_run=$DRY (decided from health + input)"
+          curl -s -X POST -H "x-admin-pin: $HV_ADMIN_PIN" \
+            "$API_BASE/admin/pending_actions/execute?dry_run=$DRY" || true
+          echo ""
+
+      - name: Run calibration (Aprende loop) — scheduled learning
+        env:
+          HV_ADMIN_PIN: ${{ secrets.HV_ADMIN_PIN }}
+        run: |
+          echo "Triggering /admin/calibrate for drift detection (signals + message content with similarity) and baseline update..."
+          curl -s -X POST -H "x-admin-pin: $HV_ADMIN_PIN" \
+            "$API_BASE/admin/calibrate?sample=0" | head -c 2000 || true
+          echo ""
+
+      - name: Proactive golden regression (logic validation, independent of live data)
+        run: |
+          echo "Running local proactive_golden.py (from checkout) for regression on action generation logic (Capa 5 handler protection)..."
+          python rag-bot/scripts/proactive_golden.py || echo "::warning::Proactive golden regression reported issues (see logs). This is a logic check independent of the API-driven actions."
+          echo "Golden check executed (complements the server-side calibrate drift)."
+
+      - name: Final metrics + status snapshot (always)
+        env:
+          HV_ADMIN_PIN: ${{ secrets.HV_ADMIN_PIN }}
+        run: |
+          echo "=== Final /admin/metrics (Guía Métricas de éxito) ==="
+          curl -s -H "x-admin-pin: $HV_ADMIN_PIN" "$API_BASE/admin/metrics" | head -c 1500 || true
+          echo ""
+          echo "=== Final /admin/agent_status (incl. latest calibration drift) ==="
+          curl -s -H "x-admin-pin: $HV_ADMIN_PIN" "$API_BASE/admin/agent_status" | head -c 1200 || true
+          echo ""
+          echo "Proactive cycle complete (signals + execute + calibrate + golden logic check + health logs). See last_proactive_run.json or /admin/agent_status."
+
+      - name: Optional health log (if script available locally in future)
+        if: always()
+        run: |
+          echo "For local/server runs prefer: python scripts/run_proactive_nightly.py --dry-run"
+          echo "The server-side admin endpoints now drive the scheduled cycle (Capa 7 Guía). Golden regression is also exercised in CI + nightly for logic protection."

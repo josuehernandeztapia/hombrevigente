@@ -206,7 +206,9 @@
           "energia_1_5": 2,
           "dias_entreno_semana": 1
         },
-        "pipeline": { "estado": "onboarding" }
+        "pipeline": {
+          "estado": "onboarding"
+        }
       },
       "steps": [
         {
@@ -226,7 +228,9 @@
             "nombre_equals": "Beta Reentry",
             "tally_response_id": "reentry3d",
             "ciudad_equals": "León",
-            "lifestyle_field_equals": { "energia_1_5": 2 }
+            "lifestyle_field_equals": {
+              "energia_1_5": 2
+            }
           }
         },
         {
@@ -247,7 +251,9 @@
               "educativo_no_rx": true,
               "uso_datos_protocolo": true
             },
-            "pipeline": { "stack_sugerido": "metabolic" }
+            "pipeline": {
+              "stack_sugerido": "metabolic"
+            }
           }
         },
         {
@@ -258,7 +264,10 @@
             "tally_response_id": "reentry3d",
             "ciudad_equals": "León",
             "objetivo_principal_equals": "longevidad",
-            "lifestyle_field_equals": { "energia_1_5": 2, "dias_entreno_semana": 1 },
+            "lifestyle_field_equals": {
+              "energia_1_5": 2,
+              "dias_entreno_semana": 1
+            },
             "has_screening": true
           }
         },
@@ -297,7 +306,9 @@
           "whatsapp": "+5215554443333",
           "ciudad": "Querétaro"
         },
-        "pipeline": { "estado": "onboarding" }
+        "pipeline": {
+          "estado": "onboarding"
+        }
       },
       "steps": [
         {
@@ -337,7 +348,9 @@
               "educativo_no_rx": true,
               "uso_datos_protocolo": true
             },
-            "pipeline": { "stack_sugerido": "glow" }
+            "pipeline": {
+              "stack_sugerido": "glow"
+            }
           }
         },
         {
@@ -375,7 +388,10 @@
       "title": "Beta verde happy path — triage + state onboarding",
       "criticality": "P1",
       "intake_inline": {
-        "meta": { "source": "tally", "pipeline_row": 2 },
+        "meta": {
+          "source": "tally",
+          "pipeline_row": 2
+        },
         "identity": {
           "nombre": "Beta Verde",
           "edad": 38,
@@ -396,7 +412,10 @@
           "educativo_no_rx": true,
           "uso_datos_protocolo": true
         },
-        "pipeline": { "estado": "onboarding", "stack_sugerido": "glow" }
+        "pipeline": {
+          "estado": "onboarding",
+          "stack_sugerido": "glow"
+        }
       },
       "steps": [
         {
@@ -415,6 +434,61 @@
             "perfil": "verde",
             "phase": "onboarding",
             "next_action_contains": "screening"
+          }
+        }
+      ]
+    },
+    {
+      "id": "TRAJ-HV-010",
+      "title": "Fase 4 — Reentry temporal 5 días (last_active_at viejo) → resume message en frozen",
+      "criticality": "P1",
+      "intake_inline": {
+        "meta": {
+          "source": "tally",
+          "tally_response_id": "reentry-temporal-5d",
+          "pipeline_row": 99
+        },
+        "identity": {
+          "nombre": "Beta Reentry Temporal",
+          "edad": 38,
+          "ciudad": "CDMX"
+        },
+        "objetivos": {
+          "principal": "longevidad"
+        },
+        "lifestyle": {
+          "energia_1_5": 3,
+          "sueno_1_5": 3
+        },
+        "pipeline": {
+          "estado": "onboarding"
+        },
+        "data_moat": {}
+      },
+      "steps": [
+        {
+          "id": "initial-onboarding",
+          "type": "beta_state",
+          "expect": {
+            "phase": "onboarding",
+            "slot_tally_completo": true
+          }
+        },
+        {
+          "id": "force-old-last-active",
+          "type": "set_last_active",
+          "last_active_at": "2026-06-01T12:00:00+00:00",
+          "beta_id": "tally-reentry-temporal-5d"
+        },
+        {
+          "id": "rag-with-reentry",
+          "type": "rag",
+          "question": "¿qué suplementos para energía?",
+          "beta_id": "reentry-temporal-5d",
+          "use_frozen": true,
+          "expect": {
+            "has_frozen_context": true,
+            "gate_path_not": "blocked"
           }
         }
       ]

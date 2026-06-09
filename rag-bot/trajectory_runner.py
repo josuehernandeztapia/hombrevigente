@@ -182,6 +182,47 @@ def _run_intake_patch(intake: Dict, step: Dict) -> Tuple[Dict, bool, str]:
     return merged, True, f"patched keys: {', '.join(patch.keys())}"
 
 
+def _run_set_last_active(step: Dict, default_beta_id: str | None) -> Tuple[bool, str]:
+    """Fase 4: fuerza last_active_at en el estado persistido para probar reentry temporal."""
+    from beta_state import load_state, save_state
+    from pathlib import Path
+    import json
+    import os
+
+    beta_id = step.get("beta_id") or default_beta_id
+    if not beta_id:
+        return False, "beta_id required for set_last_active"
+
+    ts = step.get("last_active_at") or step.get("ts")
+    if not ts:
+        return False, "last_active_at (or ts) required"
+
+    # Cargar estado actual (debe existir por pasos previos)
+    state = load_state(beta_id)
+    if state is None:
+        # Crear estado mínimo para poder forzar last_active (útil en tests de reentry)
+        from beta_state import BetaState, _utc_now
+        state = BetaState(
+            beta_id=beta_id,
+            phase="onboarding",
+            next_action="test",
+            slots={},
+        )
+        state.last_active_at = _utc_now()  # will be overwritten
+        # persist minimal
+        from beta_state import save_state
+        save_state(state)
+
+    # Forzamos el timestamp viejo en el archivo directamente (simula paso del tiempo)
+    states_dir = Path(os.environ.get("HV_BETA_STATES_DIR", "data/beta_states"))
+    dest = states_dir / f"{beta_id}.json"
+    state_dict = state.to_dict()
+    state_dict["last_active_at"] = ts
+    dest.write_text(json.dumps(state_dict, ensure_ascii=False, indent=2), encoding="utf-8")
+
+    return True, f"last_active_at forced to {ts} for {beta_id}"
+
+
 def _run_rag(step: Dict, intake: Dict, default_beta_id: str | None) -> Tuple[bool, str]:
     beta_id = step.get("beta_id") or default_beta_id
     use_frozen = step.get("use_frozen", beta_id is not None)
@@ -233,6 +274,8 @@ def run_trajectory(traj: Dict, *, states_dir: Path | None = None) -> Tuple[bool,
                 intake, ok, detail = _run_intake_patch(intake, step)
             elif stype == "intake_assert":
                 ok, detail = _run_intake_assert(intake, step.get("expect") or {})
+            elif stype == "set_last_active":
+                ok, detail = _run_set_last_active(step, beta_id)
             else:
                 ok, detail = False, f"unknown step type {stype}"
 
