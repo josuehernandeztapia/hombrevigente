@@ -1,11 +1,11 @@
 # SSOT Longevidad — Índice maestro para RAG (Hombre Vigente)
 
-**Versión:** 1.1 · 7 de junio de 2026 (sección 7 de PMIDs corregida y verificada)  
+**Versión:** 1.2 · 9 de junio de 2026 (monografías lifestyle 30–35)
 **Autor del corpus:** sesión HV + literatura pública curada  
 **Canónico en repo:** `github.com/josuehernandeztapia/hombrevigente` → `rag-bot/knowledge_base/longevity/`  
 **Commit:** `2aa0f94` (rama `main`)
 
-> Documento de referencia en `Downloads/longevity`. El contenido detallado vive en el repo (29 monografías, ~1.900 líneas). Este archivo es el **mapa, reglas y guía de uso**.
+> Documento de referencia en `Downloads/longevity`. El contenido detallado vive en el repo (35 monografías). Este archivo es el **mapa, reglas y guía de uso**.
 
 ---
 
@@ -106,9 +106,19 @@ INTAKE (Tally: labs, wearable, cuestionario, foto, consentimiento)
 | # | Archivo | Uso |
 |---|---------|-----|
 | 25 | `biomarcadores_panel_optimizacion` | Interpretación labs (hs-CRP, IGF-1, HbA1c, litio…) |
-| 26 | `lifestyle_pilares` | Sueño, ejercicio, nutrición — E4 primero |
 | 27 | `regeneracion_neuro_musculo_esqueletico` | Discopatía, ciática, RM — sin prometer cura |
 | 28 | `termografia_inflammaging` | ΔT, Seek/FLIR, lenguaje adjunto |
+
+### Lifestyle — pilares (26 hub + 30–35)
+| # | Archivo | Tema | Tier | Avenida |
+|---|---------|------|------|---------|
+| 26 | `lifestyle_pilares` | Hub/overview — prioridad E4 antes de stacks | E4 | 1 |
+| 30 | `ejercicio` | VO₂max, fuerza, zona 2, sarcopenia | E3–E4 | 1 |
+| 31 | `sueno` | Duración, inflamación, recuperación wearable | E3–E4 | 1 |
+| 32 | `nutricion` | Patrón mediterráneo, omega-3, proteína | E3–E4 | 1 |
+| 33 | `estres_hrv` | Estrés crónico, HRV, regulación autonómica | E3–E4 | 1 |
+| 34 | `luz_circadiano` | Luz mañana/noche, melatonina, metabolismo | E3–E4 | 1 |
+| 35 | `termico` | Sauna (E3) / frío (E2) — **opcional**, no obligatorio | E2–E3 | 1 |
 
 ### Tarjetas atómicas (`tarjetas/` — 15 chunks YAML)
 
@@ -233,7 +243,7 @@ Formato alineado a `Prompt_Construir_SSOT_RAG.md`. Una tarjeta = un embedding ó
 
 *PMIDs en negrita = corregidos en v1.1 (el v1.0 apuntaba a un paper ajeno). Los no-negrita ya eran correctos.*
 
-> ✅ **Auditoría SSOT completa (2026-06-08):** monografías `00–29` y tarjetas `tarjetas/*.md` — **0 huecos `[FALTA FUENTE]`** en cuerpo embebible. Changelog `## Auditoría citas` puede mencionar PMIDs retirados; no se embebe (split en `kb_pipeline`).
+> ✅ **Auditoría SSOT (2026-06-09):** monografías `00–35` y tarjetas `tarjetas/*.md` — **0 huecos `[FALTA FUENTE]`** en cuerpo embebible (30–35 verificados Europe PMC). Changelog `## Auditoría citas` puede mencionar PMIDs retirados; no se embebe (split en `kb_pipeline`).
 
 ---
 
