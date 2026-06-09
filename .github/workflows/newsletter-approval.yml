@@ -23,9 +23,10 @@ permissions:
 
 jobs:
   handle:
+    # issue_comment no trae labels en el payload — filtramos por título
     if: |
       github.event_name == 'workflow_dispatch' ||
-      (github.event.issue.labels != null && contains(join(github.event.issue.labels.*.name), 'pulso-approval'))
+      startsWith(github.event.issue.title, 'Aprobar Pulso')
     runs-on: ubuntu-latest
     steps:
       - name: Parsear comentario / dispatch
