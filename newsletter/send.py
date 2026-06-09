@@ -7,6 +7,7 @@ Env requeridos:
   RESEND_AUDIENCE_FREE    (id de audience Free, opcional)
   NEWSLETTER_FROM         (ej. "Pulso Vigente <pulso@updates.hombrevigente.com>")
   DRY_RUN=1               (opcional: crea el broadcast pero NO lo envía)
+  PULSO_MODE=shadow       (ensayo: no llama API; solo valida render)
 """
 import os
 import sys
@@ -26,12 +27,17 @@ def _audience_id(audiencia: str) -> str:
 
 
 def main(md_path: str):
+    issue = render(Path(md_path))
+
+    if os.environ.get("PULSO_MODE") == "shadow":
+        print("PULSO_MODE=shadow — render OK, sin llamar Resend.")
+        print("Subject:", issue["subject"])
+        return
+
     api_key = os.environ.get("RESEND_API_KEY")
     sender = os.environ.get("NEWSLETTER_FROM")
     if not api_key or not sender:
         sys.exit("Falta RESEND_API_KEY o NEWSLETTER_FROM")
-
-    issue = render(Path(md_path))
     headers = {"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"}
 
     # 1) crear broadcast

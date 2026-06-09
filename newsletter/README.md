@@ -9,10 +9,11 @@ Newsletter de longevidad gestionada. Contenido en `issues/`, email vía **Resend
 | 1. Candidatos | Europe PMC + `watchlist.yml` | `harvest.py` · `newsletter-draft.yml` (jueves, abre PR) |
 | 2. Redacción | Tú verificas fuentes (`EDITORIAL.md`) | `issues/YYYY-MM-NNN.md` |
 | 3. Assets | Hero IA + social pack | `newsletter-assets.yml` (manual) · `image.py` · `social.py` |
-| 4. Email QA | Preview local | `render.py` → `newsletter/preview.html` |
-| 5. Envío | Merge a `main` o dispatch | `newsletter-send.yml` · `send.py` |
-| 6. Redes auto | Memes/frases sin claims | `social-auto.yml` (miércoles) · `publish.py` · `social/queue/` |
-| 7. Bridge SSOT | Claims verificados → monografías RAG | `bridge_export.py` · `newsletter-editorial-bridge.yml` · `BRIDGE.md` |
+| 4. Ensayo shadow | Pipeline completo sin publicar + post-mortem | `rehearsal.py` · `newsletter-rehearsal.yml` |
+| 5. Email QA | Preview local | `render.py` → `newsletter/preview.html` |
+| 6. Envío | Merge a `main` o dispatch | `newsletter-send.yml` · `send.py` |
+| 7. Redes auto | Memes/frases sin claims | `social-auto.yml` (miércoles) · `publish.py` · `social/queue/` |
+| 8. Bridge SSOT | Claims verificados → monografías RAG | `bridge_export.py` · `newsletter-editorial-bridge.yml` · `BRIDGE.md` |
 
 ## Dos carriles (compliance)
 
@@ -35,10 +36,22 @@ Regla: ¿hace afirmación de salud? → gated. Si no → puede ser auto.
 ### OpenAI (opcional — hero IA)
 - Secret: `OPENAI_API_KEY`. Sin ella, `image.py` imprime el prompt y sigue.
 
+## Shadow vs production
+
+| Modo | Cómo | Efecto |
+|------|------|--------|
+| **Shadow** | `python newsletter/rehearsal.py <issue>` o Actions → *Newsletter rehearsal* | Corre render + social + bridge dry-run; escribe post-mortem; **no envía** |
+| **Production** | Merge issue a `main` + secrets Resend/Ayrshare | Email + bridge CI reales |
+
+El humano **no desaparece**: en shadow validas el cableado; en post-mortem corriges warnings y vuelves a correr hasta exit 0.
+
 ## Probar local
 
 ```bash
 pip install -r newsletter/requirements.txt
+
+# Ensayo completo (post-mortem en newsletter/runs/)
+python newsletter/rehearsal.py newsletter/issues/2026-06-001.md
 
 # QA visual email (sin credenciales)
 python newsletter/render.py newsletter/issues/2026-06-001.md

@@ -63,6 +63,8 @@ embeddings_cache/
 
 # === Newsletter (artefactos locales) ===
 newsletter/preview.html
+newsletter/runs/*
+!newsletter/runs/.gitkeep
 preview.html
 newsletter/assets/*.png
 
