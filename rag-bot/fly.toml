@@ -13,6 +13,9 @@ primary_region = "dfw"
 [build]
   dockerfile = "Dockerfile"
 
+[deploy]
+  wait_timeout = "10m"
+
 [env]
   PORT = "8080"
   ENVIRONMENT = "production"
