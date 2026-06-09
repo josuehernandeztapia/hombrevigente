@@ -1,0 +1,10 @@
+{
+  "numero": "002",
+  "issue_path": "newsletter/issues/2026-06-002.md",
+  "github_issue": 27,
+  "pr": null,
+  "status": "approved",
+  "sent_at": "2026-06-09T03:56:30Z",
+  "broadcast_id": "1f93a192-6d3d-407f-adff-5473edcc82f0",
+  "note": "Enviado 2x por manual FORCE_SEND + newsletter-send; idempotencia añadida después"
+}

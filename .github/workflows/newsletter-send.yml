@@ -67,3 +67,10 @@ jobs:
             echo "→ Enviando $f (requiere approved: true salvo FORCE_SEND)"
             python newsletter/send.py "$f"
           done
+          if [ -n "$(git status --porcelain newsletter/approvals/ 2>/dev/null)" ]; then
+            git config user.name "github-actions[bot]"
+            git config user.email "github-actions[bot]@users.noreply.github.com"
+            git add newsletter/approvals/
+            git commit -m "chore(newsletter): registrar envío [skip ci]" || true
+            git push origin main || true
+          fi
