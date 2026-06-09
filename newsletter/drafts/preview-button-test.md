@@ -1,8 +1,8 @@
 ---
 approval_github_issue: 27
 approval_revision: 0
-approval_status: pending
-approved: false
+approval_status: approved
+approved: true
 audiencia: plus
 fecha: 2026-06-09
 numero: '002'
