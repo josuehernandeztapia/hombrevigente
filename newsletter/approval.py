@@ -83,17 +83,38 @@ def send_preview(path: Path) -> None:
     meta, _ = parse_issue(path)
     numero = numero_from_path(path)
     rev = meta.get("approval_revision", 0)
+    rel_path = path.relative_to(REPO).as_posix()
+    gh_issue = meta.get("approval_github_issue", "")
+    repo = os.environ.get("GITHUB_REPOSITORY", "josuehernandeztapia/hombrevigente")
+
+    approve_btn = ""
+    try:
+        from approval_token import approval_url
+
+        approve_href = approval_url(rel_path, "approve")
+        approve_btn = f"""
+  <p style="text-align:center;margin:20px 0;">
+    <a href="{approve_href}" style="display:inline-block;padding:14px 28px;background:#2d6a4f;color:#fff;text-decoration:none;border-radius:6px;font-weight:bold;font-size:16px;">APROBAR Y ENVIAR</a>
+  </p>
+  <p style="font-size:12px;color:#aaa;text-align:center;">Un clic — no requiere entrar a GitHub</p>"""
+    except ValueError:
+        approve_btn = ""
+
+    issue_link = (
+        f'<a href="https://github.com/{repo}/issues/{gh_issue}" style="color:#6eb5ff;">issue #{gh_issue}</a>'
+        if gh_issue
+        else "el issue de GitHub"
+    )
 
     instructions = f"""
 <div style="font-family:sans-serif;max-width:640px;margin:0 auto 24px;padding:16px;background:#1a1a1a;color:#e8e8e8;border-radius:8px;">
   <p><strong>BORRADOR Pulso Vigente Nº{numero}</strong> (revisión {rev}) — <em>no enviado a suscriptores</em></p>
-  <p><strong>Para APROBAR y enviar a Plus:</strong></p>
+  <p><strong>Para APROBAR y enviar a Plus:</strong></p>{approve_btn}
   <ul>
-    <li>Abre el <strong>issue de GitHub</strong> #{meta.get('approval_github_issue', '')} (te llega notificación por correo)</li>
-    <li><strong>Responde a ese hilo</strong> (por web o respondiendo al email de GitHub) escribiendo solo: <code>OK</code></li>
+    <li>O abre {issue_link} y responde <code>OK</code> (por web o email de GitHub)</li>
   </ul>
-  <p><strong>Para PEDIR CAMBIOS:</strong> responde al issue con tus notas (tono, bloques, titular, etc.). Recibirás un nuevo borrador por correo.</p>
-  <p style="font-size:12px;color:#888;">Merge a main y envío solo ocurre tras OK explícito.</p>
+  <p><strong>Para PEDIR CAMBIOS:</strong> comenta en {issue_link} con tus notas (tono, bloques, titular, etc.). Recibirás un nuevo borrador por correo.</p>
+  <p style="font-size:12px;color:#888;">Merge a main y envío solo ocurre tras aprobación explícita.</p>
 </div>
 """
 

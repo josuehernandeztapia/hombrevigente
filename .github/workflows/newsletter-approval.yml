@@ -4,6 +4,8 @@ name: Newsletter approval
 on:
   issue_comment:
     types: [created]
+  repository_dispatch:
+    types: [pulso-approval]
   workflow_dispatch:
     inputs:
       issue_path:
@@ -26,6 +28,7 @@ jobs:
     # issue_comment no trae labels en el payload — filtramos por título
     if: |
       github.event_name == 'workflow_dispatch' ||
+      github.event_name == 'repository_dispatch' ||
       startsWith(github.event.issue.title, 'Aprobar Pulso')
     runs-on: ubuntu-latest
     steps:
@@ -38,6 +41,14 @@ jobs:
             echo "action=${{ github.event.inputs.action }}" >> "$GITHUB_OUTPUT"
             echo "corrections<<EOF" >> "$GITHUB_OUTPUT"
             echo "${{ github.event.inputs.corrections }}" >> "$GITHUB_OUTPUT"
+            echo "EOF" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          if [ "${{ github.event_name }}" = "repository_dispatch" ]; then
+            echo "issue_path=${{ github.event.client_payload.issue_path }}" >> "$GITHUB_OUTPUT"
+            echo "action=${{ github.event.client_payload.action }}" >> "$GITHUB_OUTPUT"
+            echo "corrections<<EOF" >> "$GITHUB_OUTPUT"
+            echo "${{ github.event.client_payload.corrections }}" >> "$GITHUB_OUTPUT"
             echo "EOF" >> "$GITHUB_OUTPUT"
             exit 0
           fi
@@ -94,6 +105,7 @@ jobs:
           RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
           NEWSLETTER_FROM: ${{ vars.NEWSLETTER_FROM }}
           NEWSLETTER_APPROVAL_TO: ${{ vars.NEWSLETTER_APPROVAL_TO }}
+          NEWSLETTER_APPROVAL_SECRET: ${{ secrets.NEWSLETTER_APPROVAL_SECRET }}
         run: |
           python newsletter/approval_revise.py \
             "${{ steps.parse.outputs.issue_path }}" \
@@ -152,3 +164,13 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           gh issue close "${{ github.event.issue.number }}" --comment "✅ Aprobado y enviado a audiencia Plus."
+
+      - name: Cerrar issue aprobación (link email)
+        if: steps.parse.outputs.action == 'approve' && github.event_name == 'repository_dispatch'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          NUM=$(python -c "import yaml,re; p='${{ steps.parse.outputs.issue_path }}'; m=re.match(r'^---\n(.*?)\n---', open(p).read(), re.S); print(yaml.safe_load(m.group(1)).get('approval_github_issue',''))")
+          if [ -n "${NUM}" ]; then
+            gh issue close "$NUM" --comment "✅ Aprobado por link en correo y enviado a audiencia Plus."
+          fi

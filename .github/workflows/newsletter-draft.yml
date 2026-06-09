@@ -112,6 +112,7 @@ jobs:
           RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
           NEWSLETTER_FROM: ${{ vars.NEWSLETTER_FROM }}
           NEWSLETTER_APPROVAL_TO: ${{ vars.NEWSLETTER_APPROVAL_TO }}
+          NEWSLETTER_APPROVAL_SECRET: ${{ secrets.NEWSLETTER_APPROVAL_SECRET }}
           GITHUB_TOKEN: ${{ github.token }}
         run: |
           python newsletter/approval.py create-issue "${{ steps.meta.outputs.out }}" --pr ${{ steps.pr.outputs.pull-request-number }}

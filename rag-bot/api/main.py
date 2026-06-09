@@ -11,7 +11,7 @@ from typing import Literal, Optional
 from dotenv import load_dotenv
 from fastapi import FastAPI, Header, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse
+from fastapi.responses import HTMLResponse, JSONResponse
 from pydantic import BaseModel, Field
 
 # Cargar .env desde rag-bot/ aunque uvicorn arranque desde api/
@@ -24,6 +24,8 @@ sys.path.insert(0, str(_ROOT))
 
 from knowledge_gap_detector import detect_knowledge_gaps, render_gaps_report
 from knowledge_promote import load_pending, remove_pending, submit_promotion
+from newsletter_approval_dispatch import dispatch_pulso_approval
+from newsletter_approval_token import verify_token
 from rag_retrieval_local import rag_query_local  # noqa: E402
 
 app = FastAPI(
@@ -234,6 +236,49 @@ def knowledge_pending_delete(
     if not removed:
         raise HTTPException(status_code=404, detail="promotion not found")
     return {"success": True, "removed_id": promotion_id, "remaining": remaining}
+
+
+def _approval_page(ok: bool, message: str) -> str:
+    color = "#2d6a4f" if ok else "#9b2226"
+    title = "Pulso Vigente" if ok else "No se pudo aprobar"
+    return f"""<!DOCTYPE html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>{title}</title></head>
+<body style="font-family:system-ui,sans-serif;max-width:520px;margin:48px auto;padding:24px;color:#1a1a1a;">
+  <h1 style="color:{color};font-size:1.4rem;">{title}</h1>
+  <p>{message}</p>
+  <p style="font-size:0.85rem;color:#666;">Hombre Vigente™ · Pulso Vigente</p>
+</body></html>"""
+
+
+@app.get("/newsletter/approve", response_class=HTMLResponse)
+def newsletter_approve(
+    issue: str = Query(..., min_length=5, max_length=256),
+    action: str = Query("approve"),
+    token: str = Query(..., min_length=10),
+):
+    issue_path = issue.strip()
+    if action not in ("approve", "revise"):
+        return HTMLResponse(_approval_page(False, "Acción no válida."), status_code=400)
+    if not verify_token(issue_path, action, token):
+        return HTMLResponse(
+            _approval_page(
+                False,
+                "Enlace inválido o expirado. Abre el issue de GitHub o pide un nuevo borrador por correo.",
+            ),
+            status_code=403,
+        )
+    result = dispatch_pulso_approval(issue_path, action)
+    if not result.get("ok"):
+        return HTMLResponse(
+            _approval_page(False, result.get("error", "Error al procesar la aprobación.")),
+            status_code=502,
+        )
+    if action == "approve":
+        msg = "Aprobación recibida. El envío a audiencia Plus se procesará en unos minutos."
+    else:
+        msg = "Solicitud de cambios recibida. Recibirás un nuevo borrador por correo."
+    return HTMLResponse(_approval_page(True, msg))
 
 
 @app.get("/rag/query")
