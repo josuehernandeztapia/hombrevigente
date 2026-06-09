@@ -1,46 +1,25 @@
-# COMPLIANCE.md — Reglas no negociables (Hombre Vigente)
+# Compliance — estado y pendientes (para el dev)
 
-> Para el equipo dev y de contenido. Esto **manda** sobre diseño y copy. Ante la duda, no se publica/entrega.
-> No es consejo legal; validar con asesoría (COFEPRIS / LFPDPPP) antes de operar Av.2.
+Barrido de copy/datos sobre `hv-data.jsx` y flujos. Estado al cierre del diseño.
 
----
+## ✅ Aplicado en la fuente (Claude design)
+1. **Stack `wolverine` → `reparacion`.** `id`, `name` ("Protocolo magistral de reparación") y `why` neutralizado (sin "ciática / objetivo #1"). Todas las referencias actualizadas (`hv4-av2.jsx`, v1).
+2. **Stacks de péptidos = Av.2 (Rx).** Comentario en `STACKS`: el carril sin receta (Av.1) usa `STACK_VIGENTE` (suplementos), **nunca** estos. Metabolic (Tesamorelin/Khavinson) y Reparación (BPC-157/TB-500) van solo por vía médica.
+3. **"Ciática" → genérico ("recuperación").** Limpiado en: check-in del flujo vivo (Seguimiento), cuestionario (INPUTS), chip del Caso #1 (v1). No se nombran condiciones específicas.
+4. **GHK-Cu aclarado:** en Glow Stack ahora `GHK-Cu (tópico)` — tópico = cosmético (Av.1); inyectable = Av.2 (Rx). No ofrecer inyectable como suplemento.
+5. **Evidencia:** niveles en lenguaje plano (Fuerte/Moderada/Emergente) + PMIDs reales (Omega-3 28900017·30415628, Creatina 28615996, NMN 33888596, Espermidina 19801973, GHK-Cu 29986520, BPC-157 21548867). Sin códigos E1–E5 en UI. Biomarcadores del Índice sin tag de evidencia.
+6. **Médico "(ejemplo)"** + nota "pendiente responsable sanitario real" en Teleconsulta.
+7. **Ajustes Rx:** copy "el modelo sugiere; tu médico aprueba". Ejemplos del Caso #1 despersonalizados.
+8. **TM corregido:** la marca registrada es **Hombre Vigente™** (header/footer landing, brand de posts, h1 del Mapa). Se **quitó el ™ de "Índice Vigente"** en todas las pantallas (onboarding P01/P06, conversión, mapa, reel, storyboard) — el Índice es feature, no marca.
+9. **Scores ilustrativos:** el modelo del Índice **no existe aún**. Los scores (68/100 en Onboarding P06, 64/100 en Escaneo) llevan etiqueta **"ilustrativo"/"ejemplo ilustrativo"** para no presentar un número no validado como real. Sustituir por el modelo real (ver KICKOFF M4).
 
-## 0. Marca y nomenclatura
-- **El trademark es "Hombre Vigente™"** (la marca). Úsese `Hombre Vigente™` donde corresponda.
-- **"Índice Vigente" NO lleva ™** (no es la marca registrada) y **aún NO es un modelo construido/validado**. Hasta que exista:
-  - Los scores mostrados (ej. 68/100, 64/100) son **ilustrativos/ejemplo** — etiquétalos como tal en la UI.
-  - Descríbelo como **compuesto de optimización/bienestar con metodología documentada**, nunca como score diagnóstico.
+## 🟢 Marcado para producción (no rompe el demo)
+- **`{nombre}` (merge field):** los guiones de WhatsApp usan "Juan" como valor de demo. Sustituir por el nombre real del usuario. (Comentario en `hv-data.jsx` sobre `WA_THREADS`.)
 
-## 1. Dos avenidas — qué va por dónde
-- **Avenida 1 (sin receta):** SOLO suplementos `STACK_VIGENTE` (NMN, Omega-3, Creatina, Vitamina D3+K2, Magnesio, Resveratrol, Espermidina, Fisetina/Quercetina orales). Vendible sin médico.
-- **Avenida 2 (vía médica, exclusiva):** TODO item Rx/péptido — **BPC-157, TB-500, Goralatide, Tesamorelin, Khavinson, GHK-Cu inyectable** — requiere valoración + receta + firma de médico responsable + farmacia magistral. **Nunca** seleccionable en el carril sin receta.
-- **Regla de ruteo:** cualquier stack que contenga un item Av.2 se gatea a Av.2 completo. (Ojo: el "Metabolic Longevity Stack" con Tesamorelin/Khavinson NO es Av.1.)
+## 🔴 Pendientes del mundo real (no de diseño — requieren asesoría)
+1. **Aviso de Privacidad (LFPDPPP)** real — el consentimiento (Onboarding P02) lo enlaza. Sin él, el consentimiento es cosmético.
+2. **Responsable sanitario real** — médico, cédula y contrato antes de operar Av.2. Hoy "ejemplo".
+3. **Validar PMIDs** contra el SSOT/RAG y conectar el motor de evidencia.
+4. **Integraciones:** Computer Vision (foto), parsing de labs, API wearables (Oura/Whoop), pagos MX (Conekta/Stripe · SPEI/OXXO/Kueski), WhatsApp Business API, agenda de teleconsulta + farmacia magistral con contrato.
 
-## 2. Lenguaje
-- **Permitido:** "optimización", "bienestar", "se asocia / se ha estudiado", "lectura objetiva", "informe de optimización".
-- **Prohibido:** "diagnóstico", "cura", "trata", "previene", "revierte", "garantiza", "predictivo". **No nombrar condiciones específicas** (ej. "ciática" → "recuperación / dolor / molestias").
-- El escaneo térmico (cuando exista) = **ΔT relativo, medición adjunta de bienestar**, no diagnóstico.
-
-## 3. Evidencia
-- Cada **claim de intervención** lleva **nivel + fuente (PMID/DOI)**: **Fuerte** (RCT/meta-análisis humano) · **Moderada** (humano temprano) · **Emergente** (preclínico/animal).
-- Los **biomarcadores** (hs-CRP, HRV, glucosa…) **NO llevan nivel de evidencia** (un valor de lab no es un claim).
-- Fuente primaria verificada o no entra. (Los E1–E5 internos del SSOT no se exponen al usuario.)
-
-## 4. El modelo sugiere; el médico firma
-- Toda recomendación de **prescripción** (Av.2) la **decide y firma un médico responsable** — nunca el software de forma autónoma. El copy de ajustes de dosis debe decir "tu médico aprobó", no "el modelo recalibró".
-
-## 5. Privacidad (LFPDPPP) — datos de salud sensibles
-- **Consentimiento explícito ANTES** de capturar cualquier dato de salud (el Aviso de Privacidad real debe existir y enlazarse).
-- **Cifrado en reposo y en tránsito.** **Control de acceso + log de auditoría** (quién ve datos del paciente, sobre todo el médico).
-- **Flujo de borrado real** (el consentimiento promete "borrar mis datos cuando quiera" → debe funcionar). Definir **retención** y **residencia** de datos.
-- **Foto de rostro = dato biométrico.** Compartirla con CV de terceros (Haut.AI/Perfect Corp) requiere **DPA con el proveedor + consentimiento específico** para esa transferencia.
-
----
-
-## Pendientes del mundo real (bloquean Av.2 / captura de datos, no el MVP de Av.1)
-1. **Aviso de Privacidad (LFPDPPP)** real.
-2. **Responsable sanitario** (médico, cédula, contrato) + **farmacia magistral con contrato**.
-3. **DPAs** con proveedores (CV, labs, wearables, WhatsApp, pagos).
-4. Validar PMIDs contra el SSOT (`rag-bot/knowledge_base/longevity/`).
-
-> El MVP de **Av.1 puede shippear sin el médico**; Av.2 se enciende cuando #2 esté firmado.
+*No es consejo legal — validar 1, 2 y el Aviso de Privacidad con asesoría profesional.*

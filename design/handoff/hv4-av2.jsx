@@ -1,7 +1,7 @@
 // hv4-av2.jsx — Tramo 2: Teleconsulta Av.2 (vía médica) → Receta → Magistral
 const { BASE, THEMES, ThemeCtx, MEDICO, ELIGIBILITY, SLOTS, AV2, AV2_CONFIRM, STACKS, FOOT,
         MONO, SANS, Icon, Eyebrow, GlassCard, PrimaryButton, GhostButton, Chip } = window.HV;
-const RX = STACKS.find(s => s.id === 'wolverine'); // péptidos de prescripción
+const RX = STACKS.find(s => s.id === 'reparacion'); // péptidos de prescripción (Av.2, vía médica)
 
 function Head4({ kicker, title, sub }) {
   const t = React.useContext(ThemeCtx);

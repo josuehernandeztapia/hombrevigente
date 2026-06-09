@@ -45,7 +45,7 @@ const INPUTS = [
   { id:'foto',   label:'Foto de rostro y cuerpo', meta:'Computer Vision · glow, daño solar, textura, grasa', icon:'camera' },
   { id:'labs',   label:'PDF de laboratorio',       meta:'hs-CRP · glucosa · IGF-1 · panel hepático',          icon:'lab' },
   { id:'wear',   label:'Conectar wearable',        meta:'Oura · Whoop · HRV, sueño, recuperación',            icon:'watch' },
-  { id:'quiz',   label:'Cuestionario de objetivos',meta:'Energía · piel · ciática · composición',             icon:'doc' },
+  { id:'quiz',   label:'Cuestionario de objetivos',meta:'Energía · piel · recuperación · composición',             icon:'doc' },
 ];
 
 // ── Motores de análisis (paso 02) ──────────────────────────────────────────
@@ -63,16 +63,17 @@ const FLAGS = [
     text:'Tu HRV viene baja pese a que marcaste “duermo bien”. Vale la pena revisarlo.' },
 ];
 
-// ── Stacks reales (de Plan Maestro §2) ─────────────────────────────────────
+// ── Stacks de péptidos (de Plan Maestro §2) — TODOS Av.2: prescripción + magistral, vía médica ──
+// (El carril Av.1 sin receta usa STACK_VIGENTE, no estos. Metabolic/Reparación incluyen péptidos Rx.)
 const STACKS = [
   { id:'glow', name:'Glow Stack', focus:'Piel',
     tag:'Piel · Colágeno · Antiinflamatorio',
-    items:['GHK-Cu','NMN','Resveratrol'],
+    items:['GHK-Cu (tópico)','NMN','Resveratrol'],   // GHK-Cu tópico = cosmético Av.1; inyectable = Av.2 (Rx)
     why:'Luminosidad, firmeza y baja de inflamación cutánea.' },
-  { id:'wolverine', name:'Wolverine Stack', focus:'Recuperación',
+  { id:'reparacion', name:'Protocolo magistral de reparación', focus:'Recuperación',
     tag:'Reparación estructural y nerviosa',
     items:['BPC-157','TB-500','Goralatide'],
-    why:'Reparación de tejido y nervio — tu ciática es el objetivo #1.' },
+    why:'Reparación de tejido y nervio en modelos preclínicos — bajo valoración y firma médica.' },
   { id:'metabolic', name:'Metabolic Longevity Stack', focus:'Longevidad',
     tag:'Grasa visceral · NAD+ · Epigenética',
     items:['Tesamorelin','NMN','Spermidine','Fisetin','Khavinson'],
@@ -101,7 +102,7 @@ const RAILS = ['Tarjeta','SPEI','OXXO','Kueski · MSI'];
 const CHECKINS = [
   { id:'c1', label:'Foto semanal',       meta:'Computer Vision compara tu progreso', icon:'camera' },
   { id:'c2', label:'Sync wearable',      meta:'HRV y sueño de los últimos 7 días',   icon:'watch' },
-  { id:'c3', label:'Check-in de síntomas',meta:'Energía, ciática, ánimo, descanso',   icon:'doc' },
+  { id:'c3', label:'Check-in de síntomas',meta:'Energía, recuperación, ánimo, descanso',   icon:'doc' },
 ];
 const RESULTS = [
   { k:'Inflamación', v:'−28%', dir:'down', good:true },
@@ -348,11 +349,12 @@ const AV2_CONFIRM = [
 
 // ═══════════ E — Guiones de WhatsApp (el canal concierge) ═══════════
 // b = bot/concierge (entrante), u = usuario (saliente). chip = botón/quick-reply.
+// NOTA producción: "Juan" es valor de demo — sustituir por merge field {nombre} del usuario.
 const WA_THREADS = [
   { id:'lectura', title:'Entrega de lectura', sub:'Top of funnel · tras el escaneo',
     msgs:[
       { s:'b', t:'¡Listo, Juan! Tu Escaneo Vigente está hecho. 👇' },
-      { s:'b', t:'Tu Índice de partida: 64/100 (ilustrativo). Lo que más mueve la aguja para ti: recuperación y energía.' },
+      { s:'b', t:'Tu Índice de partida: 64/100. Lo que más mueve la aguja para ti: recuperación y energía.' },
       { s:'b', kind:'card', card:{ title:'Stack Vigente', sub:'Sin receta · con COA', tags:['NMN','Omega-3','Creatina','+2 más'] } },
       { s:'b', t:'¿Quieres activar tu protocolo o ver el detalle primero?' },
       { s:'u', t:'Ver el detalle' },

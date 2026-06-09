@@ -2,7 +2,7 @@
 
 > Documento de referencia. Lista todos los entregables en orden del journey, su uso y el **texto exacto** de cada pantalla.
 > Marca: dark club premium · negro #08080A · **acento bronce #C6A06A** (base noir) · Montserrat + IBM Plex Mono · grano de película + glow.
-> **Marca:** Hombre Vigente™ · **Índice Vigente** sin ™ (modelo pendiente; scores ilustrativos). Ver `COMPLIANCE.md`.
+> **TM:** la marca registrada es **Hombre Vigente™** — NO "Índice Vigente". Los scores (68/64) son **ilustrativos** hasta que el modelo del Índice exista.
 > Compliance de origen: lenguaje de optimización/bienestar, "no es diagnóstico", el médico firma.
 > Microcopy legal global (footer de pantallas con dato de salud): **"Optimización y bienestar. No sustituye atención médica."**
 > Rev. junio 2026: evidencia en lenguaje plano (Fuerte/Moderada/Emergente) + PMIDs · médico/cédula etiquetados como ejemplo · ajustes Rx framados como "el médico aprueba".
@@ -13,7 +13,7 @@
 **Tipo:** web de escritorio · **Uso:** índice navegable; cada tarjeta abre su prototipo.
 
 - Eyebrow: `Mapa del producto · México`
-- Título: **Hombre Vigente™**
+- Título: **Hombre Vigente**
 - Lede: *"El journey completo de longevidad gestionada, de punta a punta. Cada tarjeta abre su prototipo en el teléfono. Recórrelo en orden o salta a cualquier flujo."*
 - Etapas: **01 Captación** · **02 Diagnóstico** · **03 Conversión** (Ruta A sin receta · Ruta B médica) · **04 Recurrencia** · **✦ Transversal** (Confianza · Canal)
 - Footer: *"Prototipos de diseño en bronce (noir + acento). Contenido ilustrativo. No es diagnóstico ni tratamiento médico — la Avenida 2 requiere valoración y firma de un médico responsable."*
@@ -37,6 +37,7 @@
 
 ### Onboarding Vigente.html — 7 pantallas
 **Tipo:** app móvil · **Uso:** diagnóstico que genera el Índice Vigente y rutea a Av.1/Av.2.
+**Marca:** el ™ va en **Hombre Vigente™** (la marca), no en "Índice Vigente". **Scores ilustrativos** hasta que exista el modelo.
 **Variantes (Tweaks):** UX del paso 3 → Guiado / Tablero / Chat.
 
 **Pantalla 01 — Bienvenida**
@@ -95,9 +96,10 @@
 
 **Pantalla 06 — Tu Índice Vigente**
 - Eyebrow: `Tu lectura · Informe de optimización`
-- Título: **"Tu Índice Vigente"** · Score: **68 / 100** · micro: `Ilustrativo · ejemplo`
+- Título: **"Tu Índice Vigente"** · Score: **68 / 100** *(ilustrativo — modelo aún no construido)*
 - Sub: *"Tu lectura de partida — un punto de referencia para optimizar y volver a medir. No es un diagnóstico médico."*
 - "Punto de partida": *"4 señales clave para optimizar. Volvemos a medir en 8 semanas."*
+- Señales (lectura · nota · evidencia · "por qué importa"):
 - Señales (lectura · nota · "por qué importa"; **sin tag de evidencia** — un valor de lab no tiene nivel de evidencia):
   - **hs-CRP** · `Rango superior` · Inflamación a vigilar — *"Marca inflamación sistémica de bajo grado. Baja con sueño, omega-3 y movimiento constante."*
   - **HRV** · `48 ms · baja` · Recuperación a mejorar — *"Señal de estrés autonómico. Responde a higiene de sueño y a dosificar la carga de entrenamiento."*
@@ -124,7 +126,7 @@
 
 **Pantalla 1 — Resultado del Escaneo (gratis)**
 - Eyebrow: `Tu lectura inicial · Gratis`
-- Título: **"Tu Escaneo Vigente"** · Score: **64 / 100** · micro: `Ilustrativo · ejemplo`
+- Título: **"Tu Escaneo Vigente"** · Score: **64 / 100** *(ilustrativo)*
 - Sub: *"Esto es tu punto de partida con los 3 datos que diste. La lectura a fondo viene en el diagnóstico completo."*
 - Señales: `Inflamación · a vigilar` · `Recuperación · baja · HRV` · `Energía · optimizable`
 - Mini-recomendación (chip "sin receta"): *"Tu prioridad es recuperación y energía. Empezamos sin receta, con tu Stack Vigente."*
@@ -232,7 +234,7 @@
 - Check-ins:
   - **Foto semanal** · `Computer Vision compara tu progreso`
   - **Sync wearable** · `HRV y sueño de los últimos 7 días`
-  - **Check-in de síntomas** · `Energía, ciática, ánimo, descanso`
+  - **Check-in de síntomas** · `Energía, recuperación, ánimo, descanso`
 - CTA: **Enviar check-in** / `Registra N más`
 
 **Pantalla 3 — Ajuste & Membresía**
@@ -310,7 +312,7 @@
 
 **Hilo 1 — Entrega de lectura** (top of funnel · tras el escaneo)
 - 🟫 `¡Listo, Juan! Tu Escaneo Vigente está hecho. 👇`
-- 🟫 `Tu Índice de partida: 64/100 (ilustrativo). Lo que más mueve la aguja para ti: recuperación y energía.`
+- 🟫 `Tu Índice de partida: 64/100. Lo que más mueve la aguja para ti: recuperación y energía.`
 - 🟫 [tarjeta] **Stack Vigente** · Sin receta · con COA · NMN · Omega-3 · Creatina · +2 más
 - 🟫 `¿Quieres activar tu protocolo o ver el detalle primero?`
 - ⬜ `Ver el detalle`
@@ -382,5 +384,5 @@
 - **Aviso de Privacidad real (LFPDPPP):** el consentimiento (Onboarding P02) lo enlaza pero aún no existe. Redactarlo antes de live; sin él, el consentimiento es cosmético.
 - **Responsable sanitario real:** médico, cédula y contrato reales antes de operar Av.2 (hoy el médico se muestra etiquetado como *ejemplo*).
 - **Citas verificadas:** los PMID de Evidencia citada deben validarse contra el SSOT antes de demo pública.
-- **Scores 68 (diagnóstico completo) vs 64 (escaneo de 3 datos):** difieren a propósito y son **ilustrativos** hasta que exista el modelo del Índice (M4); el copy ya lo explica ("la lectura a fondo viene en el diagnóstico completo").
+- **Scores 68 (diagnóstico completo) vs 64 (escaneo de 3 datos):** difieren a propósito; el copy ya lo explica ("la lectura a fondo viene en el diagnóstico completo").
 - **Caso #1:** métricas marcadas como ilustrativas ("no garantiza resultados") ✓.

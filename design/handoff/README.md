@@ -1,4 +1,4 @@
-# Handoff: Hombre Vigente™ — App de longevidad gestionada (web + móvil)
+# Handoff: Hombre Vigente — App de longevidad gestionada (web + móvil)
 
 ## Overview
 Hombre Vigente es un producto de "longevidad gestionada" digital-first para hombres en México: diagnóstico con datos → protocolo personalizado → conversión (Av.1 sin receta / Av.2 vía médica) → seguimiento recurrente. Este paquete contiene el **journey completo** como prototipos de diseño de alta fidelidad: landing de captación + 6 flujos de app móvil + un índice navegable (Mapa).
@@ -12,10 +12,6 @@ Si no existe codebase aún, elegir el framework más apropiado (sugerencia: **Ne
 
 ## Fidelity
 **Alta fidelidad (hifi).** Colores, tipografía, espaciado, copy e interacciones son finales. Recrear pixel-perfect con las librerías del codebase. El copy en español es **definitivo y compliant** (revisado) — no parafrasear sin revisión legal.
-
-**Errata jun-2026 aplicada** en este bundle (evidencia plana, PMIDs, Av.2 ejemplo, ajustes Rx). Historial de la revisión: [`estrategia_2026/Revision_Inventario_Producto.md`](../../estrategia_2026/Revision_Inventario_Producto.md).
-
-**Demo local:** abrir `Mapa Vigente.html` en el navegador (punto de entrada a todos los flujos).
 
 ---
 
@@ -86,10 +82,10 @@ Line icons SVG simples (stroke 1.6, 24×24 viewBox), definidos en `hv-data.jsx` 
 Hero "No te vendemos un vial. Te damos un plan con médico.", tabla comparativa (mercado gris vs. clínica US vs. Vigente), loop de 6 pasos, programas con routing Av.1/Av.2, CTA "Hacer mi Escaneo gratis" → onboarding. Usa Tailwind; acento bronce vía CSS vars `--bronze:#C6A06A`.
 
 ### 2. Onboarding (`Onboarding Vigente.html`) — 7 pantallas
-Bienvenida → Consentimiento (3 checkboxes, CTA gated) → Tu historial (3 fuentes: foto/labs/wearable, mín. 2) → Cuestionario (objetivos multi + hábitos en escala) → Análisis (líneas rotativas, auto-avanza) → **Índice Vigente** (score 68/100 **ilustrativo**, 4 señales expandibles "ver por qué" — **sin tag de evidencia en biomarcadores**) → Tu siguiente paso (routing Ruta A sólido / Ruta B con candado). Variantes de Historial: Guiado/Tablero/Chat.
+Bienvenida → Consentimiento (3 checkboxes, CTA gated) → Tu historial (3 fuentes: foto/labs/wearable, mín. 2) → Cuestionario (objetivos multi + hábitos en escala) → Análisis (líneas rotativas, auto-avanza) → **Índice Vigente** (score 68/100 *ilustrativo* — **sin tag de evidencia en biomarcadores**) → Tu siguiente paso (routing Ruta A sólido / Ruta B con candado). Variantes de Historial: Guiado/Tablero/Chat.
 
 ### 3. Conversión Av.1 (`Conversion Vigente.html`) — 4 pantallas
-Resultado del Escaneo (score 64 **ilustrativo**) → Elegir programa (4 tiers) → Checkout (Diagnóstico $1,490 + Stack $899/mes; pagos Tarjeta/SPEI/OXXO/Kueski-MSI) → Confirmación. Deep-link: entra a "programa" vía `#programa`.
+Resultado del Escaneo (score 64) → Elegir programa (4 tiers) → Checkout (Diagnóstico $1,490 + Stack $899/mes; pagos Tarjeta/SPEI/OXXO/Kueski-MSI) → Confirmación. Deep-link: entra a "programa" vía `#programa`.
 
 ### 4. Teleconsulta Av.2 (`Teleconsulta Vigente.html`) — 4 pantallas
 Elegibilidad (3 razones + ficha médico **etiquetado "ejemplo"**) → Agendar (slots, $890) → Receta + Magistral ("Protocolo magistral de reparación", péptidos, COA por lote, gate de consentimiento) → Confirmación. **Compliance:** médico/cédula son placeholder; antes de producción, responsable sanitario real.
@@ -131,7 +127,6 @@ Hub "Por qué creerte" (4 pilares) → Caso #1 (métricas del fundador, ilustrat
 - `Onboarding Vigente.html` · `Conversion Vigente.html` · `Teleconsulta Vigente.html` · `Seguimiento Vigente.html` · `Confianza Vigente.html` · `Canal Vigente.html` — flujos de app (React).
 - **Soporte (lógica/diseño reutilizable):** `hv-data.jsx` (tokens, contenido/copy, iconos, UI compartida: GlassCard, PrimaryButton, GhostButton, Chip, Eyebrow, Placeholder, Icon), `hv2-screens.jsx`…`hv7-canal.jsx` (pantallas), `frames/ios-frame.jsx` (marco), `tweaks-panel.jsx` (variantes).
 - `Inventario Hombre Vigente.md` — **copy exacto** de cada pantalla + sistema de marca + pendientes.
-- `COMPLIANCE.md` — **reglas no negociables** (marca, Av.1/Av.2, lenguaje, evidencia, LFPDPPP).
 
 ## Pendientes antes de producción (no de diseño)
 1. **Aviso de Privacidad (LFPDPPP)** real — el consentimiento lo enlaza.

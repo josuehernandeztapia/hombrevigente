@@ -70,7 +70,7 @@ function WhatsAppThread({ thread, t }) {
           <div style={{ width:38, height:38, borderRadius:999, background:t.accent, display:'flex', alignItems:'center', justifyContent:'center',
             fontFamily:SANS, fontWeight:900, fontSize:16, color:t.on, flexShrink:0 }}>V</div>
           <div style={{ flex:1 }}>
-            <div style={{ fontFamily:SANS, fontWeight:700, fontSize:15, color:WA.txt }}>Hombre Vigente™</div>
+            <div style={{ fontFamily:SANS, fontWeight:700, fontSize:15, color:WA.txt }}>Hombre Vigente</div>
             <div style={{ fontFamily:SANS, fontSize:11, color:WA.sub }}>concierge · en línea</div>
           </div>
           <Icon name="chat" size={19} stroke={WA.sub} />
