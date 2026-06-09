@@ -145,6 +145,12 @@ def publish_instagram(
 
     caption = instagram_caption(numero)
     suffix = tag or os.environ.get("PULSO_PUBLISH_TAG", "v1")
+    if force and suffix:
+        caption = (
+            "🎨 Hero editorial actualizado — metáfora visual de edición génica "
+            "(inyección → ADN), alineada al Accionable del Nº001.\n\n"
+            f"{caption}"
+        )
     idem = f"pulso-{numero}-ig-{suffix}"
 
     payload: dict = {
