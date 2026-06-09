@@ -6,8 +6,9 @@ Newsletter de longevidad gestionada. Contenido en `issues/`, email vía **Resend
 
 | Paso | Qué | Workflow / script |
 |------|-----|-------------------|
-| 1. Candidatos | Europe PMC + `watchlist.yml` | `harvest.py` · `newsletter-draft.yml` (jueves, abre PR) |
-| 2. Redacción | Tú verificas fuentes (`EDITORIAL.md`) | `issues/YYYY-MM-NNN.md` |
+| 1. Candidatos | Europe PMC + `watchlist.yml` | `harvest.py` · `newsletter-draft.yml` (jueves) |
+| 2. Redacción auto | IA desde harvest + validación PMID | `draft_compose.py` (mismo workflow) |
+| 2b. Tu revisión | Lees, dialogas, pides cambios | PR `newsletter/draft-NNN` · `rehearsal.py` |
 | 3. Assets | Hero IA + social pack | `newsletter-assets.yml` (manual) · `image.py` · `social.py` |
 | 4. Ensayo shadow | Pipeline completo sin publicar + post-mortem | `rehearsal.py` · `newsletter-rehearsal.yml` |
 | 5. Email QA | Preview local | `render.py` → `newsletter/preview.html` |
@@ -43,12 +44,20 @@ Regla: ¿hace afirmación de salud? → gated. Si no → puede ser auto.
 | **Shadow** | `python newsletter/rehearsal.py <issue>` o Actions → *Newsletter rehearsal* | Corre render + social + bridge dry-run; escribe post-mortem; **no envía** |
 | **Production** | Merge issue a `main` + secrets Resend/Ayrshare | Email + bridge CI reales |
 
-El humano **no desaparece**: en shadow validas el cableado; en post-mortem corriges warnings y vuelves a correr hasta exit 0.
+El humano **no desaparece**: lees el borrador auto, dialogas cambios; el merge a `main` sigue siendo tu OK para enviar.
+
+**Fase A (ahora):** jueves auto → PR redactado → tú revisas → merge cuando listo.
 
 ## Probar local
 
 ```bash
 pip install -r newsletter/requirements.txt
+
+# Compose local (fallback sin API)
+python newsletter/draft_compose.py \
+  --candidates newsletter/drafts/candidates-2026-06-08.md \
+  --out newsletter/issues/2026-06-002.md \
+  --numero 002 --fecha 2026-06-12 --fallback-only
 
 # Ensayo completo (post-mortem en newsletter/runs/)
 python newsletter/rehearsal.py newsletter/issues/2026-06-001.md

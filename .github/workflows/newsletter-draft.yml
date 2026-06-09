@@ -1,4 +1,5 @@
-# Pulso Vigente — BORRADOR semanal. Abre un PR con un número candidato. NUNCA envía.
+# Pulso Vigente — pipeline semanal Fase A: harvest → compose IA → rehearsal → PR.
+# NUNCA envía. El humano lee el PR y dialoga antes de merge a main.
 name: Newsletter draft
 
 on:
@@ -17,6 +18,8 @@ permissions:
 jobs:
   draft:
     runs-on: ubuntu-latest
+    env:
+      PULSO_MODE: shadow
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -32,86 +35,68 @@ jobs:
         run: pip install -r newsletter/requirements.txt
 
       - name: Cosechar candidatos verificados (Europe PMC)
+        id: harvest
         run: python newsletter/harvest.py --days 14 --per-topic 4
 
-      - name: Generar stub del próximo número
-        id: stub
+      - name: Calcular próximo número
+        id: meta
         run: |
           set -euo pipefail
           DATE=$(date -u +%Y-%m-%d)
-          # siguiente número correlativo
           LAST=$(ls newsletter/issues/*.md 2>/dev/null | sed -E 's/.*-([0-9]+)\.md/\1/' | sort -n | tail -1 || echo "000")
           NEXT=$(printf "%03d" $((10#${LAST:-000} + 1)))
           MONTH=$(date -u +%Y-%m)
           OUT="newsletter/issues/${MONTH}-${NEXT}.md"
-          cat > "$OUT" <<'STUB'
----
-numero: "NEXTNUM"
-fecha: NEXTDATE
-subject: "Pulso Vigente NºNEXTNUM — [TITULAR]"
-preheader: "[preheader]"
-audiencia: plus
----
-
-**TLDR:** [una línea]
-
----
-
-## 🟢 Accionable — [titular]
-[noticia] · *Fuente: [PMID/DOI/registro verificado].*
-> **🔵 Lente Vigente:** [qué hacer hoy / Av.1]
-
-## 🔬 Frontera — [titular]
-[noticia] · *Fuente: [verificada].*
-> **🔵 Lente Vigente:** [contexto, etiquetado investigación]
-
-## 🤖 AI × Longevity — [titular]
-[noticia] · *Fuente: [verificada].*
-> **🔵 Lente Vigente:** [hype con sustancia]
-
-## 🌍 Contexto / Voz — [titular]
-[noticia o cita atribuida real] · *Fuente: [verificada].*
-
----
-
-**🟢 Para ti, miembro Plus:** [acción personalizada]
-
-**Bottom line:** [cierre que ata todo]
-
----
-
-## Editorial bridge (rellenar al cerrar — ver newsletter/BRIDGE.md)
-
-| bloque | topic_ssot | monografía | pmid / doi | nivel E | bridge |
-|--------|------------|------------|------------|---------|--------|
-| Accionable | | | | | A / C |
-| Frontera | | | | | A / C |
-| AI × Longevity | | | | | A / C |
-| Contexto / Voz | | | | | A / C |
-
-- **A** = patch a monografía SSOT (PR `rag-bot/knowledge_base/longevity/`).
-- **C** = solo Pulso/redes; no entra al RAG.
-- Q&A de usuarios → proceso aparte (`knowledge-promotions-pending.json`), no este bridge.
-
----
-
-*Pulso Vigente es información educativa de optimización y bienestar. No es diagnóstico ni tratamiento médico.*
-STUB
-          sed -i "s/NEXTNUM/${NEXT}/g; s/NEXTDATE/${DATE}/g" "$OUT"
+          CAND="${{ steps.harvest.outputs.candidates }}"
+          if [ -z "${CAND}" ]; then
+            CAND=$(ls -t newsletter/drafts/candidates-*.md 2>/dev/null | head -1)
+          fi
           echo "out=${OUT}" >> "$GITHUB_OUTPUT"
           echo "next=${NEXT}" >> "$GITHUB_OUTPUT"
-          # TODO: enchufar el harvester (watchlist.yml + Europe PMC + verificación) para pre-llenar candidatos.
+          echo "fecha=${DATE}" >> "$GITHUB_OUTPUT"
+          echo "candidates=${CAND}" >> "$GITHUB_OUTPUT"
 
-      - name: Abrir PR con el borrador
+      - name: Redactar número (IA + validación harvest)
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: |
+          python newsletter/draft_compose.py \
+            --candidates "${{ steps.meta.outputs.candidates }}" \
+            --out "${{ steps.meta.outputs.out }}" \
+            --numero "${{ steps.meta.outputs.next }}" \
+            --fecha "${{ steps.meta.outputs.fecha }}"
+
+      - name: Ensayo shadow + post-mortem
+        id: rehearsal
+        continue-on-error: true
+        run: |
+          set +e
+          python newsletter/rehearsal.py "${{ steps.meta.outputs.out }}"
+          echo "exit_code=$?" >> "$GITHUB_OUTPUT"
+          PM=$(ls newsletter/runs/*-postmortem.md 2>/dev/null | head -1 || true)
+          if [ -n "${PM}" ]; then
+            cp "${PM}" "newsletter/drafts/postmortem-${{ steps.meta.outputs.next }}.md"
+          fi
+
+      - name: Abrir PR con borrador auto-redactado
         uses: peter-evans/create-pull-request@v6
         with:
-          branch: newsletter/draft-${{ steps.stub.outputs.next }}
-          title: "Pulso Vigente Nº${{ steps.stub.outputs.next }} — borrador"
-          commit-message: "draft(newsletter): número ${{ steps.stub.outputs.next }}"
+          branch: newsletter/draft-${{ steps.meta.outputs.next }}
+          title: "Pulso Vigente Nº${{ steps.meta.outputs.next }} — borrador auto"
+          commit-message: "draft(newsletter): número ${{ steps.meta.outputs.next }} auto-compose"
           body: |
-            Borrador automático del próximo Pulso Vigente.
-            - Llena los [placeholders] con items **verificados** (PMID/DOI/registro).
-            - Regla de hierro: fuente primaria o no entra (ver EDITORIAL.md).
-            - Al cerrar: tabla **Editorial bridge** + checklist en `newsletter/BRIDGE.md`.
-            - Al hacer **merge**, `newsletter-send.yml` lo envía.
-          labels: newsletter, draft
+            ## Pulso Vigente Nº${{ steps.meta.outputs.next }} — generado automáticamente
+
+            Pipeline Fase A:
+            1. `harvest.py` → candidatos Europe PMC
+            2. `draft_compose.py` → redacción IA (o fallback) solo desde harvest
+            3. `rehearsal.py` → post-mortem shadow (sin envío)
+
+            **Tu rol:** lee el issue + `newsletter/runs/*-postmortem.md` en el PR, dialoga cambios con Grok/peer, edita el issue en esta rama si hace falta.
+
+            - Regla de hierro: fuentes solo del harvest (validado en compose).
+            - Merge a `main` **solo cuando quieras enviar** → `newsletter-send.yml`.
+            - Bridge SSOT al merge → `newsletter-editorial-bridge.yml`.
+
+            Rehearsal exit: ${{ steps.rehearsal.outputs.exit_code == '0' && '✅' || '⚠️ revisar warnings' }}
+          labels: newsletter, draft, auto-compose
