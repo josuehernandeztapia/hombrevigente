@@ -146,10 +146,14 @@ def publish_instagram(
     caption = instagram_caption(numero)
     suffix = tag or os.environ.get("PULSO_PUBLISH_TAG", "v1")
     if force and suffix:
+        accionable = ctx.get("accionable_title", "").strip()
+        hook = (
+            f"metáfora visual del Accionable: {accionable}"
+            if accionable
+            else "hero editorial de marca"
+        )
         caption = (
-            "🎨 Hero editorial actualizado — metáfora visual de edición génica "
-            "(inyección → ADN), alineada al Accionable del Nº001.\n\n"
-            f"{caption}"
+            f"🎨 Hero editorial actualizado — {hook} (Nº{numero}).\n\n{caption}"
         )
     idem = f"pulso-{numero}-ig-{suffix}"
 
