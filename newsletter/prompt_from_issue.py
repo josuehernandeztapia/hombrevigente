@@ -90,8 +90,16 @@ def visual_context(path: Path) -> dict[str, Any]:
     }
 
 
+def _hero_theme(ctx: dict[str, Any]) -> str:
+    """Tema del hero anclado al bloque Accionable (🟢), no al subject ni metáforas libres."""
+    title = (ctx.get("accionable_title") or "").strip()
+    if title:
+        return title
+    return (ctx.get("theme_line") or "longevity and cellular optimization").strip()
+
+
 def _fallback_prompts(ctx: dict[str, Any]) -> dict[str, Any]:
-    theme = ctx["theme_line"] or "longevity and cellular optimization"
+    theme = _hero_theme(ctx)
     words = re.findall(r"[a-zA-ZáéíóúñÁÉÍÓÚÑ]{4,}", f"{ctx['accionable_title']} {ctx['tldr']}")
     en_hint = " ".join(words[:6]).lower()
     unsplash = f"longevity {en_hint} abstract science".strip()[:80]
@@ -109,11 +117,12 @@ def _fallback_prompts(ctx: dict[str, Any]) -> dict[str, Any]:
 
 
 def _llm_prompts(ctx: dict[str, Any], api_key: str) -> dict[str, Any]:
+    hero_theme = _hero_theme(ctx)
     system = (
         "You create visual briefs for a premium men's longevity brand (abstract editorial art). "
-        "Output ONLY valid JSON with keys: theme, unsplash_query, slide_themes. "
-        "theme: one English phrase, abstract visual metaphor (no medical claims, no people, no text). "
-        "unsplash_query: 3-6 English keywords for stock photo search. "
+        "Output ONLY valid JSON with keys: unsplash_query, slide_themes. "
+        "The hero image theme is FIXED from accionable_title — do NOT invent a separate theme. "
+        "unsplash_query: 3-6 English keywords for stock photo search, aligned with accionable_title. "
         "slide_themes: array of 1-3 short English visual concepts for carousel slides. "
         "Never mention cure, treatment, diagnosis, or guaranteed outcomes."
     )
@@ -143,7 +152,7 @@ def _llm_prompts(ctx: dict[str, Any], api_key: str) -> dict[str, Any]:
     )
     r.raise_for_status()
     data = json.loads(r.json()["choices"][0]["message"]["content"])
-    theme = str(data.get("theme") or ctx["theme_line"]).strip()
+    theme = hero_theme
     unsplash = str(data.get("unsplash_query") or "").strip()
     slide_themes = data.get("slide_themes") or []
     if not isinstance(slide_themes, list):

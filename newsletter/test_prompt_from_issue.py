@@ -8,6 +8,7 @@ from pathlib import Path
 
 from prompt_from_issue import (
     BRAND_TEMPLATE,
+    _hero_theme,
     visual_context,
     visual_prompts_for_issue,
     write_prompt_artifact,
@@ -24,10 +25,15 @@ class TestPromptFromIssue(unittest.TestCase):
         self.assertTrue(ctx["tldr"])
         self.assertGreaterEqual(len(ctx["slide_headlines"]), 1)
 
+    def test_hero_theme_anchored_to_accionable(self):
+        ctx = visual_context(ISSUE)
+        self.assertEqual(_hero_theme(ctx), ctx["accionable_title"])
+
     def test_fallback_prompts_structure(self):
         prompts = visual_prompts_for_issue(ISSUE, use_llm=False)
+        ctx = visual_context(ISSUE)
         self.assertEqual(prompts["source"], "fallback")
-        self.assertIn("theme", prompts)
+        self.assertEqual(prompts["theme"], ctx["accionable_title"])
         self.assertIn(prompts["theme"], prompts["image_prompt"])
         self.assertTrue(prompts["unsplash_query"])
         self.assertGreaterEqual(len(prompts["slide_themes"]), 1)

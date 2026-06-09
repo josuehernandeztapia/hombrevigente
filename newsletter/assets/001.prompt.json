@@ -1,11 +1,11 @@
 {
-  "theme": "Eternal Flow of Time",
-  "image_prompt": "Editorial hero image for a premium men's longevity brand. Near-black background (#0B0B0C), subtle warm bronze/gold accent lighting, abstract and conceptual representation of: Eternal Flow of Time. Minimal, sophisticated, cinematic, high-end magazine quality, masculine, scientific-but-warm mood. STRICT: no text, no words, no logos, no people, no faces, no medical imagery, no before/after, no pills shown as treatment, no clinical claims. Pure abstract/editorial art only.",
-  "unsplash_query": "abstract time flow, infinity, nature patterns, fluid dynamics, light trails",
+  "theme": "Una sola inyección reescribe tu colesterol (y ya pasó en humanos)",
+  "image_prompt": "Editorial hero image for a premium men's longevity brand. Near-black background (#0B0B0C), subtle warm bronze/gold accent lighting, abstract and conceptual representation of: Una sola inyección reescribe tu colesterol (y ya pasó en humanos). Minimal, sophisticated, cinematic, high-end magazine quality, masculine, scientific-but-warm mood. STRICT: no text, no words, no logos, no people, no faces, no medical imagery, no before/after, no pills shown as treatment, no clinical claims. Pure abstract/editorial art only.",
+  "unsplash_query": "cholesterol injection CRISPR longevity health",
   "slide_themes": [
-    "Fluidity of Change",
-    "Cycles of Renewal",
-    "Ebb and Flow of Life"
+    "Abstract representation of genetic editing",
+    "Cellular rejuvenation concepts",
+    "Visual metaphor for health transformation"
   ],
   "source": "llm",
   "issue_path": "newsletter/issues/2026-06-001.md",
