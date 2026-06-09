@@ -31,6 +31,11 @@ jobs:
       - name: Generar social pack
         run: python newsletter/social.py "${{ github.event.inputs.issue }}"
 
+      - name: Prompts visuales (TLDR + Accionable → hero / Unsplash)
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: python newsletter/prompt_from_issue.py "${{ github.event.inputs.issue }}" --write
+
       - name: Generar hero IA (degrada si no hay OPENAI_API_KEY)
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}

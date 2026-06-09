@@ -1,0 +1,17 @@
+{
+  "theme": "Restricción de metionina y longevidad celular",
+  "image_prompt": "Editorial hero image for a premium men's longevity brand. Near-black background (#0B0B0C), subtle warm bronze/gold accent lighting, abstract and conceptual representation of: Restricción de metionina y longevidad celular. Minimal, sophisticated, cinematic, high-end magazine quality, masculine, scientific-but-warm mood. STRICT: no text, no words, no logos, no people, no faces, no medical imagery, no before/after, no pills shown as treatment, no clinical claims. Pure abstract/editorial art only.",
+  "unsplash_query": "longevity restricción metionina activa autofagia restricción metionina abstract ",
+  "slide_themes": [
+    "abstract editorial: Restricción de metionina activa la autofagia",
+    "abstract editorial: Nuevos hallazgos sobre el virus Andes y envejecimiento",
+    "abstract editorial: Relojes de envejecimiento personalizados"
+  ],
+  "source": "fallback",
+  "issue_path": "/Users/juanjosuehernandeztapia/Desktop/hombrevigente/newsletter/issues/2026-06-002.md",
+  "context_summary": {
+    "numero": "002",
+    "subject": "Pulso Vigente Nº002 — Restricción de metionina y longevidad celular",
+    "accionable_title": "Restricción de metionina activa la autofagia"
+  }
+}

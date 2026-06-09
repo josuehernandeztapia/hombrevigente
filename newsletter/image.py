@@ -2,6 +2,7 @@
 
 Genera una imagen editorial de marca (negro premium + acento bronce, abstracta,
 SIN texto, SIN personas, SIN imaginería médica) a partir del tema del número.
+Prompts derivados de prompt_from_issue.py (TLDR + Accionable + LLM opcional).
 API: OpenAI Images (gpt-image-1). Degrada con gracia si no hay OPENAI_API_KEY
 (imprime el prompt y termina, sin romper el flujo).
 
@@ -15,44 +16,32 @@ import re
 import sys
 from pathlib import Path
 import requests
-import yaml
+
+from prompt_from_issue import visual_context, visual_prompts_for_issue, write_prompt_artifact
 
 HERE = Path(__file__).parent
-
-# Prompt de marca — guardrails de compliance incrustados.
-BRAND = (
-    "Editorial hero image for a premium men's longevity brand. "
-    "Near-black background (#0B0B0C), subtle warm bronze/gold accent lighting, "
-    "abstract and conceptual representation of: {theme}. "
-    "Minimal, sophisticated, cinematic, high-end magazine quality, masculine, "
-    "scientific-but-warm mood. "
-    "STRICT: no text, no words, no logos, no people, no faces, no medical imagery, "
-    "no before/after, no pills shown as treatment, no clinical claims. "
-    "Pure abstract/editorial art only."
-)
-
-
-def theme_from_issue(md_path: Path) -> str:
-    raw = md_path.read_text(encoding="utf-8")
-    m = re.match(r"^---\n(.*?)\n---", raw, re.DOTALL)
-    meta = yaml.safe_load(m.group(1)) if m else {}
-    subj = meta.get("subject", "longevity science")
-    # quita "Pulso Vigente Nº00X —"
-    return subj.split("—")[-1].strip() or "longevity and optimization"
 
 
 def main(md_path: str):
     issue = Path(md_path)
-    theme = theme_from_issue(issue)
-    prompt = BRAND.format(theme=theme)
+    if not issue.is_absolute():
+        issue = HERE.parent / issue
+
+    prompts = visual_prompts_for_issue(issue)
+    artifact = write_prompt_artifact(issue, prompts)
+    prompt = prompts["image_prompt"]
+    ctx = visual_context(issue)
+    theme = prompts["theme"]
 
     api_key = os.environ.get("OPENAI_API_KEY")
     if not api_key:
         print("OPENAI_API_KEY no configurado — no se genera imagen.")
+        print(f"Prompt artifact: {artifact}")
         print("Prompt que se usaría:\n" + prompt)
+        print(f"Unsplash sugerido: {prompts['unsplash_query']}")
         return
 
-    numero = re.sub(r"\D", "", issue.stem) or issue.stem
+    numero = ctx["numero"] or re.sub(r"\D", "", issue.stem) or issue.stem
     out_dir = HERE / "assets"
     out_dir.mkdir(exist_ok=True)
     out = out_dir / f"{numero}.png"
@@ -67,6 +56,7 @@ def main(md_path: str):
     b64 = r.json()["data"][0]["b64_json"]
     out.write_bytes(base64.b64decode(b64))
     print(f"Hero escrito en {out} · tema: {theme}")
+    print(f"Prompt artifact: {artifact}")
 
 
 if __name__ == "__main__":
