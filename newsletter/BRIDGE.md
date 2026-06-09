@@ -1,6 +1,6 @@
 # Bridge editorial — Pulso Vigente ↔ SSOT RAG
 
-> **Fase 0 (manual).** Ritual al cerrar cada número. Sin automatización todavía.
+> **Fase 1.** Ritual al cerrar + `bridge_export.py` → `editorial-bridge-pending.json` → PR automático a monografías (tipo **A**). El editor sigue llenando la tabla; el script no inventa claims.
 
 Pulso y el bot comparten tema pero **no comparten el mismo artefacto**. Este doc define cómo pasar claims **ya verificados** del newsletter al corpus RAG — sin mezclar dos procesos distintos.
 
@@ -85,6 +85,25 @@ Ejecutar **antes o justo después** del merge del issue a `main` (antes del env�
 | Top preguntas en `knowledge-gaps-*.md` | Beat “lo que más preguntan” (sin prometer lo que el bot aún escala) |
 | `Gap:` explícito en monografía | Bloque Frontera honesta |
 | Tema frío en harvest (0 papers 14d) | Deep-dive manual o bajar prioridad en `watchlist.yml` |
+
+---
+
+## Fase 1 — comandos y CI
+
+```bash
+# Tras llenar la tabla en issues/NNN.md:
+python newsletter/bridge_export.py --issue newsletter/issues/2026-06-001.md
+
+# Preview del patch (no escribe monografías):
+cd rag-bot && python scripts/process_editorial_bridge.py --dry-run
+
+# Aplicar local (o dejar que CI abra el PR):
+cd rag-bot && python scripts/process_editorial_bridge.py
+```
+
+**CI:** `newsletter-editorial-bridge.yml` — al merge de un issue a `main`, exporta bridges **A** y abre PR a `rag-bot/knowledge_base/longevity/`. Separado de `rag-bot-process-promotions.yml` (Q&A).
+
+**Staging:** `rag-bot/data/editorial-bridge-pending.json` (no mezclar con `knowledge-promotions-pending.json`).
 
 ---
 

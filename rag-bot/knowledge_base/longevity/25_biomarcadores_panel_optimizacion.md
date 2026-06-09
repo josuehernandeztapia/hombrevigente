@@ -70,6 +70,11 @@ Parseo PDF labs → estructura → RAG. Validar valores con rangos de laboratori
 
 ---
 
+### Evidencia reciente (Pulso Nº001 · 2026-06-09)
+- **Accionable — Una sola inyección reescribe tu colesterol (y ya pasó en humanos)** — *NEJM 2026, NEJMoa2601283.*. NEJMoa2601283 · E2.
+  - Lo más cerca de un "one-and-done" para el colesterol — pero en investigación, para perfiles específicos. **Lo que SÍ puedes mover hoy:** tu **ApoB** es de los marcadores de mayor evidencia para riesgo cardiovascular. Mídelo, conoce tu número, trabájalo con dieta/ejercicio y —si aplica— lo que tu médico indique.
+  - Límite: en investigación / preclínico; no establece efecto en personas.
+
 ## ⚠️ Límites
 
 - Un lab fuera de rango ≠ enfermedad sin clínico.

@@ -12,7 +12,7 @@ Newsletter de longevidad gestionada. Contenido en `issues/`, email vía **Resend
 | 4. Email QA | Preview local | `render.py` → `newsletter/preview.html` |
 | 5. Envío | Merge a `main` o dispatch | `newsletter-send.yml` · `send.py` |
 | 6. Redes auto | Memes/frases sin claims | `social-auto.yml` (miércoles) · `publish.py` · `social/queue/` |
-| 7. Bridge SSOT | Claims verificados → monografías RAG | Manual · `BRIDGE.md` (al cerrar el número; Q&A aparte) |
+| 7. Bridge SSOT | Claims verificados → monografías RAG | `bridge_export.py` · `newsletter-editorial-bridge.yml` · `BRIDGE.md` |
 
 ## Dos carriles (compliance)
 
@@ -66,7 +66,11 @@ DRY_RUN=1 python newsletter/publish.py newsletter/social/queue/2026-06-11-frase-
 
 ## Bridge editorial (Pulso → SSOT)
 
-`BRIDGE.md` — al cerrar un número, enriquecer monografías RAG (tipo **A**). Las preguntas de usuarios van por el **knowledge loop** del `rag-bot/`, no por Pulso.
+`BRIDGE.md` — al cerrar un número, llena la tabla *Editorial bridge*; `bridge_export.py` exporta tipo **A** a `rag-bot/data/editorial-bridge-pending.json` y CI abre PR a monografías. Las preguntas de usuarios van por el **knowledge loop** del `rag-bot/`, no por Pulso.
+
+```bash
+python newsletter/bridge_export.py --issue newsletter/issues/2026-06-001.md
+```
 
 ## Pre-merge
 
