@@ -52,7 +52,7 @@ def mark_posted(numero: str, platform: str, meta: dict) -> None:
     path.write_text("\n".join(lines) + "\n", encoding="utf-8")
 
 
-def publish_instagram(issue_path: Path, *, force: bool = False) -> bool:
+def publish_instagram(issue_path: Path, *, force: bool = False, tag: str = "") -> bool:
     from prompt_from_issue import visual_context
 
     ctx = visual_context(issue_path)
@@ -67,7 +67,8 @@ def publish_instagram(issue_path: Path, *, force: bool = False) -> bool:
         write_prompt_artifact(issue_path, prompts)
     caption = instagram_caption(numero)
     unsplash = prompts.get("unsplash_query", "longevity abstract science")
-    idem = f"pulso-{numero}-ig-v3"
+    suffix = tag or os.environ.get("PULSO_PUBLISH_TAG", "v1")
+    idem = f"pulso-{numero}-ig-{suffix}"
 
     payload = {
         "post": caption,
@@ -116,10 +117,18 @@ def main() -> None:
     ap.add_argument("--issue", type=Path, required=True)
     ap.add_argument("--platform", choices=["instagram"], default="instagram")
     ap.add_argument("--force", action="store_true")
+    ap.add_argument("--tag", default="", help="Sufijo idempotencyKey (ej. test-jun09)")
     args = ap.parse_args()
-    issue = args.issue if args.issue.is_absolute() else HERE.parent / args.issue
+    issue = Path(args.issue)
+    if not issue.is_absolute():
+        for candidate in (HERE.parent / issue, HERE / issue):
+            if candidate.exists():
+                issue = candidate
+                break
+        else:
+            issue = HERE.parent / issue
     if args.platform == "instagram":
-        ok = publish_instagram(issue, force=args.force)
+        ok = publish_instagram(issue, force=args.force, tag=args.tag)
         sys.exit(0 if ok else 1)
 
 

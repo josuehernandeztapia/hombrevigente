@@ -1,0 +1,17 @@
+{
+  "theme": "Una inyección reescribe tu colesterol",
+  "image_prompt": "Editorial hero image for a premium men's longevity brand. Near-black background (#0B0B0C), subtle warm bronze/gold accent lighting, abstract and conceptual representation of: Una inyección reescribe tu colesterol. Minimal, sophisticated, cinematic, high-end magazine quality, masculine, scientific-but-warm mood. STRICT: no text, no words, no logos, no people, no faces, no medical imagery, no before/after, no pills shown as treatment, no clinical claims. Pure abstract/editorial art only.",
+  "unsplash_query": "longevity sola inyección reescribe colesterol pasó humanos abstract science",
+  "slide_themes": [
+    "abstract editorial: Una sola inyección reescribe tu colesterol (y ya pasó en humanos)",
+    "abstract editorial: NewLimit levanta $435M para revertir el envejecimiento celular",
+    "abstract editorial: *[slot recurrente — llenar con item verificado de la semana]*"
+  ],
+  "source": "fallback",
+  "issue_path": "newsletter/issues/2026-06-001.md",
+  "context_summary": {
+    "numero": "001",
+    "subject": "Pulso Vigente Nº001 — Una inyección reescribe tu colesterol",
+    "accionable_title": "Una sola inyección reescribe tu colesterol (y ya pasó en humanos)"
+  }
+}
