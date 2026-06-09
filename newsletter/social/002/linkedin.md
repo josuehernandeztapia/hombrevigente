@@ -1,15 +1,13 @@
 <!-- REVISAR Y VERIFICAR FUENTES ANTES DE PUBLICAR. Sigue EDITORIAL.md. -->
 # LinkedIn — post (Nº002)
 
-La restricción de metionina se asocia con la activación de la autofagia en células, mientras que nuevos modelos de IA prometen medir el envejecimiento y la severidad de enfermedades relacionadas con la edad.
+La restricción de metionina vuelve a enlazarse con autofagia celular, la IA afina los relojes de envejecimiento, y un brote viral enseña cómo la edad empeora el desenlace. Lo que puedes mover hoy: **tu dieta de aminoácidos con criterio**, no con modas.
 
-▸ Restricción de metionina activa la autofagia. La restricción de metionina ha mostrado en estudios que puede extender la vida útil de las levaduras al activar la autofagia, un proceso clave en la gestión celular. Este hallazgo se publicó en *Aging Cell* (01-jun-2026). (Fuente: Aging Cell, PMID 42160763.)
-▸ Nuevos hallazgos sobre el virus Andes y envejecimiento. Un estudio reciente en *Geroscience* (05-jun-2026) analiza cómo el virus Andes afecta a los individuos mayores, ofreciendo lecciones valiosas sobre la severidad de enfermedades relacionadas con la edad y la respuesta inmune. (Fuente: Geroscience 2026, PMID 42249252.)
-▸ Relojes de envejecimiento personalizados. Investigadores han desarrollado un nuevo modelo de IA, AOE-Net, que mide el envejecimiento y predice el riesgo de enfermedades crónicas a través de un enfoque multi-óptico. Este avance se publicó en *Aging Cell* (01-jun-2026). (Fuente: Aging Cell 2026, PMID 42210672.)
-▸ Lecciones del virus Andes sobre el envejecimiento. El reciente brote del virus Andes ha proporcionado un marco para comprender cómo la edad influye en la gravedad de las enfermedades. Este análisis se encuentra en *Geroscience* (05-jun-2026). (Fuente: Geroscience 2026, PMID 42249252.)
-▸ ver newsletter/BRIDGE.md). | bloque | topic_ssot | monografía | pmid / doi | nivel E | bridge |
+▸ Restricción de metionina y autofagia (de nuevo, con señal). En levaduras, limitar metionina se asocia con **activación de autofagia** y extensión de vida útil celular. Preclínico — lente metabólico. Publicado en *Aging Cell* (01-jun-2026). (Fuente: Aging Cell 2026, PMID 42160763.)
+▸ AOE-Net: reloj de envejecimiento personalizado con IA. Modelo multi-ómicos que estima el **age gap** contextual y el riesgo de enfermedades crónicas ligadas a la edad. Publicado en *Aging Cell* (01-jun-2026). (Fuente: Aging Cell 2026, PMID 42210672.)
+▸ Virus Andes y huésped envejecido: lecciones del brote 2026. Marco en *Geroscience* que conecta severidad infecciosa con **respuesta inmune alterada por la edad**. (Fuente: Geroscience 2026, PMID 42249252.)
 
-la frontera avanza en autofagia, algoritmos y virus emergentes; tu ventaja es medir y optimizar lo que ya tiene evidencia verificable. Eso es estar Vigente.
+la frontera avanza en laboratorio y en algoritmos; tu ventaja sigue siendo medir y optimizar lo que ya tiene evidencia verificable. Eso es estar Vigente.
 
 Suscríbete a Pulso Vigente → hombrevigente.com
 

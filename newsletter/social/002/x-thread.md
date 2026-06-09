@@ -4,30 +4,22 @@
 
 1/ Restricción de metionina y longevidad celular
 
-La restricción de metionina se asocia con la activación de la autofagia en células, mientras que nuevos modelos de IA prometen medir el envejecimiento y la severidad de enfermedades relacionadas con la edad.
+Tres señales de la semana — metionina/autofagia, relojes IA y virus Andes — y qué puedes optimizar hoy con evidencia verificable.
 
 2/ Restricción de metionina activa la autofagia
-La restricción de metionina ha mostrado en estudios que puede extender la vida útil de las levaduras al activar la autofagia, un proceso clave en la gestión celular. Este hallazgo se publicó en *Aging Cell* (01-jun-2026).
-Fuente: Aging Cell, PMID 42160763.
+En modelos celulares, limitar metionina se vincula con **activación de autofagia**. Preclínico — consulta a tu médico antes de cambiar dieta.
+Fuente: Aging Cell 2026, PMID 42160763.
 
-3/ Nuevos hallazgos sobre el virus Andes y envejecimiento
-Un estudio reciente en *Geroscience* (05-jun-2026) analiza cómo el virus Andes afecta a los individuos mayores, ofreciendo lecciones valiosas sobre la severidad de enfermedades relacionadas con la edad y la respuesta inmune.
-Fuente: Geroscience 2026, PMID 42249252.
-
-4/ Relojes de envejecimiento personalizados
-Investigadores han desarrollado un nuevo modelo de IA, AOE-Net, que mide el envejecimiento y predice el riesgo de enfermedades crónicas a través de un enfoque multi-óptico. Este avance se publicó en *Aging Cell* (01-jun-2026).
+3/ AOE-Net — reloj de envejecimiento con IA
+Modelo multi-ómicos que estima age gap y riesgo de enfermedades crónicas. La medición mejora; la acción sigue siendo tuya.
 Fuente: Aging Cell 2026, PMID 42210672.
 
-5/ Lecciones del virus Andes sobre el envejecimiento
-El reciente brote del virus Andes ha proporcionado un marco para comprender cómo la edad influye en la gravedad de las enfermedades. Este análisis se encuentra en *Geroscience* (05-jun-2026).
+4/ Virus Andes y el huésped envejecido
+La edad modula severidad y respuesta inmune. Longevidad = resiliencia, no solo biomarcadores.
 Fuente: Geroscience 2026, PMID 42249252.
 
-6/ ver newsletter/BRIDGE.md)
-| bloque | topic_ssot | monografía | pmid / doi | nivel E | bridge |
-
-7/ la frontera avanza en autofagia, algoritmos y virus emergentes; tu ventaja es medir y optimizar lo que ya tiene evidencia verificable. Eso es estar Vigente.
+5/ la frontera avanza; tu ventaja es medir y optimizar lo que ya tiene señal verificable. Eso es estar Vigente.
 
 Suscríbete a Pulso Vigente → hombrevigente.com
-
 
 _Nota: cada tweet ≤280 car. Acorta donde haga falta. Adjunta el hero del número._

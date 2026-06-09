@@ -63,6 +63,10 @@ Si usuario tiene TruAge previo:
 
 ---
 
+### Evidencia reciente (Pulso Nº002 · 2026-06-09)
+- **Relojes de envejecimiento personalizados** — *Aging Cell 2026, PMID 42210672.*. 42210672 / 10.1111/acel.70552 · E3.
+  - Los relojes con IA mejoran la lectura del riesgo; la acción sigue siendo medir biomarcadores que ya puedes trackear (glucosa, lípidos, inflamación) y actuar con tu clínico.
+
 ## 📖 FAQ
 
 **¿Khavinson "reprograma" epigenética?**  

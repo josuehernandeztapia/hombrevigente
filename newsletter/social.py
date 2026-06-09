@@ -38,7 +38,11 @@ def parse(md_path: Path) -> dict:
     blocks = []
     for bm in re.finditer(r"^##\s+(.+?)\n(.*?)(?=^##\s|\n---|\Z)", body, re.DOTALL | re.MULTILINE):
         head = bm.group(1).strip()
+        if re.search(r"editorial bridge", head, re.I):
+            continue
         text = bm.group(2).strip()
+        if re.search(r"\|\s*bloque\s*\|", text, re.I):
+            continue
         # primer párrafo (sin la cita > lente ni la fuente)
         first = ""
         for line in text.splitlines():
