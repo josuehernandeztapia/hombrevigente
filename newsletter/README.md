@@ -12,6 +12,7 @@ Newsletter de longevidad gestionada. Contenido en `issues/`, email vía **Resend
 | 4. Email QA | Preview local | `render.py` → `newsletter/preview.html` |
 | 5. Envío | Merge a `main` o dispatch | `newsletter-send.yml` · `send.py` |
 | 6. Redes auto | Memes/frases sin claims | `social-auto.yml` (miércoles) · `publish.py` · `social/queue/` |
+| 7. Bridge SSOT | Claims verificados → monografías RAG | Manual · `BRIDGE.md` (al cerrar el número; Q&A aparte) |
 
 ## Dos carriles (compliance)
 
@@ -62,6 +63,10 @@ DRY_RUN=1 python newsletter/publish.py newsletter/social/queue/2026-06-11-frase-
 ## Reglas editoriales
 
 `EDITORIAL.md` — **fuente primaria verificada o no entra.**
+
+## Bridge editorial (Pulso → SSOT)
+
+`BRIDGE.md` — al cerrar un número, enriquecer monografías RAG (tipo **A**). Las preguntas de usuarios van por el **knowledge loop** del `rag-bot/`, no por Pulso.
 
 ## Pre-merge
 

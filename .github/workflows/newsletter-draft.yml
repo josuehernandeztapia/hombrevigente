@@ -80,6 +80,21 @@ audiencia: plus
 
 ---
 
+## Editorial bridge (rellenar al cerrar — ver newsletter/BRIDGE.md)
+
+| bloque | topic_ssot | monografía | pmid / doi | nivel E | bridge |
+|--------|------------|------------|------------|---------|--------|
+| Accionable | | | | | A / C |
+| Frontera | | | | | A / C |
+| AI × Longevity | | | | | A / C |
+| Contexto / Voz | | | | | A / C |
+
+- **A** = patch a monografía SSOT (PR `rag-bot/knowledge_base/longevity/`).
+- **C** = solo Pulso/redes; no entra al RAG.
+- Q&A de usuarios → proceso aparte (`knowledge-promotions-pending.json`), no este bridge.
+
+---
+
 *Pulso Vigente es información educativa de optimización y bienestar. No es diagnóstico ni tratamiento médico.*
 STUB
           sed -i "s/NEXTNUM/${NEXT}/g; s/NEXTDATE/${DATE}/g" "$OUT"
@@ -97,5 +112,6 @@ STUB
             Borrador automático del próximo Pulso Vigente.
             - Llena los [placeholders] con items **verificados** (PMID/DOI/registro).
             - Regla de hierro: fuente primaria o no entra (ver EDITORIAL.md).
+            - Al cerrar: tabla **Editorial bridge** + checklist en `newsletter/BRIDGE.md`.
             - Al hacer **merge**, `newsletter-send.yml` lo envía.
           labels: newsletter, draft
