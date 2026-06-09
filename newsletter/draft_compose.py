@@ -271,6 +271,26 @@ Para bridge: usa topic del candidato; monografía según mapa HV; nivel E2 precl
     content = r.json()["choices"][0]["message"]["content"].strip()
     content = re.sub(r"^```(?:markdown)?\n?", "", content)
     content = re.sub(r"\n?```$", "", content)
+    content = content.strip()
+    if not content.startswith("---"):
+        content = re.sub(r"^(yaml\n)?", "---\n", content, count=1)
+    if not content.startswith("---"):
+        content = "---\n" + content
+    if "\n---\n" not in content[3:]:
+        # insert closing --- after frontmatter keys
+        lines = content.splitlines()
+        out, in_fm = [], False
+        for i, ln in enumerate(lines):
+            out.append(ln)
+            if i == 0 and ln.strip() == "---":
+                in_fm = True
+            elif in_fm and ln.strip() == "---":
+                in_fm = False
+            elif in_fm and i > 0 and ln and not ln[0].isspace() and ":" in ln:
+                nxt = lines[i + 1] if i + 1 < len(lines) else ""
+                if nxt and not nxt.startswith((" ", "-")) and ":" not in nxt[:20]:
+                    out.append("---")
+                    in_fm = False
     return content.strip() + "\n"
 
 
