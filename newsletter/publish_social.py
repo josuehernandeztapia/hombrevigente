@@ -4,7 +4,9 @@ Usa unsplash_query de prompt_from_issue (o genera on-the-fly).
 Instagram requiere imagen — hero local sin URL pública usa Unsplash.
 
 Uso:
-  python newsletter/publish_social.py --issue newsletter/issues/2026-06-002.md --platform instagram
+  python newsletter/publish_social.py --issue newsletter/issues/2026-06-001.md
+  python newsletter/publish_social.py --issue ... --hero --tag hero-v1 --force
+  python newsletter/publish_social.py --issue ... --media-url https://...
   DRY_RUN=1 python newsletter/publish_social.py ...
 """
 from __future__ import annotations
@@ -47,12 +49,49 @@ def mark_posted(numero: str, platform: str, meta: dict) -> None:
         meta.get("posted_at", ""),
         f"platform: {platform}",
         f"postUrl: {meta.get('postUrl', '')}",
+        f"mediaUrl: {meta.get('mediaUrl', '')}",
         f"idempotencyKey: {meta.get('idempotencyKey', '')}",
     ]
     path.write_text("\n".join(lines) + "\n", encoding="utf-8")
 
 
-def publish_instagram(issue_path: Path, *, force: bool = False, tag: str = "") -> bool:
+def hero_asset_path(numero: str) -> Path:
+    return HERE / "assets" / f"{numero}.png"
+
+
+def hero_public_url(numero: str) -> str:
+    override = os.environ.get("HV_NEWSLETTER_ASSETS_BASE", "").strip().rstrip("/")
+    if override:
+        return f"{override}/{numero}.png"
+    repo = os.environ.get("GITHUB_REPOSITORY", "josuehernandeztapia/hombrevigente")
+    branch = os.environ.get("HV_NEWSLETTER_ASSETS_BRANCH", "main")
+    return (
+        f"https://raw.githubusercontent.com/{repo}/{branch}/"
+        f"newsletter/assets/{numero}.png"
+    )
+
+
+def resolve_media_url(numero: str, *, media_url: str | None, use_hero: bool) -> str | None:
+    if media_url:
+        return media_url.strip()
+    if not use_hero:
+        return None
+    local = hero_asset_path(numero)
+    if not local.exists():
+        raise FileNotFoundError(
+            f"Falta {local}. Genera: python newsletter/image.py newsletter/issues/..."
+        )
+    return hero_public_url(numero)
+
+
+def publish_instagram(
+    issue_path: Path,
+    *,
+    force: bool = False,
+    tag: str = "",
+    media_url: str | None = None,
+    use_hero: bool = False,
+) -> bool:
     from prompt_from_issue import visual_context
 
     ctx = visual_context(issue_path)
@@ -61,25 +100,32 @@ def publish_instagram(issue_path: Path, *, force: bool = False, tag: str = "") -
         print(f"Ya publicado en IG (social/{numero}/instagram-facebook.posted). Usa --force.")
         return False
 
-    prompts = load_prompt_artifact(issue_path)
-    if not prompts or not prompts.get("unsplash_query"):
-        prompts = visual_prompts_for_issue(issue_path)
-        write_prompt_artifact(issue_path, prompts)
+    media = resolve_media_url(numero, media_url=media_url, use_hero=use_hero)
+    unsplash = None
+    if not media:
+        prompts = load_prompt_artifact(issue_path)
+        if not prompts or not prompts.get("unsplash_query"):
+            prompts = visual_prompts_for_issue(issue_path)
+            write_prompt_artifact(issue_path, prompts)
+        unsplash = prompts.get("unsplash_query", "longevity abstract science")
+
     caption = instagram_caption(numero)
-    unsplash = prompts.get("unsplash_query", "longevity abstract science")
     suffix = tag or os.environ.get("PULSO_PUBLISH_TAG", "v1")
     idem = f"pulso-{numero}-ig-{suffix}"
 
-    payload = {
+    payload: dict = {
         "post": caption,
         "platforms": ["instagram"],
-        "unsplash": unsplash,
         "idempotencyKey": idem,
     }
+    if media:
+        payload["mediaUrls"] = [media]
+    else:
+        payload["unsplash"] = unsplash
 
     if os.environ.get("DRY_RUN") == "1":
         print(f"DRY_RUN IG Nº{numero}")
-        print(f"unsplash: {unsplash}")
+        print(f"media: {media or f'unsplash:{unsplash}'}")
         print(caption[:200], "...")
         return True
 
@@ -103,10 +149,15 @@ def publish_instagram(issue_path: Path, *, force: bool = False, tag: str = "") -
     mark_posted(
         numero,
         "instagram",
-        {"posted_at": __import__("datetime").datetime.now(__import__("datetime").timezone.utc).isoformat(),
-         "postUrl": url, "idempotencyKey": idem},
+        {
+            "posted_at": __import__("datetime").datetime.now(__import__("datetime").timezone.utc).isoformat(),
+            "postUrl": url,
+            "mediaUrl": media or "",
+            "idempotencyKey": idem,
+        },
     )
-    print(f"✅ Instagram Nº{numero} · unsplash={unsplash!r}")
+    src = media or f"unsplash:{unsplash}"
+    print(f"✅ Instagram Nº{numero} · {src}")
     if url:
         print(url)
     return True
@@ -117,7 +168,13 @@ def main() -> None:
     ap.add_argument("--issue", type=Path, required=True)
     ap.add_argument("--platform", choices=["instagram"], default="instagram")
     ap.add_argument("--force", action="store_true")
-    ap.add_argument("--tag", default="", help="Sufijo idempotencyKey (ej. test-jun09)")
+    ap.add_argument("--tag", default="", help="Sufijo idempotencyKey (ej. hero-v1)")
+    ap.add_argument("--media-url", default="", help="URL pública de imagen (mediaUrls)")
+    ap.add_argument(
+        "--hero",
+        action="store_true",
+        help="Usa newsletter/assets/NNN.png vía raw.githubusercontent.com (o HV_NEWSLETTER_ASSETS_BASE)",
+    )
     args = ap.parse_args()
     issue = Path(args.issue)
     if not issue.is_absolute():
@@ -128,7 +185,13 @@ def main() -> None:
         else:
             issue = HERE.parent / issue
     if args.platform == "instagram":
-        ok = publish_instagram(issue, force=args.force, tag=args.tag)
+        ok = publish_instagram(
+            issue,
+            force=args.force,
+            tag=args.tag,
+            media_url=args.media_url or None,
+            use_hero=args.hero,
+        )
         sys.exit(0 if ok else 1)
 
 

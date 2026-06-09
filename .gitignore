@@ -67,7 +67,8 @@ newsletter/runs/*
 !newsletter/runs/.gitkeep
 # approvals/*.json = estado de envío (sent_at); sin secrets — se commitea
 preview.html
-newsletter/assets/*.png
+# Heroes Pulso — trackear en git para mediaUrls (raw.githubusercontent.com)
+# newsletter/assets/*.png
 
 # === Office temp files ===
 ~$*

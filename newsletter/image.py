@@ -22,10 +22,18 @@ from prompt_from_issue import visual_context, visual_prompts_for_issue, write_pr
 HERE = Path(__file__).parent
 
 
-def main(md_path: str):
+def _resolve_issue(md_path: str) -> Path:
     issue = Path(md_path)
-    if not issue.is_absolute():
-        issue = HERE.parent / issue
+    if issue.is_absolute():
+        return issue
+    for candidate in (HERE.parent / issue, HERE / issue):
+        if candidate.exists():
+            return candidate
+    return HERE.parent / issue
+
+
+def main(md_path: str):
+    issue = _resolve_issue(md_path)
 
     prompts = visual_prompts_for_issue(issue)
     artifact = write_prompt_artifact(issue, prompts)
