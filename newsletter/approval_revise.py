@@ -11,7 +11,6 @@ import re
 import sys
 from pathlib import Path
 
-import requests
 import yaml
 
 HERE = Path(__file__).parent
@@ -30,7 +29,10 @@ def write_issue(path: Path, meta: dict, body: str) -> None:
     path.write_text(f"---\n{block}\n---\n\n{body.strip()}\n", encoding="utf-8")
 
 
-def revise(path: Path, corrections: str, api_key: str) -> str:
+def revise(path: Path, corrections: str) -> str:
+    from llm_client import chat_complete, compose_provider_label
+
+    print(f"Revise LLM: {compose_provider_label()}", file=sys.stderr)
     meta, body = parse_issue(path)
     editorial = (HERE / "EDITORIAL.md").read_text(encoding="utf-8")[:2500]
 
@@ -51,21 +53,7 @@ BORRADOR ACTUAL:
 {body}
 """
 
-    r = requests.post(
-        "https://api.openai.com/v1/chat/completions",
-        headers={"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"},
-        json={
-            "model": os.environ.get("PULSO_COMPOSE_MODEL", "gpt-4o-mini"),
-            "temperature": 0.3,
-            "messages": [
-                {"role": "system", "content": system},
-                {"role": "user", "content": user},
-            ],
-        },
-        timeout=120,
-    )
-    r.raise_for_status()
-    content = r.json()["choices"][0]["message"]["content"].strip()
+    content = chat_complete(system=system, user=user, temperature=0.3)
     content = re.sub(r"^```(?:markdown)?\n?", "", content)
     content = re.sub(r"\n?```$", "", content)
     return content.strip() + "\n"
@@ -78,16 +66,16 @@ def main() -> None:
     args = ap.parse_args()
 
     path = args.issue if args.issue.is_absolute() else REPO / args.issue
-    api_key = os.environ.get("OPENAI_API_KEY")
-    if not api_key:
-        sys.exit("Falta OPENAI_API_KEY")
+    from llm_client import require_compose_llm
+
+    require_compose_llm()
 
     meta, _ = parse_issue(path)
     meta["approval_revision"] = int(meta.get("approval_revision", 0)) + 1
     meta["approved"] = False
     meta["approval_status"] = "revising"
 
-    new_md = revise(path, args.corrections, api_key)
+    new_md = revise(path, args.corrections)
     # re-parse to preserve updated meta fields we set
     m = re.match(r"^---\n(.*?)\n---\n(.*)$", new_md, re.DOTALL)
     if m:

@@ -60,6 +60,8 @@ jobs:
       - name: Redactar número (IA + validación harvest)
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          PULSO_COMPOSE_PROVIDER: auto
         run: |
           python newsletter/draft_compose.py \
             --candidates "${{ steps.meta.outputs.candidates }}" \

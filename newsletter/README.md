@@ -34,8 +34,15 @@ Regla: ¿hace afirmación de salud? → gated. Si no → puede ser auto.
 1. Cuenta + conectar IG/FB/X/LinkedIn (TikTok si aplica).
 2. Secret: `AYRSHARE_API_KEY`.
 
-### OpenAI (opcional — hero IA)
+### LLM redacción Pulso (`draft_compose`, `approval_revise`)
+- **Recomendado:** GitHub Secret `ANTHROPIC_API_KEY` → **Claude Sonnet** (`claude-sonnet-4-20250514`).
+- **Alternativa:** `OPENAI_API_KEY` → **gpt-4o** (si no hay Anthropic).
+- `PULSO_COMPOSE_PROVIDER=auto` (default): Anthropic primero, luego OpenAI.
+- Override: `PULSO_COMPOSE_MODEL`, `PULSO_COMPOSE_PROVIDER=anthropic|openai`.
+
+### OpenAI (hero IA + prompts visuales + RAG)
 - Secret: `OPENAI_API_KEY`. Sin ella, `image.py` imprime el prompt y sigue.
+- Prompts visuales: `PULSO_PROMPT_MODEL=gpt-4o-mini` (default).
 
 ## Shadow vs production
 

@@ -21,7 +21,6 @@ import re
 import sys
 from pathlib import Path
 
-import requests
 import yaml
 
 HERE = Path(__file__).parent
@@ -217,7 +216,10 @@ def validate_sources(body: str, items: list[dict]) -> list[str]:
     return errors
 
 
-def llm_compose(picks: dict[str, dict], numero: str, fecha: str, api_key: str) -> str:
+def llm_compose(picks: dict[str, dict], numero: str, fecha: str) -> str:
+    from llm_client import chat_complete, compose_provider_label
+
+    print(f"Compose LLM: {compose_provider_label()}", file=sys.stderr)
     editorial = EDITORIAL.read_text(encoding="utf-8")[:4000]
     example = EXAMPLE.read_text(encoding="utf-8")[:2500] if EXAMPLE.exists() else ""
     payload_items = {k: v for k, v in picks.items()}
@@ -254,21 +256,7 @@ ESTRUCTURA OBLIGATORIA:
 
 Para bridge: usa topic del candidato; monografía según mapa HV; nivel E2 preclínico, E3 piloto/review, E4 ensayo humano si aplica."""
 
-    r = requests.post(
-        "https://api.openai.com/v1/chat/completions",
-        headers={"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"},
-        json={
-            "model": os.environ.get("PULSO_COMPOSE_MODEL", "gpt-4o-mini"),
-            "temperature": 0.4,
-            "messages": [
-                {"role": "system", "content": system},
-                {"role": "user", "content": user},
-            ],
-        },
-        timeout=120,
-    )
-    r.raise_for_status()
-    content = r.json()["choices"][0]["message"]["content"].strip()
+    content = chat_complete(system=system, user=user, temperature=0.4)
     content = re.sub(r"^```(?:markdown)?\n?", "", content)
     content = re.sub(r"\n?```$", "", content)
     content = content.strip()
@@ -382,16 +370,18 @@ def main() -> None:
         sys.exit(f"Insuficientes candidatos ({len(items)}); amplía harvest --days")
 
     picks = pick_blocks(items)
-    api_key = os.environ.get("OPENAI_API_KEY")
+    from llm_client import resolve_compose_llm
 
-    if args.fallback_only or not api_key:
-        if not api_key and not args.fallback_only:
-            print("WARN: sin OPENAI_API_KEY — usando fallback", file=sys.stderr)
+    has_llm = resolve_compose_llm() is not None
+
+    if args.fallback_only or not has_llm:
+        if not has_llm and not args.fallback_only:
+            print("WARN: sin ANTHROPIC_API_KEY ni OPENAI_API_KEY — fallback", file=sys.stderr)
         draft = fallback_compose(picks, args.numero, args.fecha)
         mode = "fallback"
     else:
         try:
-            draft = llm_compose(picks, args.numero, args.fecha, api_key)
+            draft = llm_compose(picks, args.numero, args.fecha)
             mode = "llm"
         except Exception as e:  # noqa: BLE001
             print(f"WARN: LLM falló ({e}) — fallback", file=sys.stderr)
