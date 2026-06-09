@@ -71,6 +71,10 @@
 
 ---
 
+### Evidencia reciente (Pulso Nº002 · 2026-06-09)
+- **Restricción de metionina activa la autofagia** — *Aging Cell, PMID 42160763.*. 42160763 / 10.1111/acel.70550 · E3.
+  - Aunque los resultados son preliminares, la restricción de metionina se asocia con la optimización del metabolismo celular. Considera ajustar tu ingesta de metionina a través de una dieta balanceada y consulta a un profesional de la salud para personalizar tu enfoque.
+
 ## 📖 FAQ
 
 **¿Espermidina "detoxifica"?**  
