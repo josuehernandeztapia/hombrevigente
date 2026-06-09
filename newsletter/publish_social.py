@@ -71,7 +71,36 @@ def hero_public_url(numero: str) -> str:
     )
 
 
-def resolve_media_url(numero: str, *, media_url: str | None, use_hero: bool) -> str | None:
+def upload_media_ayrshare(local_path: Path) -> str:
+    key = os.environ.get("AYRSHARE_API_KEY")
+    if not key:
+        sys.exit("Falta AYRSHARE_API_KEY")
+    with local_path.open("rb") as fh:
+        r = requests.post(
+            "https://api.ayrshare.com/api/media/upload",
+            headers={"Authorization": f"Bearer {key}"},
+            files={"file": (local_path.name, fh, "image/png")},
+            data={
+                "fileName": local_path.name,
+                "description": f"Pulso Vigente hero {local_path.stem}",
+            },
+            timeout=120,
+        )
+    if r.status_code >= 300:
+        raise RuntimeError(f"Ayrshare upload {r.status_code}: {r.text[:300]}")
+    url = r.json().get("url")
+    if not url:
+        raise RuntimeError(f"Ayrshare upload sin url: {r.text[:300]}")
+    return url
+
+
+def resolve_media_url(
+    numero: str,
+    *,
+    media_url: str | None,
+    use_hero: bool,
+    upload_hero: bool = True,
+) -> str | None:
     if media_url:
         return media_url.strip()
     if not use_hero:
@@ -81,6 +110,11 @@ def resolve_media_url(numero: str, *, media_url: str | None, use_hero: bool) -> 
         raise FileNotFoundError(
             f"Falta {local}. Genera: python newsletter/image.py newsletter/issues/..."
         )
+    if upload_hero and os.environ.get("DRY_RUN") != "1":
+        try:
+            return upload_media_ayrshare(local)
+        except Exception as exc:
+            print(f"WARN: upload Ayrshare falló ({exc}) — raw GitHub", file=sys.stderr)
     return hero_public_url(numero)
 
 
@@ -125,6 +159,8 @@ def publish_instagram(
 
     if os.environ.get("DRY_RUN") == "1":
         print(f"DRY_RUN IG Nº{numero}")
+        if use_hero and hero_asset_path(numero).exists():
+            print(f"hero local: {hero_asset_path(numero)} (subiría a Ayrshare en prod)")
         print(f"media: {media or f'unsplash:{unsplash}'}")
         print(caption[:200], "...")
         return True
