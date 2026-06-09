@@ -46,7 +46,16 @@ Regla: ¿hace afirmación de salud? → gated. Si no → puede ser auto.
 
 El humano **no desaparece**: lees el borrador auto, dialogas cambios; el merge a `main` sigue siendo tu OK para enviar.
 
-**Fase A (ahora):** jueves auto → PR redactado → tú revisas → merge cuando listo.
+**Fase A (ahora):** jueves auto → **borrador a tu correo** → respondes `OK` en issue GitHub (o correcciones) → envío Plus automático.
+
+### Aprobación por correo
+
+1. Recibes `[BORRADOR Pulso NºNNN]` en `NEWSLETTER_APPROVAL_TO`.
+2. Llega issue GitHub **Aprobar Pulso NºNNN** (notificación por email).
+3. Responde al hilo con `OK` → merge PR + envío Plus.
+4. O escribe correcciones → IA ajusta + nuevo borrador a tu correo → repites hasta `OK`.
+
+Configura var `NEWSLETTER_APPROVAL_TO` (tu inbox). El merge a `main` sin `OK` **no envía** (gate `approved: true`).
 
 ## Probar local
 

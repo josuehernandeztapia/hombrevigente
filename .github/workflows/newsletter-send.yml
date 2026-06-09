@@ -64,6 +64,6 @@ jobs:
           fi
           for f in $FILES; do
             [ -z "$f" ] && continue
-            echo "→ Enviando $f"
+            echo "→ Enviando $f (requiere approved: true salvo FORCE_SEND)"
             python newsletter/send.py "$f"
           done

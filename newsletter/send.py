@@ -27,7 +27,14 @@ def _audience_id(audiencia: str) -> str:
 
 
 def main(md_path: str):
-    issue = render(Path(md_path))
+    path = Path(md_path)
+    issue = render(path)
+
+    if os.environ.get("FORCE_SEND") != "1":
+        from approval import is_approved
+        if not is_approved(path):
+            print(f"No aprobado ({path.name}) — envío omitido. Comenta OK en el issue de aprobación.")
+            return
 
     if os.environ.get("PULSO_MODE") == "shadow":
         print("PULSO_MODE=shadow — render OK, sin llamar Resend.")

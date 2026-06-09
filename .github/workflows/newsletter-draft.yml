@@ -14,6 +14,7 @@ concurrency:
 permissions:
   contents: write
   pull-requests: write
+  issues: write
 
 jobs:
   draft:
@@ -79,6 +80,7 @@ jobs:
           fi
 
       - name: Abrir PR con borrador auto-redactado
+        id: pr
         uses: peter-evans/create-pull-request@v6
         with:
           branch: newsletter/draft-${{ steps.meta.outputs.next }}
@@ -87,16 +89,35 @@ jobs:
           body: |
             ## Pulso Vigente Nº${{ steps.meta.outputs.next }} — generado automáticamente
 
-            Pipeline Fase A:
+            Pipeline Fase A + aprobación por correo:
             1. `harvest.py` → candidatos Europe PMC
-            2. `draft_compose.py` → redacción IA (o fallback) solo desde harvest
-            3. `rehearsal.py` → post-mortem shadow (sin envío)
+            2. `draft_compose.py` → redacción IA
+            3. `rehearsal.py` → post-mortem shadow
+            4. Preview a inbox + issue GitHub → responde `OK` para enviar
 
-            **Tu rol:** lee el issue + `newsletter/runs/*-postmortem.md` en el PR, dialoga cambios con Grok/peer, edita el issue en esta rama si hace falta.
-
-            - Regla de hierro: fuentes solo del harvest (validado en compose).
-            - Merge a `main` **solo cuando quieras enviar** → `newsletter-send.yml`.
-            - Bridge SSOT al merge → `newsletter-editorial-bridge.yml`.
+            **Tu rol:** lee el borrador en tu correo; `OK` o correcciones en el issue de aprobación.
 
             Rehearsal exit: ${{ steps.rehearsal.outputs.exit_code == '0' && '✅' || '⚠️ revisar warnings' }}
           labels: newsletter, draft, auto-compose
+
+      - name: Checkout rama borrador
+        if: steps.pr.outputs.pull-request-number != ''
+        run: |
+          git fetch origin "newsletter/draft-${{ steps.meta.outputs.next }}"
+          git checkout "newsletter/draft-${{ steps.meta.outputs.next }}"
+
+      - name: Aprobación — preview por correo + issue GitHub
+        if: steps.pr.outputs.pull-request-number != ''
+        env:
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+          NEWSLETTER_FROM: ${{ vars.NEWSLETTER_FROM }}
+          NEWSLETTER_APPROVAL_TO: ${{ vars.NEWSLETTER_APPROVAL_TO }}
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          python newsletter/approval.py create-issue "${{ steps.meta.outputs.out }}" --pr ${{ steps.pr.outputs.pull-request-number }}
+          python newsletter/approval.py send-preview "${{ steps.meta.outputs.out }}"
+          git add "${{ steps.meta.outputs.out }}" newsletter/approvals/ 2>/dev/null || true
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git diff --staged --quiet || git commit -m "chore(newsletter): metadata aprobación"
+          git push origin "newsletter/draft-${{ steps.meta.outputs.next }}"

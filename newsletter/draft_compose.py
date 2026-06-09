@@ -242,7 +242,7 @@ CANDIDATOS ASIGNADOS (única fuente permitida):
 {json.dumps(payload_items, indent=2, ensure_ascii=False)}
 
 ESTRUCTURA OBLIGATORIA:
-- frontmatter: numero, fecha, subject (curiosity-gap con cifra), preheader, audiencia: plus
+- frontmatter: numero, fecha, subject (curiosity-gap con cifra), preheader, audiencia: plus, approved: false, approval_status: pending
 - TLDR una línea
 - ## 🟢 Accionable — [titular] + párrafo + Lente Vigente + *Fuente: journal, PMID x*
 - ## 🔬 Frontera — [titular] + ...
@@ -301,6 +301,8 @@ fecha: {fecha}
 subject: "{subj}"
 preheader: "{pre}"
 audiencia: plus
+approved: false
+approval_status: pending
 compose: auto-fallback
 ---
 

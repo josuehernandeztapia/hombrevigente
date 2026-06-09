@@ -65,6 +65,8 @@ embeddings_cache/
 newsletter/preview.html
 newsletter/runs/*
 !newsletter/runs/.gitkeep
+newsletter/approvals/*.json
+!newsletter/approvals/.gitkeep
 preview.html
 newsletter/assets/*.png
 
