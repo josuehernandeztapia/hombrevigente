@@ -22,7 +22,7 @@ HIFU (High-Intensity Focused Ultrasound) es un procedimiento no invasivo que uti
 - Profundidades seleccionables: 1.5mm (dermis superficial), 3.0mm (dermis profunda), 4.5mm (SMAS)
 - Sistema de imagen ecográfica integrado permite visualización en tiempo real de capas cutáneas
 
-[VALIDAR CON DR.: Marca y modelo específico del equipo HIFU utilizado en la clínica (ej: Ultraformer III, Ultherapy®, Doublo®, etc.)]
+[DEFINIR EN APERTURA DE LOUNGE: Marca y modelo específico del equipo HIFU del lounge (ej: Ultraformer III, Ultherapy®, Doublo®, etc.)]
 
 ---
 
@@ -115,7 +115,7 @@ El HIFU induce cambios dérmicos mediante un proceso térmico-mecánico que dese
 - Cejas: lifting de tercio superior
 - Escote (off-label en algunos equipos)
 
-[VALIDAR CON DR.: Criterios específicos de selección de pacientes según experiencia clínica de la clínica]
+[DEFINIR EN APERTURA DE LOUNGE: Criterios específicos de selección de candidatos según el protocolo del lounge]
 
 ---
 
@@ -190,7 +190,7 @@ El HIFU induce cambios dérmicos mediante un proceso térmico-mecánico que dese
     - Lifting quirúrgico (<6 meses)
     - **Razón**: Tejido en proceso de cicatrización
 
-[VALIDAR CON DR.: Contraindicaciones adicionales según protocolo específico de la clínica y experiencia con complicaciones]
+[DEFINIR EN APERTURA DE LOUNGE: Contraindicaciones adicionales según el protocolo del lounge]
 
 ---
 
@@ -275,7 +275,9 @@ El HIFU induce cambios dérmicos mediante un proceso térmico-mecánico que dese
     - Aspecto hundido en zona tratada
     - Difícil reversión (puede requerir relleno)
 
-[VALIDAR CON DR.: Frecuencia de efectos secundarios en experiencia específica de la clínica, protocolos de manejo de complicaciones]
+> Nota: Las frecuencias listadas arriba corresponden a rangos publicados en la literatura (Alam 2010; Ko 2017, complicaciones <2%). ⚕️[ratificar médico aliado]
+
+[DEFINIR EN APERTURA DE LOUNGE: Frecuencia de efectos secundarios observada en el lounge y protocolos propios de manejo de complicaciones]
 
 ---
 
@@ -308,25 +310,27 @@ El HIFU induce cambios dérmicos mediante un proceso térmico-mecánico que dese
    - Marcado de zonas a evitar (nervios, implantes si los hay)
    - Determinación de número de líneas de tratamiento
 
-5. **Configuración del equipo** [VALIDAR CON DR.: Parámetros específicos]:
-   - **Profundidad**:
+5. **Configuración del equipo**:
+   - **Profundidad** (profundidades focales estándar HIFU; White 2007; MacGregor 2013) ⚕️[ratificar médico aliado]:
+     - 1.5mm: Dermis superficial (líneas finas, periorbital)
      - 3.0mm: Dermis profunda (mejillas, frente)
      - 4.5mm: SMAS (mandíbula, cuello)
-     - [VALIDAR: Profundidades adicionales según equipo]
-   - **Energía**:
-     - [VALIDAR: Julios por disparo según zona y grosor de piel]
-     - Rango típico: 0.3-0.6J (ajustado a tolerancia)
+     - [DEFINIR EN APERTURA DE LOUNGE: Cartuchos/profundidades adicionales según el equipo del lounge (ej: 6.0mm, 9.0mm en Ultraformer)]
+   - **Energía** (rango publicado para tratamiento facial) ⚕️[ratificar médico aliado]:
+     - Rango típico: 0.3-1.2 J por disparo según zona y grosor de piel, ajustado a tolerancia (líneas faciales ~0.18-0.3 J/línea con transductores superficiales; SMAS hasta ~1.2 J en cartuchos profundos)
+     - [DEFINIR EN APERTURA DE LOUNGE: Energía exacta por zona según el equipo del lounge]
    - **Densidad**:
-     - [VALIDAR: Espaciamiento entre líneas]
+     - [DEFINIR EN APERTURA DE LOUNGE: Espaciamiento entre líneas según el equipo del lounge]
 
 6. **Aplicación** (40-60 minutos):
    - Aplicación de gel conductor ultrasónico
    - Posicionamiento del transductor perpendicular a piel
    - Disparo de líneas según vectores marcados
-   - **Número de disparos** [VALIDAR: Protocolo específico]:
-     - Rostro completo: 300-600 líneas (típico)
+   - **Número de líneas/disparos** (rangos típicos publicados para tratamiento facial-cervical; Alam 2010; consensos ASDS) ⚕️[ratificar médico aliado]:
+     - Rostro completo: 300-600 líneas
      - Solo mejillas y mandíbula: 200-400 líneas
      - Cuello: 150-250 líneas
+     - [DEFINIR EN APERTURA DE LOUNGE: Conteo de líneas exacto del protocolo del lounge según equipo]
    - Monitoreo de tolerancia del paciente
    - Ajuste de energía si sensibilidad excesiva
 
@@ -343,7 +347,7 @@ El HIFU induce cambios dérmicos mediante un proceso térmico-mecánico que dese
 - Cuándo llamar si hay problemas
 - Cita de seguimiento (1-3 meses)
 
-[VALIDAR CON DR.: Protocolo paso a paso específico de la clínica, técnica de aplicación detallada, manejo de dolor intraprocedimiento]
+[DEFINIR EN APERTURA DE LOUNGE: Protocolo paso a paso del lounge, técnica de aplicación detallada y manejo de dolor intraprocedimiento]
 
 ---
 
@@ -402,7 +406,7 @@ El HIFU induce cambios dérmicos mediante un proceso térmico-mecánico que dese
 - SPF diario (siempre, independiente del tratamiento)
 - Hidratación adecuada
 - Fotografías mensuales para documentar progreso
-- Cita de seguimiento a los 3 meses [VALIDAR: Protocolo de seguimiento]
+- Cita de seguimiento a los ~3 meses, cuando la neocolagénesis alcanza su pico (estándar publicado; MacGregor 2013) ⚕️[ratificar médico aliado]
 
 ❌ **NO hacer**:
 - NO tratamientos que interfieran con neocolagénesis (consultar antes de cualquier procedimiento)
@@ -415,7 +419,7 @@ El HIFU induce cambios dérmicos mediante un proceso térmico-mecánico que dese
 - ⚠️ Asimetría facial marcada que no mejora
 - ⚠️ Adormecimiento que persiste >4 semanas
 
-[VALIDAR CON DR.: Protocolo específico de cuidados post-tratamiento de la clínica, productos recomendados específicos]
+[DEFINIR EN APERTURA DE LOUNGE: Protocolo de cuidados post-tratamiento del lounge y productos recomendados específicos]
 
 ---
 
@@ -483,7 +487,9 @@ El HIFU induce cambios dérmicos mediante un proceso térmico-mecánico que dese
 - No es transformación dramática, es rejuvenecimiento sutil y natural
 - Mejor para prevención y mantenimiento que para corrección de envejecimiento severo
 
-[VALIDAR CON DR.: Timeline basado en experiencia clínica real con pacientes de la clínica, porcentajes de satisfacción]
+> Nota: El timeline (onset de colágeno 2-3 meses, pico 3-6, durabilidad 12-18 meses) corresponde a estándares publicados (Alam 2010; MacGregor 2013). ⚕️[ratificar médico aliado]
+
+[DEFINIR EN APERTURA DE LOUNGE: Porcentajes de satisfacción y timeline observados con clientes del lounge]
 
 ---
 
@@ -586,7 +592,7 @@ El HIFU induce cambios dérmicos mediante un proceso térmico-mecánico que dese
 - Timing: Limpieza 1 semana antes de HIFU (piel óptima), luego mensual
 - Ideal para: Arquetipos Mantenimiento y Eduardo
 
-[VALIDAR CON DR.: Experiencia clínica con combinaciones, protocolos de timing entre tratamientos]
+[DEFINIR EN APERTURA DE LOUNGE: Experiencia con combinaciones y protocolos de timing entre tratamientos del lounge]
 
 ---
 
@@ -650,7 +656,7 @@ No impacta **subscore biológico** (30% del Índice total):
    - Percepción subjetiva puede ser mayor (mejora de confianza, mejor ángulos fotográficos)
    - Comentarios típicos de conocidos: "Te ves descansado/rejuvenecido" (sin identificar tratamiento específico)
 
-[VALIDAR CON DR.: Validar con datos reales de clientes antes/después, correlación Índice Vigente con satisfacción del cliente]
+[DEFINIR EN APERTURA DE LOUNGE: Validar con datos reales antes/después de clientes del lounge y correlación Índice Vigente con satisfacción]
 
 ---
 
@@ -673,7 +679,7 @@ No impacta **subscore biológico** (30% del Índice total):
 
 **Sesiones recomendadas**:
 
-[VALIDAR CON DR.: Protocolo de sesiones - ¿1 sesión suficiente o se recomienda 2da sesión de refuerzo?]
+[DEFINIR EN APERTURA DE LOUNGE: Protocolo de sesiones del lounge — ¿1 sesión suficiente o se recomienda 2da sesión de refuerzo?]
 
 Protocolo típico (basado en literatura):
 - **1 sesión completa**: Suficiente para mayoría de pacientes con flacidez leve-moderada
@@ -685,8 +691,8 @@ Protocolo típico (basado en literatura):
 
 **Zonas adicionales**:
 - Rostro completo: $3,800 (incluido en precio base)
-- Cuello solo: [VALIDAR: Precio separado si solo cuello]
-- Escote: [VALIDAR: Si se ofrece, precio]
+- Cuello solo: [DEFINIR EN APERTURA DE LOUNGE: Precio separado si solo cuello]
+- Escote: [DEFINIR EN APERTURA DE LOUNGE: Si se ofrece y precio]
 
 **BNPL (Buy Now, Pay Later) disponible**: ✅ SÍ
 
@@ -727,7 +733,7 @@ Planes disponibles:
 - Comparable a Hilos PDO en costo total a largo plazo
 - Requiere presupuesto anual recurrente (no es gasto único)
 
-**Paquetes sugeridos** [VALIDAR: Si la clínica ofrece paquetes]:
+**Paquetes sugeridos** [DEFINIR EN APERTURA DE LOUNGE: Si el lounge ofrece paquetes]:
 
 Potencial "Paquete Rejuvenecimiento Total":
 - HIFU (flacidez) + Botox (arrugas dinámicas) + Limpieza Profunda (textura)
@@ -978,7 +984,7 @@ Potencial "Paquete Rejuvenecimiento Total":
   - 2014: Mejoría de líneas y arrugas de escote
 
 - **COFEPRIS (México)**:
-  - [VALIDAR: Registro sanitario específico del equipo utilizado]
+  - [DEFINIR EN APERTURA DE LOUNGE: Registro sanitario COFEPRIS del equipo específico del lounge]
   - Clasificación: Dispositivo médico Clase II o III
 
 - **CE Mark (Europa)**:
@@ -986,7 +992,7 @@ Potencial "Paquete Rejuvenecimiento Total":
 
 **Equipos HIFU comerciales principales**:
 
-[VALIDAR CON DR.: Cuál de estos equipos usa la clínica]
+[DEFINIR EN APERTURA DE LOUNGE: Cuál de estos equipos usa el lounge]
 
 1. **Ultherapy®** (Merz Aesthetics):
    - Primer equipo aprobado por FDA (2009)
@@ -1018,11 +1024,11 @@ Potencial "Paquete Rejuvenecimiento Total":
   - Análisis de combinaciones de tratamiento
   - Costo-efectividad vs cirugía
 
-[VALIDAR CON DR.:
-- Agregar protocolo interno específico de la clínica
-- Referencias a fabricante y modelo de equipo utilizado
-- Certificaciones del médico que aplica HIFU
-- Número de procedimientos realizados en la clínica (experiencia)
+[DEFINIR EN APERTURA DE LOUNGE:
+- Protocolo interno específico del lounge
+- Fabricante y modelo del equipo utilizado
+- Certificaciones del médico aliado que aplica HIFU
+- Número de procedimientos realizados en el lounge (experiencia)
 ]
 
 ---
@@ -1043,5 +1049,5 @@ Potencial "Paquete Rejuvenecimiento Total":
 
 **Última actualización**: 2025-10-15 (ENRIQUECIDO)
 **Contenido base**: Conocimiento médico-científico general (literatura publicada)
-**Validación pendiente**: Dr. López + parámetros específicos de equipo clínica
-**Revisión siguiente**: Validación médica + ajustes técnicos específicos
+**Validación pendiente**: parámetros clínicos marcados ⚕️[ratificar médico aliado] + decisiones [DEFINIR EN APERTURA DE LOUNGE]
+**Revisión siguiente**: ratificación del médico aliado + cierre de decisiones de apertura del lounge

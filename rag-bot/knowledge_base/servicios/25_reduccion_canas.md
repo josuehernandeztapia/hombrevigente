@@ -20,7 +20,9 @@
 2. **Lowlights**: Mechas sutiles oscuras entre canas (disimula contraste)
 3. **Toners** (tonalizadores): Productos temporales que oscurecen canas sin penetrar cutícula
 
-[VALIDAR CON BARBERO: Técnica específica usada (blending vs lowlights vs toner), productos marca]
+**Mecanismo (estándar publicado)**: los pigmentos semi-permanentes y demi-permanentes depositan color de forma superficial (no penetran la cutícula como un tinte permanente con amoniaco), por lo que oscurecen parcialmente las canas y se desvanecen de forma gradual con los lavados. La expectativa realista es atenuación/mezcla de la cana (efecto "sal y pimienta" controlado), NO cobertura total ni resultado permanente. Como toda coloración capilar, requiere prueba de parche por alergia previa (ver abajo).
+
+[DEFINIR EN APERTURA DE LOUNGE: Técnica específica usada en el lounge (blending vs lowlights vs toner), marca de los productos de pigmentación progresiva]
 
 **Indicación**: Canas tempranas <20%, clientes que NO quieren cobertura total, retoque entre tintes completos
 
@@ -55,8 +57,8 @@
 
 ### Absolutas
 1. **Alergia PPD/PTD** (compuestos colorantes)
-   - **Razón**: Incluso productos "suaves" pueden contener traces
-   - **Obligatorio**: Prueba alergia si primera coloración
+   - **Razón**: Incluso productos "suaves" pueden contener trazas
+   - **Obligatorio**: Prueba de parche (alergia) ANTES de la primera coloración. Estándar publicado: aplicar pequeña cantidad detrás de la oreja o en pliegue del codo 48h antes; si aparece enrojecimiento, picazón, ardor o inflamación, NO aplicar. Repetir ante cambio de marca/fórmula.
 2. **Cuero cabelludo irritado/heridas**
    - **Razón**: Penetración producto, irritación
 3. **Expectativa cobertura 100%**
@@ -87,7 +89,7 @@
 
 ## 📝 Protocolo (20-30 min)
 
-[VALIDAR CON BARBERO: Técnica específica (blending/lowlights/toner), productos marca, tiempos]
+[DEFINIR EN APERTURA DE LOUNGE: Técnica específica (blending/lowlights/toner), marca de productos y tiempos de procesamiento]
 
 ### 1. Consulta (5 min)
 - **Porcentaje canas**: Visual (5%, 10%, 15%, 20%)
@@ -108,7 +110,7 @@
 - Tonalizador rápido (10 min procesamiento)
 - Resultado: Oscurecimiento leve canas, duración 2-3 semanas
 
-[VALIDAR: Cuál técnica usa la clínica]
+[DEFINIR EN APERTURA DE LOUNGE: Cuál de las tres técnicas (A/B/C) usa el lounge]
 
 ### 3. Aplicación (10-15 min)
 - Cabello seco (sin lavar)

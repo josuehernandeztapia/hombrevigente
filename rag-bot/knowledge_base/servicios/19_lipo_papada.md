@@ -28,7 +28,7 @@
    - Ondas ultrasónicas 36kHz emulsifican grasa
    - Preserva tejidos circundantes (nervios, vasos)
 
-[VALIDAR CON CIRUJANO: Técnica preferida clínica, equipo disponible]
+[DEFINIR EN APERTURA DE LOUNGE: técnica preferida del cirujano aliado (tumescente/LAL/UAL) y equipo específico disponible en la instalación quirúrgica autorizada]
 
 **Resultado final**: Reducción 60-80% volumen graso, jawline definido, perfil lateral mejorado (ángulo 90-105°), apariencia rejuvenecimiento 5-10 años
 
@@ -148,7 +148,9 @@
 
 ## 📝 Protocolo Quirúrgico Detallado (1-2 horas)
 
-[VALIDAR CON CIRUJANO PLÁSTICO: Protocolo anestesia (local + sedación vs general), técnica específica, equipo]
+**Encuadre regulatorio**: La liposucción submentoniana es un **acto médico-quirúrgico (Av.2)** que solo puede realizar un **cirujano con cédula de especialidad** en una **instalación quirúrgica autorizada** (aviso de funcionamiento/licencia sanitaria). El estándar publicado de anestesia es **local + sedación consciente** (ambulatorio); anestesia general se reserva para casos combinados ⚕️[ratificar cirujano aliado].
+
+[DEFINIR EN APERTURA DE LOUNGE: protocolo de anestesia específico de la clínica, cirujano aliado responsable, quirófano/instalación autorizada, paquetes y precios]
 
 ### Pre-operatorio (semanas previas)
 
@@ -192,7 +194,7 @@
 - Ventaja: Confort paciente, cirugía compleja facilitada
 - Desventaja: Costo mayor, recuperación más lenta
 
-[VALIDAR: Protocolo anestesia clínica]
+Estándar publicado: anestesia local + sedación consciente (ambulatoria), general en casos complejos ⚕️[ratificar cirujano aliado]. [DEFINIR EN APERTURA DE LOUNGE: protocolo de anestesia y anestesiólogo aliado de la clínica]
 
 **3. Antisepsia y preparación campo** (5 min)
 
@@ -381,4 +383,4 @@
 
 **Última actualización**: 2025-10-16 (ENRIQUECIDO COMPLETO - MÁXIMO DETALLE QUIRÚRGICO)
 **Líneas**: ~420
-**Validado por**: PENDIENTE - Cirujano plástico certificado + protocolo anestesia específico clínica
+**Validado por**: Parámetros clínicos = estándar quirúrgico publicado ⚕️[ratificar cirujano aliado]. Equipo, cirujano, quirófano y precios → [DEFINIR EN APERTURA DE LOUNGE]

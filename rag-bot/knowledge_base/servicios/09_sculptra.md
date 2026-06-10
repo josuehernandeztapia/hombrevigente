@@ -28,9 +28,9 @@
 - Más caro ($11K/vial vs $4,800 HA)
 - NO reversible (vs HA que se disuelve con hialuronidasa)
 
-**FDA**: Aprobado 2004 (lipoatrofia VIH), 2009 (envejecimiento facial)
+**FDA**: PLLA (Sculptra) aprobado 2004 (lipoatrofia VIH), 2009 (envejecimiento facial) ⚕️[ratificar médico aliado]
 
-[VALIDAR CON DR.: Marca específica Sculptra, dilución, técnica reconstitución]
+[DEFINIR EN APERTURA DE LOUNGE: presentación/marca PLLA que utilizará la clínica + registro sanitario COFEPRIS + protocolo de reconstitución y dilución de la clínica]
 
 ---
 
@@ -62,12 +62,14 @@
 - Paciente, dispuesto esperar 3-6 meses
 - Presupuesto: $22K-33K (2-3 sesiones)
 
+**Esquema de referencia** (estándar de la categoría) ⚕️[ratificar médico aliado]: típicamente 2-3 sesiones espaciadas 4-6 semanas; onset gradual (semanas a meses) con resultado máximo ~3-6 meses; duración hasta ~2 años (24-36 meses).
+
 **NO apto para**:
 - Necesita resultado inmediato (evento próximo)
 - Pérdida volumen muy localizada (mejor HA)
 - Presupuesto limitado
 
-[VALIDAR CON DR.: Unidades/viales por zona, protocolo multi-sesión]
+[DEFINIR EN APERTURA DE LOUNGE: viales por zona y protocolo multi-sesión específico de la clínica]
 
 ---
 
@@ -99,8 +101,8 @@
 - **Presentación**: Meses 3-12 post-inyección (vs nódulos tempranos normales)
 - **Tratamiento**: Corticoides intralesionales (triamcinolona) o cirugía menor
 - **Prevención CRÍTICA**:
-  - Dilución adecuada: 5-8ml agua estéril [VALIDAR protocolo clínica]
-  - Reconstitución 2-24h antes aplicación (hidratación completa microesferas)
+  - Dilución adecuada (rango estándar de la categoría): 5-8ml agua estéril ⚕️[ratificar médico aliado]; protocolo exacto [DEFINIR EN APERTURA DE LOUNGE]
+  - Reconstitución/hidratación previa a la aplicación (hidratación completa microesferas) — tiempo según protocolo ⚕️[ratificar médico aliado]
   - Masaje post-tratamiento religioso: **Regla 5-5-5** (5 minutos, 5×/día, 5 días)
   - Inyección profunda (supraperióstico, nunca superficial dérmico)
 
@@ -108,11 +110,12 @@
 
 ## 📝 Protocolo de Aplicación (60 min)
 
-[VALIDAR CON DR.: Dilución específica, técnica reconstitución, profundidad inyección por zona]
+Parámetros de reconstitución, dilución y profundidad por zona ⚕️[ratificar médico aliado].
+[DEFINIR EN APERTURA DE LOUNGE: dilución específica, técnica de reconstitución y profundidad de inyección por zona según protocolo de la clínica]
 
-### 1. Reconstitución Sculptra (2-24h previas)
-- **Dilución**: 1 vial Sculptra (367.5mg PLLA) + 5-8ml agua estéril + 2-3ml lidocaína 2%
-- **Reposo**: 2-24 horas (hidratación completa microesferas)
+### 1. Reconstitución Sculptra (hidratación previa)
+- **Dilución** (referencia estándar de la categoría): 1 vial PLLA (367.5mg) + 5-8ml agua estéril + 2-3ml lidocaína 2% ⚕️[ratificar médico aliado]
+- **Reposo/hidratación**: según protocolo (hidratación completa microesferas) ⚕️[ratificar médico aliado]
 - **Pre-inyección**: Agitar vigorosamente 60 segundos
 
 ### 2. Preparación paciente (15 min)
@@ -348,4 +351,4 @@
 
 **Última actualización**: 2025-10-16 (ENRIQUECIDO - Consolidado)
 **Líneas**: ~180
-**Validado por**: PENDIENTE - Médico certificado inyectables
+**Validado por**: ⚕️[ratificar médico aliado] - Médico certificado inyectables. Parámetros locales (marca/presentación, paquetes, precios, registro sanitario): [DEFINIR EN APERTURA DE LOUNGE]

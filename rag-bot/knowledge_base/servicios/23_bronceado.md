@@ -18,7 +18,7 @@
 - **Lámparas LED**: Más eficientes, menos calor
 - **Camas mixtas UVA + UVB**: Mayor potencia (<2% UVB)
 
-[VALIDAR CON OPERADOR: Tipo cámaras específicas, potencia lámparas W, protocolo seguridad]
+[DEFINIR EN APERTURA DE LOUNGE: Tipo de cámara/equipo de bronceado específico (marca y modelo), potencia de lámparas en W y protocolo de seguridad del fabricante]
 
 **ADVERTENCIA FDA/COFEPRIS**: Bronceado artificial aumenta riesgo cáncer piel (melanoma) 20-75% con uso frecuente, envejecimiento prematuro, cataratas
 
@@ -86,7 +86,9 @@
 
 ## 📝 Protocolo (10-15 min)
 
-[VALIDAR CON OPERADOR: Tiempos específicos según potencia cámaras, protocolo incremento gradual]
+**Estándar publicado de la técnica** (exposición sin sol / autobronceado DHA): la aplicación cosmética sin riesgo UV se realiza con dihidroxiacetona (DHA), que reacciona con los aminoácidos de la capa córnea de la epidermis (reacción de Maillard) generando pigmentación superficial visible en 4-6h, sin estimular melanocitos ni requerir radiación. Aplicación en spray cabina o manual con guante; resultado dura 5-7 días y se desvanece con la renovación natural de la piel. Cuidado post estándar: hidratar diariamente, evitar exfoliación, ducha y sudoración intensa las primeras 4-6h. No ofrece protección solar real (FPS ~2-4), por lo que se recomienda FPS 30+ en exposición solar. Contraindicaciones cosméticas: piel irritada/heridas, dermatitis activa.
+
+[DEFINIR EN APERTURA DE LOUNGE: Tiempos específicos según potencia de cámara/equipo y protocolo de incremento gradual]
 
 ### Protocolo General
 
@@ -98,7 +100,7 @@
 2. **Preparación** (3 min):
    - Retirar cosméticos, perfumes, maquillaje (fototoxicidad)
    - Colocación gafas protección UV (obligatorio)
-   - [VALIDAR: Bronceador acelerador o NO - opiniones divididas]
+   - [DEFINIR EN APERTURA DE LOUNGE: Uso de bronceador acelerador (marca de producto) o no]
 
 3. **Exposición UVA** (5-15 min según fototipo):
    - **Fototipo II**: 5-8 min sesión 1, incremento gradual +2 min/sesión
@@ -180,7 +182,7 @@
 - **Elite** (20% desc): $240 MXN
 
 ### Paquetes
-[VALIDAR CON OPERADOR: Paquetes sesiones existentes - común 5, 10, 15 sesiones con descuento]
+[DEFINIR EN APERTURA DE LOUNGE: Paquetes de sesiones (típico 5, 10, 15 sesiones con descuento) y precios]
 
 **BNPL**: **NO** (precio bajo umbral $2,500)
 

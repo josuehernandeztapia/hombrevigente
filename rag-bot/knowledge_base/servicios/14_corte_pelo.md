@@ -273,7 +273,7 @@
 **Costo servicio**:
 - Insumos: $40 (champú, acondicionador, productos styling)
 - Barbero profesional: 45 min + 10 min limpieza
-- **COGS total**: ~$180-220 [VALIDAR CON CLÍNICA]
+- **COGS total**: ~$180-220 [DEFINIR EN APERTURA DE LOUNGE: marca de productos styling y costeo final de insumos]
 
 **Revenue share**: 35% (servicios grooming)
 

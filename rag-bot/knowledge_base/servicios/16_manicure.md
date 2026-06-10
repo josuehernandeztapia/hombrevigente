@@ -286,7 +286,7 @@
 **Costo servicio**:
 - Insumos: $50 (sales, crema, esmalte, scrub, desechables)
 - Manicurista: 30 min
-- **COGS total**: ~$160-180 [VALIDAR CON CLÍNICA]
+- **COGS total**: ~$160-180 [DEFINIR EN APERTURA DE LOUNGE: marca de esmaltes/productos y costeo final de insumos]
 
 **Revenue share**: 35%
 

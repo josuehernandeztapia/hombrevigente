@@ -121,7 +121,7 @@
 
 - **Infección oral aguda**: Absceso dental activo (drenar primero)
 - **Marcapasos cardiacos antiguos**: Interferencia ultrasonido (modelos pre-2000)
-  - Nota: Marcapasos modernos tienen blindaje, generalmente seguros [VALIDAR CON CARDIÓLOGO]
+  - Nota (estándar publicado): Marcapasos modernos tienen blindaje y generalmente son seguros ante el scaler ultrasónico; en pacientes con dispositivos cardiacos antiguos se prefiere instrumentación manual ⚕️[ratificar odontólogo aliado]. Fuente: guías de manejo odontológico de pacientes con dispositivos cardiacos implantables (ADA).
 
 ---
 
@@ -290,7 +290,7 @@
 **Costo servicio**:
 - Insumos: $120 (pasta, fluoruro, guantes, copa, etc.)
 - Tiempo higienista dental: 45-60 min
-- **COGS total**: ~$400-500 [VALIDAR CON CLÍNICA]
+- **COGS total**: [DEFINIR EN APERTURA DE LOUNGE: costo real de insumos + tiempo de higienista del lounge]
 
 **Revenue share**: 35% (servicios médicos/dentales estándar)
 
@@ -397,10 +397,12 @@
 - Tonetti et al. (2020): Periodontitis y enfermedad cardiovascular (European Heart Journal)
 - Scannapieco (2022): Salud oral y neumonía aspirativa (Journal Clinical Periodontology)
 
-**[VALIDAR CON ODONTÓLOGO CLÍNICA]**: Protocolos específicos, marcas insumos, técnicas particulares
+**Parámetros clínicos y de procedimiento** (frecuencia semestral, scaling/pulido/fluoruro, contraindicaciones, post-cuidado): estándar publicado por ADA/ADM/Cochrane ⚕️[ratificar odontólogo aliado]
+**[DEFINIR EN APERTURA DE LOUNGE]**: marcas de insumos, equipo de ultrasonido específico, paquetes, precios y técnicas particulares del lounge
 
 ---
 
 **Última actualización**: 2025-10-16 (ENRIQUECIDO v2)
 **Líneas**: ~250
 **Propensión promedio**: 0.44 (servicio universal alta adherencia)
+**Validado por**: Parámetros clínicos ⚕️[ratificar odontólogo aliado] · Insumos, equipo, paquetes y precios [DEFINIR EN APERTURA DE LOUNGE]

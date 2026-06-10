@@ -25,7 +25,9 @@
 - Clasificación: Dispositivo médico Clase III (requiere aplicador certificado)
 - Indicación: Elevación tejido blando facial leve-moderado ptosis
 
-[VALIDAR CON CLÍNICA: Marca específica hilos (Silhouette Soft, Nova, Mint Lift, etc), número hilos protocolo por zona, técnica inserción preferida]
+**Tipos estándar de hilos PDO** ⚕️[ratificar médico aliado]: mono (lisos, bioestimulación/tensado superficial), screw/espiral (volumen y estímulo localizado), cog/púas-conos (tracción y lifting mecánico). Efecto del PDO: lifting mecánico inmediato + neocolagénesis con efecto sostenido típico 12–18 meses (estímulo de colágeno persiste tras reabsorción del hilo a los 6–8 meses).
+
+[DEFINIR EN APERTURA DE LOUNGE: Marca específica de hilos del lounge (Silhouette Soft, Nova, Mint Lift, etc.) y su registro sanitario, número de hilos por zona del protocolo de la clínica, técnica de inserción preferida]
 
 ---
 
@@ -290,7 +292,7 @@
 
 ## 📝 Protocolo Detallado (90 minutos)
 
-[VALIDAR CON CIRUJANO PLÁSTICO: Marca hilos específica (Silhouette Soft, Nova PDO, Mint Lift), número hilos protocolo por zona, técnica inserción preferida clínica]
+[DEFINIR EN APERTURA DE LOUNGE: Marca de hilos específica del lounge (Silhouette Soft, Nova PDO, Mint Lift) y registro sanitario del producto, número de hilos por zona del protocolo de la clínica, técnica de inserción preferida del médico aliado]
 
 ### Pre-procedimiento (semanas previas)
 
@@ -341,7 +343,7 @@
 
 **3. Inserción hilos con púas** (40-50 min)
 
-[VALIDAR: Técnica específica - aguja vs cánula, profundidad subdérmica exacta, número hilos por zona]
+Inserción subdérmica estándar (plano entre dermis profunda y SMAS/fascia superficial) con aguja o cánula ⚕️[ratificar médico aliado]. [DEFINIR EN APERTURA DE LOUNGE: técnica específica (aguja vs cánula), profundidad subdérmica exacta y número de hilos por zona del protocolo del lounge]
 
 **Técnica aguja típica** (ejemplo mejilla lifting):
 
@@ -454,14 +456,14 @@
 
 ## 💰 Pricing Detallado
 
-**Precio base**: $3,800 MXN (estructura pricing por zona [VALIDAR])
+**Precio base**: $3,800 MXN ([DEFINIR EN APERTURA DE LOUNGE: estructura de pricing por zona y paquetes del lounge])
 
 **Interpretación común** (pricing por zona típico mercado):
 - **Base $3,800**: Precio promocional zona única (ej: cejas O mejillas unilateral)
 - **Tratamiento completo facial** (mejillas + jawline bilateral): $15,000-25,000 típico
 
 ### Pricing estimado por zona
-[VALIDAR CON CLÍNICA: Estructura exacta]
+[DEFINIR EN APERTURA DE LOUNGE: Estructura de precios y paquetes por zona exactos del lounge]
 
 - **Cejas**: $3,800/zona (2-4 hilos)
 - **Mejillas**: $8,000-12,000 bilateral (6-10 hilos)

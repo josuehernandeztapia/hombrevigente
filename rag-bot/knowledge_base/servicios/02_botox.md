@@ -16,7 +16,7 @@ Botox® es el nombre comercial de la toxina botulínica tipo A (onabotulinumtoxi
 - Albúmina humana: Estabilizador proteico
 - Cloruro de sodio: Conservante
 
-**Tipos comerciales disponibles** [VALIDAR CON DR.: Cuál usa la clínica]:
+**Tipos comerciales disponibles** [DEFINIR EN APERTURA DE LOUNGE: marca de toxina que usará el lounge]:
 - **Botox®** (Allergan/AbbVie): Más usado mundialmente, mayor evidencia clínica
 - **Dysport®** (Ipsen): Unidades NO equivalentes (ratio ~2.5-3:1 vs Botox)
 - **Xeomin®** (Merz): Libre de proteínas complejas, menos riesgo inmunogenicidad
@@ -28,7 +28,7 @@ Botox® es el nombre comercial de la toxina botulínica tipo A (onabotulinumtoxi
 - Efecto máximo: 7-14 días
 - Duración: 3-6 meses (promedio 4 meses)
 
-[VALIDAR CON DR.: Marca específica de toxina botulínica utilizada en la clínica y ratio de conversión de unidades si no es Botox®]
+[DEFINIR EN APERTURA DE LOUNGE: marca específica de toxina botulínica y ratio de conversión de unidades si no es Botox®]
 
 ---
 
@@ -81,21 +81,21 @@ La toxina botulínica tipo A actúa bloqueando la liberación de acetilcolina en
 1. **Líneas frontales (frente)**:
    - Arrugas horizontales por elevación de cejas
    - Músculo objetivo: Frontal
-   - Unidades típicas: [VALIDAR: 10-25U según protocolo]
+   - Unidades típicas: 10-30U onabotulinumtoxinA (consenso global; rango menor en hombres) (Carruthers et al., Plast Reconstr Surg 2016 — consensus recommendations) ⚕️[ratificar médico aliado]
    - Edad inicio: 30-65 años
    - **Nota hombres**: Usar menos unidades que en mujeres (evitar aspecto "congelado")
 
 2. **Líneas glabelares (entrecejo)**:
    - Líneas verticales entre cejas ("ceño fruncido")
    - Músculos objetivo: Procerus, corrugadores
-   - Unidades típicas: [VALIDAR: 15-30U]
+   - Unidades típicas: 20U onabotulinumtoxinA (dosis FDA aprobada; hombres suelen requerir 20-40U por mayor masa muscular) (FDA label BOTOX Cosmetic; Carruthers consensus 2016) ⚕️[ratificar médico aliado]
    - **Más común en hombres**: Expresión de enojo/concentración frecuente
    - Zona FDA-aprobada
 
 3. **Patas de gallo (lateral ojos)**:
    - Líneas periorbitales por sonrisa/entrecerrar ojos
    - Músculo objetivo: Orbicular del ojo (porción lateral)
-   - Unidades típicas: [VALIDAR: 8-15U por lado]
+   - Unidades típicas: 12U por lado (24U total) — dosis FDA aprobada; rango de consenso 10-15U por lado (FDA label BOTOX Cosmetic; Carruthers consensus 2016) ⚕️[ratificar médico aliado]
    - Zona FDA-aprobada
 
 ### **Tercio medio-inferior** (off-label, requiere expertise):
@@ -103,31 +103,31 @@ La toxina botulínica tipo A actúa bloqueando la liberación de acetilcolina en
 4. **Bunny lines (arrugas nasales)**:
    - Líneas diagonales en dorso nasal al arrugar nariz
    - Músculo: Nasal
-   - Unidades: [VALIDAR: 2-5U por lado]
+   - Unidades: 2-5U por lado (rango de consenso) (Carruthers consensus 2016) ⚕️[ratificar médico aliado]
    - **Precaución**: Muy cerca de elevador del labio
 
 5. **Sonrisa gingival (gummy smile)**:
    - Elevación excesiva labio superior al sonreír
    - Músculo: Elevador del labio superior
-   - Unidades: [VALIDAR: 2-4U por lado]
+   - Unidades: 1-3U por lado (rango de consenso para gummy smile) (Carruthers consensus 2016) ⚕️[ratificar médico aliado]
    - **Alto riesgo**: Requiere inyección muy precisa
 
 6. **Líneas peribucales (código de barras)**:
    - Líneas verticales alrededor de boca (menos común en hombres)
    - Músculo: Orbicular de los labios
-   - Unidades: [VALIDAR: 2-4U total]
+   - Unidades: 2-6U total (rango de consenso para líneas peribucales) (Carruthers consensus 2016) ⚕️[ratificar médico aliado]
    - **Muy delicado**: Fácil causar asimetría
 
 7. **Bandas platismales (cuello)**:
    - Bandas verticales prominentes en cuello
    - Músculo: Platisma
-   - Unidades: [VALIDAR: 25-50U total]
+   - Unidades: 25-60U total (rango de consenso para bandas platismales) (Carruthers consensus 2016) ⚕️[ratificar médico aliado]
    - **Técnica avanzada**: No para principiantes
 
 8. **Mandíbula hiperhipertrofiada (bruxismo)**:
    - Músculo masetero muy desarrollado (rostro cuadrado excesivo)
    - Músculo: Maseteros
-   - Unidades: [VALIDAR: 25-50U por lado]
+   - Unidades: 25-50U por lado (rango de consenso para hipertrofia maseterina/bruxismo) (Carruthers consensus 2016) ⚕️[ratificar médico aliado]
    - **Efecto secundario**: Reduce fuerza de mordida ~20%
 
 ### **Perfil ideal de paciente**:
@@ -139,7 +139,7 @@ La toxina botulínica tipo A actúa bloqueando la liberación de acetilcolina en
 - **Expectativas**: Realistas, busca resultado natural
 - **Primera vez**: Ideal empezar con zonas conservadoras (entrecejo, frente)
 
-[VALIDAR CON DR.: Protocolo de unidades específico por zona según experiencia clínica, zonas que más se trabajan en hombres]
+[DEFINIR EN APERTURA DE LOUNGE: protocolo de unidades preferido del médico aplicador y zonas que más se trabajarán en el lounge]
 
 ---
 
@@ -205,7 +205,7 @@ La toxina botulínica tipo A actúa bloqueando la liberación de acetilcolina en
     - Peeling profundo (<4 semanas)
     - Cirugía facial (<3 meses)
 
-[VALIDAR CON DR.: Contraindicaciones adicionales según protocolo específico, experiencia con complicaciones]
+[DEFINIR EN APERTURA DE LOUNGE: contraindicaciones adicionales según protocolo del médico aplicador]
 
 ---
 
@@ -312,7 +312,7 @@ La toxina botulínica tipo A actúa bloqueando la liberación de acetilcolina en
     - Anafilaxia: Casos aislados reportados
     - Urticaria, prurito: Más común
 
-[VALIDAR CON DR.: Frecuencia de efectos secundarios en experiencia de la clínica, protocolo de manejo de ptosis, stock de apraclonidina disponible]
+[DEFINIR EN APERTURA DE LOUNGE: protocolo de manejo de ptosis del médico aplicador y stock de apraclonidina disponible]
 
 ---
 
@@ -346,9 +346,9 @@ La toxina botulínica tipo A actúa bloqueando la liberación de acetilcolina en
 4. **Preparación** (5 minutos):
    - Limpieza con alcohol o clorhexidina
    - Marcado de puntos de inyección con lápiz dermográfico
-   - [VALIDAR: ¿Se usa anestesia tópica o hielo? - mayoría NO necesita]
+   - Anestesia generalmente innecesaria por el calibre fino de aguja (30-32G); puede ofrecerse hielo o anestésico tópico (lidocaína/prilocaína) en pacientes sensibles (Carruthers consensus 2016) ⚕️[ratificar médico aliado]
 
-5. **Reconstitución del producto** [VALIDAR CON DR.: Protocolo específico]:
+5. **Reconstitución del producto** (estándar publicado; FDA label BOTOX Cosmetic) ⚕️[ratificar médico aliado]:
    - Toxina viene liofilizada (polvo)
    - Dilución típica: 2.5-4ml de solución salina por 100U vial
      - 2.5ml = más concentrado (4U por 0.1ml)
@@ -364,23 +364,23 @@ La toxina botulínica tipo A actúa bloqueando la liberación de acetilcolina en
    - Aguja: 30-32G (muy fina)
    - Profundidad: Intramuscular (perpendicular a piel, 2-4mm)
 
-   **Puntos de inyección por zona** [VALIDAR: Protocolo específico]:
+   **Puntos de inyección por zona** (patrón estándar de consenso) (Carruthers consensus 2016) ⚕️[ratificar médico aliado]:
 
    **Frente** (líneas horizontales):
-   - Unidades totales: [VALIDAR: 10-25U]
+   - Unidades totales: 10-30U (consenso; menor en hombres) (Carruthers consensus 2016) ⚕️[ratificar médico aliado]
    - Puntos: 4-6 inyecciones en músculo frontal
    - Distribución: Horizontal, al menos 1.5cm sobre cejas
    - **Precaución**: NO inyectar muy bajo (riesgo ptosis ceja)
 
    **Entrecejo** (glabela):
-   - Unidades totales: [VALIDAR: 15-30U]
+   - Unidades totales: 20U (FDA aprobada); 20-40U en hombres (FDA label BOTOX Cosmetic; Carruthers consensus 2016) ⚕️[ratificar médico aliado]
    - Puntos: 5 inyecciones típicas
      - 1 central en procerus
      - 2 en cada corrugador
    - **Precaución**: NO inyectar muy lateral (riesgo ptosis parpado)
 
    **Patas de gallo**:
-   - Unidades totales: [VALIDAR: 8-15U por lado]
+   - Unidades totales: 12U por lado (FDA aprobada); rango 10-15U por lado (FDA label BOTOX Cosmetic; Carruthers consensus 2016) ⚕️[ratificar médico aliado]
    - Puntos: 3-4 inyecciones por lado
    - Ubicación: Al menos 1cm del borde orbitario
    - **Precaución**: NO inyectar muy medial o profundo
@@ -403,7 +403,7 @@ La toxina botulínica tipo A actúa bloqueando la liberación de acetilcolina en
 - Cuándo llamar si problema
 - Cita de seguimiento/retoque (2 semanas)
 
-[VALIDAR CON DR.: Protocolo paso a paso específico, unidades por zona, dilución preferida, técnica de inyección específica]
+[DEFINIR EN APERTURA DE LOUNGE: dilución preferida y técnica de inyección específica del médico aplicador]
 
 ---
 
@@ -469,7 +469,7 @@ La toxina botulínica tipo A actúa bloqueando la liberación de acetilcolina en
 - ⚠️ Asimetría marcada que no mejora
 - ⚠️ Reacción alérgica (urticaria, dificultad respirar)
 
-[VALIDAR CON DR.: Protocolo específico de cuidados post-tratamiento, protocolo de retoque a 2 semanas]
+[DEFINIR EN APERTURA DE LOUNGE: política de retoque a 2 semanas del lounge (incluido/costo)]
 
 ---
 
@@ -592,7 +592,8 @@ La toxina botulínica tipo A actúa bloqueando la liberación de acetilcolina en
 
 **Nota importante**: El efecto es TEMPORAL y REVERSIBLE. Después de 6 meses máximo, la función muscular regresa 100% a estado original. No hay acumulación de toxina en el organismo.
 
-[VALIDAR CON DR.: Timeline basado en experiencia clínica con pacientes reales, duración promedio observada]
+Timeline estándar publicado: onset 3-7 días, efecto máximo 10-14 días, duración promedio 3-4 meses (FDA label BOTOX Cosmetic; Carruthers consensus 2016) ⚕️[ratificar médico aliado]
+[DEFINIR EN APERTURA DE LOUNGE: duración promedio observada en pacientes reales del lounge]
 
 ---
 
@@ -694,7 +695,7 @@ La toxina botulínica tipo A actúa bloqueando la liberación de acetilcolina en
 - **Ideal para**: Arquetipo Mantenimiento
 - **Costo mensual promedio**: $750 (limpiezas) + $1,200 (Botox prorrateado) = $1,950/mes
 
-[VALIDAR CON DR.: Combinaciones más frecuentes en la clínica, protocolos de timing]
+[DEFINIR EN APERTURA DE LOUNGE: combinaciones que ofrecerá el lounge y protocolos de timing]
 
 ---
 
@@ -742,7 +743,7 @@ NO impacta **subscore biológico** (30% del Índice total)
    - Mejora percibida puede ser mayor (expresión más "amigable", menos "enojado")
    - Comentarios típicos: "Te ves más descansado", "ya no pareces enojado"
 
-[VALIDAR CON DR.: Validar con datos reales de clientes antes/después, satisfacción del cliente]
+[DEFINIR EN APERTURA DE LOUNGE: datos reales antes/después y satisfacción del cliente del lounge]
 
 ---
 
@@ -750,20 +751,20 @@ NO impacta **subscore biológico** (30% del Índice total)
 
 **Precio base**: $4,800 MXN por sesión (dosis estándar completa)
 
-[VALIDAR: Precio cubre tratamiento completo o es por unidad/zona]
+[DEFINIR EN APERTURA DE LOUNGE: si el precio cubre tratamiento completo o se cobra por unidad/zona]
 
 **Con membresías**:
 - **Access** (15% desc): $4,080 MXN
 - **Elite** (20% desc): $3,840 MXN
 
-**Áreas incluidas en precio base** [VALIDAR]:
+**Áreas incluidas en precio base** [DEFINIR EN APERTURA DE LOUNGE: zonas incluidas en el precio base]:
 - Típicamente: Frente + Entrecejo + Patas de gallo (3 zonas)
-- Total unidades: [VALIDAR: 40-60U típicas para 3 zonas]
+- Total unidades: 40-60U típicas para las 3 zonas del tercio superior (Carruthers consensus 2016) ⚕️[ratificar médico aliado]
 
-**Zonas adicionales** [VALIDAR si se cobra aparte]:
-- Bunny lines: [VALIDAR precio]
-- Bandas platismales (cuello): [VALIDAR precio]
-- Maseteros: [VALIDAR precio]
+**Zonas adicionales** [DEFINIR EN APERTURA DE LOUNGE: si se cobran aparte]:
+- Bunny lines: [DEFINIR EN APERTURA DE LOUNGE: precio]
+- Bandas platismales (cuello): [DEFINIR EN APERTURA DE LOUNGE: precio]
+- Maseteros: [DEFINIR EN APERTURA DE LOUNGE: precio]
 
 **Frecuencia de retoques**:
 - **Recomendación estándar**: Cada 4 meses (3 sesiones/año)
@@ -797,7 +798,7 @@ NO impacta **subscore biológico** (30% del Índice total)
 - Más económico que cirugía en corto plazo (1-7 años)
 - Consideración: Flexibilidad (puedes suspender cuando quieras) vs compromiso
 
-**Paquetes sugeridos** [VALIDAR si la clínica ofrece]:
+**Paquetes sugeridos** [DEFINIR EN APERTURA DE LOUNGE: si el lounge ofrece paquetes]:
 - **Paquete anual (3 sesiones)**: Descuento 10-15%
 - **Paquete "First Time" (1 sesión + retoque)**: Para nuevos clientes
 
@@ -898,15 +899,15 @@ NO impacta **subscore biológico** (30% del Índice total)
 
 **Aprobaciones regulatorias**:
 - FDA (USA): Aprobado cosmético 2002 (glabela), 2013 (patas gallo)
-- COFEPRIS (México): [VALIDAR registro sanitario]
+- COFEPRIS (México): [DEFINIR EN APERTURA DE LOUNGE: registro sanitario del producto que usará el lounge]
 - 84 países aprobado mundialmente
 
-**Marca comercial** [VALIDAR cuál usa la clínica]:
+**Marca comercial** [DEFINIR EN APERTURA DE LOUNGE: cuál usará el lounge]:
 - Botox® (Allergan) - Más usado
 - Dysport® (Ipsen) - Ratio conversión 2.5:1
 - Xeomin® (Merz) - Sin proteínas complejas
 
-[VALIDAR CON DR.: Protocolo interno, certificación en toxina botulínica, número de procedimientos realizados]
+[DEFINIR EN APERTURA DE LOUNGE: certificación del médico aplicador y número de procedimientos realizados]
 
 ---
 

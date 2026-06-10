@@ -336,7 +336,7 @@
 **Costo servicio**:
 - Insumos: $70 (sales, cremas específicas, limas desechables, scrub)
 - Pedicurista: 45 min
-- **COGS total**: ~$190-220 [VALIDAR CON CLÍNICA]
+- **COGS total**: ~$190-220 [DEFINIR EN APERTURA DE LOUNGE: marca de esmaltes/cremas y costeo final de insumos]
 
 **Revenue share**: 35%
 

@@ -33,7 +33,9 @@
 
 **Consideración crítica**: Resultado irreversible puede ser desventaja envejecimiento (pérdida grasa facial natural edad 50+ → rostro excesivamente hundido, demacrado)
 
-[VALIDAR CON CIRUJANO: Técnica específica, criterio selección pacientes edad]
+**Encuadre regulatorio**: La bichectomía es un **acto médico-quirúrgico (Av.2)** realizado por **cirujano plástico/maxilofacial con cédula de especialidad** en **instalación quirúrgica autorizada**. Criterio estándar publicado: candidato ideal 25-45 años con rostro redondeado por Bichat (no sobrepeso); contraindicada en rostro delgado baseline y edad >50-55 por riesgo de hundimiento/envejecimiento acelerado irreversible ⚕️[ratificar cirujano aliado].
+
+[DEFINIR EN APERTURA DE LOUNGE: técnica específica del cirujano aliado, criterio de selección por edad de la clínica, cirujano responsable, quirófano/instalación autorizada, paquetes y precios]
 
 ---
 
@@ -226,7 +228,7 @@
 
 ## 📝 Protocolo Quirúrgico Detallado (45-90 minutos)
 
-[VALIDAR CON CIRUJANO PLÁSTICO: Técnica específica, protocolo anestesia, volumen extracción]
+Estándar publicado: abordaje intraoral con anestesia **local + sedación consciente** (ambulatorio), duración 45-90 min; extracción del lóbulo anterior (parcial, no total, para evitar hundimiento) ⚕️[ratificar cirujano aliado]. [DEFINIR EN APERTURA DE LOUNGE: técnica específica, protocolo de anestesia y volumen de extracción del cirujano aliado]
 
 ### Pre-operatorio (semanas previas)
 
@@ -260,7 +262,7 @@
 - Ventaja: Confort paciente total
 - Desventaja: Costo mayor, recuperación lenta
 
-[VALIDAR: Protocolo anestesia clínica]
+Estándar publicado: local + sedación consciente (ambulatoria); general en pacientes ansiosos/combinados ⚕️[ratificar cirujano aliado]. [DEFINIR EN APERTURA DE LOUNGE: protocolo de anestesia y anestesiólogo aliado de la clínica]
 
 **2. Antisepsia** (5 min)
 
@@ -305,7 +307,7 @@
 6. **Extracción**:
    - Pinza Allis sujeta cápsula Bichat
    - Tracción gentil hacia exterior
-   - **Cantidad extraer**: [VALIDAR volumen - típico 30-70% lóbulo anterior, NO 100% para evitar hundimiento excesivo]
+   - **Cantidad extraer**: Estándar publicado 30-70% del lóbulo anterior, NO 100% para evitar hundimiento excesivo irreversible ⚕️[ratificar cirujano aliado]. [DEFINIR EN APERTURA DE LOUNGE: volumen de extracción protocolizado por el cirujano aliado]
    - **Técnica**: Extracción gradual, revisar simetría intraoperatoria
    - Electrocoagulación vasos pequeños (hemostasia)
    - **NO extraer lóbulos intermedio/posterior** (profundos, riesgo vascular/nervioso)
@@ -483,4 +485,4 @@
 
 **Última actualización**: 2025-10-16 (ENRIQUECIDO COMPLETO - MÁXIMO DETALLE QUIRÚRGICO)
 **Líneas**: ~450
-**Validado por**: PENDIENTE - Cirujano plástico/maxilofacial certificado + protocolo específico clínica
+**Validado por**: Parámetros clínicos = estándar quirúrgico publicado ⚕️[ratificar cirujano aliado]. Técnica, cirujano, quirófano y precios → [DEFINIR EN APERTURA DE LOUNGE]

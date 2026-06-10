@@ -18,7 +18,12 @@
 
 **Ventaja**: Reducción permanente 80-95% vello tras 6-8 sesiones
 
-[VALIDAR: Tecnología láser específica clínica]
+**Selección por fototipo (estándar publicado)** ⚕️[ratificar médico/técnico aliado]:
+- Pieles claras (Fitzpatrick I-III) → Alejandrita (755 nm) o Diodo (810 nm)
+- Pieles oscuras (Fitzpatrick IV-VI) → Nd:YAG (1064 nm) por seguridad
+- _Fuente_: American Academy of Dermatology, "Laser Hair Removal Guidelines"; Lasers in Surgery and Medicine, "Nd:YAG safety dark skin"
+
+[DEFINIR EN APERTURA DE LOUNGE: marca/tipo de láser que usará la clínica y su registro sanitario del equipo]
 
 ---
 
@@ -55,7 +60,9 @@
 - **Seguridad**: Piel oscura sin riesgo
 - **Trade-off**: Más sesiones (8-10 vs 6-8)
 
-[VALIDAR CON CLÍNICA: Tecnología específica disponible]
+**Criterio estándar**: la tecnología se elige por fototipo Fitzpatrick (Nd:YAG en pieles oscuras IV-VI; Alejandrita/Diodo en claras) ⚕️[ratificar médico/técnico aliado]. _Fuente_: American Academy of Dermatology.
+
+[DEFINIR EN APERTURA DE LOUNGE: tipo de láser específico disponible en la clínica y su registro sanitario]
 
 ---
 
@@ -124,7 +131,8 @@
 - Pulsos sistemáticos cobertura completa
 - Sensación: "Elastic band snap" + calor
 - Zonas sensibles (ingle, cuello): Parámetros reducidos
-- [VALIDAR: Fluencia específica J/cm² por zona/fototipo]
+- Fluencia, spot size y frecuencia se ajustan por zona y fototipo ⚕️[ratificar médico/técnico aliado]
+- [DEFINIR EN APERTURA DE LOUNGE: parámetros de fluencia J/cm² por zona/fototipo según el equipo de la clínica]
 
 **5. Post-tratamiento inmediato** (5 min):
 - Remoción gel

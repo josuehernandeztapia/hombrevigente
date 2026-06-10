@@ -319,7 +319,7 @@
 **Costo servicio**:
 - Insumos: $35 (espuma, aceite, bálsamo, cuchillas navaja)
 - Barbero: 30 min
-- **COGS total**: ~$130-150 [VALIDAR CON CLÍNICA]
+- **COGS total**: ~$130-150 [DEFINIR EN APERTURA DE LOUNGE: marca de aceite de barba/bálsamo y costeo final de insumos]
 
 **Revenue share**: 35%
 

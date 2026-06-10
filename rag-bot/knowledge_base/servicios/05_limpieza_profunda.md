@@ -27,7 +27,7 @@
 
 **Público objetivo**: Servicio universal (todos los rangos de edad 18-70+, todos los fototipos, todos los Índices Vigente). Es el servicio de **mantenimiento básico** mensual.
 
-[VALIDAR CON DR.: Productos específicos utilizados en clínica, marcas de cosméticos profesionales]
+[DEFINIR EN APERTURA DE LOUNGE: marcas de cosméticos profesionales y productos específicos que usará el lounge en cada fase]
 
 ---
 
@@ -46,7 +46,9 @@ Proceso de 8 fases que trabaja desde superficie hasta dermis papilar:
 
 **Resultado**: Poros limpios, piel suave, luminosidad aumentada, efecto "glow" inmediato
 
-[VALIDAR CON DR.: Productos/marcas específicas, personalización por tipo piel]
+El estándar estético adapta cada fase al tipo de piel: en piel grasa/mixta se priorizan limpiadores purificantes y mascarillas de arcilla; en piel seca/sensible, exfoliación enzimática suave y mascarillas calmantes/hidratantes. Es un cuidado de higiene facial, no un tratamiento médico.
+
+[DEFINIR EN APERTURA DE LOUNGE: marcas/productos específicos por fase y protocolo interno de personalización por tipo de piel]
 
 ---
 
@@ -74,50 +76,50 @@ Proceso de 8 fases que trabaja desde superficie hasta dermis papilar:
 - **Sensible**: Limpieza sin agresión, productos calmantes
 - **Madura**: Luminosidad, preparación para activos anti-edad
 
-[VALIDAR CON DR.: Protocolos específicos por tipo de piel]
+[DEFINIR EN APERTURA DE LOUNGE: protocolo interno del lounge por tipo de piel y línea de producto asociada]
 
 ---
 
-## 🚫 Contraindicaciones Absolutas
+## 🚫 Cuándo NO realizar el servicio (precauciones estándar)
 
-[FALTA: Lista completa validada - VALIDAR CON DR.]
+Por tratarse de un servicio estético de higiene facial (no médico), se recomienda **posponer la sesión o derivar a valoración profesional** ante:
 
-**Placeholder**:
-> - Acné severo activo (grado 3-4) → requiere tratamiento dermatológico
-> - Rosácea muy activa (evitar extracciones agresivas)
-> - Infecciones activas (herpes, impétigo)
-> - Quemadura solar reciente
-> - Post-procedimiento invasivo reciente (láser, peeling profundo <2 semanas)
-> - [FALTA: COMPLETAR]
+> - Acné inflamatorio activo o pústulas extensas (grado 3-4) → conviene valoración dermatológica antes de extracciones
+> - Rosácea activa con enrojecimiento marcado o lesiones (evitar extracciones y vapor; modo suave o posponer)
+> - Lesiones cutáneas activas: herpes labial, impétigo u otras infecciones de piel
+> - Quemadura solar reciente (<1 semana) o piel irritada
+> - Procedimiento estético reciente en la zona (láser, peeling profundo) en las últimas 2 semanas
+> - Heridas abiertas, dermatitis en brote o piel con descamación intensa
+> - Alergia conocida a algún ingrediente cosmético del protocolo (realizar prueba previa)
+>
+> Es un cuidado de higiene y mantenimiento; no diagnostica ni trata condiciones de la piel. Ante duda dermatológica, se sugiere consultar a un especialista.
 
 ---
 
-## ⚠️ Efectos Secundarios
+## ⚠️ Sensaciones esperadas (temporales)
 
-[FALTA: Frecuencias, duración - VALIDAR CON DR.]
+Como toda limpieza facial profesional, pueden presentarse reacciones leves y pasajeras:
 
-**Placeholder**:
-> **Comunes (temporales, 2-24h)**:
-> - Enrojecimiento leve en zonas de extracción (80% casos)
-> - Sensibilidad temporal al tacto (50%)
-> - Ligera descamación días siguientes (30%)
+> **Comunes (temporales, primeras 2-24h)**:
+> - Enrojecimiento leve en zonas de extracción
+> - Sensibilidad temporal al tacto
+> - Ligera descamación en los días siguientes (renovación de la piel)
 >
-> **Poco comunes**:
-> - Pequeños hematomas en zonas de extracción difícil (5%)
-> - Brote de acné temporal (10%, purga de impurezas profundas)
+> **Menos frecuentes**:
+> - Pequeñas marcas pasajeras en zonas de extracción difícil
+> - Brote temporal por liberación de impurezas profundas
 >
-> **Raros**:
-> - Reacción alérgica a productos (< 1%, evitable con prueba patch)
+> **Poco frecuentes**:
+> - Reacción a algún cosmético (minimizable con prueba previa de tolerancia)
 >
-> [FALTA: Manejo de efectos adversos]
+> **Manejo estándar**: hidratación suave, evitar manipular la zona, fotoprotección y suspender activos agresivos 24-48h. Las molestias suelen ceder solas; si persisten o se intensifican, recomendar valoración profesional.
 
 ---
 
 ## 📝 Protocolo de Aplicación
 
-[FALTA: Pasos técnicos detallados, productos específicos - VALIDAR CON DR.]
+Secuencia estándar publicada de una limpieza facial profesional (consenso estético). Las marcas y referencias de producto se definen en la apertura del lounge.
 
-**Placeholder**:
 > **Protocolo estándar (60 minutos)**:
 >
 > 1. **Análisis de piel** (5 min):
@@ -130,8 +132,9 @@ Proceso de 8 fases que trabaja desde superficie hasta dermis papilar:
 >    - Limpiador base agua (específico tipo de piel)
 >
 > 3. **Exfoliación** (5 min):
->    - [FALTA: Mecánica (scrub) o química (AHA/BHA)?]
->    - [FALTA: Productos específicos según piel]
+>    - Estándar: exfoliación enzimática o suave (AHA/BHA leve) en piel sensible/seca; exfoliación mecánica fina (scrub) tolerable en piel grasa/normal
+>    - Se elige según tipo de piel para no irritar
+>    - [DEFINIR EN APERTURA DE LOUNGE: producto exfoliante específico por tipo de piel]
 >
 > 4. **Vapor** (5-10 min):
 >    - Vapor tibio para apertura de poros
@@ -139,15 +142,15 @@ Proceso de 8 fases que trabaja desde superficie hasta dermis papilar:
 >
 > 5. **Extracción** (10-15 min):
 >    - Técnica manual con herramientas esterilizadas
->    - Extracción de comedones, puntos negros
->    - [FALTA: Límites de extracción, cuándo NO extraer]
+>    - Extracción de comedones abiertos y cerrados, puntos negros
+>    - **Límites estándar**: no forzar lesiones que no ceden con presión suave; no extraer sobre piel inflamada, pústulas activas, quistes ni zonas con rosácea activa; detener si hay dolor o enrojecimiento marcado para evitar marcas
 >
 > 6. **Tonificación** (3 min):
 >    - Aplicación de tónico para cerrar poros
 >    - Balance de pH
 >
 > 7. **Mascarilla** (10 min):
->    - [FALTA: Tipos según piel - arcilla para grasa, hidratante para seca, etc.]
+>    - Estándar según piel: arcilla/purificante para piel grasa-mixta; hidratante o calmante (aloe, caléndula) para piel seca-sensible; iluminadora para piel opaca
 >
 > 8. **Serums e hidratación** (5 min):
 >    - Ácido hialurónico
@@ -157,15 +160,15 @@ Proceso de 8 fases que trabaja desde superficie hasta dermis papilar:
 > 9. **Protección solar** (si es de día):
 >    - SPF 50+
 >
-> [FALTA: Protocolo detallado con productos específicos y tiempos]
+> [DEFINIR EN APERTURA DE LOUNGE: línea de producto específica por fase y tiempos finos del protocolo interno del lounge]
 
 ---
 
-## 🏥 Cuidados Post-Tratamiento
+## 🏥 Cuidados Post-Servicio
 
-[FALTA: Instrucciones específicas primeras 24-48h - VALIDAR CON DR.]
+Recomendaciones estándar de cuidado en casa para las primeras 24-48h:
 
-**Placeholder primeras 24h**:
+> **Primeras 24h**:
 > - ✅ Lavar cara con limpiador suave (noche)
 > - ✅ Hidratar abundantemente
 > - ✅ SPF 50+ si sales al día siguiente
@@ -180,15 +183,14 @@ Proceso de 8 fases que trabaja desde superficie hasta dermis papilar:
 > - ✅ Evitar sol directo intenso
 > - ❌ NO exfoliar adicionalmente (esperar 5-7 días)
 >
-> [FALTA: Recomendaciones para maximizar resultados]
+> **Para mantener mejor el resultado**: limpieza e hidratación suave diaria, SPF a diario, beber agua y reintroducir activos (retinol, ácidos) de forma gradual a partir del día 3.
 
 ---
 
 ## ⏱️ Timeline de Resultados
 
-[FALTA: Timeline basado en experiencia - VALIDAR CON DR.]
+Evolución típica del cuidado facial (referencia estándar):
 
-**Placeholder**:
 > **Resultados inmediatos** (Día 0):
 > - Piel visiblemente más limpia
 > - Luminosidad aumentada
@@ -207,17 +209,14 @@ Proceso de 8 fases que trabaja desde superficie hasta dermis papilar:
 > **Duración del efecto**:
 > - Visual: 2-3 semanas
 > - Beneficios acumulativos con tratamiento regular
-> - **Mantenimiento recomendado**: Cada 4-6 semanas (mensual ideal)
->
-> [FALTA: Validar con experiencia clientes regulares]
+> - **Mantenimiento recomendado**: Cada 4-6 semanas (mensual ideal), alineado al ciclo de renovación celular (~28 días)
 
 ---
 
 ## 🔄 Comparación vs Alternativas
 
-[FALTA: Cuándo recomendar Limpieza vs otros tratamientos - VALIDAR CON DR.]
+Guía estándar para orientar al cliente entre opciones de cuidado facial:
 
-**Placeholder**:
 > | Aspecto | Limpieza Profunda | Limpieza Ultrasonido | HydraFacial | Peeling Químico |
 > |---------|------------------|---------------------|-------------|-----------------|
 > | **Método** | Manual + vapor | Tecnología ultrasónica | Hydradermabrasion | Químico (ácidos) |
@@ -234,15 +233,17 @@ Proceso de 8 fases que trabaja desde superficie hasta dermis papilar:
 > - Piel grasa con puntos negros visibles
 > - Mantenimiento mensual económico
 > - Evento en 1-2 días (efecto inmediato)
-> - [FALTA: Más criterios]
+> - Necesita extracción de comedones (la opción manual extrae mejor que el ultrasonido)
+>
+> **Cuándo preferir Ultrasonido**: piel sensible/reactiva que no tolera extracción manual o vapor. **Cuándo derivar a Peeling**: foco en manchas o textura, no en limpieza/comedones.
 
 ---
 
 ## 📊 Mejora Esperada en Índice Vigente™
 
-[FALTA: Validar con datos reales - ANALIZAR BASE DE DATOS]
+[DEFINIR EN APERTURA DE LOUNGE: calibrar el impacto en el Índice Vigente™ con datos reales de clientes del lounge; cifras abajo son estimación del modelo, no medición]
 
-**Placeholder** (basado en modelo):
+**Estimación basada en modelo**:
 > **Impacto en subscore piel (temporal)**:
 >
 > | Índice inicial | Mejora piel (inmediata) | Mejora total | Duración |
@@ -263,8 +264,6 @@ Proceso de 8 fases que trabaja desde superficie hasta dermis papilar:
 > - Limpieza cada 4 semanas + HIFU cada 12 meses
 > - Limpieza cada 4 semanas + Botox cada 6 meses
 > - Limpieza como preparación pre-tratamiento invasivo
->
-> [FALTA: Validar impacto real]
 
 ---
 
@@ -277,9 +276,8 @@ Proceso de 8 fases que trabaja desde superficie hasta dermis papilar:
 - **Elite** (descuento 20% + 1 gratis/trimestre): $600 MXN/sesión + beneficio extra
 
 **Paquetes sugeridos**:
-[FALTA: Validar si hay paquetes]
+[DEFINIR EN APERTURA DE LOUNGE: confirmar si se ofrecen paquetes y precios finales; cifras abajo son propuesta]
 
-**Placeholder**:
 > - **Paquete 4 sesiones** (1 mensual):
 >   - Lista: $3,000 MXN (desc. $0)
 >   - Access: $2,550 MXN
@@ -338,13 +336,13 @@ Proceso de 8 fases que trabaja desde superficie hasta dermis papilar:
 
 ## 📚 Referencias y Fuentes
 
-[FALTA: Agregar referencias]
+**Estándar de la técnica** (consenso dermatológico/estético sobre limpieza facial profesional: limpieza, exfoliación, vapor, extracción controlada e hidratación). Servicio de higiene y cuidado, no médico.
 
-**Placeholder**:
-> 1. Productos utilizados: [MARCAS - Dermalogica, Skinceuticals, etc. - ESPECIFICAR]
-> 2. Protocolo interno: [VALIDAR CON ESTETICISTA]
-> 3. Certificaciones de esteticistas: [LISTAR]
-> 4. Normas de esterilización: [COFEPRIS, NOM-XXX]
+[DEFINIR EN APERTURA DE LOUNGE:]
+> 1. Marcas/productos cosméticos profesionales utilizados por el lounge
+> 2. Protocolo interno del lounge validado con la esteticista
+> 3. Certificaciones del equipo de esteticistas
+> 4. Normas de higiene/esterilización aplicables (COFEPRIS / NOM correspondiente)
 
 ---
 
@@ -372,7 +370,7 @@ Proceso de 8 fases que trabaja desde superficie hasta dermis papilar:
 - Quemadura solar reciente (<1 semana)
 - Post-láser/peeling profundo (<2 semanas)
 
-[VALIDAR CON DR.: Precauciones adicionales]
+**Precauciones adicionales estándar**: realizar prueba de tolerancia ante piel muy reactiva o alergias cosméticas conocidas; evitar extracción sobre lesiones inflamadas; ante cualquier condición dermatológica activa, sugerir valoración con especialista antes de la sesión.
 
 ---
 
