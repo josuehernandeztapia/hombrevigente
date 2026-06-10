@@ -58,6 +58,17 @@ jobs:
           HV_DECISION_LOG_ENABLED: 'false'
         run: python golden_runner.py --full
 
+      - name: Trajectory integration tests (live retrieval)
+        # Need the embeddings index (built above) + OpenAI embeddings, so they belong
+        # here (key present) rather than the per-PR gate. Previously unran by any CI.
+        # NOTE: test_rag.py is intentionally excluded — it exercises the legacy Pinecone
+        # path (rag_retrieval.py needs pinecone-client + rich + a Pinecone key); the
+        # canonical retrieval is covered by test_rag_local.py + golden_runner.
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          HV_DECISION_LOG_ENABLED: 'false'
+        run: python -m pytest -q -p no:cacheprovider test_trajectory_runner.py
+
       - name: Upload embeddings artifact (debug)
         if: failure()
         uses: actions/upload-artifact@v4

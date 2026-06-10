@@ -42,6 +42,19 @@ jobs:
           python test_rag_local.py
           python test_observability.py
 
+      - name: Extended unit suites (no API key needed)
+        # Previously these existed but no CI ran them. config/frozen_context/mvp0_lib/
+        # beta_state are pure unit; api_rag/newsletter_approval use FastAPI TestClient
+        # (no real OpenAI/Resend calls). Trajectory + test_rag (live retrieval) run in nightly.
+        run: |
+          python -m pytest -q -p no:cacheprovider \
+            test_config.py \
+            test_frozen_context.py \
+            test_mvp0_lib.py \
+            test_beta_state.py \
+            test_api_rag.py \
+            test_newsletter_approval.py
+
       - name: Golden set (gates-only)
         run: python golden_runner.py --gates-only
 
@@ -85,14 +98,16 @@ jobs:
           from pathlib import Path
           from action_handler import compute_proactive_health_score
           hs = compute_proactive_health_score()
-          print(f"CI Proactive Health: score={hs[\"score\"]} is_healthy={hs.get(\"is_healthy\")}")
+          score = hs["score"]
+          is_healthy = hs.get("is_healthy")
+          print(f"CI Proactive Health: score={score} is_healthy={is_healthy}")
           cal_path = Path("data/proactive_calibration.json")
           drift = {}
           if cal_path.exists():
               cal = json.loads(cal_path.read_text())
               drift = cal.get("drift", {})
           print("CI Calibration drift:", {k: drift.get(k) for k in ["added", "removed", "message_changes", "significant_message_drift", "avg_message_similarity"] if k in drift})
-          if hs["score"] < 50:
+          if score < 50:
               print("::error::Proactive health score too low in CI (self-correction gate)")
               exit(1)
           if drift.get("significant_message_drift", 0) > 3:
