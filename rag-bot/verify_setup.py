@@ -14,7 +14,6 @@ def check_api_keys():
     print("🔑 Verificando API Keys...")
 
     openai_key = os.getenv("OPENAI_API_KEY")
-    pinecone_key = os.getenv("PINECONE_API_KEY")
 
     if not openai_key or openai_key == "":
         print("   ❌ OPENAI_API_KEY no configurada en .env")
@@ -24,15 +23,6 @@ def check_api_keys():
         return False
     else:
         print(f"   ✅ OPENAI_API_KEY encontrada (longitud: {len(openai_key)})")
-
-    if not pinecone_key or pinecone_key == "":
-        print("   ❌ PINECONE_API_KEY no configurada en .env")
-        return False
-    elif len(pinecone_key) < 20:
-        print("   ❌ PINECONE_API_KEY parece inválida (muy corta)")
-        return False
-    else:
-        print(f"   ✅ PINECONE_API_KEY encontrada (longitud: {len(pinecone_key)})")
 
     return True
 
@@ -57,42 +47,6 @@ def test_openai_connection():
 
     except Exception as e:
         print(f"   ❌ Error: {str(e)[:100]}")
-        return False
-
-
-def test_pinecone_connection():
-    """Prueba la conexión con Pinecone"""
-    print("\n📌 Probando conexión con Pinecone...")
-
-    try:
-        from pinecone import Pinecone
-        pc = Pinecone(api_key=os.getenv("PINECONE_API_KEY"))
-
-        # List indexes
-        indexes = pc.list_indexes()
-        print(f"   ✅ Conexión exitosa")
-        print(f"   📋 Indexes disponibles:")
-
-        for idx in indexes:
-            print(f"      • {idx.name} (dimension: {idx.dimension}, metric: {idx.metric})")
-
-        # Check for hombrevigente-kb
-        index_names = [idx.name for idx in indexes]
-        if "hombrevigente-kb" in index_names:
-            print(f"   ✅ Index 'hombrevigente-kb' encontrado")
-
-            # Get index details
-            index = pc.Index("hombrevigente-kb")
-            stats = index.describe_index_stats()
-            print(f"   📊 Vectores actuales: {stats.total_vector_count}")
-            return True
-        else:
-            print(f"   ❌ Index 'hombrevigente-kb' NO encontrado")
-            print(f"   💡 Crea el index en: https://app.pinecone.io")
-            return False
-
-    except Exception as e:
-        print(f"   ❌ Error: {str(e)[:200]}")
         return False
 
 
@@ -130,7 +84,6 @@ def check_dependencies():
 
     required = {
         "openai": "OpenAI SDK",
-        "pinecone": "Pinecone SDK",
         "tqdm": "Progress bars",
         "dotenv": "Environment variables"
     }
@@ -165,7 +118,6 @@ def main():
     checks.append(("API Keys", check_api_keys()))
     checks.append(("Archivos", check_services_files()))
     checks.append(("OpenAI", test_openai_connection()))
-    checks.append(("Pinecone", test_pinecone_connection()))
 
     # Summary
     print("\n" + "=" * 70)
@@ -180,7 +132,7 @@ def main():
 
     if all_passed:
         print("\n🎉 TODO LISTO! Puedes ejecutar:")
-        print("   python3 generate_embeddings.py")
+        print("   python3 embed_kb_local.py --source all")
     else:
         print("\n⚠️  Corrige los errores arriba antes de continuar")
         print("\n💡 Pasos siguientes:")
@@ -188,12 +140,6 @@ def main():
         if not checks[1][1]:  # API Keys
             print("   1. Actualiza tus API keys en el archivo .env")
             print("      - OpenAI: https://platform.openai.com/api-keys")
-            print("      - Pinecone: https://app.pinecone.io")
-
-        if not checks[4][1]:  # Pinecone
-            print("   2. Crea el index 'hombrevigente-kb' en Pinecone:")
-            print("      - Dimensions: 1536")
-            print("      - Metric: cosine")
 
 
 if __name__ == "__main__":

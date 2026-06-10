@@ -23,10 +23,7 @@ rag-bot/
 ├── data/golden-set-hv-rag.json
 ├── scripts/sync_golden_set.py
 ├── scripts/process_knowledge_promotions.py
-├── generate_embeddings.py      # KB → Pinecone (legacy)
-├── rag_retrieval.py            # Pinecone (legacy)
 ├── test_rag_local.py         # Gates + routing + golden gates
-├── test_rag.py               # Suite Pinecone
 ├── verify_setup.py           # Chequeo de .env y deps
 ├── servicios_completos.json  # Catálogo + adherence + BNPL
 ├── arquetipos_modelo_financiero.json
@@ -81,8 +78,6 @@ curl -X POST "http://localhost:8080/rag/query?parse=1&use_llm=false" \
 fly deploy   # desde rag-bot/ (secrets: OPENAI_API_KEY, HV_ADMIN_PIN)
 # Prod: POST https://hv-rag-api.fly.dev/rag/query con beta_id row-0 | caso0 | tally-{id}
 ```
-
-**Legacy Pinecone:** `generate_embeddings.py` + `rag_retrieval.py` (opcional).
 
 **Knowledge Loop:** agregar entradas a `data/knowledge-promotions-pending.json` →
 `python scripts/process_knowledge_promotions.py` → `embed_kb_local.py --source all`.
