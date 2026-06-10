@@ -391,3 +391,77 @@ def list_all_betas() -> List[Dict[str, Any]]:
         pass
 
     return betas
+
+
+# ------------------------------------------------------------------
+# Pending Actions — Idempotencia C1 (ledger Postgres, UNIQUE idemp_key)
+# ------------------------------------------------------------------
+# El store operativo de pending/executed sigue siendo el JSONL en action_handler.
+# Esta tabla (hv_pending_actions, migración 003) es un LEDGER de idempotencia:
+# - persist  -> INSERT ... ON CONFLICT (idemp_key) DO NOTHING  (dedup atómico cross-process)
+# - execute  -> is_idemp_executed_pg (chequeo) + mark_pending_executed_pg (status)
+# Best-effort: si Postgres no está, action_handler cae al dedup por archivo.
+
+def pending_pg_enabled() -> bool:
+    """True si debemos usar el ledger Postgres para idempotencia de pending actions."""
+    return _persistence_mode() in ("postgres", "dual") and bool(_get_database_url())
+
+
+def persist_pending_action_pg(action: Dict[str, Any]) -> bool:
+    """
+    Inserta la acción en el ledger. Devuelve True si fue NUEVA (insertada),
+    False si ya existía (conflicto por idemp_key) → el caller debe no re-persistir.
+    """
+    sql = """
+        INSERT INTO hv_pending_actions
+            (beta_id, action_id, idemp_key, signal_type, action_type,
+             suggested_message, status, created_at, metadata)
+        VALUES (%s, %s, %s, %s, %s, %s, %s, NOW(), %s)
+        ON CONFLICT (idemp_key) DO NOTHING
+        RETURNING id
+    """
+    params = (
+        action.get("beta_id"),
+        action.get("action_id"),
+        action.get("idemp_key"),
+        (action.get("signal") or {}).get("signal_type") or action.get("signal_type"),
+        action.get("action_type"),
+        action.get("suggested_message"),
+        action.get("status", "pending"),
+        json.dumps(action.get("metadata") or {}, ensure_ascii=False),
+    )
+    with _connection() as conn:
+        with conn.cursor() as cur:
+            cur.execute(sql, params)
+            return cur.fetchone() is not None  # RETURNING id solo si insertó
+
+
+def is_idemp_executed_pg(idemp_key: str) -> bool:
+    """True si el idemp_key ya está marcado ejecutado en el ledger."""
+    if not idemp_key:
+        return False
+    sql = """
+        SELECT 1 FROM hv_pending_actions
+        WHERE idemp_key = %s
+          AND status IN ('executed', 'dry_run_executed')
+        LIMIT 1
+    """
+    with _connection() as conn:
+        with conn.cursor() as cur:
+            cur.execute(sql, (idemp_key,))
+            return cur.fetchone() is not None
+
+
+def mark_pending_executed_pg(idemp_key: str, *, dry_run: bool = False) -> None:
+    """Marca el idemp_key como ejecutado en el ledger (idempotente)."""
+    if not idemp_key:
+        return
+    status = "dry_run_executed" if dry_run else "executed"
+    sql = """
+        UPDATE hv_pending_actions
+        SET status = %s, executed_at = NOW()
+        WHERE idemp_key = %s
+    """
+    with _connection() as conn:
+        with conn.cursor() as cur:
+            cur.execute(sql, (status, idemp_key))

@@ -98,8 +98,15 @@ def generate_action_for_signal(signal: BetaSignal) -> Dict[str, Any]:
     else:
         suggested_message = f"Signal {signal.signal_type} detectado en {phase}. Acción recomendada: {next_action}"
 
+    # C1 idempotency: stable key (no per-second timestamp) so the same logical
+    # signal in the same hour-bucket collapses to one persisted/executed action,
+    # even if the cron and a manual run fire concurrently.
+    hour_bucket = datetime.now(timezone.utc).strftime("%Y%m%d%H")
+    idemp_key = f"{beta_id}:{signal.signal_type}:{phase}:{hour_bucket}"
+
     action = {
         "action_id": f"act-{beta_id}-{signal.signal_type}-{int(datetime.now().timestamp())}",
+        "idemp_key": idemp_key,
         "beta_id": beta_id,
         "signal": signal.to_dict(),
         "action_type": action_type,
@@ -114,8 +121,88 @@ def generate_action_for_signal(signal: BetaSignal) -> Dict[str, Any]:
     return action
 
 
+def _idemp_seen_in_files(idemp_key: str) -> bool:
+    """True si el idemp_key ya está en pending o executed (dedup file-mode, C1)."""
+    if not idemp_key:
+        return False
+    for path in (_pending_actions_path(), _executed_actions_path()):
+        if not path.exists():
+            continue
+        try:
+            with path.open(encoding="utf-8") as f:
+                for line in f:
+                    line = line.strip()
+                    if not line:
+                        continue
+                    try:
+                        if json.loads(line).get("idemp_key") == idemp_key:
+                            return True
+                    except Exception:
+                        continue
+        except Exception:
+            continue
+    return False
+
+
+def is_idemp_already_executed(idemp_key: str) -> bool:
+    """
+    C1: ¿este idemp_key ya se ejecutó? Postgres ledger primero (cuando aplica),
+    fallback al executed_actions.jsonl. Usado antes de cualquier side-effect.
+    """
+    if not idemp_key:
+        return False
+    try:
+        from state_persistence import is_idemp_executed_pg, pending_pg_enabled
+        if pending_pg_enabled():
+            return is_idemp_executed_pg(idemp_key)
+    except Exception as e:
+        print(f"[action_handler][warn] pg idemp check failed (fallback to files): {e}")
+    exec_path = _executed_actions_path()
+    if not exec_path.exists():
+        return False
+    try:
+        with exec_path.open(encoding="utf-8") as f:
+            for line in f:
+                line = line.strip()
+                if not line:
+                    continue
+                try:
+                    rec = json.loads(line)
+                    if rec.get("idemp_key") == idemp_key and rec.get("status") in ("executed", "dry_run_executed"):
+                        return True
+                except Exception:
+                    continue
+    except Exception:
+        pass
+    return False
+
+
 def persist_pending_action(action: Dict[str, Any]) -> None:
-    """Append to a simple JSONL for consumption by future execution layer."""
+    """
+    Persiste una acción pendiente de forma IDEMPOTENTE (C1).
+    - Postgres (ledger): INSERT ... ON CONFLICT (idemp_key) DO NOTHING → dedup atómico
+      cross-process. Si hubo conflicto (ya existía), no se re-escribe el JSONL.
+    - Files: dedup por idemp_key contra pending+executed antes de hacer append.
+    El JSONL sigue siendo el store operativo (load/execute lo leen).
+    """
+    idemp_key = action.get("idemp_key")
+
+    pg_inserted: Optional[bool] = None
+    if idemp_key:
+        try:
+            from state_persistence import persist_pending_action_pg, pending_pg_enabled
+            if pending_pg_enabled():
+                pg_inserted = persist_pending_action_pg(action)
+        except Exception as e:
+            print(f"[action_handler][warn] pg persist_pending failed (fallback to files): {e}")
+
+    # Conflicto en el ledger → ya existía: no duplicar en archivo.
+    if pg_inserted is False:
+        return
+    # Sin ledger PG: dedup por archivo.
+    if pg_inserted is None and idemp_key and _idemp_seen_in_files(idemp_key):
+        return
+
     path = _pending_actions_path()
     with path.open("a", encoding="utf-8") as f:
         f.write(json.dumps(action, ensure_ascii=False) + "\n")
@@ -610,6 +697,16 @@ def execute_pending_action(action: Dict[str, Any], *, dry_run: bool = False, for
     if action.get("status") != "pending":
         return action
 
+    # === C1 idempotency: short-circuit if this logical action already executed ===
+    # Protects against double-send when cron + manual run (or run_detect_and_act twice)
+    # produce the same idemp_key. No side effects, no re-mark.
+    idemp_key = action.get("idemp_key")
+    if idemp_key and is_idemp_already_executed(idemp_key):
+        out = dict(action)
+        out["status"] = "already_executed"
+        out["idemp_key"] = idemp_key
+        return out
+
     beta_id = action["beta_id"]
     message = action.get("suggested_message", "")
 
@@ -712,6 +809,17 @@ def execute_pending_action(action: Dict[str, Any], *, dry_run: bool = False, for
     exec_path = _executed_actions_path()
     with exec_path.open("a", encoding="utf-8") as f:
         f.write(json.dumps(action, ensure_ascii=False) + "\n")
+
+    # C1: mark in the Postgres ledger too (best-effort) so is_idemp_already_executed
+    # is authoritative across processes when SSOT=postgres.
+    _ik = action.get("idemp_key")
+    if _ik:
+        try:
+            from state_persistence import mark_pending_executed_pg, pending_pg_enabled
+            if pending_pg_enabled():
+                mark_pending_executed_pg(_ik, dry_run=dry_run)
+        except Exception as e:
+            print(f"[action_handler][warn] pg mark_executed failed (file log still authoritative): {e}")
 
     # Remove from pending (rewrite pending file without this one)
     # Only remove on successful real or dry execution. Blocked actions stay in pending.
