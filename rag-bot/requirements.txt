@@ -1,0 +1,31 @@
+# HV rag-bot runtime dependencies.
+# Derived from actual imports across state_persistence, action_handler, sender,
+# rag_retrieval_local, api/main, scripts. Many are imported lazily and degrade
+# gracefully when absent (the proactive loop runs in file-mode with stdlib only).
+
+# --- API surface (api/main.py) ---
+fastapi>=0.110            # app + routing + CORS + Header auth
+uvicorn[standard]>=0.29   # ASGI server to run the FastAPI app
+slowapi>=0.1.9            # rate limiting (/rag/query); falls back to in-memory window if missing
+
+# --- Persistence: Postgres SSOT (state_persistence.py) ---
+# psycopg v3 (import psycopg / psycopg.connect). Only needed for HV_STATE_PERSISTENCE=postgres|dual;
+# file mode needs none of this.
+psycopg[binary]>=3.1
+
+# --- Proactive sender: WhatsApp Cloud API (sender.py) ---
+# Only needed when HV_PROACTIVE_SENDER=on; LogSender (default) needs nothing.
+requests>=2.31
+
+# --- RAG enrichment (rag_retrieval_local.py) — OPTIONAL ---
+# Retrieval works offline via lexical fallback without these. Install for
+# cosine retrieval (openai embeddings) and/or LLM synthesis (anthropic).
+openai>=1.0
+anthropic>=0.40
+
+# --- Tests / CI ---
+pytest>=8.0
+
+# Note: `pgvector_retrieval` is a LOCAL module (not on PyPI), imported lazily by
+# state_persistence for the pgvector path. Its source is not in this tree yet
+# (orphan bytecode) — see gap report.
