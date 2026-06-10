@@ -262,6 +262,75 @@ def compute_indice_longevidad(
                   derivaciones=derivaciones, completitud=completitud)
 
 
+# ------------------------------------------------------------------
+# Puente labs → inputs del Índice (mapea nombres MX + normaliza unidades)
+# ------------------------------------------------------------------
+
+# clave del Índice → patrones (regex) sobre el nombre crudo del biomarcador del lab MX.
+_LAB_SYNONYMS: Dict[str, List[str]] = {
+    "glucosa_ayuno": [r"glucosa"],  # se excluye postprandial/curva abajo
+    "hba1c": [r"hemoglobina\s+glucosilada", r"glucohemoglobina", r"hba1c", r"\ba1c\b"],
+    "apob": [r"apolipoprote[ií]na\s*b", r"\bapo\s*b\b", r"\bapob\b"],
+    "trigliceridos": [r"triglic[eé]ridos"],
+    "hs_crp": [r"prote[ií]na\s*c\s*reactiva", r"hs[\s-]?crp", r"\bpcr\s*(ultra|us|hs)", r"\bpcr\b"],
+    "homocisteina": [r"homociste[ií]na"],
+}
+# nombres que invalidan un match de glucosa (no es ayuno).
+_GLUCOSA_EXCLUDE = re.compile(r"post|2\s*h|curva|carga|tolerancia", re.IGNORECASE)
+
+
+def _parse_lab_value(value: Any) -> Optional[float]:
+    """'95 mg/dL' / '5,4' / '<0.30' → float. None si no hay número."""
+    if isinstance(value, (int, float)):
+        return float(value)
+    if not isinstance(value, str):
+        return None
+    s = value.strip().replace(",", ".")
+    m = re.search(r"[-+]?\d*\.?\d+", s)
+    return float(m.group()) if m else None
+
+
+def labs_result_to_longevidad_inputs(labs_result: Dict[str, Any]) -> Dict[str, float]:
+    """
+    Convierte el `structured` del parser (biomarkers crudos del lab MX) en los inputs
+    nombrados que espera compute_indice_longevidad. Mapea por sinónimos y normaliza
+    unidades donde es ambiguo (apoB g/L↔mg/dL). Marcadores no reconocidos se ignoran.
+    """
+    markers = (labs_result.get("biomarkers") or labs_result.get("biomarcadores")
+               or labs_result.get("markers") or [])
+    out: Dict[str, float] = {}
+    for m in markers:
+        if not isinstance(m, dict):
+            continue
+        name = (m.get("name") or "").lower()
+        val = _parse_lab_value(m.get("value"))
+        unit = (m.get("unit") or "").lower()
+        if not name or val is None:
+            continue
+        for key, patterns in _LAB_SYNONYMS.items():
+            if key in out:
+                continue  # primer match gana
+            if key == "glucosa_ayuno" and _GLUCOSA_EXCLUDE.search(name):
+                continue
+            if any(re.search(p, name) for p in patterns):
+                # apoB: g/L (0.X) → mg/dL (×100). Heurística por unidad o magnitud.
+                if key == "apob" and ("g/l" in unit or (val < 10 and "mg" not in unit)):
+                    val = val * 100.0
+                out[key] = val
+                break
+    return out
+
+
+def compute_from_labs_result(labs_result: Dict[str, Any], *,
+                             wearable: Optional[Dict[str, float]] = None,
+                             cuestionario: Optional[Dict[str, float]] = None) -> Dict[str, Any]:
+    """Atajo del puente 2→3: structured del parser → Vigente Longevidad framed."""
+    return compute_indice_longevidad(
+        labs=labs_result_to_longevidad_inputs(labs_result),
+        wearable=wearable, cuestionario=cuestionario,
+    )
+
+
 def headline_text(resultado: Dict[str, Any]) -> str:
     """
     Texto seguro para UI/WhatsApp. El claim-guard valida la parte VARIABLE (donde

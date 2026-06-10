@@ -56,7 +56,10 @@ def ingest_labs_pdf(beta_id: str, pdf_path: str, *, dry_run: bool = False) -> Di
         return {"ok": True, "dry_run": True, "method": structured.get("extraction_method"),
                 "summary_text": "(dry-run) estudio recibido."}
 
-    markers = structured.get("biomarcadores") or structured.get("markers") or []
+    # El parser (LABS_JSON_SCHEMA) emite "biomarkers" (inglés). Aceptamos alias por
+    # robustez, pero "biomarkers" es la key real de producción.
+    markers = (structured.get("biomarkers") or structured.get("biomarcadores")
+               or structured.get("markers") or [])
     n = len(markers) if isinstance(markers, list) else 0
     warnings = []
     try:
@@ -69,12 +72,35 @@ def ingest_labs_pdf(beta_id: str, pdf_path: str, *, dry_run: bool = False) -> Di
                 "summary_text": "Recibí el archivo pero no detecté biomarcadores claros. "
                                 "¿Puedes reenviarlo más nítido o en PDF? Si no, el equipo lo revisa."}
 
-    # Persistir: resultado estructurado en estado + slot labs_parseados.
+    # Puente 2→3: calcular el Vigente Longevidad con estos labs (nivel B: se GUARDA
+    # en el estado, NO se expone al beta). El resultado ya viene "framed" (etiqueta,
+    # disclaimer, doble umbral). Best-effort: si falla, el labs_result igual se guarda.
+    indice = None
+    try:
+        from indice_vigente import compute_from_labs_result
+        # Si el estado ya tiene señales previas (wearable/cuestionario), súmalas.
+        prev = {}
+        try:
+            from state_persistence import load_state as _ls
+            prev = _ls(beta_id) or {}
+        except Exception:
+            pass
+        indice = compute_from_labs_result(
+            structured,
+            wearable=prev.get("wearable_result"),
+            cuestionario=prev.get("cuestionario_result"),
+        )
+    except Exception as e:
+        print(f"[labs_ingest] WARN compute_indice({beta_id}): {e}")
+
+    # Persistir: resultado estructurado + índice + slot labs_parseados (un solo save).
     try:
         from state_persistence import load_state, save_state, get_current_version
         state = load_state(beta_id) or {"beta_id": beta_id}
         state["labs_result"] = {**structured, "_ingested_at": _utc_now(),
                                 "_source_path": os.path.basename(pdf_path)}
+        if indice is not None:
+            state["indice_longevidad"] = indice  # nivel B — interno, no se muestra al beta
         try:
             save_state(beta_id, state, expected_version=get_current_version(beta_id) or 0)
         except Exception:

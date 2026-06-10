@@ -17,11 +17,14 @@ from whatsapp_channel import (
 )
 
 
+# Estructura REAL del parser (LABS_JSON_SCHEMA): key "biomarkers" + name/value/unit/flag.
+# (Antes este fixture usaba "biomarcadores"/nombre/valor — formato que el parser NO
+# produce — y ocultaba que labs_ingest leía la key equivocada.)
 _FAKE_LABS = {
-    "biomarcadores": [
-        {"nombre": "hs-CRP", "valor": 0.8, "unidad": "mg/L", "flag": "normal"},
-        {"nombre": "Glucosa", "valor": 110, "unidad": "mg/dL", "flag": "alto"},
-        {"nombre": "HbA1c", "valor": 5.9, "unidad": "%", "flag": "alto"},
+    "biomarkers": [
+        {"name": "hs-CRP", "value": "0.8", "unit": "mg/L", "flag": "normal"},
+        {"name": "Glucosa", "value": "110", "unit": "mg/dL", "flag": "high"},
+        {"name": "HbA1c", "value": "5.9", "unit": "%", "flag": "high"},
     ],
     "extraction_method": "text",
 }
@@ -90,13 +93,13 @@ class TestIngest(unittest.TestCase):
         state = load_state(self.beta)
         self.assertTrue((state.get("slots") or {}).get("labs_parseados"))
         self.assertIn("labs_result", state)
-        self.assertEqual(len(state["labs_result"]["biomarcadores"]), 3)
+        self.assertEqual(len(state["labs_result"]["biomarkers"]), 3)
 
     def test_no_markers_does_not_fill_slot(self):
         import labs_ingest
         from state_persistence import load_state
         with patch("scripts.labs_intake_manual.process_pdf",
-                   return_value={"biomarcadores": [], "extraction_method": "vision"}):
+                   return_value={"biomarkers": [], "extraction_method": "vision"}):
             r = labs_ingest.ingest_labs_pdf(self.beta, "/tmp/empty.pdf")
         self.assertFalse(r["ok"])
         state = load_state(self.beta) or {}

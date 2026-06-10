@@ -57,6 +57,7 @@ jobs:
             test_c1_idempotency.py \
             test_whatsapp_channel.py \
             test_indice_vigente.py \
+            test_bridge_labs_indice.py \
             test_onboarding_flow.py \
             test_labs_ingest.py
 
