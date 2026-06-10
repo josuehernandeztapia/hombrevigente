@@ -1,0 +1,32 @@
+name: Proactive Dry-Run (health-aware decide)
+
+# G4: scheduled, SAFE-by-default proactive pass. Always dry-run here — it loads
+# pending actions and runs the idemp + health gate without delivering anything
+# (no secrets needed). Real delivery is a separate, manually-gated step that
+# requires HV_PROACTIVE_SENDER=on + WhatsApp creds (see send_proactive_action.py).
+
+on:
+  schedule:
+    - cron: "0 14 * * *"   # 14:00 UTC daily
+  workflow_dispatch:
+    inputs:
+      limit:
+        description: "Max pending actions to process"
+        required: false
+        default: "50"
+
+jobs:
+  decide:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: rag-bot
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Decide (dry-run, no delivery)
+        env:
+          HV_STATE_PERSISTENCE: files
+        run: python scripts/send_proactive_action.py --limit "${{ github.event.inputs.limit || '50' }}"

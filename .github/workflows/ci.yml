@@ -1,0 +1,36 @@
+name: CI
+
+# G4: regression protection. The golden/C1/health/sender/RAG tests already exist;
+# this is what actually runs them on every push/PR (previously nothing did).
+
+on:
+  push:
+    branches: ["main", "close-gaps-**"]
+    paths: ["rag-bot/**", ".github/workflows/ci.yml"]
+  pull_request:
+    paths: ["rag-bot/**", ".github/workflows/ci.yml"]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: rag-bot
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install test deps
+        run: pip install pytest
+
+      - name: Unit + regression tests (golden, C1 idempotency, health gate, sender, traces, RAG)
+        # File-mode tests: no Postgres / no network / no secrets required.
+        env:
+          HV_STATE_PERSISTENCE: files
+        run: python -m pytest test_beta_state.py -q --tb=short
+
+      - name: Golden regression runner (standalone)
+        run: python scripts/proactive_golden.py
