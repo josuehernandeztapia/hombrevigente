@@ -54,42 +54,31 @@ def test_openai():
     return valid
 
 def test_vector_db():
-    """Test Vector Database configuration"""
+    """Test Vector Database configuration (canonical: local JSON index + optional pgvector)."""
     print_header("🗄️  VECTOR DATABASE")
 
-    # Opción 1: Qdrant
+    db_url = os.getenv("HV_DATABASE_URL") or os.getenv("DATABASE_URL", "")
+    has_pgvector = "postgres" in db_url
+
+    # Backend alternativo (opcional)
     qdrant_url = os.getenv("QDRANT_URL")
     qdrant_key = os.getenv("QDRANT_API_KEY")
-
-    # Opción 2: Pinecone
-    pinecone_key = os.getenv("PINECONE_API_KEY")
-    pinecone_env = os.getenv("PINECONE_ENVIRONMENT")
-    pinecone_index = os.getenv("PINECONE_INDEX_NAME")
-
     has_qdrant = qdrant_url and qdrant_key
-    has_pinecone = pinecone_key and pinecone_env and pinecone_index
 
-    if has_pinecone:
-        print("📍 Configuración: PINECONE")
-        print_var("PINECONE_API_KEY", pinecone_key, required=True)
-        print_var("PINECONE_ENVIRONMENT", pinecone_env, required=True)
-        print_var("PINECONE_INDEX_NAME", pinecone_index, required=True)
-
-        if pinecone_key and pinecone_key.startswith("pcsk_"):
-            print("   └─ Formato: ✅ Válido (pcsk_...)")
-
+    if has_pgvector:
+        print("📍 Backend: PGVECTOR (Postgres)")
+        print_var("HV_DATABASE_URL/DATABASE_URL", db_url, required=True)
         return True
 
     elif has_qdrant:
-        print("📍 Configuración: QDRANT")
+        print("📍 Backend: QDRANT (alternativo)")
         print_var("QDRANT_URL", qdrant_url, required=True)
         print_var("QDRANT_API_KEY", qdrant_key, required=True)
         return True
 
     else:
-        print("❌ NO hay Vector Database configurada")
-        print("   Configurar PINECONE o QDRANT en .env")
-        return False
+        print("📍 Backend: índice local JSON (knowledge_base/embeddings_local.json) — default sin DB")
+        return True
 
 def test_optional_services():
     """Test servicios opcionales (Twilio, Whisper)"""

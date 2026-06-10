@@ -20,7 +20,7 @@ numpy>=1.26.0
 # Data visualization (opcional, para análisis)
 plotly==5.18.0
 
-# RAG local + legacy Pinecone
+# RAG local (embeddings OpenAI + índice local/pgvector)
 openai>=1.12.0
 python-dotenv>=1.0.0
 
