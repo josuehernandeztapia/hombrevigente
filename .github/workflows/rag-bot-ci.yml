@@ -53,7 +53,8 @@ jobs:
             test_mvp0_lib.py \
             test_beta_state.py \
             test_api_rag.py \
-            test_newsletter_approval.py
+            test_newsletter_approval.py \
+            test_c1_idempotency.py
 
       - name: Golden set (gates-only)
         run: python golden_runner.py --gates-only
