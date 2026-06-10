@@ -66,7 +66,10 @@ class TestC1IdempotencyAtomic(unittest.TestCase):
         with tempfile.TemporaryDirectory() as td:
             # Isolate pending/executed files for this test (state_persistence + action_handler honor this)
             os.environ["HV_PENDING_ACTIONS_DIR"] = td
-            os.environ["HV_STATE_PERSISTENCE"] = "files"  # force file path for the atomic check
+            # Use "postgres" for the ssot check inside health gate so the C1 idemp test can exercise
+            # real execute path (is_idemp check happens before gate). Gate itself is tested separately.
+            # Persistence layer still falls back to files because no real PG URL is configured.
+            os.environ["HV_STATE_PERSISTENCE"] = "postgres"  # makes compute... is_healthy=True for this test
 
             # Build a representative action (idemp_key will be derived inside generate/execute too)
             action: Dict[str, Any] = {
