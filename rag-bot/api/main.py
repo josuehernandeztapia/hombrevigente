@@ -8,7 +8,7 @@ import json
 import os
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Literal, Optional
+from typing import Dict, Literal, Optional
 
 from dotenv import load_dotenv
 from fastapi import FastAPI, Header, HTTPException, Query, Request
@@ -401,6 +401,33 @@ def admin_metrics(
     _require_admin_pin(pin, x_admin_pin)
     from action_handler import compute_agent_metrics
     return compute_agent_metrics()
+
+
+class IndiceLongevidadRequest(BaseModel):
+    """Inputs para validar la metodología del Índice (uso interno, nivel A)."""
+    labs: Optional[Dict[str, float]] = None
+    wearable: Optional[Dict[str, float]] = None
+    cuestionario: Optional[Dict[str, float]] = None
+
+
+@app.post("/admin/indice/longevidad")
+def admin_indice_longevidad(
+    body: IndiceLongevidadRequest,
+    pin: str = Query(""),
+    x_admin_pin: Optional[str] = Header(None, alias="x-admin-pin"),
+):
+    """
+    Calcula el Vigente Longevidad para validar la metodología (NIVEL A — interno).
+    Gated por admin PIN; NO se expone al beta ni se persiste en su estado. Promover a
+    cara-al-usuario requiere flag + revisión COFEPRIS (ver docs/Metodologia_Indice_Vigente.md).
+    """
+    _require_admin_pin(pin, x_admin_pin)
+    from indice_vigente import compute_indice_longevidad, headline_text
+    r = compute_indice_longevidad(
+        labs=body.labs, wearable=body.wearable, cuestionario=body.cuestionario
+    )
+    r["headline"] = headline_text(r)
+    return r
 
 
 @app.post("/admin/calibrate")
