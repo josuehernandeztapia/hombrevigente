@@ -610,6 +610,42 @@ def _twilio_public_url(request: Request) -> str:
     return url
 
 
+def _handle_inbound_media(beta_id: str, form: dict, num_media: int) -> Optional[str]:
+    """
+    Descarga el primer media soportado (PDF/imagen = estudio) e ingiere labs.
+    Devuelve el texto de respuesta, o None si el media no es un estudio (deja que
+    siga el flujo de texto). PII: el archivo se guarda en dir efímero por beta.
+    """
+    import tempfile
+    from whatsapp_channel import (
+        download_twilio_media, is_supported_labs_media, ChannelSendError,
+    )
+    from labs_ingest import ingest_labs_pdf
+
+    for i in range(num_media):
+        url = form.get(f"MediaUrl{i}", "")
+        ctype = form.get(f"MediaContentType{i}", "")
+        if not url or not is_supported_labs_media(ctype):
+            continue
+        try:
+            dest_dir = os.path.join(
+                os.getenv("HV_LABS_INBOX_DIR", tempfile.gettempdir()), beta_id
+            )
+            path = download_twilio_media(url, dest_dir, content_type=ctype,
+                                         filename_stem=f"lab_{i}")
+            result = ingest_labs_pdf(beta_id, path)
+            return result.get("summary_text") or "Recibí tu estudio, gracias."
+        except ChannelSendError as e:
+            print(f"[wa-webhook] WARN media download {beta_id}: {e}")
+            return ("Tu estudio llegó pero no pude descargarlo ahora; "
+                    "el equipo lo revisará. 🙌")
+        except Exception as e:
+            print(f"[wa-webhook] WARN media ingest {beta_id}: {e}")
+            return ("Recibí tu archivo pero no pude leerlo automáticamente; "
+                    "el equipo lo revisa a mano.")
+    return None  # ningún media soportado → seguir con el texto
+
+
 @app.post("/webhook/whatsapp")
 async def whatsapp_webhook(request: Request):
     """
@@ -639,6 +675,18 @@ async def whatsapp_webhook(request: Request):
         _sm.record_turn(beta_id, channel="whatsapp")
     except Exception as e:
         print(f"[wa-webhook] WARN record_turn({beta_id}): {e}")
+
+    # Estudios (labs) por el hilo: si el beta adjunta un PDF/imagen, lo ingerimos
+    # (parse → biomarcadores → slot labs_parseados). Gated por HV_FEATURE_WA_LABS.
+    num_media = 0
+    try:
+        num_media = int(form.get("NumMedia", "0") or "0")
+    except ValueError:
+        num_media = 0
+    if num_media > 0 and is_enabled("WA_LABS", default=True):
+        media_reply = _handle_inbound_media(beta_id, form, num_media)
+        if media_reply is not None:
+            return Response(content=twiml_reply(media_reply), media_type="application/xml")
 
     if not body:
         return Response(content=twiml_empty(), media_type="application/xml")

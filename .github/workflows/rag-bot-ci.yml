@@ -56,7 +56,8 @@ jobs:
             test_newsletter_approval.py \
             test_c1_idempotency.py \
             test_whatsapp_channel.py \
-            test_onboarding_flow.py
+            test_onboarding_flow.py \
+            test_labs_ingest.py
 
       - name: Golden set (gates-only)
         run: python golden_runner.py --gates-only

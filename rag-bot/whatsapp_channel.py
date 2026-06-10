@@ -187,6 +187,51 @@ def send_whatsapp(to_phone: str, body: str = "", *,
 
 
 # ------------------------------------------------------------------
+# Descarga de media inbound (labs/estudios que el beta manda por el hilo)
+# ------------------------------------------------------------------
+
+# Solo aceptamos documentos/imágenes (estudios). Audio/video/otros se ignoran.
+_LABS_CONTENT_EXT = {
+    "application/pdf": ".pdf",
+    "image/jpeg": ".jpg",
+    "image/jpg": ".jpg",
+    "image/png": ".png",
+    "image/heic": ".heic",
+    "image/webp": ".webp",
+}
+
+
+def is_supported_labs_media(content_type: str) -> bool:
+    return (content_type or "").split(";")[0].strip().lower() in _LABS_CONTENT_EXT
+
+
+def download_twilio_media(url: str, dest_dir: str, *, content_type: str = "",
+                          filename_stem: str = "lab") -> str:
+    """
+    Descarga un media de Twilio (la MediaUrl requiere basic auth con las creds de
+    la cuenta) a dest_dir. Devuelve la ruta local. Lanza ChannelSendError si no hay
+    creds o la descarga falla. El archivo es PII (estudio) → vive en dir privado/efímero.
+    """
+    import requests  # lazy
+
+    sid = os.getenv("TWILIO_ACCOUNT_SID", "")
+    token = os.getenv("TWILIO_AUTH_TOKEN", "")
+    if not (sid and token):
+        raise ChannelSendError("Twilio no configurado (TWILIO_ACCOUNT_SID/AUTH_TOKEN)")
+
+    resp = requests.get(url, auth=(sid, token), timeout=60)
+    if resp.status_code // 100 != 2:
+        raise ChannelSendError(f"Twilio media {resp.status_code}: {resp.text[:200]}")
+
+    ct = content_type or resp.headers.get("Content-Type", "")
+    ext = _LABS_CONTENT_EXT.get(ct.split(";")[0].strip().lower(), ".bin")
+    Path(dest_dir).mkdir(parents=True, exist_ok=True)
+    dest = Path(dest_dir) / f"{filename_stem}{ext}"
+    dest.write_bytes(resp.content)
+    return str(dest)
+
+
+# ------------------------------------------------------------------
 # Respuesta inline al webhook (TwiML)
 # ------------------------------------------------------------------
 
