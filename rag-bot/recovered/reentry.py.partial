@@ -1,0 +1,46 @@
+# Source Generated with Decompyle++
+# File: reentry.cpython-311.pyc (Python 3.11)
+
+'''
+ReentryHandler — Fase 4 (Capa 3 de la Guía Agéntica Estándar).
+
+Implementación directa del patrón recomendado:
+
+function computeResumeMessage(state, hoursAway) {
+  if (hoursAway < 24) return null;
+  if (hoursAway < 72)  return { band: "24h-72h", text: `Retomamos. Estás en ${phase}. Falta ${missing.join(", ")}.` };
+  if (hoursAway < 168) return { band: "3d-7d",   text: `Tu trámite está en ${phase} con ${pct}% de avance. ¿Continuamos?` };
+  return                       { band: "7d+",    text: `Tu trámite quedó pausado en ${phase}. Si quieres retomarlo, dime.` };
+}
+
+Se usa last_active_at (garantizado dentro del state_data desde Fase 1/2).
+'''
+from __future__ import annotations
+from datetime import datetime, timezone
+from typing import Any, Dict, Optional
+
+def _parse_last_active(state = None):
+    ts = state.get('last_active_at')
+    if not ts:
+        return None
+    
+    try:
+        if ts.endswith('Z'):
+            ts = ts[:-1] + '+00:00'
+        return datetime.fromisoformat(ts)
+    except Exception:
+        return None
+
+
+
+def compute_hours_away(state = None):
+    '''Devuelve horas desde last_active_at (None si no hay dato).'''
+    last = _parse_last_active(state)
+    if not last:
+        return None
+    now = None.now(timezone.utc)
+    delta = now - last
+    return delta.total_seconds() / 3600
+
+
+def _calculate_progress(state = None):

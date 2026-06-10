@@ -1,0 +1,164 @@
+# Source Generated with Decompyle++
+# File: state_manager.cpython-311.pyc (Python 3.11)
+
+'''
+StateManager — Fase 2 de la Guía Agéntica Estándar (Capa 3).
+
+Implementa la API central del state machine resumible con:
+- Optimistic locking vía state_version (con reintento único en conflicto)
+- fill_slot idempotente (mismo valor → no genera write)
+- last_active_at actualizado en toda mutación (dentro del state_data)
+- Uso de la capa de persistencia de Fase 1 (soporta files/postgres/dual)
+- Lógica de slots y next_action delegada a beta_state (derivación preservada)
+
+Aún no incluye ReentryHandler completo (eso es Fase 4).
+
+Respeta las aclaraciones previas (puntos del usuario):
+- Slots: derivados en sync/derive, pero persistidos en state_data.
+- turn_count: denormalizado aquí para lecturas rápidas; SSOT atómico vía next_turn_number() de hv_agent_traces (implementado).
+- Lecturas/escrituras van por la política de state_persistence (postgres-first en dual-write).
+'''
+from __future__ import annotations
+from datetime import datetime, timezone
+from typing import Any, Dict, Optional, Tuple
+from beta_state import PHASES, WEEK_PHASES, BetaState, compute_next_action, derive_state_from_intake, _norm_phase, _slot_snapshot
+from state_persistence import StateVersionConflictError, ensure_last_active, get_current_version, load_state, next_turn_number, save_state
+
+try:
+    from traces import build_turn_payload, persist_turn_trace
+except Exception:
+    
+    build_turn_payload = lambda **k: { }
+    
+    persist_turn_trace = lambda p: pass
+
+from reentry import compute_resume_message, get_resume_context, compute_hours_away
+
+def _utc_now():
+    return datetime.now(timezone.utc).isoformat()
+
+
+class StateManager:
+    '''
+    StateManager central (inspirado directamente en el sketch de la Guía).
+
+    Uso típico:
+        sm = StateManager()
+        state, version = sm.get_state(beta_id)
+        state = sm.fill_slot(beta_id, "foto_baseline", True, expected_version=version)
+        state = sm.record_turn(beta_id, channel="whatsapp")
+    '''
+    
+    def get_state(self = None, beta_id = None):
+        '''
+        Devuelve (state_dict, current_version).
+        El state_dict es el contenido de state_data (sin la clave interna de versión).
+        turn_count se mantiene sincronizado con el SSOT de traces en mutaciones.
+        '''
+        pass
+    # WARNING: Decompyle incomplete
+
+    
+    def _ensure_state_dict(self = None, beta_id = None, intake = None):
+        '''
+        Carga estado existente o deriva uno fresco desde intake si se provee.
+        '''
+        (state, version) = self.get_state(beta_id)
+        if state:
+            return (state, version)
+        if None:
+            fresh = derive_state_from_intake(intake).to_dict()
+            fresh = ensure_last_active(fresh)
+            return (fresh, 0)
+        return ({
+            'beta_id': None,
+            'phase': 'onboarding',
+            'next_action': 'Completar Tally (8 min)',
+            'slots': { },
+            'turn_count': 0,
+            'history': [] }, 0)
+
+    
+    def fill_slot(self = None, beta_id = None, slot = None, value = None, *, expected_version, intake):
+        '''
+        Idempotente: si el slot ya tiene exactamente ese valor, NO escribe (no bumpea versión).
+        Actualiza last_active_at solo si hay cambio real.
+        '''
+        (state, current_version) = self._ensure_state_dict(beta_id, intake)
+    # WARNING: Decompyle incomplete
+
+    
+    def transition(self = None, beta_id = None, target_phase = None, *, expected_version, force, note, intake):
+        '''
+        Cambia de fase.
+        - force=True permite saltos que normalmente bloquearía (equivalente al admin endpoint de la guía).
+        - Actualiza history y last_active_at.
+        '''
+        if target_phase not in PHASES:
+            raise ValueError(f'''Fase inválida: {target_phase}''')
+        (state, current_version) = self._ensure_state_dict(beta_id, intake)
+    # WARNING: Decompyle incomplete
+
+    
+    def record_turn(self = None, beta_id = None, *, channel, increment, expected_version):
+        '''
+        Incrementa el contador de turnos y actualiza last_channel + last_active_at.
+        Usa next_turn_number de traces como SSOT atómico (Guía Capa 2).
+        El state mantiene denormalizado turn_count para lecturas rápidas.
+        '''
+        (state, current_version) = self.get_state(beta_id)
+        if not state:
+            state = {
+                'beta_id': beta_id,
+                'phase': 'onboarding',
+                'next_action': '',
+                'slots': { },
+                'turn_count': 0,
+                'history': [] }
+            current_version = 0
+    # WARNING: Decompyle incomplete
+
+    
+    def get_suggested_next_action(self = None, beta_id = None):
+        '''Devuelve el next_action calculado desde el estado actual.'''
+        (state, _) = self.get_state(beta_id)
+        phase = state.get('phase', 'onboarding')
+        slots = state.get('slots', { })
+        intake_like = {
+            'pipeline': {
+                'estado': phase } }
+        return compute_next_action(intake_like, phase, slots)
+
+    
+    def resume_conversation(self = None, beta_id = None, hours_away = None):
+        '''
+        Fase 4 — ReentryHandler (patrón exacto de la Guía).
+        Devuelve {band, text} o None si el usuario regresó hace <24h.
+        '''
+        (state, _) = self.get_state(beta_id)
+        if not state:
+            return None
+        return None(state, hours_away = hours_away)
+
+    
+    def sync_from_intake(self = None, intake = None, *, channel, slot_overrides):
+        '''
+        Mantiene compatibilidad con el flujo actual de sync.
+        Deriva el estado fresco (slots derivados) y lo persiste vía fill/transition si es necesario.
+        '''
+        if not intake.get('meta', { }).get('tally_response_id'):
+            beta_id = 'unknown'
+            fresh = derive_state_from_intake(intake, slot_overrides = slot_overrides).to_dict()
+            fresh = ensure_last_active(fresh)
+            if not get_current_version(beta_id):
+                current_v = 0
+                
+                try:
+                    save_state(beta_id, fresh, expected_version = current_v)
+                except StateVersionConflictError:
+                    pass
+
+        return self.record_turn(beta_id, channel = channel)
+
+
+state_manager = StateManager()

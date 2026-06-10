@@ -1,0 +1,33 @@
+# Source Generated with Decompyle++
+# File: beta_state.cpython-311.pyc (Python 3.11)
+
+'''
+Estado operativo por beta (S2) — fase Pipeline + next_action + slots.
+
+Fase 1 (Guía Agéntica Estándar):
+- Persistencia dual (files + postgres) detrás de HV_STATE_PERSISTENCE.
+- hv_beta_states (state_data JSONB + state_version) es el SSOT cuando el flag apunta a postgres.
+- Slots: se derivan desde intake en sync/derive (modelo actual), pero se persisten tal cual en state_data.
+- turn_count: se mantiene denormalizado en el state (lectura rápida). El SSOT atómico vendrá de hv_agent_traces (Fase 3).
+- Política de lectura: postgres gana cuando HV_STATE_PERSISTENCE=postgres|dual y DB disponible.
+  Fallback a archivos solo en error (degradación ruidosa).
+
+La lógica de derivación de slots y compute_next_action NO cambia.
+'''
+from __future__ import annotations
+import json
+import os
+import re
+from dataclasses import asdict, dataclass, field
+from datetime import datetime, timezone
+from pathlib import Path
+from typing import Any, Dict, List, Optional
+from state_persistence import StateVersionConflictError, ensure_last_active, get_current_version, load_state as _persisted_load, save_state as _persisted_save
+PHASES = ('lead', 'onboarding', 'screening', 'protocolo-entregado', 'semana-1', 'semana-2', 'semana-3', 'semana-4', 'feedback', 'escalate-humano')
+WEEK_PHASES = {
+    'semana-1',
+    'semana-2',
+    'semana-3',
+    'semana-4'}
+
+def _norm_phase(estado = None):

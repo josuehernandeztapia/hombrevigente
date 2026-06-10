@@ -1,0 +1,27 @@
+# Source Generated with Decompyle++
+# File: feature_flags.cpython-311.pyc (Python 3.11)
+
+'''
+Feature Flags — Capa 5 / production checklist de la Guía Agéntica Estándar.
+
+Patrón exacto recomendado:
+- Default ON (seguro).
+- Deshabilitar con env var HV_FEATURE_XXX=false (sin redeploy, rollback en <5s).
+- Usar para branches nuevos, gates, y "se corrige" fácil.
+
+Uso:
+    from feature_flags import is_enabled, list_active_flags
+
+    if is_enabled("PROACTIVE_EXECUTION"):
+        # código real
+
+    flags = list_active_flags()  # para /admin/health y ops
+
+Agregar nuevo flag: simplemente usar is_enabled("NUEVO_NOMBRE") en el código.
+El flag aparecerá automáticamente en list_active_flags() si se consulta.
+'''
+from __future__ import annotations
+import os
+from typing import Dict, List
+
+def _normalize(val = None):

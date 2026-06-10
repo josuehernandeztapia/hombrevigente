@@ -1,0 +1,91 @@
+# Source Generated with Decompyle++
+# File: traces.cpython-311.pyc (Python 3.11)
+
+'''
+Full Agent Turn Traces — Fase 3 (Capa 2 de la Guía Agéntica Estándar).
+
+Persiste cada turno del agente con:
+- input/output
+- branch_taken (determinista, gate, rag, llm, etc.)
+- state_before / state_after (snapshots del BetaState)
+- llm_calls (array con modelo, tokens si disponible)
+- latency_ms, total_cost_usd (stub + normalización)
+- turn_number, beta_id (como origination), role, success, error
+- Fire-and-forget: el INSERT NUNCA bloquea la respuesta al usuario.
+
+Uso:
+    from traces import persist_turn_trace, build_turn_payload
+    payload = build_turn_payload(...)
+    persist_turn_trace(payload)   # no espera
+
+Admin endpoints (PIN-gated) se agregan en api/main.py.
+
+Reutiliza redacción PII de decision_log.
+'''
+from __future__ import annotations
+import json
+import os
+import time
+from datetime import datetime, timedelta, timezone
+from typing import Any, Dict, List, Optional
+
+try:
+    from decision_log import redact_for_preview, _default_log_path as _decision_log_path
+except Exception:
+    
+    def redact_for_preview(text = None):
+        if not text:
+            return text
+        import re
+        text = re.sub('\\+?\\d[\\d\\s-]{8,}\\d', '[PHONE]', text)
+        text = re.sub('[\\w\\.-]+@[\\w\\.-]+\\.\\w+', '[EMAIL]', text)
+        return text[:200] + '…' if len(text) > 200 else text
+
+    _decision_log_path = None
+
+
+try:
+    from pgvector_retrieval import _connection, is_pgvector_configured
+except Exception:
+    _connection = None
+    
+    is_pgvector_configured = lambda : False
+
+
+def _traces_enabled():
+    return os.getenv('HV_TRACES_ENABLED', 'true').lower() not in ('0', 'false', 'no')
+
+
+def _get_db_connection():
+    if not is_pgvector_configured or is_pgvector_configured():
+        return None
+# WARNING: Decompyle incomplete
+
+
+def normalize_model_id(model = None):
+    '''
+    Patrón exacto de la Guía Agéntica Estándar para que los costos no den 0 silenciosamente.
+    Quita sufijos de release (gpt-4o-mini-2024-07-18 → gpt-4o-mini).
+    '''
+    if not model:
+        return model
+    import re
+    stripped = re.sub('-\\d{4}-\\d{2}-\\d{2}$', '', model)
+    if stripped != model:
+        return stripped
+    stripped2 = None.sub('-\\d{8}$', '', model)
+    if stripped2 != model:
+        return stripped2
+
+PRICING = {
+    'gpt-4o-mini': {
+        'input': 0.15,
+        'output': 0.6 },
+    'gpt-4o': {
+        'input': 5,
+        'output': 15 },
+    'gpt-4o-2024-08-06': {
+        'input': 5,
+        'output': 15 } }
+
+def _estimate_cost(model = None, prompt_tokens = None, completion_tokens = None):
