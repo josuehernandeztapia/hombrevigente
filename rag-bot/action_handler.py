@@ -769,8 +769,38 @@ def execute_pending_action(action: Dict[str, Any], *, dry_run: bool = False, for
     if dry_run:
         print(f"[execute][dry-run] Would send to {beta_id}: {message[:80]}...")
     else:
-        # Real execution path (only reached if dry_run or force or is_healthy)
-        print(f"[execute] SENT to {beta_id}: {message[:80]}...")
+        # Real execution path (only reached if dry_run or force or is_healthy).
+        # REAL_SENDER flag (default OFF) gates actual WhatsApp delivery via Twilio.
+        # On send failure the action STAYS pending (no mark, no state bump) so the
+        # next cycle retries — e.g. free-form outside the 24h window until the
+        # Meta-approved template (TWILIO_CONTENT_SID_PROACTIVE) is configured.
+        if is_enabled("REAL_SENDER", default=False):
+            try:
+                from whatsapp_channel import (
+                    ChannelSendError, phone_for_beta, send_whatsapp, twilio_configured,
+                )
+                if not twilio_configured():
+                    raise ChannelSendError("Twilio creds missing")
+                to_phone = phone_for_beta(beta_id)
+                if not to_phone:
+                    raise ChannelSendError(f"no phone known for beta {beta_id}")
+                content_sid = os.getenv("TWILIO_CONTENT_SID_PROACTIVE") or None
+                receipt = send_whatsapp(
+                    to_phone, message,
+                    content_sid=content_sid,
+                    content_variables={"1": message} if content_sid else None,
+                )
+                action = dict(action)
+                action["delivery"] = {"channel": "whatsapp", **receipt}
+                print(f"[execute] SENT (twilio sid={receipt.get('sid')}) to {beta_id}: {message[:80]}...")
+            except Exception as e:
+                print(f"[execute][send-failed] beta={beta_id}: {e}. Action stays pending.")
+                out = dict(action)
+                out["status"] = "send_failed"
+                out["send_error"] = str(e)[:300]
+                return out
+        else:
+            print(f"[execute] SENT (simulated; REAL_SENDER off) to {beta_id}: {message[:80]}...")
 
         # Record in BetaState that a proactive outreach happened.
         # This is important so future signal detection can take it into account

@@ -11,9 +11,9 @@ from pathlib import Path
 from typing import Literal, Optional
 
 from dotenv import load_dotenv
-from fastapi import FastAPI, Header, HTTPException, Query
+from fastapi import FastAPI, Header, HTTPException, Query, Request
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import HTMLResponse, JSONResponse
+from fastapi.responses import HTMLResponse, JSONResponse, Response
 from pydantic import BaseModel, Field
 
 # Cargar .env desde rag-bot/ aunque uvicorn arranque desde api/
@@ -33,6 +33,12 @@ from traces import get_trace_stats, read_traces  # noqa: E402
 from signal_detector import BetaSignalDetector  # noqa: E402
 from action_handler import load_pending_actions, run_detect_and_act, get_proactive_health_trend  # noqa: E402
 from feature_flags import list_active_flags, is_enabled  # noqa: E402  # Guía Capa 5
+from whatsapp_channel import (  # noqa: E402
+    beta_id_for_phone,
+    twiml_empty,
+    twiml_reply,
+    validate_twilio_signature,
+)
 
 app = FastAPI(
     title="Hombre Vigente RAG API",
@@ -583,6 +589,73 @@ def newsletter_approve(
     else:
         msg = "Solicitud de cambios recibida. Recibirás un nuevo borrador por correo."
     return HTMLResponse(_approval_page(True, msg))
+
+
+# ------------------------------------------------------------------
+# WhatsApp (Twilio) — webhook inbound: turn + last_active + concierge RAG
+# ------------------------------------------------------------------
+
+_WA_FALLBACK_REPLY = (
+    "Recibido. En un momento te respondemos con calma — "
+    "si es urgente, escribe 'humano' y te conectamos con el equipo."
+)
+
+
+def _twilio_public_url(request: Request) -> str:
+    """Twilio firma la URL pública (https tras el proxy de Fly)."""
+    url = str(request.url)
+    proto = request.headers.get("x-forwarded-proto")
+    if proto and url.startswith("http://") and proto == "https":
+        url = "https://" + url[len("http://"):]
+    return url
+
+
+@app.post("/webhook/whatsapp")
+async def whatsapp_webhook(request: Request):
+    """
+    Inbound de Twilio (form-encoded). Efectos por mensaje:
+    1. record_turn(channel='whatsapp') → bump de last_active_at (apaga señales
+       de inactividad del lazo proactivo de forma natural).
+    2. Respuesta concierge vía RAG (gates + confianza ya integrados en _run_query).
+    Responde TwiML inline (no consume Messages API ni requiere template).
+    """
+    form = {k: str(v) for k, v in (await request.form()).items()}
+
+    # Firma (fail-closed). HV_TWILIO_VALIDATE=false solo para dev/tests.
+    if os.getenv("HV_TWILIO_VALIDATE", "true").strip().lower() not in ("false", "0", "no"):
+        sig = request.headers.get("X-Twilio-Signature", "")
+        if not validate_twilio_signature(_twilio_public_url(request), form, sig):
+            raise HTTPException(status_code=403, detail="invalid twilio signature")
+
+    from_phone = form.get("From", "")
+    body = (form.get("Body") or "").strip()
+    if not from_phone:
+        return Response(content=twiml_empty(), media_type="application/xml")
+
+    beta_id = beta_id_for_phone(from_phone)
+
+    try:
+        from state_manager import state_manager as _sm
+        _sm.record_turn(beta_id, channel="whatsapp")
+    except Exception as e:
+        print(f"[wa-webhook] WARN record_turn({beta_id}): {e}")
+
+    if not body:
+        return Response(content=twiml_empty(), media_type="application/xml")
+
+    reply = _WA_FALLBACK_REPLY
+    try:
+        res = _run_query(
+            body, role="concierge", use_llm=True,
+            beta_id=beta_id, channel="whatsapp",
+        )
+        ans = (res or {}).get("answer") or ""
+        if ans.strip():
+            reply = ans.strip()
+    except Exception as e:
+        print(f"[wa-webhook] WARN rag failed for {beta_id}: {e}")
+
+    return Response(content=twiml_reply(reply), media_type="application/xml")
 
 
 @app.get("/rag/query")
