@@ -120,6 +120,8 @@ INTAKE (Tally: labs, wearable, cuestionario, foto, consentimiento)
 | 34 | `luz_circadiano` | Luz mañana/noche, melatonina, metabolismo | E3–E4 | 1 |
 | 35 | `termico` | Sauna (E3) / frío (E2) — **opcional**, no obligatorio | E2–E3 | 1 |
 
+> **Metodología del Índice Vigente** (spec/contrato — 2 vertientes Estético + Longevidad, bandas por biomarcador con doble umbral y derivación): [`rag-bot/docs/Metodologia_Indice_Vigente.md`](../../docs/Metodologia_Indice_Vigente.md). Consume biomarcadores de `25_biomarcadores_panel_optimizacion` + estos pilares lifestyle. Scores **ilustrativos / modelo en validación** hasta calibrar (COMPLIANCE §0).
+
 ### Tarjetas atómicas (`tarjetas/` — 15 chunks YAML)
 
 Formato alineado a `Prompt_Construir_SSOT_RAG.md`. Una tarjeta = un embedding óptimo para el motor Peldaño 1.
