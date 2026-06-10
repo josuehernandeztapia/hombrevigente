@@ -1,0 +1,30 @@
+[
+  {
+    "signal_type": "no_activity_72h",
+    "action_type": "reengage",
+    "phase": "reentry",
+    "suggested_message_starts_with": "Hola",
+    "has_resume": false
+  },
+  {
+    "signal_type": "stalled_onboarding",
+    "action_type": "tally_reminder",
+    "phase": "onboarding",
+    "suggested_message_starts_with": "Recuerda",
+    "has_resume": false
+  },
+  {
+    "signal_type": "low_progress",
+    "action_type": "checkin",
+    "phase": "followup",
+    "suggested_message_starts_with": "Check-in",
+    "has_resume": false
+  },
+  {
+    "signal_type": "missing_labs",
+    "action_type": "labs_reminder",
+    "phase": "labs",
+    "suggested_message_starts_with": "Te faltan",
+    "has_resume": false
+  }
+]
