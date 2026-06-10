@@ -643,6 +643,22 @@ async def whatsapp_webhook(request: Request):
     if not body:
         return Response(content=twiml_empty(), media_type="application/xml")
 
+    # Onboarding conversacional: si el beta es lead nuevo (sin intake) o está a media
+    # conversación de onboarding, el guion determinístico conduce. Si ya tiene perfil,
+    # pasa al concierge RAG. Gated por flag HV_FEATURE_WA_ONBOARDING (default ON).
+    if is_enabled("WA_ONBOARDING", default=True):
+        try:
+            from onboarding_flow import (
+                is_onboarding_active, should_start_onboarding, start_or_advance,
+            )
+            from state_persistence import load_state
+            _state = load_state(beta_id)
+            if is_onboarding_active(_state) or should_start_onboarding(_state):
+                out = start_or_advance(beta_id, body)
+                return Response(content=twiml_reply(out["reply"]), media_type="application/xml")
+        except Exception as e:
+            print(f"[wa-webhook] WARN onboarding flow for {beta_id}: {e}")
+
     reply = _WA_FALLBACK_REPLY
     try:
         res = _run_query(
