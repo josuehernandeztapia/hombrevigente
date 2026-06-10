@@ -190,5 +190,51 @@ class TestRagRetrievalLocal(unittest.TestCase):
         self.assertTrue(res.get("answer"))
 
 
+class TestSignalDetectorWiring(unittest.TestCase):
+    """Follow-up: signal_detector -> action_handler bridge (incl. no_activity_7d)."""
+
+    def _ago(self, hours):
+        from datetime import datetime, timezone, timedelta
+        return (datetime.now(timezone.utc) - timedelta(hours=hours)).isoformat()
+
+    def test_no_activity_7d_maps_to_reengage(self):
+        from action_handler import _SIGNAL_TO_ACTION, BetaSignal, generate_action_for_signal
+        self.assertEqual(_SIGNAL_TO_ACTION.get("no_activity_7d"), "reengage")
+        a = generate_action_for_signal(BetaSignal(beta_id="b", signal_type="no_activity_7d",
+                                                   phase="followup", last_active_at=self._ago(200)))
+        self.assertEqual(a["action_type"], "reengage")
+        self.assertTrue(a["suggested_message"])
+
+    def test_detector_emits_expected_signal_types(self):
+        from signal_detector import BetaSignalDetector
+        states = [
+            {"beta_id": "b7d", "phase": "followup", "last_active_at": self._ago(200), "slots": {"a": 1}},
+            {"beta_id": "bonb", "phase": "onboarding", "last_active_at": self._ago(130), "slots": {}},
+            {"beta_id": "blabs", "phase": "labs", "last_active_at": self._ago(100),
+             "slots": {"tally_completo": 1}},
+        ]
+        types = {s.signal_type for s in BetaSignalDetector().scan(states)}
+        self.assertIn("no_activity_7d", types)
+        self.assertIn("stalled_onboarding", types)
+        self.assertIn("missing_labs", types)
+
+    def test_scan_and_generate_end_to_end(self):
+        with tempfile.TemporaryDirectory() as td:
+            os.environ["HV_STATE_PERSISTENCE"] = "files"
+            os.environ["HV_PENDING_ACTIONS_DIR"] = td
+            os.environ["HV_TRACES_DIR"] = td
+            import proactive_scan
+            states = [{"beta_id": "bz", "phase": "followup",
+                       "last_active_at": self._ago(200), "slots": {"a": 1}}]
+            results = proactive_scan.scan_and_generate(states, dry_run=True)
+            self.assertEqual(len(results), 1)
+            action = results[0]["action"]
+            self.assertEqual(action["signal_type"], "no_activity_7d")
+            self.assertEqual(action["action_type"], "reengage")
+            # last_active_at bridged -> TRAJ-HV-010 resume context populated.
+            self.assertTrue(action.get("resume_context"))
+            self.assertEqual(results[0]["result"]["status"], "dry_run_executed")
+
+
 if __name__ == "__main__":
     unittest.main()

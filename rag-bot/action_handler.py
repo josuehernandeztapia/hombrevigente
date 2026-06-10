@@ -170,6 +170,7 @@ def _compute_resume_message(last_active_at: Optional[str], phase: Optional[str] 
 # ------------------------------------------------------------------
 
 _SIGNAL_TO_ACTION: Dict[str, str] = {
+    "no_activity_7d": "reengage",
     "no_activity_72h": "reengage",
     "stalled_onboarding": "tally_reminder",
     "low_progress": "checkin",
@@ -216,6 +217,7 @@ def generate_action_for_signal(
     """
     action_type = _SIGNAL_TO_ACTION.get(signal.signal_type, "checkin")
     base = {
+        "no_activity_7d": "Han pasado varios días. Aquí seguimos contigo — ¿retomamos tu protocolo con un primer paso simple?",
         "no_activity_72h": "Hola, hace tiempo que no tenemos actividad. ¿Quieres retomar?",
         "stalled_onboarding": "Recuerda completar el Tally de síntomas cuando puedas.",
         "low_progress": "Check-in rápido: ¿cómo vas con el protocolo esta semana?",
