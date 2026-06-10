@@ -17,6 +17,9 @@ if [ -n "${HV_DATABASE_URL:-}" ]; then
   echo "[entrypoint] apply migration 002 (hv_beta_states + hv_agent_traces)"
   python -c "from pgvector_retrieval import run_migration; run_migration('migrations/002_hv_beta_states.sql')" || \
     echo "[entrypoint] WARN: migration 002 failed — state/traces may be unavailable"
+  echo "[entrypoint] apply migration 003 (hv_pending_actions — idempotencia C1)"
+  python -c "from pgvector_retrieval import run_migration; run_migration('migrations/003_hv_pending_actions.sql')" || \
+    echo "[entrypoint] WARN: migration 003 failed — proactive idempotency ledger unavailable"
 fi
 
 EMBEDDED_NEW=0
