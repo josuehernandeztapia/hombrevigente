@@ -1,2 +1,8 @@
 # Minimal deps for rag-bot CI (gates-only + unit tests)
+# No API keys needed: these cover the no-network unit suites
+# (config/frozen_context/mvp0_lib/beta_state) + the FastAPI route tests
+# (api_rag/newsletter_approval, which use TestClient without real keys).
 python-dotenv>=1.0.0
+pytest>=8.0
+fastapi>=0.110
+httpx>=0.27

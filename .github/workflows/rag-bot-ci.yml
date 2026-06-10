@@ -42,6 +42,19 @@ jobs:
           python test_rag_local.py
           python test_observability.py
 
+      - name: Extended unit suites (no API key needed)
+        # Previously these existed but no CI ran them. config/frozen_context/mvp0_lib/
+        # beta_state are pure unit; api_rag/newsletter_approval use FastAPI TestClient
+        # (no real OpenAI/Resend calls). Trajectory + test_rag (live retrieval) run in nightly.
+        run: |
+          python -m pytest -q -p no:cacheprovider \
+            test_config.py \
+            test_frozen_context.py \
+            test_mvp0_lib.py \
+            test_beta_state.py \
+            test_api_rag.py \
+            test_newsletter_approval.py
+
       - name: Golden set (gates-only)
         run: python golden_runner.py --gates-only
 
