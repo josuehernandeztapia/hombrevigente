@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """CI: golden trajectories HV."""
 
+import re
 import subprocess
 import sys
 import unittest
@@ -32,7 +33,7 @@ class TestTrajectoryRunner(unittest.TestCase):
         self.assertIn("TRAJ-HV-005", r.stdout)
         self.assertIn("resume-sin-perder-datos", r.stdout)
 
-    def test_all_six_trajectories(self):
+    def test_all_trajectories_pass(self):
         r = subprocess.run(
             [sys.executable, "trajectory_runner.py", "--all"],
             cwd=_ROOT,
@@ -40,7 +41,13 @@ class TestTrajectoryRunner(unittest.TestCase):
             text=True,
         )
         self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
-        self.assertIn("6/6 passed", r.stdout)
+        # Count-agnostic: assert every trajectory passed (passed == total), so adding
+        # an Nth trajectory (e.g. TRAJ-HV-010 made it 7) doesn't require touching this.
+        m = re.search(r"Trajectories:\s*(\d+)/(\d+)\s+passed", r.stdout)
+        self.assertIsNotNone(m, f"no trajectory summary in output:\n{r.stdout[-300:]}")
+        passed, total = int(m.group(1)), int(m.group(2))
+        self.assertEqual(passed, total, f"not all trajectories passed: {passed}/{total}")
+        self.assertGreaterEqual(total, 7, f"expected >=7 trajectories, got {total}")
 
     def test_traj_hv_002(self):
         r = subprocess.run(
