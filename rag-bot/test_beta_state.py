@@ -83,13 +83,21 @@ class TestC1IdempotencyAtomic(unittest.TestCase):
                 "created_at": "2026-06-09T12:00:00+00:00",
             }
 
-            # First execute (should run)
-            r1 = execute_pending_action(action, dry_run=False)
-            self.assertIn(r1.get("status"), ("executed", "dry_run_executed", "already_executed"))
+            # Inject a fake sender that confirms delivery, so the first execute actually
+            # consumes the action (marks executed). Real delivery is gated by flag+creds;
+            # here we isolate the C1 idempotency invariant from the (absent) WhatsApp sender.
+            from unittest.mock import patch
+            from sender import SendResult
+            sent = SendResult(status="sent", provider="fake", receipt_id="r1", cost_usd=0.0)
 
-            # Second execute with identical idempotent action (must not create second execution)
-            r2 = execute_pending_action(action, dry_run=False)
-            self.assertIn(r2.get("status"), ("already_executed", "executed"))  # already is the C1 win
+            with patch("sender.send_action", return_value=sent):
+                # First execute (should deliver + mark executed)
+                r1 = execute_pending_action(action, dry_run=False)
+                self.assertIn(r1.get("status"), ("sent", "executed"))
+
+                # Second execute with identical idempotent action (must short-circuit via C1)
+                r2 = execute_pending_action(action, dry_run=False)
+                self.assertEqual(r2.get("status"), "already_executed")  # the C1 win
 
             # Inspect executed file directly to confirm <=1 record for this idemp
             exec_path = Path(td) / "executed_actions.jsonl"
@@ -116,6 +124,51 @@ class TestHealthGate(unittest.TestCase):
         h_pg = compute_proactive_health_score(pending_count=0, drift=0.0, ssot="postgres")
         self.assertTrue(h_pg["is_healthy"])
         self.assertEqual(h_pg["score"], 100)
+
+
+class TestSenderAndTraces(unittest.TestCase):
+    """G2 sender fail-safe default + G3 trace logging in file mode."""
+
+    def test_sender_disabled_is_logsender_skipped(self):
+        # No HV_PROACTIVE_SENDER / creds -> safe LogSender, status 'skipped' (no delivery).
+        os.environ.pop("HV_PROACTIVE_SENDER", None)
+        os.environ.pop("HV_WHATSAPP_TOKEN", None)
+        os.environ.pop("HV_WHATSAPP_PHONE_ID", None)
+        from sender import get_sender, LogSender, send_action
+        self.assertIsInstance(get_sender(), LogSender)
+        res = send_action({"beta_id": "b1", "action_type": "reengage",
+                           "suggested_message": "hola"})
+        self.assertEqual(res.status, "skipped")
+        self.assertEqual(res.cost_usd, 0.0)
+
+    def test_dry_run_logs_trace_in_file_mode(self):
+        with tempfile.TemporaryDirectory() as td:
+            os.environ["HV_STATE_PERSISTENCE"] = "files"
+            os.environ["HV_TRACES_DIR"] = td
+            os.environ["HV_PENDING_ACTIONS_DIR"] = td
+            action = {
+                "beta_id": "beta-trace-1", "action_id": "act-t1",
+                "idemp_key": "beta-trace-1:low_progress::bk",
+                "signal_type": "low_progress", "action_type": "checkin",
+                "suggested_message": "Check-in", "status": "pending",
+                "created_at": "2026-06-09T12:00:00+00:00",
+            }
+            r = execute_pending_action(action, dry_run=True)
+            self.assertEqual(r.get("status"), "dry_run_executed")
+            traces = Path(td) / "agent_traces.jsonl"
+            self.assertTrue(traces.exists(), "expected agent_traces.jsonl in file mode")
+            recs = [json.loads(l) for l in traces.read_text().splitlines() if l.strip()]
+            self.assertTrue(any(rec.get("event_type") == "send" and rec.get("status") == "dry_run"
+                                for rec in recs))
+
+    def test_next_turn_number_increments_in_file_mode(self):
+        with tempfile.TemporaryDirectory() as td:
+            os.environ["HV_STATE_PERSISTENCE"] = "files"
+            os.environ["HV_TRACES_DIR"] = td
+            from state_persistence import next_turn_number
+            t1 = next_turn_number("beta-turn-x")
+            t2 = next_turn_number("beta-turn-x")
+            self.assertEqual(t2, t1 + 1)
 
 
 if __name__ == "__main__":

@@ -262,6 +262,7 @@ try:
         persist_pending_action as _persist_pending_persistence,
         mark_pending_executed as _mark_pending_executed_persistence,
         is_idemp_already_executed as _is_idemp_executed_persistence,
+        log_trace as _log_trace_persistence,
     )
 except Exception as e:
     print(f"[action_handler][warn] could not import persistence delegation (will use legacy): {e}")
@@ -269,6 +270,18 @@ except Exception as e:
     _persist_pending_persistence = None
     _mark_pending_executed_persistence = None
     _is_idemp_executed_persistence = None
+    _log_trace_persistence = None
+
+
+def log_trace(beta_id: str, **kw) -> Optional[int]:
+    """Best-effort trace into hv_agent_traces (G3). No-op if persistence unavailable."""
+    if _log_trace_persistence is None:
+        return None
+    try:
+        return _log_trace_persistence(beta_id, **kw)
+    except Exception as e:
+        print(f"[action_handler][warn] log_trace failed: {e}")
+        return None
 
 
 def load_pending_actions(status: Optional[str] = "pending", limit: int = 50, beta_id: Optional[str] = None) -> List[Dict[str, Any]]:
@@ -416,6 +429,12 @@ def execute_pending_action(
             mark_pending_executed(action, dry_run=False, block_reason=block, final_status="blocked_by_health")
         except Exception:
             pass
+        log_trace(
+            action.get("beta_id", ""), role="proactive", event_type="block",
+            action_id=action.get("action_id"), idemp_key=idemp_key,
+            status="blocked_by_health", cost_usd=0.0,
+            metadata={"reason": "blocked_by_health", "score": health.get("score")},
+        )
         return {
             "status": "blocked_by_health",
             "block_reason": block,
@@ -424,29 +443,42 @@ def execute_pending_action(
             "health": health,
         }
 
-    # Proceed (stub for sender here; real sender is out-of-scope per S-1, see send_proactive_action.py stub)
-    # In full impl this would call the WhatsApp sender + receipt + cost trace.
+    # Proceed. Dry-run never delivers; real execution calls the sender (G2) and only
+    # marks the action 'executed' (idempotency-consuming) when actually delivered.
+    beta_id = action.get("beta_id", "")
     try:
-        # fire-and-forget trace side effect (cost 0 for stub)
-        trace = {
-            "action_id": action.get("action_id"),
-            "beta_id": action.get("beta_id"),
-            "action_type": action.get("action_type"),
-            "suggested_message": action.get("suggested_message"),
-            "status": "dry_run_executed" if dry_run else "executed",
-            "executed_at": _utc_now(),
-            "dry_run": dry_run,
-            "cost_usd": 0.0,
-            "model": "stub-no-llm",
-            "health_at_exec": health,
-        }
-        mark_pending_executed(
-            action,
-            dry_run=dry_run,
-            final_status="dry_run_executed" if dry_run else "executed",
+        if dry_run:
+            mark_pending_executed(action, dry_run=True, final_status="dry_run_executed")
+            tn = log_trace(beta_id, role="proactive", event_type="send",
+                           action_id=action.get("action_id"), idemp_key=idemp_key,
+                           status="dry_run", cost_usd=0.0, metadata={"dry_run": True})
+            return {
+                "status": "dry_run_executed", "action_id": action.get("action_id"),
+                "idemp_key": idemp_key, "beta_id": beta_id, "dry_run": True,
+                "cost_usd": 0.0, "turn_number": tn, "health_at_exec": health,
+            }
+
+        # Real delivery via provider abstraction (LogSender if flag/creds absent → status 'skipped').
+        from sender import send_action  # lazy import to avoid any cycle
+        result = send_action(action)
+        tn = log_trace(
+            beta_id, role="proactive", event_type="send",
+            action_id=action.get("action_id"), idemp_key=idemp_key,
+            status=result.status, cost_usd=result.cost_usd, model=result.model,
+            metadata={"provider": result.provider, "receipt_id": result.receipt_id,
+                      "error": result.error, **(result.meta or {})},
         )
-        # also persist a trace record if desired (omitted for minimal)
-        return trace
+
+        # Only a confirmed send consumes the action; skipped/failed stay 'pending' for retry.
+        if result.status == "sent":
+            mark_pending_executed(action, dry_run=False, final_status="executed")
+        return {
+            "status": result.status, "action_id": action.get("action_id"),
+            "idemp_key": idemp_key, "beta_id": beta_id, "dry_run": False,
+            "provider": result.provider, "receipt_id": result.receipt_id,
+            "cost_usd": result.cost_usd, "error": result.error,
+            "turn_number": tn, "health_at_exec": health,
+        }
     except Exception as e:
         print(f"[action_handler][warn] execute failed for {action.get('action_id')}: {e}")
         return {"status": "error", "error": str(e), "action_id": action.get("action_id")}

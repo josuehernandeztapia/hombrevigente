@@ -346,6 +346,120 @@ def list_all_betas() -> List[Dict[str, Any]]:
 
 
 # ------------------------------------------------------------------
+# Agent Traces (G3) — turn_number atómico + costo por evento (hv_agent_traces)
+# ------------------------------------------------------------------
+# Resuelve el race del turn_number denormalizado en state_data: el SSOT del turno
+# es ahora hv_agent_traces. La asignación es atómica por beta mediante
+# pg_advisory_xact_lock(hashtext(beta_id)) + UNIQUE(beta_id, turn_number).
+# En modo files cae a un contador por-beta (best-effort, no concurrente — dev).
+
+def _turn_counter_file(beta_id: str) -> Path:
+    d = Path(os.getenv("HV_TRACES_DIR", "data/traces"))
+    d.mkdir(parents=True, exist_ok=True)
+    return d / f"{beta_id}.turn"
+
+
+def _next_turn_from_files(beta_id: str) -> int:
+    p = _turn_counter_file(beta_id)
+    current = 0
+    if p.exists():
+        try:
+            current = int(p.read_text(encoding="utf-8").strip() or "0")
+        except Exception:
+            current = 0
+    nxt = current + 1
+    p.write_text(str(nxt), encoding="utf-8")
+    return nxt
+
+
+def _traces_file() -> Path:
+    d = Path(os.getenv("HV_TRACES_DIR", "data/traces"))
+    d.mkdir(parents=True, exist_ok=True)
+    return d / "agent_traces.jsonl"
+
+
+def log_trace(
+    beta_id: str,
+    *,
+    role: str = "proactive",
+    event_type: Optional[str] = None,
+    action_id: Optional[str] = None,
+    idemp_key: Optional[str] = None,
+    model: Optional[str] = None,
+    tokens_in: int = 0,
+    tokens_out: int = 0,
+    cost_usd: float = 0.0,
+    status: Optional[str] = None,
+    metadata: Optional[Dict[str, Any]] = None,
+    turn_number: Optional[int] = None,
+) -> int:
+    """
+    Inserta una traza en hv_agent_traces y devuelve su turn_number.
+    Si turn_number es None se asigna atómicamente (advisory lock + MAX+1 por beta).
+    En modo files: append a agent_traces.jsonl + contador por-beta. Nunca lanza
+    (best-effort: una falla de traza no debe tumbar el envío/ejecución).
+    """
+    metadata = metadata or {}
+    mode = _persistence_mode()
+    use_postgres = mode in ("postgres", "dual") and _is_postgres_available()
+
+    if use_postgres:
+        try:
+            with _connection() as conn:
+                with conn.cursor() as cur:
+                    # Serializa la asignación de turno por beta dentro de la txn.
+                    cur.execute("SELECT pg_advisory_xact_lock(hashtext(%s))", (beta_id,))
+                    tn = turn_number
+                    if tn is None:
+                        cur.execute(
+                            "SELECT COALESCE(MAX(turn_number), 0) + 1 FROM hv_agent_traces WHERE beta_id = %s",
+                            (beta_id,),
+                        )
+                        tn = int(cur.fetchone()[0])
+                    cur.execute(
+                        """
+                        INSERT INTO hv_agent_traces
+                            (beta_id, turn_number, role, event_type, action_id, idemp_key,
+                             model, tokens_in, tokens_out, cost_usd, status, metadata)
+                        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                        RETURNING turn_number
+                        """,
+                        (
+                            beta_id, tn, role, event_type, action_id, idemp_key,
+                            model, tokens_in, tokens_out, cost_usd, status,
+                            json.dumps(metadata, ensure_ascii=False),
+                        ),
+                    )
+                    return int(cur.fetchone()[0])
+        except Exception as e:
+            print(f"[state-persistence] WARN: postgres log_trace failed: {e}. Falling back to files.")
+
+    # Files fallback
+    tn = turn_number if turn_number is not None else _next_turn_from_files(beta_id)
+    rec = {
+        "beta_id": beta_id, "turn_number": tn, "role": role, "event_type": event_type,
+        "action_id": action_id, "idemp_key": idemp_key, "model": model,
+        "tokens_in": tokens_in, "tokens_out": tokens_out, "cost_usd": cost_usd,
+        "status": status, "metadata": metadata, "created_at": _utc_now(),
+    }
+    try:
+        with _traces_file().open("a", encoding="utf-8") as f:
+            f.write(json.dumps(rec, ensure_ascii=False) + "\n")
+    except Exception as e:
+        print(f"[state-persistence] WARN: file log_trace failed: {e}")
+    return tn
+
+
+def next_turn_number(beta_id: str) -> int:
+    """
+    Devuelve el siguiente turn_number atómico para el beta (lo reserva).
+    SSOT en hv_agent_traces (postgres) o contador por-beta (files).
+    Inserta una traza marcadora event_type='turn' para reservar el número.
+    """
+    return log_trace(beta_id, role="system", event_type="turn")
+
+
+# ------------------------------------------------------------------
 # Pending Actions (C1 - Postgres + UNIQUE idemp_key) - implementación autónoma
 # ------------------------------------------------------------------
 # Objetivo: hacer que las acciones proactivas sean idempotentes de forma

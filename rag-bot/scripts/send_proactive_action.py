@@ -1,12 +1,20 @@
 #!/usr/bin/env python3
 """
-send_proactive_action.py — STUB sender for proactive actions (out-of-scope for core agentic sprint).
+send_proactive_action.py (G2) — Proactive sender CLI.
 
-This is intentionally a stub. Real implementation (WhatsApp Business API, receipts,
-status update to 'sent', cost tracing to hv_agent_traces, feature flag guard) is
-tracked as S-1 follow-up per AUDITORIA_CODIGO_HV_2026-06-09.md and the 2026-06 closure report.
+No longer a stub. Drives the real delivery path:
+  load pending -> execute_pending_action (idemp C1 -> health gate -> sender) -> trace.
 
-Usage (dry): python -m rag-bot.scripts.send_proactive_action --limit 5 --dry-run
+Delivery is defense-in-depth gated and remains safe by default:
+  * --send is OFF by default (dry-run: marks dry_run_executed, no delivery).
+  * Even with --send, real WhatsApp delivery requires HV_PROACTIVE_SENDER=on AND
+    HV_WHATSAPP_TOKEN/HV_WHATSAPP_PHONE_ID; otherwise the LogSender no-ops (status 'skipped').
+  * The health gate still blocks real sends when ssot!=postgres or score<70 (unless --force).
+
+Usage:
+  python rag-bot/scripts/send_proactive_action.py --limit 5            # dry-run (safe)
+  HV_PROACTIVE_SENDER=on HV_WHATSAPP_TOKEN=... HV_WHATSAPP_PHONE_ID=... \
+      python rag-bot/scripts/send_proactive_action.py --limit 5 --send  # real delivery
 """
 from __future__ import annotations
 
@@ -14,45 +22,36 @@ import argparse
 import json
 import sys
 from pathlib import Path
-from typing import Any, Dict
 
 ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-from action_handler import load_pending_actions  # type: ignore
+from action_handler import execute_all_pending  # type: ignore
 
 
 def main(argv: list[str] | None = None) -> int:
-    ap = argparse.ArgumentParser()
+    ap = argparse.ArgumentParser(description="Proactive sender (dry-run by default).")
     ap.add_argument("--limit", type=int, default=20)
-    ap.add_argument("--dry-run", action="store_true", default=True)
+    ap.add_argument("--send", action="store_true", default=False,
+                    help="Attempt real delivery (still gated by sender flag + creds + health).")
+    ap.add_argument("--force", action="store_true", default=False,
+                    help="Bypass the health gate (break-glass only).")
     args = ap.parse_args(argv)
 
-    pending = load_pending_actions(status="pending", limit=args.limit)
-    if not pending:
-        print("[STUB SENDER] No pending actions.")
-        return 0
+    dry_run = not args.send
+    results = execute_all_pending(limit=args.limit, dry_run=dry_run, force=args.force)
 
-    for a in pending:
-        print(
-            "[STUB SENDER] Would send to beta=%s action=%s type=%s msg=%s (idemp=%s) [dry=%s]"
-            % (
-                a.get("beta_id"),
-                a.get("action_id"),
-                a.get("action_type"),
-                (a.get("suggested_message") or "")[:60],
-                a.get("idemp_key"),
-                args.dry_run,
-            )
-        )
-        # TODO (real WhatsApp):
-        # - call provider with template or free text (respect opt-in + 24h window)
-        # - wait for receipt / handle failure webhook
-        # - update status in hv_pending_actions to 'sent' or 'failed'
-        # - write cost trace to hv_agent_traces (normalize_model_id + PRICING)
-        # - honor HV_FEATURE_PROACTIVE_SENDER or equivalent flag (default off until S-1 hardening)
-    print(f"\n[STUB SENDER] {len(pending)} pending shown (no real delivery). See TODOs in file.")
+    counts: dict[str, int] = {}
+    for r in results:
+        s = r.get("status", "unknown")
+        counts[s] = counts.get(s, 0) + 1
+
+    mode = "DRY-RUN" if dry_run else "SEND"
+    print(f"[sender:{mode}] processed {len(results)} action(s): "
+          f"{json.dumps(counts, ensure_ascii=False)}")
+    if not args.send:
+        print("[sender] dry-run only — pass --send (with HV_PROACTIVE_SENDER=on + WhatsApp creds) to deliver.")
     return 0
 
 
