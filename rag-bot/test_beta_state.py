@@ -171,5 +171,21 @@ class TestSenderAndTraces(unittest.TestCase):
             self.assertEqual(t2, t1 + 1)
 
 
+class TestRagRetrievalLocal(unittest.TestCase):
+    """G5: recovered local retrieval works offline (lexical fallback, no API key)."""
+
+    def test_lexical_retrieval_returns_chunks(self):
+        os.environ.pop("OPENAI_API_KEY", None)  # force lexical path
+        try:
+            from rag_retrieval_local import rag_query_local
+        except Exception as e:  # pragma: no cover
+            self.skipTest(f"rag_retrieval_local import failed: {e}")
+        res = rag_query_local("HIFU procedimiento no invasivo", use_llm=False, top_k=2)
+        # KB ships with the repo; lexical retrieval must return at least one chunk.
+        self.assertEqual(res.get("retrieval"), "lexical")
+        self.assertGreaterEqual(len(res.get("chunks", [])), 1)
+        self.assertTrue(res.get("answer"))
+
+
 if __name__ == "__main__":
     unittest.main()

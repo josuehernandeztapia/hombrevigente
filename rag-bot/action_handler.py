@@ -183,11 +183,14 @@ def _maybe_enrich_with_rag(suggested: str, signal: BetaSignal) -> str:
     try:
         if _rag_query_local is None:
             return suggested
-        # cheap local index check (optional)
-        kb = Path(os.getenv("HV_KB_EMB_PATH", "rag-bot/knowledge_base/embeddings_local.json"))
-        if not kb.exists():
-            kb = Path("data/knowledge_base/embeddings_local.json")
-        if not kb.exists():
+        # cheap local index check (optional) — accept repo-root, rag-bot cwd, or data/ layouts
+        kb_candidates = [
+            os.getenv("HV_KB_EMB_PATH", ""),
+            "rag-bot/knowledge_base/embeddings_local.json",
+            "knowledge_base/embeddings_local.json",
+            "data/knowledge_base/embeddings_local.json",
+        ]
+        if not any(c and Path(c).exists() for c in kb_candidates):
             return suggested
         q = f"progreso del beta {signal.beta_id} en onboarding o labs recientes"
         res = _rag_query_local(q, use_llm=False)  # type: ignore
