@@ -1,0 +1,31 @@
+# Python bytecode / caches
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+
+# Virtual envs
+.venv/
+venv/
+
+# Secrets / environment
+.env
+*.env
+!.env.example
+
+# OS cruft
+.DS_Store
+
+# Runtime / generated data (not source) — rag-bot proactive loop writes these
+rag-bot/data/beta_states/
+rag-bot/data/pending_actions/
+rag-bot/data/intake_submissions/
+rag-bot/data/mvp0_runs/
+rag-bot/data/traces/
+rag-bot/data/decision_log.jsonl
+rag-bot/data/proactive_health_history.jsonl
+rag-bot/data/proactive_calibration.json
+
+# Local working copy (untracked subset, not the SSOT tree)
+hombrevigente-fresh/
