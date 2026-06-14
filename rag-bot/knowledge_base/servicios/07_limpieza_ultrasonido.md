@@ -26,7 +26,7 @@
 - **vs Limpieza Profunda**: Menos invasiva, sin vapor agresivo, ideal piel sensible
 - **vs Hidrodermoabrasión**: Menor exfoliación pero más suave, complementarias
 
-[VALIDAR CON CLÍNICA: Equipo ultrasonido marca/modelo, frecuencia específica kHz]
+[DEFINIR EN APERTURA DE LOUNGE: marca/modelo del equipo de ultrasonido y frecuencia específica en kHz del cabezal que use el lounge]
 
 **FDA/COFEPRIS**: Dispositivos ultrasonido estético aprobados uso cosmético
 
@@ -140,7 +140,9 @@
 
 ## 📝 Protocolo Detallado (45-60 min)
 
-[VALIDAR CON CLÍNICA: Productos específicos marcas, protocolo paso a paso exacto]
+La secuencia de abajo es el estándar publicado de una limpieza facial con ultrasonido (hidro/ultrasonido); las marcas y los pasos finos del protocolo interno se definen en la apertura del lounge.
+
+[DEFINIR EN APERTURA DE LOUNGE: marcas de productos por fase y protocolo paso a paso interno exacto del lounge]
 
 ### 1. Consulta y análisis (5 min)
 - **Tipo piel**: Seca, grasa, mixta, sensible
@@ -163,7 +165,7 @@
 - Enzimas proteolíticas (papaína, bromelina)
 - Ablandan queratina superficial
 - Potencian ultrasonido
-- [VALIDAR: Si protocolo clínica incluye este paso]
+- [DEFINIR EN APERTURA DE LOUNGE: si el protocolo interno del lounge incluye este paso de exfoliación enzimática]
 
 ### 4. Preparación ultrasonido (2 min)
 - Aplicación gel conductor generoso (agua/aloe vera base)
@@ -172,7 +174,7 @@
   - Piel sensible: 28 kHz, modo bajo
   - Piel normal: 35 kHz, modo medio
   - Piel grasa: 40 kHz, modo alto
-  [VALIDAR: Parámetros específicos equipo clínica]
+  [DEFINIR EN APERTURA DE LOUNGE: parámetros exactos del equipo de ultrasonido del lounge por tipo de piel]
 
 ### 5. Aplicación ultrasonido (15-20 min)
 **Técnica espátula**:
@@ -193,7 +195,7 @@
 - Si comedones profundos resistentes
 - Post-ultrasonido piel más receptiva
 - Técnica higiénica (gasas estériles, presión controlada)
-- [VALIDAR: Política clínica sobre extracciones manuales]
+- [DEFINIR EN APERTURA DE LOUNGE: política interna del lounge sobre extracciones manuales complementarias]
 
 ### 7. Tonificación (3 min)
 - Tónico balanceador pH
@@ -293,7 +295,7 @@
 - **Elite** (20% desc): $464 MXN
 
 ### Paquetes
-[VALIDAR CON CLÍNICA: Paquetes disponibles]
+[DEFINIR EN APERTURA DE LOUNGE: confirmar paquetes disponibles y precios finales; cifras abajo son propuesta]
 - **6 sesiones**: $3,480 lista, $2,784 Elite (ahorro 20%)
 - **12 sesiones**: $6,960 lista, $5,568 Elite (ahorro 20%)
 

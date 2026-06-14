@@ -16,8 +16,9 @@
 - **Tinte semi-permanente**: Sin amoniaco, NO abre cutícula, penetración superficial, cobertura 50-80% canas, se desvanece gradualmente (6-8 semanas)
 - **Resultado masculino**: Tono 1-2 niveles más oscuro que cana, NO uniforme perfecto (evita look artificial)
 
-**Marcas comunes**: Just For Men, American Crew Precision Blend, Schwarzkopf Men Perfect, L'Oréal Men Expert
-[VALIDAR CON BARBERO: Marca específica usada en clínica, protocolo aplicación]
+**Tipos de fórmula** (estándar de la técnica): tinte semi-permanente sin amoniaco (no abre cutícula, depósito superficial, se desvanece en 6-8 semanas) o demi-permanente bajo en amoniaco (mayor durabilidad, cobertura gradual). Ambos para hombre buscan tono 1-2 niveles más oscuro que la cana con resultado no uniforme ("que no se note").
+
+[DEFINIR EN APERTURA DE LOUNGE: Marca de tinte específica usada en el lounge (cabello y barba) y protocolo de aplicación del fabricante]
 
 ---
 
@@ -80,14 +81,14 @@
 
 ## 📝 Protocolo (45-60 min)
 
-[VALIDAR CON BARBERO: Productos específicos, técnica aplicación, tiempo procesamiento según marca]
+[DEFINIR EN APERTURA DE LOUNGE: Productos específicos (marca), técnica de aplicación y tiempo de procesamiento según la marca]
 
 ### 1. Consulta y evaluación (10 min)
 - **Porcentaje canas**: Visual (20%, 40%, 60%, 80%)
 - **Tono natural**: Clasificación nivel (1=negro → 10=rubio platino)
 - **Historial**: Tintes previos, alergias, tratamientos químicos
 - **Selección tono**: Regla general 1-2 niveles más oscuro que cana (ej: si cabello castaño medio nivel 5 → seleccionar nivel 4)
-- **Prueba alergia**: Si primera vez (detrás oreja, 48h espera) [VALIDAR: política clínica]
+- **Prueba de parche (alergia)**: OBLIGATORIA antes de la primera aplicación. Estándar publicado: aplicar pequeña cantidad del producto detrás de la oreja o en el pliegue del codo 48h antes; si hay enrojecimiento, picazón, ardor o inflamación, NO aplicar. Repetir ante cambio de marca/fórmula.
 
 ### 2. Preparación (5 min)
 - Cabello seco (no lavar pre-aplicación → aceites naturales protegen cuero cabelludo)
@@ -95,7 +96,7 @@
 - Aplicación barrera protectora cuero cabelludo (crema grasa línea cabello, orejas, nuca)
 
 ### 3. Mezcla producto (5 min)
-[VALIDAR CON BARBERO: Proporciones según marca]
+[DEFINIR EN APERTURA DE LOUNGE: Proporciones de mezcla según la marca de tinte]
 - Colorante + revelador (peróxido 10-20 volúmenes según cobertura)
 - Mezcla homogénea (bowl + brocha aplicadora)
 
@@ -105,7 +106,7 @@
 - **Técnica**: Secciones pequeñas, brocha fina, evitar saturar cuero cabelludo
 
 ### 5. Tiempo procesamiento (20-30 min)
-[VALIDAR: Tiempo específico según marca - crítico para resultado]
+[DEFINIR EN APERTURA DE LOUNGE: Tiempo de procesamiento exacto según la marca de tinte (crítico para el resultado)]
 - Monitoreo cada 10 min (desarrollo color)
 - Calor opcional (gorro térmico acelera proceso)
 
@@ -185,7 +186,7 @@
 - **Access** (15% desc): $527 MXN
 - **Elite** (20% desc): $496 MXN
 
-**Precio barba adicional**: +$300 MXN [VALIDAR CON BARBERO]
+**Precio barba adicional**: +$300 MXN [DEFINIR EN APERTURA DE LOUNGE: Precio final del servicio de tinte de barba y marca de producto usada]
 
 **BNPL**: **NO** (precio bajo umbral $2,500)
 

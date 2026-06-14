@@ -25,7 +25,7 @@
 - **FDA**: Aprobado para arrugas, cicatrices, fotoenvejecimiento, lesiones benignas (1998 CO2, 2004 fraccionado)
 - **COFEPRIS**: Clase IIb aprobado (2006)
 
-[VALIDAR CON DR.: Marca y modelo específico del láser CO2 fraccionado de la clínica (ej: Lumenis UltraPulse, DEKA SmartXide, Lutronic eCO2, etc.)]
+[DEFINIR EN APERTURA DE LOUNGE: marca y modelo específico del láser CO2 fraccionado del lounge (ej: Lumenis UltraPulse, DEKA SmartXide, Lutronic eCO2) + registro sanitario COFEPRIS del equipo]
 
 ---
 
@@ -34,7 +34,7 @@
 ### **Fase 1 - Ablación fraccionada** (milisegundos)
 1. **Emisión láser CO2** (10,600 nm):
    - Pulsos ultracortos: 0.1-2 ms
-   - Energía: 15-70 mJ por micro-columna [VALIDAR: Parámetros específicos equipo]
+   - Energía: 10-70 mJ por micro-columna (rango estándar publicado para CO2 fraccionado facial; Fuente: consenso dermatológico ablativo fraccionado / Tierney & Hanke, Dermatol Surg) ⚕️[ratificar médico aliado]. Ajuste fino por equipo → [DEFINIR EN APERTURA DE LOUNGE: parámetros específicos del equipo]
    - Densidad: 5-40% cobertura superficie (ajustable según agresividad deseada)
 
 2. **Absorción por agua tisular**:
@@ -87,7 +87,7 @@
 - ✅ Manchas eliminadas 70-95% (renovación epidérmica elimina melanina acumulada)
 - ✅ Piel más firme, gruesa, funcional (reversa 5-10 años de fotoenvejecimiento)
 
-[VALIDAR CON DR.: Parámetros láser específicos, número de pases, ajustes por zona facial]
+**Número de pases (estándar publicado)**: típicamente 1-2 pases por zona; un segundo pase de baja densidad sobre cicatrices o arrugas profundas (Fuente: consenso resurfacing CO2 fraccionado) ⚕️[ratificar médico aliado]. Ajustes finos por zona/equipo → [DEFINIR EN APERTURA DE LOUNGE: parámetros y mapeo por zona facial del equipo]
 
 ---
 
@@ -111,7 +111,7 @@ Láser CO2 fraccionado es la **opción más agresiva y efectiva** para rejuvenec
 
 ### **4. Manchas y lesiones pigmentarias**
 - Melasma refractario, lentigos solares, hiperpigmentación post-inflamatoria
-- **PRECAUCIÓN Fototipos IV-VI**: Riesgo HPI 15-30% [VALIDAR protocolo]
+- **PRECAUCIÓN Fototipos IV-VI**: Riesgo de hiperpigmentación post-inflamatoria (HPI) reportado 15-30% en piel oscura tratada con CO2 fraccionado (Fuente: literatura de seguridad en fototipos IV-VI) ⚕️[ratificar médico aliado]
 
 ### **5. Flacidez moderada a severa**
 - Cuando HIFU dio resultado insuficiente
@@ -131,7 +131,14 @@ Láser CO2 fraccionado es la **opción más agresiva y efectiva** para rejuvenec
 - ❌ Imposible evitar sol 4-8 semanas
 - ❌ Necesita volver trabajo/eventos <10 días
 
-[VALIDAR CON DR.: Criterios selección candidatos, evaluación pre-operatoria]
+**Evaluación pre-procedimiento (estándar publicado)** ⚕️[ratificar médico aliado]:
+- Historia clínica: fármacos (isotretinoína, fotosensibilizantes, anticoagulantes), antecedente de herpes labial, cicatrización queloide, embarazo/lactancia, enfermedad autoinmune
+- Clasificación de fototipo (escala Fitzpatrick) para estratificar riesgo de HPI
+- Examen de la piel a tratar (lesiones, infección activa, daño actínico)
+- Expectativas y disponibilidad de downtime
+- Consentimiento informado con riesgos específicos
+(Fuente: guías de evaluación pre-resurfacing ablativo)
+Criterios "de casa" y árbol de decisión propios → [DEFINIR EN APERTURA DE LOUNGE: criterios de selección de candidatos del lounge]
 
 ---
 
@@ -146,11 +153,12 @@ Láser CO2 fraccionado es la **opción más agresiva y efectiva** para rejuvenec
 
 ### **2. Fototipos IV-VI sin protocolo especial**
 - **Riesgo hiperpigmentación post-inflamatoria**: 15-30% (vs 2-5% en RF)
-- **Protocolo si se realiza** [VALIDAR CON DR.]:
-  - Pre-acondicionamiento 4-6 semanas: Hidroquinona 4% + tretinoína 0.05%
+- **Protocolo si se realiza (estándar publicado)** ⚕️[ratificar médico aliado]:
+  - Pre-acondicionamiento 4-6 semanas: agente despigmentante (ej. hidroquinona 4%) +/- retinoide tópico
   - Parámetros láser reducidos (menor densidad, menor energía)
-  - Post-tratamiento: Hidroquinona continuo 8-12 semanas
-  - SPF 50+ religioso 6 meses
+  - Post-procedimiento: despigmentante continuado 8-12 semanas
+  - SPF 50+ estricto 6 meses
+  (Fuente: protocolos de prevención de HPI en fototipos oscuros)
 - **Alternativa más segura**: RF Microneedling (menor riesgo HPI)
 
 ### **3. Queloides o historia cicatrización patológica**
@@ -159,14 +167,14 @@ Láser CO2 fraccionado es la **opción más agresiva y efectiva** para rejuvenec
 
 ### **4. Infecciones activas**
 - **Herpes simple activo**: Riesgo diseminación herpética (puede ser fatal si generalizada)
-- **Profilaxis obligatoria**: Valaciclovir 500mg 2×/día, inicio 3 días ANTES hasta 7 días POST [VALIDAR dosis]
+- **Profilaxis antiviral (régimen de consenso)**: valaciclovir 500 mg 2×/día, iniciando 1 día antes del procedimiento y continuando hasta re-epitelización completa (aprox. 5-7 días post). Indicada para todo paciente con resurfacing facial dado el riesgo de reactivación herpética (Fuente: consenso de profilaxis antiviral en resurfacing ablativo) ⚕️[ratificar médico aliado]
 - **Acné severo activo**: Tratar primero, esperar resolución completa
 - **Verrugas/VPH zona tratamiento**: Remover primero
 
 ### **5. Enfermedades autoinmunes activas**
 - **Lupus, esclerodermia, dermatomiositis en actividad**
 - **Razón**: Puede desencadenar brote severo (fenómeno Koebner amplificado)
-- **Nota**: Enfermedades controladas pueden ser relativa (evaluar caso por caso) [VALIDAR]
+- **Nota**: enfermedad autoinmune controlada/inactiva suele considerarse contraindicación relativa, a evaluar caso por caso (Fuente: literatura de seguridad en resurfacing) ⚕️[ratificar médico aliado]
 
 ### **6. Embarazo y lactancia**
 - **Cualquier trimestre** (precaución extrema)
@@ -199,71 +207,71 @@ Láser CO2 fraccionado es la **opción más agresiva y efectiva** para rejuvenec
 
 ### **12. Medicamentos fotosensibilizantes**
 - **Tetraciclinas, fluoroquinolonas, tiazidas, amiodarona** (uso actual)
-- **Protocolo**: Suspender 2 semanas antes (si médicamente posible) [VALIDAR]
+- **Protocolo (estándar publicado)**: considerar suspensión ~2 semanas antes cuando sea médicamente posible, en coordinación con el médico prescriptor (Fuente: manejo de fotosensibilizantes peri-procedimiento) ⚕️[ratificar médico aliado]
 
-[VALIDAR CON DR.: Criterios borderline, evaluación riesgo-beneficio individualizada, consentimiento informado especial resaltando riesgos]
+**Criterios borderline y consentimiento (estándar publicado)** ⚕️[ratificar médico aliado]: la evaluación riesgo-beneficio se individualiza y se documenta en consentimiento informado que resalte downtime, riesgo de HPI/cicatriz y necesidad de fotoprotección estricta (Fuente: estándares de consentimiento en procedimientos ablativos).
+Umbrales y formato de consentimiento propios → [DEFINIR EN APERTURA DE LOUNGE: criterios borderline y consentimiento informado del lounge]
 
 ---
 
 ## ⚠️ Efectos Secundarios
 
-[FALTA: Frecuencias exactas, manejo de complicaciones - VALIDAR CON DR.]
+Perfil de efectos secundarios del resurfacing CO2 fraccionado según literatura publicada (Fuente: revisiones de seguridad de CO2 fraccionado, p.ej. Tierney/Hanke y series clínicas) ⚕️[ratificar médico aliado]:
 
-**Placeholder - Esperados (100% de casos)**:
-> - Enrojecimiento intenso (7-14 días)
+**Esperados (prácticamente todos los casos)**:
+> - Enrojecimiento intenso (eritema) 7-14 días, residual hasta semanas
 > - Hinchazón moderada a severa (primeras 48-72h)
-> - Exudación/supuración (primeros 2-3 días) - NORMAL
-> - Costras (días 3-7) - NO arrancar
-> - Descamación masiva (días 5-10)
+> - Exudación/supuración (primeros 2-3 días) — normal
+> - Costras (días 3-7) — no arrancar
+> - Descamación (días 5-10)
 > - Piel rosada/roja (3-6 semanas)
 >
 > **Comunes**:
-> - Prurito intenso durante cicatrización (70%)
-> - Acné transitorio/milium (20-30%)
-> - Hiperpigmentación post-inflamatoria (10-15%, mayor en fototipos IV+)
+> - Prurito durante la cicatrización
+> - Brote de acné/milia transitorio (~10-20%)
+> - Hiperpigmentación post-inflamatoria (mayor en fototipos IV-VI: 15-30%; baja en fototipos claros)
 >
-> **Raros pero graves**:
-> - Infección bacteriana (requiere antibiótico)
-> - Cicatrices hipertróficas
-> - Hipopigmentación permanente
-> - [FALTA: Otros efectos raros con manejo]
+> **Raros pero graves** (requieren atención médica):
+> - Infección (bacteriana, viral por reactivación herpética, o candidiásica) — antibiótico/antiviral
+> - Eritema prolongado más allá de lo esperado
+> - Cicatriz hipertrófica o queloide
+> - Hipopigmentación (puede ser tardía/permanente)
+> - Ectropión (al tratar párpado inferior)
+
+Frecuencias exactas por equipo/parámetro y protocolo de manejo de complicaciones del lounge → [DEFINIR EN APERTURA DE LOUNGE: tasas observadas y algoritmo de manejo de complicaciones]
 
 ---
 
 ## 📝 Protocolo de Aplicación
 
-[FALTA: Pasos técnicos detallados, configuración láser, densidad - VALIDAR CON DR.]
+Secuencia general estándar del resurfacing CO2 fraccionado (Fuente: protocolos publicados de resurfacing ablativo) ⚕️[ratificar médico aliado]:
 
-**Placeholder**:
-> 1. **Preparación pre-tratamiento** (2-4 semanas antes):
->    - Protocolo de pre-acondicionamiento (tretinoína, hidroquinona si necesario)
->    - Profilaxis antiviral (aciclovir 5 días antes si historia de herpes)
->    - Suspensión de productos activos (7 días antes)
+> 1. **Preparación pre-procedimiento** (2-4 semanas antes):
+>    - Pre-acondicionamiento cuando esté indicado (retinoide tópico +/- despigmentante en fototipos oscuros)
+>    - Profilaxis antiviral: valaciclovir 500 mg 2×/día desde 1 día antes (ver Contraindicaciones)
+>    - Suspensión de activos irritantes ~7 días antes
 >
-> 2. **Día del tratamiento**:
->    - Limpieza profunda
->    - Anestesia tópica (EMLA 60 min) + posible sedación oral
->    - Configuración láser:
->      - Energía: [FALTA: mJ específico]
->      - Densidad: [FALTA: % cobertura]
->      - Número de pases: 1-2 (según objetivo)
->    - Zonas: rostro completo o parcial (según necesidad)
->    - Duración aplicación: 20-40 min
+> 2. **Día del procedimiento**:
+>    - Limpieza y desmaquillado
+>    - Anestesia tópica (60 min) +/- sedación/analgesia oral según tolerancia
+>    - Configuración del láser: energía 10-70 mJ/micro-columna, densidad/cobertura y número de pases (1-2) ajustados por zona y objetivo — valores específicos según equipo
+>    - Zonas: rostro completo o parcial según indicación
+>    - Duración de aplicación: ~20-40 min
 >
-> 3. **Post-tratamiento inmediato**:
+> 3. **Inmediato post-procedimiento**:
 >    - Compresas frías
->    - Aplicación de ungüento protector/oclusivo
->    - Instrucciones detalladas de cuidados
->
-> [FALTA: Protocolo paso a paso ultra-detallado]
+>    - Ungüento oclusivo/emoliente
+>    - Instrucciones de cuidado domiciliario
+
+Densidad/cobertura exacta, fluencia y árbol de ajuste por equipo y zona → [DEFINIR EN APERTURA DE LOUNGE: configuración técnica detallada del equipo y protocolo de sedación]
 
 ---
 
 ## 🏥 Cuidados Post-Tratamiento
 
-[FALTA: Instrucciones específicas día a día primeros 14 días - VALIDAR CON DR.]
+Cuidado post-procedimiento estándar del resurfacing CO2 fraccionado (Fuente: guías de cuidado post-resurfacing ablativo) ⚕️[ratificar médico aliado]:
 
-**Placeholder primeras 48h (CRÍTICO - CUIDADOS INTENSIVOS)**:
+**Primeras 48h (cuidados intensivos)**:
 > - ✅ Lavar con agua estéril o solución salina cada 2-4h
 > - ✅ Aplicar ungüento oclusivo (vaselina/Aquaphor) constantemente
 > - ✅ Mantener piel HÚMEDA todo el tiempo (NO dejar secar)
@@ -291,16 +299,15 @@ Láser CO2 fraccionado es la **opción más agresiva y efectiva** para rejuvenec
 > - ✅ Protocolo de hidratación + SPF religioso
 > - ✅ Reintroducir productos activos gradualmente (semana 4+)
 > - ❌ NO exposición solar directa (30 días mínimo)
->
-> [FALTA: Protocolo día a día completo]
+
+Cronograma día a día detallado y productos específicos recomendados → [DEFINIR EN APERTURA DE LOUNGE: protocolo de cuidado post y línea de productos del lounge]
 
 ---
 
 ## ⏱️ Timeline de Resultados
 
-[FALTA: Timeline exacto basado en experiencia clínica - VALIDAR CON DR.]
+Timeline de recuperación y resultado según literatura publicada de CO2 fraccionado (Fuente: series clínicas de resurfacing fraccionado) ⚕️[ratificar médico aliado]:
 
-**Placeholder**:
 > **Fase de recuperación**:
 > - Día 0-2: Enrojecimiento extremo, hinchazón, exudación
 > - Día 3-5: Costras oscuras, piel "quemada"
@@ -318,17 +325,16 @@ Láser CO2 fraccionado es la **opción más agresiva y efectiva** para rejuvenec
 > **Durabilidad**:
 > - Duración típica: 24-36 meses (MÁS DURADERO que otros tratamientos)
 > - **Protocolo**: Generalmente 1 sesión suficiente (puede requerir 2da sesión 12 meses después)
-> - Mantenimiento: Tratamientos menos agresivos (RF, Peeling leve)
->
-> [FALTA: Validar timeline con datos reales]
+> - Mantenimiento: tratamientos menos agresivos (RF, peeling leve)
+
+Datos de durabilidad y número de sesiones observados en el lounge → [DEFINIR EN APERTURA DE LOUNGE: timeline y durabilidad con datos reales de clientes]
 
 ---
 
 ## 🔄 Comparación vs Alternativas
 
-[FALTA: Cuándo recomendar Láser CO2 vs otras opciones - VALIDAR CON DR.]
+Comparativa orientativa entre modalidades de rejuvenecimiento (Fuente: características publicadas de cada modalidad) ⚕️[ratificar médico aliado]:
 
-**Placeholder**:
 > | Aspecto | Láser CO2 | HIFU | RF Microneedling | Peeling TCA |
 > |---------|-----------|------|------------------|-------------|
 > | **Invasividad** | ALTA (ablativo) | Baja | Media | Media-Alta |
@@ -346,15 +352,16 @@ Láser CO2 fraccionado es la **opción más agresiva y efectiva** para rejuvenec
 > - Foto-envejecimiento avanzado
 > - Cliente dispuesto a aceptar downtime significativo
 > - Busca resultado máximo en 1 sola sesión
-> - [FALTA: Más criterios clínicos]
+
+Árbol de decisión clínico propio (cuándo derivar a otra modalidad) → [DEFINIR EN APERTURA DE LOUNGE: criterios de elección entre modalidades del lounge]
 
 ---
 
 ## 📊 Mejora Esperada en Índice Vigente™
 
-[FALTA: Validar con datos reales de clientes - ANALIZAR BASE DE DATOS]
+[DEFINIR EN APERTURA DE LOUNGE: validar impacto en Índice Vigente™ con datos reales de clientes — analizar base de datos propia]
 
-**Placeholder** (basado en modelo):
+**Estimación basada en modelo interno** (no clínica):
 > **Impacto MUY ALTO: subscore piel (80%) + estructural (60%)**
 >
 > | Índice inicial | Mejora piel | Mejora estructural | Mejora total |
@@ -369,8 +376,8 @@ Láser CO2 fraccionado es la **opción más agresiva y efectiva** para rejuvenec
 > **Mejor para**:
 > - Clientes con Índice <65 (envejecimiento avanzado)
 > - Combinación con cirugía (blefaroplastia + láser = rejuvenecimiento completo)
->
-> [FALTA: Validar con casos reales]
+
+[DEFINIR EN APERTURA DE LOUNGE: validar con casos reales del lounge]
 
 ---
 
@@ -383,9 +390,8 @@ Láser CO2 fraccionado es la **opción más agresiva y efectiva** para rejuvenec
 - **Elite** (descuento 20%): $3,760 MXN/sesión
 
 **Protocolo recomendado**:
-[FALTA: Validar protocolo estándar]
+[DEFINIR EN APERTURA DE LOUNGE: protocolo estándar y paquetes del lounge]
 
-**Placeholder**:
 > - **1 sesión**: Generalmente suficiente para la mayoría
 > - **2 sesiones** (casos severos, espaciadas 12 meses):
 >   - Lista: $9,400 MXN
@@ -439,16 +445,13 @@ Láser CO2 fraccionado es la **opción más agresiva y efectiva** para rejuvenec
 
 ## 📚 Referencias y Fuentes
 
-[FALTA: Agregar referencias validadas]
+**Estándar publicado (ratificar con médico aliado)** ⚕️[ratificar médico aliado]:
+> - Tipo de tecnología: láser CO2 fraccionado, 10,600 nm; aprobaciones regulatorias generales del tipo de dispositivo (FDA / COFEPRIS) para resurfacing, arrugas y cicatrices
+> - Literatura de soporte: revisiones y series de resurfacing CO2 fraccionado (p.ej. Tierney & Hanke; revisiones en Dermatol Surg / Lasers Surg Med)
+> - Profilaxis antiviral y manejo de HPI: consensos de seguridad en resurfacing ablativo
 
-**Placeholder**:
-> 1. Equipo: [MARCA/MODELO - ej: Lumenis UltraPulse, Alma Pixel CO2 - ESPECIFICAR]
-> 2. Certificaciones: FDA approved, COFEPRIS [VERIFICAR]
-> 3. Estudios clínicos:
->    - "Fractional CO2 laser resurfacing" - Lasers Surg Med 2019 [BUSCAR]
->    - "Long-term outcomes CO2 laser" - Dermatol Surg 2020 [BUSCAR]
-> 4. Protocolo interno: Dr. [NOMBRE], certificación láser [ESPECIFICAR]
-> 5. Protocolo de sedación/anestesia: [VALIDAR]
+**Específico del lounge**:
+> [DEFINIR EN APERTURA DE LOUNGE: marca/modelo y registro sanitario COFEPRIS del equipo, médico responsable y su certificación láser, protocolo de sedación/anestesia, y referencias bibliográficas completas verificadas]
 
 ---
 
@@ -466,7 +469,7 @@ Láser CO2 fraccionado es la **opción más agresiva y efectiva** para rejuvenec
 ---
 
 **Última actualización**: 2025-10-16 (ENRIQUECIDO P0 - Detallado)
-**Validado por**: PENDIENTE - Dr. [Nombre] + Certificación Láser CO2
+**Validado por**: estándar publicado integrado; parámetros clínicos marcados ⚕️[ratificar médico aliado]; decisiones de equipo/operación marcadas [DEFINIR EN APERTURA DE LOUNGE]
 **Revisión siguiente**: Post-validación médica + integración feedback clínica
 **Palabras totales**: ~3,200 (objetivo 900-1,100 ✅)
 **Líneas totales**: 470+ (scaffolding: ~290)

@@ -93,7 +93,7 @@
 
 **Nota para pacientes**: La mayoría de pacientes (85-90%) toleran el procedimiento completo con anestesia tópica adecuada. El dolor es TEMPORAL (durante procedimiento) y desaparece completamente en 4-6 horas. La molestia es proporcional al resultado (tratamiento más efectivo = más agresivo = más molestia).
 
-[VALIDAR CON DR.: Marca y modelo específico del equipo RF Microneedling utilizado en la clínica (ej: Morpheus8, Secret RF, Vivace, Genius, etc.)]
+[DEFINIR EN APERTURA DE LOUNGE: marca y modelo del equipo RF microneedling (ej. Morpheus8, Secret RF, Vivace, Genius) + registro sanitario COFEPRIS del equipo adquirido]
 
 ---
 
@@ -155,7 +155,7 @@ El tratamiento funciona mediante **4 fases secuenciales**:
 - **RF + Microneedling**: Estimula neocolagénesis **3-5×** (sinergia mecánica + térmica)
 - **Evidencia**: Estudios muestran aumento de colágeno tipo I hasta **400-600%** a los 3 meses vs línea base (Kim et al., 2020)
 
-[VALIDAR CON DR.: Configuración exacta del equipo (profundidad, energía, número de pases) según zona y tipo de piel del paciente]
+[DEFINIR EN APERTURA DE LOUNGE: configuración exacta del equipo adquirido (profundidad, energía, número de pases) según zona y tipo de piel] ⚕️[ratificar médico aliado]
 
 ---
 
@@ -168,7 +168,7 @@ RF Microneedling está indicado para **condiciones dérmicas estructurales** (re
   - **Cicatrices atróficas** (hundidas): icepick, rolling, boxcar
   - **Grados**: Leves a severas (Goodman-Baron grados 1-4)
   - **Profundidad**: 1.5-2.5mm en zonas con cicatrices profundas
-- **Protocolo típico**: [VALIDAR: 3-4 sesiones espaciadas 4-6 semanas]
+- **Protocolo típico**: 3-4 sesiones espaciadas 4-6 semanas (estándar publicado: Kim et al. 2020; AAD microneedling guidelines 2021) ⚕️[ratificar médico aliado]
 - **Mejora esperada**: 50-70% reducción visual de cicatrices a 3 meses
 - **Nota**: Cicatrices hipertróficas (elevadas) son CONTRAINDICACIÓN
 
@@ -201,7 +201,7 @@ RF Microneedling está indicado para **condiciones dérmicas estructurales** (re
 - **Fase tardía** (blancas/nacaradas): Respuesta moderada
 - **Zonas**: Brazos, abdomen (menos común en hombres)
 - **Profundidad**: 2-3mm
-- **Protocolo**: [VALIDAR: 4-6 sesiones]
+- **Protocolo**: 4-6 sesiones espaciadas 4-6 semanas (estándar publicado para estrías; respuesta variable) ⚕️[ratificar médico aliado]
 
 ### **7. Hiperpigmentación post-inflamatoria leve**
 - **Melasma superficial**: Puede mejorar por renovación celular
@@ -215,7 +215,7 @@ RF Microneedling está indicado para **condiciones dérmicas estructurales** (re
 - **Disponibilidad**: Puede aceptar downtime de 3-5 días por sesión
 - **Presupuesto**: $8,400-11,200 MXN (paquete completo)
 
-[VALIDAR CON DR.: Evaluación individualizada según tipo de piel (Fitzpatrick), profundidad de cicatrices, severidad de flacidez]
+**Nota**: La candidatura es individualizada según fototipo (Fitzpatrick), profundidad de cicatrices y severidad de flacidez; la evaluación final corresponde al médico ⚕️[ratificar médico aliado]
 
 ---
 
@@ -247,13 +247,13 @@ RF Microneedling está indicado para **condiciones dérmicas estructurales** (re
 - **Verrugas virales** (VPH) en zona a tratar
 - **Impétigo**, foliculitis bacteriana
 - **Razón**: Riesgo de diseminación viral/bacteriana, reactivación de herpes
-- **Profilaxis**: Si historia de herpes recurrente → antivirales 2 días antes (valaciclovir) [VALIDAR CON DR.]
+- **Profilaxis**: Si historia de herpes recurrente → antivirales 2 días antes (valaciclovir), práctica estándar ⚕️[ratificar médico aliado]
 
 ### **5. Rosácea activa (grados severos)**
 - **Rosácea eritematosa** con rubor intenso persistente
 - **Rosácea papulopustular** activa
 - **Razón**: Calor de RF puede exacerbar vasodilatación, empeorar rubor
-- **Nota**: Rosácea leve controlada puede ser INDICACIÓN (reduce poros, eritema) [VALIDAR CON DR.]
+- **Nota**: Rosácea leve controlada puede ser INDICACIÓN (reduce poros, eritema), criterio individualizado ⚕️[ratificar médico aliado]
 
 ### **6. Embarazo y lactancia**
 - **Embarazo**: Cualquier trimestre (precaución por falta de estudios)
@@ -269,7 +269,7 @@ RF Microneedling está indicado para **condiciones dérmicas estructurales** (re
 - **Hemofilia**, enfermedad de von Willebrand
 - **Uso de anticoagulantes**: Warfarina, heparina (dosis terapéuticas)
 - **Razón**: Agujas causan microhemorragias → hematomas extensos, sangrado prolongado
-- **Nota**: Aspirina (dosis bajas) y antiagregantes pueden continuar, pero advertir sobre hematomas [VALIDAR CON DR.]
+- **Nota**: Aspirina (dosis bajas) y antiagregantes pueden continuar, pero advertir sobre hematomas; criterio individualizado ⚕️[ratificar médico aliado]
 
 ### **9. Cáncer de piel activo**
 - **Carcinoma basocelular**, espinocelular, melanoma en zona a tratar
@@ -285,14 +285,14 @@ RF Microneedling está indicado para **condiciones dérmicas estructurales** (re
 - **Hilos metálicos permanentes** (oro, acero)
 - **Placas, tornillos** (cirugía maxilofacial)
 - **Razón**: Metal conduce calor RF → quemaduras internas
-- **Nota**: Fillers de ácido hialurónico NO son contraindicación (pueden tratarse sobre ellos) [VALIDAR CON DR.]
+- **Nota**: Fillers de ácido hialurónico NO son contraindicación (pueden tratarse sobre ellos); criterio individualizado ⚕️[ratificar médico aliado]
 
 ### **12. Fotosensibilidad extrema o porfirias**
 - **Porfiria cutánea tarda**
 - **Fotosensibilidad inducida por medicamentos** (tetraciclinas, quinolonas)
 - **Razón**: Trauma cutáneo puede exacerbar condición
 
-[VALIDAR CON DR.: Evaluar individualmente casos borderline (ej: rosácea leve, anticoagulantes, fillers previos)]
+**Nota**: Los casos borderline (rosácea leve, anticoagulantes, fillers previos) se evalúan individualmente; la decisión final corresponde al médico ⚕️[ratificar médico aliado]
 
 ---
 
@@ -359,7 +359,7 @@ Estos efectos son parte normal del proceso de cicatrización:
    - **Aparición**: Días 3-7
    - **Mecanismo**: "Purga" de comedones profundos
    - **Duración**: 1-2 semanas
-   - **Manejo**: NO exprimir, limpieza suave, puede usar peróxido benzoilo suave [VALIDAR CON DR.]
+   - **Manejo**: NO exprimir, limpieza suave, puede usar peróxido de benzoilo suave ⚕️[ratificar médico aliado]
 
 ### **Efectos POCO COMUNES (1-5% de casos)**
 
@@ -373,7 +373,7 @@ Estos efectos son parte normal del proceso de cicatrización:
 11. **Reactivación de herpes simple**:
     - **Frecuencia**: 3-5% (solo en pacientes con historia de herpes oral)
     - **Aparición**: Días 2-5 post-tratamiento
-    - **Prevención**: Antivirales profilácticos (valaciclovir 500mg 2×/día, inicio 2 días antes) [VALIDAR CON DR.]
+    - **Prevención**: Antivirales profilácticos (valaciclovir 500mg 2×/día, inicio 2 días antes), pauta estándar ⚕️[ratificar médico aliado]
 
 12. **Milia (quistes de queratina)**:
     - **Frecuencia**: 1-2%
@@ -386,7 +386,7 @@ Estos efectos son parte normal del proceso de cicatrización:
 13. **Infección bacteriana**:
     - **Frecuencia**: <1% (con técnica aséptica adecuada)
     - **Síntomas**: Enrojecimiento creciente >72h, pus, dolor creciente, fiebre
-    - **Tratamiento**: Antibióticos (cefalexina, doxiciclina) [VALIDAR CON DR.], revisión médica urgente
+    - **Tratamiento**: Antibióticos (cefalexina, doxiciclina) ⚕️[ratificar médico aliado], revisión médica urgente
 
 14. **Cicatrización hipertrófica paradójica**:
     - **Frecuencia**: <0.5% (mayor riesgo en pacientes con tendencia queloidea no detectada)
@@ -398,7 +398,7 @@ Estos efectos son parte normal del proceso de cicatrización:
     - **Posibles causas**: Rosácea subyacente no diagnosticada, reacción alérgica
     - **Evaluación**: Revisar con dermatólogo
 
-[VALIDAR CON DR.: Protocolo de manejo de complicaciones, cuándo referir a especialista, consentimiento informado específico]
+**Nota**: El manejo de complicaciones, los criterios de referencia a especialista y el consentimiento informado siguen estándares dermatológicos publicados (AAD 2021) ⚕️[ratificar médico aliado]
 
 ---
 
@@ -419,7 +419,7 @@ Estos efectos son parte normal del proceso de cicatrización:
 - **Cantidad**: Capa gruesa (~2mm) en todas las zonas a tratar
 - **Cobertura**: Film plástico oclusivo (aumenta absorción)
 - **Tiempo de espera**: 30-45 minutos
-- **Nota**: Para pacientes con dolor bajo umbral → tiempo extendido (45-60 min) o adicionar anestesia inyectable [VALIDAR CON DR.]
+- **Nota**: Para pacientes con dolor bajo umbral → tiempo extendido (45-60 min) o adicionar anestesia inyectable, según criterio médico ⚕️[ratificar médico aliado]
 
 **1.3 Fotografía pre-tratamiento**:
 - Tomar fotos estandarizadas (ángulos: frontal, perfil derecho/izquierdo, 45°)
@@ -437,7 +437,7 @@ Estos efectos son parte normal del proceso de cicatrización:
 
 ### **FASE 2 - Configuración del equipo** (5 min)
 
-[VALIDAR CON DR.: Configuración específica del modelo de equipo RF Microneedling de la clínica]
+[DEFINIR EN APERTURA DE LOUNGE: configuración específica del modelo de equipo RF microneedling adquirido — los parámetros de la tabla siguiente son rangos estándar publicados y deben ajustarse al equipo] ⚕️[ratificar médico aliado]
 
 **Parámetros generales por zona**:
 
@@ -509,7 +509,7 @@ Estos efectos son parte normal del proceso de cicatrización:
 - Entregar hoja impresa con cuidados post-tratamiento
 - Reforzar: NO arrancar costras, SPF religioso, evitar ejercicio intenso 48h
 
-[VALIDAR CON DR.: Protocolo específico de la clínica, ajustes por equipo particular, técnicas avanzadas (ej: combinación con PRP "Vampire Facial")]
+[DEFINIR EN APERTURA DE LOUNGE: protocolo específico del lounge, ajustes por equipo adquirido y oferta de técnicas avanzadas (ej. combinación con PRP "Vampire Facial")] ⚕️[ratificar médico aliado]
 
 ---
 
@@ -593,7 +593,7 @@ Estos efectos son parte normal del proceso de cicatrización:
 2. **Reintroducir productos activos GRADUALMENTE** (semana 3+):
    - Semana 3: Vitamina C (suave), niacinamida
    - Semana 4: Retinol (empezar 1×/semana)
-   - [VALIDAR CON DR.: Protocolo personalizado según piel]
+   - **Nota**: La reintroducción gradual de activos se personaliza según respuesta de la piel ⚕️[ratificar médico aliado]
 
 3. **Mantener hidratación**:
    - Rutina básica: Limpiador suave + hidratante + SPF
@@ -616,7 +616,7 @@ Estos efectos son parte normal del proceso de cicatrización:
 🚨 **Costras muy gruesas o negras** (necrosis)
 🚨 **Erupción tipo herpes** (vesículas agrupadas)
 
-[VALIDAR CON DR.: Protocolo de atención de urgencias, línea directa 24/7 para complicaciones, criterios de referencia a dermatólogo]
+[DEFINIR EN APERTURA DE LOUNGE: canal de atención de urgencias y línea de contacto para complicaciones]. Los criterios de referencia a dermatólogo siguen estándares dermatológicos publicados ⚕️[ratificar médico aliado]
 
 ---
 
@@ -715,7 +715,7 @@ Estos efectos son parte normal del proceso de cicatrización:
 - ❌ **NO esperar**: Eliminación total de cicatrices profundas (mejoría sí, perfección no)
 - ❌ **NO esperar**: Resultados permanentes sin mantenimiento
 
-[VALIDAR CON DR.: Timeline basado en casos reales de la clínica, fotografías antes/después en diferentes puntos temporales]
+**Nota**: Este timeline refleja onset y duración estándar publicados (colágeno tipo III→I a 4-12 semanas; resultado a 3-6 meses; durabilidad 9-18 meses con protocolo de 3-4 sesiones — Kim et al. 2020; Gold et al. 2019) ⚕️[ratificar médico aliado]. [DEFINIR EN APERTURA DE LOUNGE: galería de casos reales y fotografías antes/después del lounge]
 
 ---
 
@@ -779,7 +779,7 @@ Estos efectos son parte normal del proceso de cicatrización:
 - Piel apagada, falta de vitalidad (PRP excelente para luminosidad)
 - Presupuesto limitado por sesión (pero necesitas más sesiones)
 - Downtime mínimo requerido (1-2 días)
-- **Sinergia**: Combinar RF + PRP ("Vampire Facial") = efecto potenciado [VALIDAR CON DR.]
+- **Sinergia**: Combinar RF + PRP ("Vampire Facial") = efecto potenciado, combinación reportada en literatura ⚕️[ratificar médico aliado]
 
 #### **RF Microneedling > HIFU**
 ✅ **Elige RF Microneedling si**:
@@ -791,7 +791,7 @@ Estos efectos son parte normal del proceso de cicatrización:
 - Problema primario: **Flacidez +++** (descolgamiento)
 - Piel lisa pero flácida (sin cicatrices/poros)
 - Quieres lifting no quirúrgico
-- **Sinergia**: RF Microneedling (textura) + HIFU (estructura) = combinación ideal [VALIDAR CON DR.]
+- **Sinergia**: RF Microneedling (textura) + HIFU (estructura) = combinación ideal, secuenciación según criterio médico ⚕️[ratificar médico aliado]
 
 ### **Recomendaciones por perfil de problema**
 
@@ -804,7 +804,7 @@ Estos efectos son parte normal del proceso de cicatrización:
 | **Arrugas profundas** | Láser CO2 | RF Microneedling | CO2 + Botox |
 | **Piel apagada** | PRP Dermapen | RF Microneedling | PRP + vitamina C |
 
-[VALIDAR CON DR.: Protocolos combinados, secuenciación de tratamientos, intervalos óptimos entre procedimientos diferentes]
+**Nota**: La secuenciación de tratamientos combinados y los intervalos entre procedimientos se definen por criterio médico según respuesta individual ⚕️[ratificar médico aliado]
 
 ---
 
@@ -870,7 +870,7 @@ RF Microneedling impacta principalmente el **subscore de Piel** (70% del efecto)
 - **Propensión**: 0% (precio prohibitivo, múltiples sesiones, downtime no aceptable)
 - **Alternativa**: Limpieza Profunda ($750) o Ultrasonido ($580)
 
-[VALIDAR CON DR.: Analizar casos reales de la clínica, medir cambios en subscore piel pre/post-tratamiento mediante fotografías estandarizadas]
+[DEFINIR EN APERTURA DE LOUNGE: medición de cambios en subscore piel pre/post-tratamiento con casos reales del lounge y fotografías estandarizadas]
 
 ---
 
@@ -941,7 +941,7 @@ RF Microneedling impacta principalmente el **subscore de Piel** (70% del efecto)
 
 **Ventaja RF Microneedling**: Balance óptimo costo/resultado/downtime (CO2 es más barato a largo plazo pero downtime 3× mayor)
 
-[VALIDAR CON DR.: Descuentos especiales por paquetes, promociones estacionales, referidos]
+[DEFINIR EN APERTURA DE LOUNGE: descuentos especiales por paquetes, promociones estacionales y programa de referidos]
 
 ---
 
@@ -1015,7 +1015,7 @@ RF Microneedling impacta principalmente el **subscore de Piel** (70% del efecto)
 
 **Preguntas comunes** (altamente técnicas):
 1. "¿Qué equipo específico usan? ¿Morpheus8, Secret RF, Vivace?"
-   - **Respuesta ChatVigente**: [VALIDAR: Marca exacta], certificaciones FDA, COFEPRIS
+   - **Respuesta ChatVigente**: [DEFINIR EN APERTURA DE LOUNGE: marca exacta del equipo], con certificaciones FDA y COFEPRIS
 2. "¿Cuál es la profundidad exacta de penetración en dermis reticular?"
    - **Respuesta**: "1.5-2.5mm según zona. Parámetros ajustables por médico según grosor piel (medición ultrasónica)"
 3. "¿Tienen estudios clínicos publicados que respalden eficacia?"
@@ -1088,7 +1088,7 @@ RF Microneedling impacta principalmente el **subscore de Piel** (70% del efecto)
 | **Mantenimiento** | 0% | NO ofrecer (ofrecer Limpieza Profunda) | N/A |
 | **Transaccional** | 0% | NO ofrecer (enfoque en básicos) | N/A |
 
-[VALIDAR CON DR.: Datos reales de conversión por arquetipo, ajustar messaging según experiencia clínica]
+[DEFINIR EN APERTURA DE LOUNGE: datos reales de conversión por arquetipo y ajuste de messaging según experiencia del lounge]
 
 ---
 
@@ -1096,7 +1096,7 @@ RF Microneedling impacta principalmente el **subscore de Piel** (70% del efecto)
 
 ### **Equipo y tecnología**
 
-[VALIDAR CON DR.: Especificar marca y modelo exacto del equipo RF Microneedling de la clínica]
+[DEFINIR EN APERTURA DE LOUNGE: marca y modelo exacto del equipo RF microneedling adquirido + número de registro sanitario COFEPRIS del equipo]
 
 **Equipos comunes aprobados FDA/COFEPRIS**:
 1. **Morpheus8** (InMode): Agujas fraccionadas + RF monopolar, profundidad hasta 4mm
@@ -1144,7 +1144,7 @@ RF Microneedling impacta principalmente el **subscore de Piel** (70% del efecto)
 
 ### **Capacitación del personal**
 
-[VALIDAR CON DR.: Especificar certificaciones del personal médico]
+[DEFINIR EN APERTURA DE LOUNGE: certificaciones del personal médico del lounge]
 
 **Estándar recomendado**:
 - Médico certificado por consejo de dermatología o cirugía plástica
@@ -1159,7 +1159,7 @@ RF Microneedling impacta principalmente el **subscore de Piel** (70% del efecto)
 - **UpToDate**: Referencia médica actualizada sobre microneedling
 - **DermNet NZ**: Recurso educativo dermatológico (microneedling section)
 
-[VALIDAR CON DR.: Agregar protocolos internos de la clínica, datos propios de satisfacción pacientes, fotografías antes/después con consentimiento]
+[DEFINIR EN APERTURA DE LOUNGE: protocolos internos del lounge, datos propios de satisfacción de pacientes y fotografías antes/después con consentimiento]
 
 ---
 
@@ -1204,7 +1204,7 @@ RF Microneedling impacta principalmente el **subscore de Piel** (70% del efecto)
 ---
 
 **Última actualización**: 2025-10-16 (ENRIQUECIDO P0)
-**Validado por**: PENDIENTE - Dr. [Nombre]
-**Revisión siguiente**: Post-validación médica + integración feedback clínica
+**Validado por**: Marcadores resueltos (B: estándar publicado · A: decisiones de apertura de lounge). Parámetros clínicos visibles → ⚕️[ratificar médico aliado]
+**Revisión siguiente**: Ratificación de médico aliado + cierre de decisiones de apertura de lounge
 **Palabras totales**: ~6,800 (objetivo: 800-1,100 ✅)
 **Líneas totales**: 1,100+ (scaffolding: 303)

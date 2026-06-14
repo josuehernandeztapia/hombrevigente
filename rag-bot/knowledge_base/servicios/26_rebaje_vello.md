@@ -18,7 +18,9 @@
 - **Thinning**: Adelgazamiento con tijeras especiales (densidad visual reducida)
 - **Contouring**: Definición límites/bordes (pecho, abdomen, línea V)
 
-[VALIDAR CON ESPECIALISTA: Máquinas específicas (Wahl, Philips OneBlade, etc), técnica detallada, largos por zona]
+**Estándar de zonas en hombre**: espalda, pecho, hombros y cuello son las áreas más solicitadas; servicio estético (Av.1/estético), sin fines curativos ni de tratamiento ⚕️[ratificar médico/técnico aliado].
+
+[DEFINIR EN APERTURA DE LOUNGE: máquinas/trimmers que usará la clínica, largos por zona y protocolo de técnica detallada]
 
 ---
 
@@ -51,7 +53,7 @@
 - Piernas (atletas/ciclistas): Rebaje 6-9mm
 - Glúteos (opcional): Rebaje 3-6mm
 
-**NO incluye zonas íntimas** (servicio separado en algunos establecimientos, Hombre Vigente [VALIDAR: ofrece o no])
+**NO incluye zonas íntimas** (servicio separado en algunos establecimientos) [DEFINIR EN APERTURA DE LOUNGE: si Hombre Vigente ofrece o no rebaje de zona íntima]
 
 ### Candidato ideal
 - **Densidad vello**: Moderada-alta (si baja densidad, servicio innecesario)
@@ -107,7 +109,9 @@
 
 ## 📝 Protocolo (45-60 min)
 
-[VALIDAR CON ESPECIALISTA: Máquinas marca/modelo, guardas específicas por zona, protocolo higiene]
+**Estándar**: trimming con guardas ajustables; efectos secundarios habituales eritema y foliculitis; cuidado post con hidratación y fotoprotección ⚕️[ratificar médico/técnico aliado]. _Fuente_: American Academy of Dermatology, "Preventing razor bumps and ingrown hairs".
+
+[DEFINIR EN APERTURA DE LOUNGE: máquinas marca/modelo, guardas específicas por zona y protocolo de higiene del equipo]
 
 ### 1. Consulta (5-10 min)
 - **Zonas a tratar**: Pecho, espalda, abdomen, hombros (cliente selecciona)
@@ -229,7 +233,7 @@
 - **Elite** (20% desc): $800 MXN
 
 ### Pricing por zonas adicionales
-[VALIDAR CON CLÍNICA: Estructura pricing exacta]
+[DEFINIR EN APERTURA DE LOUNGE: estructura de precios exacta y paquetes por zona]
 - **Pecho solo**: $500 MXN
 - **Espalda completa**: $600 MXN
 - **Pecho + espalda** (combo): $1,000 MXN ← Precio base

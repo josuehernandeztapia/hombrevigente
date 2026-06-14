@@ -13,14 +13,15 @@
 
 **Ácido Hialurónico**: Polisacárido natural presente en piel humana que retiene agua (hasta ×1000 su peso molecular). En fillers, está **reticulado** (cross-linked) con BDDE para durar 6-24 meses (vs HA natural que dura días).
 
-**Tipos por densidad** [VALIDAR marcas clínica]:
+**Tipos por densidad** (clasificación estándar de la categoría) ⚕️[ratificar médico aliado]:
 - **Baja densidad** (15-20 mg/ml): Ojeras, labios, líneas finas
 - **Media densidad** (20-25 mg/ml): Surcos nasogenianos, líneas marioneta
 - **Alta densidad** (25-30 mg/ml): Pómulos, mandíbula, mentón (estructura ósea)
 
-**Marcas comunes**: Juvéderm, Restylane, Belotero, Teosyal
+**Marcas comunes en la categoría** (HA reticulado): Juvéderm, Restylane, Belotero, Teosyal
+[DEFINIR EN APERTURA DE LOUNGE: marca(s) y línea(s) de filler HA que utilizará la clínica + registro sanitario COFEPRIS del producto]
 
-**FDA/COFEPRIS**: Aprobado (2003+)
+**FDA/COFEPRIS**: HA reticulado aprobado como categoría (2003+) ⚕️[ratificar médico aliado]
 
 ---
 
@@ -47,7 +48,9 @@
 
 **Edad**: 35-65 años típicamente. Índice Vigente <75 con pérdida volumen facial.
 
-[VALIDAR CON DR.: Unidades/ml exactas por zona según protocolo clínica, marcas HA específicas]
+**Volúmenes de referencia por zona** (rangos estándar de la categoría, NO protocolo cerrado) ⚕️[ratificar médico aliado]: surcos nasogenianos 0.5-1ml/lado, pómulos 1-2ml/lado, mandíbula 1-2ml/lado, mentón 0.5-1.5ml total, ojeras 0.5ml/lado (técnica avanzada).
+
+[DEFINIR EN APERTURA DE LOUNGE: unidades/ml exactas por zona según protocolo de la clínica y línea HA específica seleccionada]
 
 ---
 
@@ -56,7 +59,7 @@
 1. **Alergia a HA** (rarísimo, <0.01%)
 2. **Infección activa zona inyección**
 3. **Herpes activo** (profilaxis antiviral obligatoria)
-4. **Anticoagulantes**: Warfarina (alto riesgo hematomas), aspirina relativo [VALIDAR]
+4. **Anticoagulantes**: Warfarina (alto riesgo hematomas), aspirina/AINEs contraindicación relativa (manejo según valoración) ⚕️[ratificar médico aliado]
 5. **Expectativas irreales**: Espera "cambio facial dramático" con 1ml
 6. **Historia fillers permanentes** (silicona, PMMA) en misma zona
 7. **Enfermedades autoinmunes activas** severas
@@ -65,9 +68,9 @@
 - Riesgo <0.1% pero GRAVE (ceguera, necrosis)
 - Zonas alto riesgo: Glabela (entrecejo), nariz, tear trough
 - Síntomas: Dolor intenso súbito, blanqueamiento piel, visión borrosa
-- Tratamiento: Hialuronidasa inmediata (disuelve HA en minutos)
+- Manejo estándar de la categoría: hialuronidasa inmediata (disuelve HA), referencia urgente según severidad ⚕️[ratificar médico aliado]
 
-[VALIDAR CON DR.: Protocolo emergencias oclusión vascular, hialuronidasa disponible en clínica]
+[DEFINIR EN APERTURA DE LOUNGE: protocolo de emergencias por oclusión vascular de la clínica + confirmación de hialuronidasa disponible en sitio]
 
 ---
 
@@ -100,7 +103,7 @@
 3. Fotografías pre-tratamiento
 4. Anestesia tópica 20-30 min (algunos HA ya tienen lidocaína integrada)
 
-**Inyección** (técnica por zona) [VALIDAR técnicas clínica]:
+**Inyección** (técnicas estándar de la categoría por zona) ⚕️[ratificar médico aliado]:
 - **Lineal** (tunneling): Surcos nasogenianos, líneas marioneta
 - **Bolus**: Pómulos, mentón (puntos estratégicos profundos)
 - **Fanning**: Mandíbula (múltiples vectores desde un punto)
@@ -357,4 +360,4 @@
 
 **Última actualización**: 2025-10-16 (ENRIQUECIDO - Detallado)
 **Líneas**: ~280 (scaffolding: 150, expansión: 87%)
-**Validado por**: PENDIENTE - Médico certificado inyectables + protocolo emergencias
+**Validado por**: ⚕️[ratificar médico aliado] - Médico certificado inyectables + protocolo emergencias. Parámetros locales (marca, paquetes, precios, registro sanitario): [DEFINIR EN APERTURA DE LOUNGE]

@@ -38,7 +38,9 @@
 
 **Permanencia**: 10-15 años (envejecimiento continúa pero significativamente retrasado)
 
-[VALIDAR CON CIRUJANO OCULOPLÁSTICO: Técnica preferida superior/inferior, candidato ideal]
+**Encuadre regulatorio**: La blefaroplastia es un **acto médico-quirúrgico (Av.2)** realizado por **cirujano oculoplástico/plástico facial con cédula de especialidad** en **instalación quirúrgica autorizada**. Candidato ideal estándar publicado: 45-70 años con dermatochalasis y/o hernias grasas orbitales, piel de calidad razonable; técnica inferior transcutánea vs transconjuntival según calidad de piel ⚕️[ratificar cirujano aliado].
+
+[DEFINIR EN APERTURA DE LOUNGE: técnica preferida superior/inferior del cirujano aliado, cirujano oculoplástico responsable, quirófano/instalación autorizada, paquetes y precios]
 
 ---
 
@@ -185,7 +187,7 @@
 
 ## 📝 Protocolo Quirúrgico Detallado (1.5-2.5 horas)
 
-[VALIDAR CON CIRUJANO OCULOPLÁSTICO: Técnica específica superior/inferior, protocolo anestesia]
+Estándar publicado: anestesia **local + sedación consciente** (ambulatorio), duración 1.5-2.5 h; valoración oftalmológica pre obligatoria (agudeza, presión intraocular, test Schirmer) ⚕️[ratificar cirujano aliado]. [DEFINIR EN APERTURA DE LOUNGE: técnica específica superior/inferior y protocolo de anestesia del cirujano aliado]
 
 ### Pre-operatorio
 
@@ -246,7 +248,7 @@
 4. **NO cierre**: Conjuntiva cicatriza sola
 5. **Indicación**: Piel buena calidad, solo bolsas grasas
 
-[VALIDAR: Técnica preferida clínica según edad/condición piel]
+Estándar publicado: transcutánea cuando hay exceso de piel; transconjuntival si la piel es de buena calidad (solo bolsas grasas) ⚕️[ratificar cirujano aliado]. [DEFINIR EN APERTURA DE LOUNGE: técnica preferida del cirujano aliado según edad/condición de piel]
 
 ---
 
@@ -550,4 +552,4 @@ Esta sección es CRÍTICA para planificación del paciente (trabajo, eventos soc
 
 **Última actualización**: 2025-10-16 (ENRIQUECIDO COMPLETO - MÁXIMO DETALLE QUIRÚRGICO)
 **Líneas**: ~440
-**Validado por**: PENDIENTE - Cirujano oculoplástico/plástico facial certificado + protocolo específico clínica
+**Validado por**: Parámetros clínicos = estándar quirúrgico publicado ⚕️[ratificar cirujano aliado]. Técnica, cirujano, quirófano y precios → [DEFINIR EN APERTURA DE LOUNGE]

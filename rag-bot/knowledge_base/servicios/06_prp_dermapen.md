@@ -20,7 +20,7 @@
 **FDA**: Aprobado microneedling (2009), PRP para uso ortopédico/estético (2011)
 **COFEPRIS**: Aprobado 2015
 
-[VALIDAR CON DR.: Sistema centrifugación PRP específico, protocolo preparación sangre]
+[DEFINIR EN APERTURA DE LOUNGE: Sistema/centrífuga PRP específico del lounge (marca, modelo, registro sanitario del equipo), kit de tubos y protocolo de preparación de sangre de la clínica]
 
 ---
 
@@ -28,7 +28,7 @@
 
 ### **Fase 1 - Preparación PRP** (15 min)
 1. **Extracción sangre**: 10-20ml (similar a análisis de laboratorio)
-2. **Centrifugación**: 2 ciclos (1,500 RPM 5 min + 3,000 RPM 10 min) [VALIDAR parámetros equipo]
+2. **Centrifugación**: Protocolo estándar de doble centrifugado — 1er ciclo separa eritrocitos, 2do ciclo concentra plaquetas ⚕️[ratificar médico aliado] (parámetros exactos de RPM/tiempo según equipo → [DEFINIR EN APERTURA DE LOUNGE: centrífuga PRP del lounge])
 3. **Separación componentes**:
    - **Desecho**: Eritrocitos (glóbulos rojos) - capa inferior
    - **PRP**: Plaquetas concentradas + plasma - capa media (≈3-4ml)
@@ -57,7 +57,7 @@
 - **PRP**: Efecto biológico (factores crecimiento endógenos) + mecánico
 - **Sinergia**: Pueden combinarse (RF + PRP = potenciación 30-40%)
 
-[VALIDAR CON DR.: Protocolo preparación PRP, concentración plaquetas objetivo, activación]
+**Estándar publicado** ⚕️[ratificar médico aliado]: doble centrifugado autólogo → concentración objetivo ~1,000,000–1,500,000 plaquetas/µL (5–7× sangre normal); activación con cloruro de calcio o trombina. Equipo/protocolo específico → [DEFINIR EN APERTURA DE LOUNGE: centrífuga, kit y protocolo de activación del lounge]
 
 ---
 
@@ -117,7 +117,7 @@
 3. **Anticoagulantes activos**:
    - Warfarina, heparina, apixaban, rivaroxaban
    - **Razón**: Hematomas severos, sangrado prolongado
-   - **Excepción**: Aspirina baja dosis puede continuarse [VALIDAR CON DR.]
+   - **Excepción**: Aspirina baja dosis puede continuarse ⚕️[ratificar médico aliado]
 
 4. **Cáncer hematológico activo**:
    - Leucemia, linfoma, mieloma múltiple
@@ -177,7 +177,7 @@
 
 ## 📝 Protocolo de Aplicación (60 min total)
 
-[VALIDAR CON DR.: Sistema centrifugación marca/modelo, protocolo asepsia, profundidad Dermapen por zona]
+[DEFINIR EN APERTURA DE LOUNGE: Sistema de centrifugación marca/modelo y registro sanitario del equipo, protocolo de asepsia del lounge]. Profundidad Dermapen por zona (rango estándar 0.5–2.5 mm) ⚕️[ratificar médico aliado]
 
 ### **1. Consulta y consentimiento** (5 min)
 - Historial médico: Coagulación, medicamentos, infecciones
@@ -190,11 +190,11 @@
 - **Asepsia**: Alcohol 70%, técnica estéril
 
 ### **3. Centrifugación PRP** (15 min)
-[VALIDAR: Parámetros específicos equipo clínica]
+[DEFINIR EN APERTURA DE LOUNGE: parámetros específicos de la centrífuga del lounge — marca, RPM/tiempo validados, registro sanitario del equipo]
 
-**Protocolo general doble centrifugación**:
-- **1er ciclo**: 1,500 RPM × 5 min → Separa eritrocitos
-- **2do ciclo**: 3,000 RPM × 10 min → Concentra plaquetas
+**Protocolo general doble centrifugación** (estándar publicado) ⚕️[ratificar médico aliado]:
+- **1er ciclo**: ~1,500 RPM × 5 min → Separa eritrocitos
+- **2do ciclo**: ~3,000 RPM × 10 min → Concentra plaquetas
 
 **Resultado**: 3-4ml PRP (de 10-20ml iniciales)
 - **Concentración objetivo**: 1,000,000-1,500,000 plaquetas/µL (vs 200,000/µL sangre normal = 5-7× concentrado)
@@ -209,9 +209,9 @@
 
 ### **5. Microneedling + aplicación PRP** (20 min)
 
-**Configuración Dermapen** [VALIDAR]:
+**Configuración Dermapen** (rangos estándar) ⚕️[ratificar médico aliado]:
 - **Velocidad**: 100-120 RPM (ajustable)
-- **Profundidad por zona**:
+- **Profundidad por zona** (rango clínico 0.5–2.5 mm):
   - Frente, mejillas: 1.5-2mm
   - Contorno ojos: 0.5-1mm
   - Cicatrices: 2-2.5mm

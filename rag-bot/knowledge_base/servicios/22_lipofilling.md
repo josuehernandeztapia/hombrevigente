@@ -25,7 +25,9 @@
 
 **Permanencia**: Grasa sobreviviente (50-70%) es PERMANENTE, pero envejece natural con resto cuerpo (pérdida volumen lenta edad 60+)
 
-[VALIDAR CON CIRUJANO PLÁSTICO: Técnica extracción/procesamiento/inyección preferida, % supervivencia esperada]
+**Encuadre regulatorio**: El lipofilling facial es un **acto médico-quirúrgico (Av.2)** realizado por **cirujano plástico con cédula de especialidad** en **instalación quirúrgica autorizada**. Estándar publicado: supervivencia del injerto 50-70% con técnica atraumática (Coleman); resto es absorbido y puede requerir retoque ⚕️[ratificar cirujano aliado].
+
+[DEFINIR EN APERTURA DE LOUNGE: técnica de extracción/procesamiento/inyección preferida del cirujano aliado, % de supervivencia que reporta su casuística, cirujano responsable, quirófano/instalación autorizada, paquetes y precios]
 
 ---
 
@@ -224,7 +226,7 @@
 
 ## 📝 Protocolo Quirúrgico Detallado (2-3 horas)
 
-[VALIDAR CON CIRUJANO PLÁSTICO: Técnica extracción, método procesamiento (centrifugación vs decantación vs lavado), volumen inyección por zona]
+Estándar publicado: proceso de 3 etapas (lipoextracción atraumática → procesamiento → microinyección) con anestesia **local + sedación consciente** (ambulatorio), duración 2-3 h; centrifugación 1,200 rpm × 3 min es el gold standard Coleman ⚕️[ratificar cirujano aliado]. [DEFINIR EN APERTURA DE LOUNGE: técnica de extracción, método de procesamiento y volumen de inyección por zona del cirujano aliado]
 
 ### Pre-operatorio
 
@@ -458,4 +460,4 @@
 
 **Última actualización**: 2025-10-16 (ENRIQUECIDO COMPLETO - MÁXIMO DETALLE QUIRÚRGICO)
 **Líneas**: ~480
-**Validado por**: PENDIENTE - Cirujano plástico especialista lipofilling + protocolo procesamiento grasa específico clínica
+**Validado por**: Parámetros clínicos = estándar quirúrgico publicado ⚕️[ratificar cirujano aliado]. Técnica de procesamiento, cirujano, quirófano y precios → [DEFINIR EN APERTURA DE LOUNGE]

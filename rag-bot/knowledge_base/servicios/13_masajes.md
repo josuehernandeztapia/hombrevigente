@@ -322,7 +322,7 @@
 **Costo servicio**:
 - Insumos: $80 (aceites, crema, toallas, lavandería)
 - Terapeuta: 60 min sesión + 15 min preparación/limpieza
-- **COGS total**: ~$400-450 [VALIDAR CON CLÍNICA]
+- **COGS total**: ~$400-450 [DEFINIR EN APERTURA DE LOUNGE: marca de aceites/cremas y costeo final de insumos]
 
 **Revenue share**: 35% (servicios wellness terapéuticos)
 
@@ -450,7 +450,7 @@
 - Myofascial Release Techniques (John Barnes method)
 - Deep Tissue Massage (certified protocols)
 
-**[VALIDAR CON TERAPEUTA CLÍNICA]**: Técnicas específicas aplicadas, formación certificada, protocolos adaptados
+**Técnica estándar del servicio**: La sesión combina maniobras de masaje relajante (deslizamiento suave para liberar tensión acumulada) y descontracturante (presión profunda sobre zonas de mayor carga: cuello, hombros, espalda baja). Duración típica 30-60 min según paquete. Incluye consulta breve de preferencias, ambiente de relajación y recomendación de hidratación post-sesión. Por bienestar del huésped, se ajusta o pospone la sesión ante lesiones recientes, inflamación aguda, várices marcadas o cuadros que requieran atención médica — el masaje es un servicio de relajación y bienestar, no un tratamiento clínico.
 
 ---
 

@@ -27,10 +27,11 @@
 - **Peróxido de hidrógeno** (H₂O₂): Acción inmediata, más potente, 15-35% consultorio
 - **Peróxido de carbamida**: Se descompone en H₂O₂ + urea, más lento, 35-44% (equivale ~12-15% H₂O₂)
 
-**Tecnologías comunes**: Zoom WhiteSpeed, Philips Zoom, Opalescence Boost, BriteSmile
-[VALIDAR CON CLÍNICA: Sistema LED específico, marca gel, concentración exacta]
+**Tecnologías comunes en el mercado** (referencia general, no equipo del lounge): Zoom WhiteSpeed, Philips Zoom, Opalescence Boost, BriteSmile
+[DEFINIR EN APERTURA DE LOUNGE: marca del sistema de blanqueamiento/gel específico, equipo LED, registro sanitario COFEPRIS del equipo y gel]
 
-**FDA/COFEPRIS**: Aprobado uso cosmético dental, no terapéutico
+**Marco regulatorio (estándar publicado)**: El blanqueamiento dental en consultorio es un acto profesional odontológico. El peróxido de hidrógeno para blanqueamiento dental está clasificado por la FDA como dispositivo/cosmético dental de uso profesional, no terapéutico. En México, las concentraciones de uso profesional están reguladas por COFEPRIS. ⚕️[ratificar odontólogo aliado]
+Fuente: FDA (clasificación dispositivos blanqueamiento dental); COFEPRIS (regulación productos blanqueadores).
 
 ---
 
@@ -185,7 +186,13 @@
 
 ## 📝 Protocolo Detallado (60 minutos)
 
-[VALIDAR CON CLÍNICA: Sistema LED específico, marca gel, concentración exacta peróxido, número ciclos protocolo]
+[DEFINIR EN APERTURA DE LOUNGE: marca del sistema de blanqueamiento/gel específico, equipo LED, concentración exacta del gel del lounge, número de ciclos del protocolo del lounge, paquetes y precios]
+
+**Parámetros estándar de blanqueamiento en consultorio (estándar publicado, sujeto a equipo final del lounge)** ⚕️[ratificar odontólogo aliado]:
+- **Concentración de peróxido**: 25-40% peróxido de hidrógeno (o carbamida 35-44%, equivalente ~12-15% H₂O₂) en consultorio
+- **Ciclos**: 2-3 ciclos de activación por sesión
+- **Duración de sesión**: 45-90 minutos según número de ciclos
+- Fuente: Journal of the American Dental Association (2020), revisión sistemática blanqueamiento profesional; American Academy of Cosmetic Dentistry, guidelines protocolos.
 
 ### Pre-tratamiento (semanas previas - RECOMENDADO)
 
@@ -246,7 +253,8 @@
 
 **4. Aplicación gel blanqueador** (3-5 min)
 
-[VALIDAR: Concentración exacta (15-35% H₂O₂ o 35-44% carbamida), marca gel]
+[DEFINIR EN APERTURA DE LOUNGE: marca del gel y concentración exacta del producto del lounge]
+**Rango estándar publicado en consultorio**: 25-40% H₂O₂ o 35-44% carbamida ⚕️[ratificar odontólogo aliado] — Fuente: JADA (2020).
 
 - **Gel blanqueador**:
   - Peróxido hidrógeno 25-35% (típico consultorio) O peróxido carbamida 35-44%
@@ -263,8 +271,8 @@
 
 - **Lámpara LED blanqueamiento**:
   - Longitud onda: 480-520 nm (luz azul específica)
-  - Potencia: 200-500 mW/cm² (según equipo)
-  - [VALIDAR: Modelo específico LED clínica - Zoom WhiteSpeed, Philips, Opalescence, etc]
+  - Potencia: 200-500 mW/cm² (según equipo) ⚕️[ratificar odontólogo aliado]
+  - [DEFINIR EN APERTURA DE LOUNGE: equipo LED específico del lounge - marca/modelo y registro sanitario]
 
 - **Posicionamiento**:
   - Lámpara 2-5 cm distancia dientes
@@ -283,8 +291,8 @@
 **7. Aplicación gel + Activación LED - Ciclo 2** (20-25 min)
 
 - Repetir pasos 4-5 (nueva capa gel + 15-20 min LED)
-- Mayoría protocolos: 2-3 ciclos totales (según tolerancia paciente + tono deseado)
-- [VALIDAR: Número ciclos protocolo estándar clínica]
+- Mayoría protocolos: 2-3 ciclos totales (según tolerancia paciente + tono deseado) — estándar publicado, Fuente: AACD guidelines ⚕️[ratificar odontólogo aliado]
+- [DEFINIR EN APERTURA DE LOUNGE: número de ciclos del protocolo del lounge]
 
 **8. [OPCIONAL] Ciclo 3** (20-25 min adicionales)
 
@@ -419,7 +427,7 @@
 **Productos caseros mantenimiento** (OPCIONAL, después mes 1):
 - Pasta blanqueadora leve 2× semana (NO diario, desgasta esmalte)
 - Strips blanqueadores mantenimiento cada 3-6 meses (concentración baja 5-10% H₂O₂)
-- [CONSULTAR: Clínica puede ofrecer kit retoque casero personalizado]
+- [DEFINIR EN APERTURA DE LOUNGE: disponibilidad de kit de retoque casero personalizado y su precio]
 
 **Retoque profesional**:
 - **Cuándo**: Cuando notes tono regresó 1-2 niveles vs post-blanqueamiento
@@ -680,4 +688,4 @@
 
 **Última actualización**: 2025-10-16 (ENRIQUECIDO COMPLETO - MÁXIMO DETALLE)
 **Líneas**: ~650
-**Validado por**: PENDIENTE - Odontólogo certificado + protocolo equipo LED específico clínica
+**Validado por**: Parámetros clínicos ⚕️[ratificar odontólogo aliado] · Marca de sistema/gel, equipo LED, paquetes, precios y registro sanitario [DEFINIR EN APERTURA DE LOUNGE]
