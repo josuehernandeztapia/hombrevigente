@@ -56,6 +56,7 @@ jobs:
             test_newsletter_approval.py \
             test_c1_idempotency.py \
             test_whatsapp_channel.py \
+            test_vendor_quality.py \
             test_indice_vigente.py \
             test_bridge_labs_indice.py \
             test_onboarding_flow.py \
