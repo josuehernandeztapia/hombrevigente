@@ -1,0 +1,18 @@
+{
+  "_doc": "Registro de proveedores Av.2 (péptidos/viales). SSOT de decisiones de calidad de suministro. Llenar al evaluar cada vendor. Ver estrategia_2026/Calidad_Suministro_Peptidos.md. Evaluar: python vendor_quality.py",
+  "vendors": [
+    {
+      "name": "Exoma",
+      "inyectable": true,
+      "en_finnrick": false,
+      "finnrick_ok": null,
+      "en_janoshik": false,
+      "coa_por_lote": true,
+      "endotoxinas": null,
+      "esterilidad": null,
+      "iso_17025_lab": false,
+      "ultimo_lote_testeado": null,
+      "notas": "MX (Monterrey). Dice '99% HPLC' pero no aparece en testeo independiente → no verificable. Criba falla."
+    }
+  ]
+}
