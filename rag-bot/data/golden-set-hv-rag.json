@@ -623,12 +623,14 @@
       "topic": "auto-promoted",
       "mode": "retrieval",
       "expected_traits": [
-        "kb_route servicios",
-        "source o answer menciona fragmento de la respuesta promovida"
+        "kb_route servicios (con hint 'lounge')",
+        "source o answer menciona fragmento de la respuesta promovida (horario)"
       ],
       "parsed": {
         "must_contain_any": [
-          "source o answer menciona fragmento de la respuesta promovida"
+          "por cita",
+          "9-20",
+          "Lun"
         ],
         "must_not_contain": [],
         "expected_gate": null,
@@ -697,17 +699,19 @@
       "topic": "auto-promoted",
       "mode": "retrieval",
       "expected_traits": [
-        "kb_route servicios",
-        "source o answer menciona fragmento de la respuesta promovida"
+        "kb_route all (FAQ de pago/logística, no específica de servicio; se responde desde FAQ_PROMOTED en cualquier ruta)",
+        "source o answer menciona fragmento de la respuesta promovida (AMEX)"
       ],
       "parsed": {
         "must_contain_any": [
-          "source o answer menciona fragmento de la respuesta promovida"
+          "AMEX",
+          "American Express",
+          "Mastercard"
         ],
         "must_not_contain": [],
         "expected_gate": null,
         "no_gate": false,
-        "expected_route": "servicios",
+        "expected_route": "all",
         "expected_gate_path": null,
         "expected_gate_path_any": null
       },
