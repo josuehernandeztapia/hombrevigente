@@ -61,7 +61,7 @@ LLM_MODEL = "gpt-4o-mini"
 SERVICIOS_HINTS = re.compile(
     r"\b(hifu|botox|fillers?|sculptra|rf\s*microneedling|láser|laser|depilación|"
     r"corte|barba|manicure|pedicure|blanqueamiento|limpieza facial|precio|cuesta|"
-    r"sesión|sesiones|servicio|clínica estética)\b",
+    r"sesión|sesiones|servicio|clínica estética|lounge)\b",
     re.I,
 )
 LONGEVITY_HINTS = re.compile(
