@@ -1,6 +1,72 @@
 {
   "_doc": "Registro de proveedores Av.2 (péptidos/viales). SSOT de decisiones de calidad de suministro. Llenar al evaluar cada vendor. Ver estrategia_2026/Calidad_Suministro_Peptidos.md. Evaluar: python vendor_quality.py",
+  "_provenance": "Datos de criba (en_finnrick/finnrick_ok/ratings) de recon Finnrick ~2026-06. Re-verificar: un ranking NO abre el gate — exige lote testeado + COA + firma médico. coa_por_lote/endotoxinas/esterilidad = null/false hasta confirmar con el vendor; ultimo_lote_testeado = null hasta mandar muestra.",
   "vendors": [
+    {
+      "name": "Peptide Partners",
+      "inyectable": true,
+      "en_finnrick": true,
+      "finnrick_ok": true,
+      "en_janoshik": null,
+      "coa_por_lote": false,
+      "endotoxinas": null,
+      "esterilidad": null,
+      "iso_17025_lab": false,
+      "ultimo_lote_testeado": null,
+      "notas": "Finnrick A→C · 7 prod · 74 tests · avg 8.2 (min 4.2) · últ. 2026-05-08. Mejor balance amplitud/calidad de la criba. Falta: confirmar COA por lote + endotoxinas/esterilidad + testear lote."
+    },
+    {
+      "name": "Andy Peps Studio",
+      "inyectable": true,
+      "en_finnrick": true,
+      "finnrick_ok": true,
+      "en_janoshik": null,
+      "coa_por_lote": false,
+      "endotoxinas": null,
+      "esterilidad": null,
+      "iso_17025_lab": false,
+      "ultimo_lote_testeado": null,
+      "notas": "Finnrick A→B · 3 prod · 31 tests · avg 8.4 (min 6.0). El más consistente lote-a-lote (su peor lote no baja de 6). Poca variedad. Falta calificación + verificación de lote."
+    },
+    {
+      "name": "Polaris Peptides",
+      "inyectable": true,
+      "en_finnrick": true,
+      "finnrick_ok": true,
+      "en_janoshik": null,
+      "coa_por_lote": false,
+      "endotoxinas": null,
+      "esterilidad": null,
+      "iso_17025_lab": false,
+      "ultimo_lote_testeado": null,
+      "notas": "Finnrick A→D · 9 prod · 99 tests · avg 7.3 (min 3.9) · desde dic-2024. Máxima amplitud con volumen; dispersión hasta D → exige COA por lote estricto. Falta calificación + verificación."
+    },
+    {
+      "name": "Paradigm Peptide",
+      "inyectable": true,
+      "en_finnrick": true,
+      "finnrick_ok": true,
+      "en_janoshik": null,
+      "coa_por_lote": false,
+      "endotoxinas": null,
+      "esterilidad": null,
+      "iso_17025_lab": false,
+      "ultimo_lote_testeado": null,
+      "notas": "Finnrick A puro · 2 prod · 18 tests · avg 8.8. Máxima pureza, poca variedad — usar si necesitas 1-2 péptidos premium. Falta calificación + verificación de lote."
+    },
+    {
+      "name": "HK Peptides",
+      "inyectable": true,
+      "en_finnrick": true,
+      "finnrick_ok": false,
+      "en_janoshik": null,
+      "coa_por_lote": false,
+      "endotoxinas": null,
+      "esterilidad": null,
+      "iso_17025_lab": false,
+      "ultimo_lote_testeado": null,
+      "notas": "Finnrick A→E · 13 prod · 421 tests · min 0.0. Catálogo gigante pero con lotes que puntúan 0 (finnrick_ok=false: resultados NO uniformemente aceptables). Solo con COA por lote + testeo estricto de cada lote; alto riesgo."
+    },
     {
       "name": "Exoma",
       "inyectable": true,
@@ -12,7 +78,7 @@
       "esterilidad": null,
       "iso_17025_lab": false,
       "ultimo_lote_testeado": null,
-      "notas": "MX (Monterrey). Dice '99% HPLC' pero no aparece en testeo independiente → no verificable. Criba falla."
+      "notas": "MX (Monterrey). Dice '99% HPLC' pero no aparece en testeo independiente (Finnrick/Janoshik) → no verificable. Criba falla."
     }
   ]
 }

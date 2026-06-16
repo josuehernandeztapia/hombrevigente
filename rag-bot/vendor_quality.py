@@ -22,6 +22,16 @@ AUTO-FETCH (diferido — recon 2026-06, robots.txt):
     (destino de muestra, paso 3), no como fuente de datos.
   Hoy: el registro se llena a mano (este archivo no hace red). Construir auto-fetch
   solo cuando evalúes vendors de forma recurrente (Av.2 a escala).
+
+CONTRATO Finnrick (para el fetcher futuro — recon, confirmado en HTML server-rendered):
+  L1 /vendors            → {vendorName, slug, ratingRange, productsCount, testCount,
+                            avgScore, minScore, maxScore, oldestTest, mostRecentTest}
+                            → mapea a en_finnrick + finnrick_ok (avg/min/ratingRange).
+  L2 /vendors/{slug}     → products[]{productName, rating, count, avg, min, max} + recentTests[]
+  L3 recentTests/batch   → {product, score, testDate, batchId, lab, purity, dosage,
+                            endotoxins, coaUrl} → mapea a ultimo_lote_testeado + endotoxinas.
+  Extracción: __NEXT_DATA__ (JSON embebido) o /_next/data/{buildId}/vendors/{slug}.json;
+  fallback fetch+Cheerio. NUNCA /api/ (robots disallow). Janoshik: PDFs por lote (OCR), sin tabla.
 """
 from __future__ import annotations
 
