@@ -35,7 +35,7 @@ Regla: ¿hace afirmación de salud? → gated. Si no → puede ser auto.
 2. Secret: `AYRSHARE_API_KEY`.
 
 ### LLM redacción Pulso (`draft_compose`, `approval_revise`)
-- **Recomendado:** GitHub Secret `ANTHROPIC_API_KEY` → **Claude Sonnet** (`claude-sonnet-4-20250514`).
+- **Recomendado:** GitHub Secret `ANTHROPIC_API_KEY` → **Claude Sonnet** (`claude-sonnet-4-6`).
 - **Alternativa:** `OPENAI_API_KEY` → **gpt-4o** (si no hay Anthropic).
 - `PULSO_COMPOSE_PROVIDER=auto` (default): Anthropic primero, luego OpenAI.
 - Override: `PULSO_COMPOSE_MODEL`, `PULSO_COMPOSE_PROVIDER=anthropic|openai`.

@@ -150,7 +150,7 @@ Cada query RAG escribe un `RagDecisionEntry` JSONL en `data/decision_log.jsonl` 
 - Prompt **system**: redactor Pulso, español premium sin hype, "NUNCA inventes PMIDs/DOIs", prohibido "cura/trata/previene/diagnóstico/garantiza", salida solo markdown+frontmatter. **user**: `Nº{n}` + `EDITORIAL.md[:2000]` + ejemplo previo + picks JSON + estructura obligatoria (TLDR, 🟢 Accionable, 🔬 Frontera, 🤖 AI×Longevity, 🌍 Contexto, Plus + Bottom line, tabla Editorial bridge 4 filas, disclaimer).
 - `validate_sources()`: cada `PMID(\d+)` / `10.\d{4,}/\S+` citado debe estar en el harvest; falla si no, o si no cita ningún PMID → `fallback_compose()` (plantilla mecánica, `compose: auto-fallback`).
 - **Frontmatter**: `numero, fecha, subject(curiosity-gap), preheader, audiencia: plus, approved: false, approval_status: pending`.
-- **LLM** (`llm_client.chat_complete`): provider `PULSO_COMPOSE_PROVIDER=auto` → Anthropic `claude-sonnet-4-20250514` (si `ANTHROPIC_API_KEY`) si no OpenAI `gpt-4o`; `max_tokens=8192, temperature=0.4, timeout=180s`. Override `PULSO_COMPOSE_MODEL`.
+- **LLM** (`llm_client.chat_complete`): provider `PULSO_COMPOSE_PROVIDER=auto` → Anthropic `claude-sonnet-4-6` (si `ANTHROPIC_API_KEY`) si no OpenAI `gpt-4o`; `max_tokens=8192, temperature=0.4, timeout=180s`. Override `PULSO_COMPOSE_MODEL`.
 - Salida `issues/YYYY-MM-NNN.md`.
 
 ### 4.3 Hero / assets (`prompt_from_issue.py` + `image.py`)

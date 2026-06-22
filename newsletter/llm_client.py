@@ -17,7 +17,7 @@ from dataclasses import dataclass
 import requests
 
 DEFAULT_OPENAI_COMPOSE = "gpt-4o"
-DEFAULT_ANTHROPIC_COMPOSE = "claude-sonnet-4-20250514"
+DEFAULT_ANTHROPIC_COMPOSE = "claude-sonnet-4-6"  # 4-20250514 retirado → 404 (jun-2026)
 
 
 @dataclass(frozen=True)
