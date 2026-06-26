@@ -111,6 +111,9 @@ jobs:
       - name: Aprobación — preview por correo + issue GitHub
         if: steps.pr.outputs.pull-request-number != ''
         env:
+          # Override del PULSO_MODE: shadow del job — el preview SÍ debe enviar el
+          # correo real al owner (Fase A). El shadow del job solo aplica al ensayo/post-mortem.
+          PULSO_MODE: production
           RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
           NEWSLETTER_FROM: ${{ vars.NEWSLETTER_FROM }}
           NEWSLETTER_APPROVAL_TO: ${{ vars.NEWSLETTER_APPROVAL_TO }}
