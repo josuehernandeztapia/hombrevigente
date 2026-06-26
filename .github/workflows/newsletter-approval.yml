@@ -146,6 +146,22 @@ jobs:
             gh pr merge "$PR" --merge --delete-branch
           fi
 
+      - name: Enviar a Plus (Resend)
+        # El merge anterior usa GITHUB_TOKEN → NO dispara newsletter-send.yml
+        # (GitHub no encadena workflows en pushes del token). Por eso enviamos
+        # aquí directo. send.py gatea por approved:true (ya marcado arriba).
+        if: steps.parse.outputs.action == 'approve'
+        env:
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+          RESEND_AUDIENCE_PLUS: ${{ vars.RESEND_AUDIENCE_PLUS }}
+          RESEND_AUDIENCE_FREE: ${{ vars.RESEND_AUDIENCE_FREE }}
+          NEWSLETTER_FROM: ${{ vars.NEWSLETTER_FROM }}
+        run: |
+          if [ -z "${RESEND_API_KEY:-}" ]; then
+            echo "RESEND_API_KEY no configurado — envío omitido (sin error)."; exit 0
+          fi
+          python newsletter/send.py "${{ steps.parse.outputs.issue_path }}"
+
       - name: Cerrar issue aprobación
         if: steps.parse.outputs.action == 'approve' && github.event_name == 'issue_comment'
         env:
