@@ -23,6 +23,12 @@ permissions:
   pull-requests: write
   issues: write
 
+# Serializa: aprobar por 2 canales a la vez (comentario OK + botón del correo)
+# disparaba 2 runs concurrentes que chocaban en el merge ("base branch modified").
+concurrency:
+  group: pulso-approval
+  cancel-in-progress: false
+
 jobs:
   handle:
     # issue_comment no trae labels en el payload — filtramos por título
@@ -135,21 +141,10 @@ jobs:
           git commit -m "draft(newsletter): aprobado para envío Plus" || true
           git push origin "${{ steps.branch.outputs.branch }}"
 
-      - name: Merge PR borrador
-        if: steps.parse.outputs.action == 'approve' && steps.branch.outputs.branch != 'main'
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          NUM=$(basename "${{ steps.parse.outputs.issue_path }}" .md | sed -E 's/.*-([0-9]+)$/\1/')
-          PR=$(gh pr list --head "newsletter/draft-${NUM}" --json number -q '.[0].number' || true)
-          if [ -n "${PR}" ]; then
-            gh pr merge "$PR" --merge --delete-branch
-          fi
-
+      # ENVIAR PRIMERO (crítico). El envío solo necesita approved:true (marcado arriba),
+      # NO el merge. Antes iba después del merge → si el merge fallaba ("base branch
+      # modified"), nunca enviaba. send.py es idempotente (no reenvía el mismo número).
       - name: Enviar a Plus (Resend)
-        # El merge anterior usa GITHUB_TOKEN → NO dispara newsletter-send.yml
-        # (GitHub no encadena workflows en pushes del token). Por eso enviamos
-        # aquí directo. send.py gatea por approved:true (ya marcado arriba).
         if: steps.parse.outputs.action == 'approve'
         env:
           RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
@@ -161,6 +156,20 @@ jobs:
             echo "RESEND_API_KEY no configurado — envío omitido (sin error)."; exit 0
           fi
           python newsletter/send.py "${{ steps.parse.outputs.issue_path }}"
+
+      # Housekeeping: mergear el borrador a main (para que la numeración avance).
+      # NO-FATAL: si el merge choca (base modificada), el envío ya ocurrió arriba.
+      - name: Merge PR borrador
+        if: steps.parse.outputs.action == 'approve' && steps.branch.outputs.branch != 'main'
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          NUM=$(basename "${{ steps.parse.outputs.issue_path }}" .md | sed -E 's/.*-([0-9]+)$/\1/')
+          PR=$(gh pr list --head "newsletter/draft-${NUM}" --json number -q '.[0].number' || true)
+          if [ -n "${PR}" ]; then
+            gh pr merge "$PR" --merge --delete-branch || gh pr merge "$PR" --merge --delete-branch
+          fi
 
       - name: Cerrar issue aprobación
         if: steps.parse.outputs.action == 'approve' && github.event_name == 'issue_comment'
