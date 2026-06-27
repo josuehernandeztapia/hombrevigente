@@ -165,6 +165,9 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
+          # send.py dejó approvals/*.json sin commitear → el checkout interno de
+          # 'gh pr merge --delete-branch' fallaba ("local changes would be overwritten").
+          git stash -u >/dev/null 2>&1 || true
           NUM=$(basename "${{ steps.parse.outputs.issue_path }}" .md | sed -E 's/.*-([0-9]+)$/\1/')
           PR=$(gh pr list --head "newsletter/draft-${NUM}" --json number -q '.[0].number' || true)
           if [ -n "${PR}" ]; then
