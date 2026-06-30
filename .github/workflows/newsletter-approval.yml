@@ -156,6 +156,14 @@ jobs:
             echo "RESEND_API_KEY no configurado — envío omitido (sin error)."; exit 0
           fi
           python newsletter/send.py "${{ steps.parse.outputs.issue_path }}"
+          # PERSISTIR el registro de envío (sent_at/broadcast_id en approvals/NNN.json)
+          # para que otra aprobación del mismo número NO reenvíe. send.py ya lo lee con
+          # _already_sent; el bug era que el registro vivía solo en el runner efímero.
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add newsletter/approvals/ 2>/dev/null || true
+          git commit -m "chore(newsletter): registro de envío $(basename "${{ steps.parse.outputs.issue_path }}" .md)" || true
+          git push origin "${{ steps.branch.outputs.branch }}" || true
 
       # Housekeeping: mergear el borrador a main (para que la numeración avance).
       # NO-FATAL: si el merge choca (base modificada), el envío ya ocurrió arriba.

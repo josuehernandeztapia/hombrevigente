@@ -3,5 +3,7 @@
   "issue_path": "newsletter/issues/2026-06-004.md",
   "github_issue": 60,
   "pr": 59,
-  "status": "pending"
+  "status": "sent",
+  "sent_at": "2026-06-26T23:48:23Z",
+  "broadcast_id": "e8537d26-d228-4bf2-96f2-ed142c283202"
 }
