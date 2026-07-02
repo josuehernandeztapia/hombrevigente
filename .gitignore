@@ -58,6 +58,7 @@ rag-bot/data/labs_intake/
 rag-bot/data/intake/
 rag-bot/data/protocols/
 rag-bot/data/mvp0_runs/
+rag-bot/data/traces/
 
 # === RAG / Vector DBs ===
 qdrant_storage/
