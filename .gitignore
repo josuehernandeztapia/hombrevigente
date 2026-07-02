@@ -47,6 +47,12 @@ node_modules/
 /build
 /out
 
+# === Datos runtime en raíz (decision_log, pending_actions del agente local) ===
+/data/
+
+# === Clones locales de trabajo (repos anidados) ===
+/hombrevigente-fresh/
+
 # === MVP-0 datos clínicos (PHI — nunca en git) ===
 rag-bot/data/labs_intake/
 rag-bot/data/intake/
