@@ -1,0 +1,36 @@
+<!-- REVISAR Y VERIFICAR FUENTES ANTES DE PUBLICAR. Sigue EDITORIAL.md. -->
+
+# X / Twitter — hilo (Nº006)
+
+1/ El fármaco que baja el colesterol sin estatinas (y lo que revelan tus oídos sobre tu envejecimiento)
+
+Un análisis del ensayo CLEAR Outcomes reposiciona al ácido bempedoico como opción real para quienes no toleran estatinas; la biología del oído interno resulta ser un mapa de tu envejecimiento mitocondrial; la ingeniería de vesículas extracelulares con IA abre una nueva frontera terapéutica; y la angiopatía amiloide cerebral pide más atención de la que recibe.
+
+2/ Sin estatinas no significa sin opciones: lo que el ensayo CLEAR Outcomes dice sobre tu riesgo cardiovascular
+Para millones de hombres que abandonan las estatinas por mialgias u otros efectos adversos, el perfil lipídico queda sin gestión activa — y el riesgo cardiovascular, sin control. Un análisis post hoc del ensayo aleatorizado **CLEA
+Fuente: JAMA Cardiol, 2026-07-01. PMID 42201706. DOI 10.1001/jamacardio.2026.1208
+
+3/ Tu oído interno como espejo del envejecimiento mitocondrial: lo que la cóclea revela
+La pérdida auditiva relacionada con la edad (presbiacusia) suele tratarse como un inconveniente inevitable. Un estudio publicado en *Aging Cell* (julio 2026) sugiere que hay mucho más debajo: el envejecimiento coclear y vestibular
+Fuente: Aging Cell, 2026-07-01. PMID 42333947. DOI 10.1111/acel.70593
+
+4/ Vesículas extracelulares diseñadas: la nueva frontera de la terapia anti-envejecimiento
+Las vesículas extracelulares (EVs) — exosomas y microvesículas secretadas por células — llevan años en el radar de la biología del envejecimiento. Una revisión publicada en *Aging Cell* (julio 2026) sistematiza el estado del arte 
+Fuente: Aging Cell, 2026-07-01. PMID 42337937. DOI 10.1111/acel.70607
+
+5/ Angiopatía amiloide cerebral: el hallmark neurológico que el hombre de 50+ debería conocer
+La angiopatía amiloide cerebral (CAA) — depósito de proteína amiloide en la pared de los vasos cerebrales — es una condición que aumenta en prevalencia con la edad y se asocia a episodios neurológicos transitorios focales, deterio
+Fuente: GeroScience, 2026-07-06. PMID 42402536. DOI 10.1007/s11357-026-02373-x
+
+6/ Para ti, miembro Plus
+Este número conecta cuatro puntos que en la medicina convencional raramente se ven juntos: tu perfil lipídico, tu función auditiva, la biología de tus vesículas celulares y la salud de tus vasos cerebrales. En el framework de long
+
+7/ Bridge Nº006
+| Topic SSOT | Monografía HV | PMID / DOI | Nivel E | Bridge |
+
+8/ La longevidad no se gestiona con un solo marcador ni con una sola intervención. Se gestiona con un mapa completo, actualizado y verificado. Pulso Vigente existe para que ese mapa tenga fuentes reales detrás.
+
+Suscríbete a Pulso Vigente → hombrevigente.com
+
+
+_Nota: cada tweet ≤280 car. Acorta donde haga falta. Adjunta el hero del número._
