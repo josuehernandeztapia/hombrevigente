@@ -1,0 +1,17 @@
+<!-- REVISAR Y VERIFICAR FUENTES ANTES DE PUBLICAR. Sigue EDITORIAL.md. -->
+# LinkedIn — post (Nº008)
+
+Esta semana, la frontera entre herramienta y científico se difuminó en *Science*; mientras tanto, la biología de la autofagia y el estrés celular siguen entregando dianas concretas para la optimización de largo plazo.
+
+▸ Dapagliflozin y el perfil de VLDL: lo que el estudio cinético revela sobre tus lípidos. Un ensayo aleatorizado publicado en *Diabetologia* (julio 2026) evaluó, mediante marcaje isotópico in vivo, cómo dapagliflozin —un inhibidor SGLT2 ampliamente prescrito en diabetes tipo 2— afecta el catabolismo de lipoproteínas. El hallazgo central: **dapagliflozin no deteriora el catabolismo de LDL** y se asocia con un desplazamiento del perfil de VLDL₁/VLDL₂ hacia un patrón más próximo al fisiológico normal. En términos prácticos, el fármaco no empeora la depuración de partículas aterogénicas y podría modular favorablemente la dinámica de triglicéridos postprandiales en personas con DM2. (Fuente: Diabetologia, 2026-07-17. PMID 42467086. DOI 10.1007/s00125-026-06810-6.)
+▸ El canal de cloruro lisosomal que controla autofagia y senescencia. Un estudio publicado en *Cell Reports* (julio 2026) identifica a **TTYH3** —una proteína de la familia Tweety— como regulador de la conductancia de cloruro en la membrana lisosomal. Los lisosomas son las "plantas de reciclaje" celular: si su fusión falla, la autofagia se atasca y los desechos se acumulan. El trabajo muestra que TTYH3 regula la capacidad de fusión lisosomal y que su disfunción se asocia con bloqueo autofágico y activación de senescencia celular. (Fuente: Cell Reports, 2026-07-18. PMID 42470638. DOI 10.1016/j.celrep.2026.117703.)
+▸ Un agente de IA hace investigación biomédica autónoma (y publica en *Science*). El paper de la semana más disruptivo no habla de un fármaco ni de un biomarcador: habla de **quién hace la ciencia**. Publicado en *Science* (julio 2026), el trabajo presenta un agente de inteligencia artificial capaz de ejecutar investigación biomédica de forma autónoma: formula hipótesis, diseña experimentos, interpreta resultados y genera conclusiones, con supervisión humana mínima. El estudio documenta el ciclo completo de investigación operado por el agente en contextos biomédicos reales. (Fuente: Science, 2026-07-09. PMID 42424436. DOI 10.1126/science.adz4351.)
+▸ La paradoja PERK: cuando el estrés del retículo endoplásmico acelera el envejecimiento. Un review publicado en *GeroScience* (julio 2026) articula lo que los autores llaman "la paradoja PERK": la kinasa PERK, activada como respuesta protectora al estrés del retículo endoplásmico (RE), tiene efectos opuestos según el contexto —puede ser citoprotectora a corto plazo y promotora de senescencia y neurodegeneración a largo plazo. (Fuente: GeroScience, 2026-07-22. PMID 42484801. DOI 10.1007/s11357-026-02430-5.)
+▸ Para ti, miembro Plus. 1. **Pide ApoB en tu próximo panel.** El estudio de dapagliflozin refuerza que el metabolismo de partículas lipídicas —no solo el LDL-C calculado— es el terreno donde se juega el riesgo cardiovascular real. Si no tienes tu ApoB medido, es el marcador de mayor rendimiento por costo que puedes añadir.
+▸ Bridge Nº008. | topic_ssot | Monografía HV | PMID / DOI | Nivel E | Bridge |
+
+
+
+Suscríbete a Pulso Vigente → hombrevigente.com
+
+#longevidad #optimización #saludmasculina #biohacking #HombreVigente
