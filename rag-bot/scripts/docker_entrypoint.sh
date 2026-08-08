@@ -20,6 +20,9 @@ if [ -n "${HV_DATABASE_URL:-}" ]; then
   echo "[entrypoint] apply migration 003 (hv_pending_actions — idempotencia C1)"
   python -c "from pgvector_retrieval import run_migration; run_migration('migrations/003_hv_pending_actions.sql')" || \
     echo "[entrypoint] WARN: migration 003 failed — proactive idempotency ledger unavailable"
+  echo "[entrypoint] apply migration 004 (hv_decision_log — memoria episódica SSOT)"
+  python -c "from pgvector_retrieval import run_migration; run_migration('migrations/004_hv_decision_log.sql')" || \
+    echo "[entrypoint] WARN: migration 004 failed — decision log queda solo en JSONL local"
 fi
 
 EMBEDDED_NEW=0

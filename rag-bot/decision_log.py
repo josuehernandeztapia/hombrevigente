@@ -1,5 +1,10 @@
 """
 Audit trail de decisiones RAG — patrón CMU agent-decision-log.ts (fail-open JSONL).
+
+Dual-write (migración 004): además del JSONL local, cada decisión se inserta
+best-effort en hv_decision_log (Postgres SSOT). La lectura prefiere Postgres
+cuando está configurado — así knowledge gaps ve TODAS las máquinas, no solo
+el volumen local. Un `path` explícito fuerza modo archivo (tests, tooling).
 """
 
 from __future__ import annotations
@@ -12,6 +17,13 @@ from dataclasses import asdict, dataclass, field
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any, Dict, List, Optional
+
+# Postgres opcional — mismo patrón guarded-import de traces.py.
+try:
+    from pgvector_retrieval import _connection, is_pgvector_configured
+except Exception:
+    _connection = None
+    is_pgvector_configured = lambda: False  # noqa: E731
 
 REDACT_PATTERNS: list[tuple[re.Pattern[str], str]] = [
     (re.compile(r"sk-[A-Za-z0-9_\-]{20,}"), "[OPENAI_KEY]"),
@@ -70,20 +82,98 @@ def _logging_enabled() -> bool:
     )
 
 
+def _pg_enabled() -> bool:
+    """True si el dual-write a hv_decision_log debe intentarse."""
+    if os.getenv("HV_DECISION_LOG_PG", "true").lower() in ("0", "false", "no"):
+        return False
+    try:
+        return _connection is not None and is_pgvector_configured()
+    except Exception:
+        return False
+
+
+def _parse_ts(raw: str) -> datetime:
+    dt = datetime.fromisoformat(raw.replace("Z", "+00:00"))
+    if dt.tzinfo is None:
+        dt = dt.replace(tzinfo=timezone.utc)
+    return dt
+
+
+def _write_to_postgres(row: Dict[str, Any]) -> bool:
+    """INSERT fail-open a hv_decision_log. Nunca lanza al caller."""
+    try:
+        with _connection() as conn:
+            with conn.cursor() as cur:
+                cur.execute(
+                    """
+                    INSERT INTO hv_decision_log
+                        (entry_id, ts, beta_id, channel, source, kb_route,
+                         gate_path, gate_code, top_score, confidence, payload)
+                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s::jsonb)
+                    ON CONFLICT (entry_id) DO NOTHING
+                    """,
+                    (
+                        row.get("entry_id"),
+                        _parse_ts(row["timestamp"]),
+                        row.get("beta_id"),
+                        row.get("channel"),
+                        row.get("source"),
+                        row.get("kb_route"),
+                        row.get("gate_path"),
+                        row.get("gate_code"),
+                        row.get("top_score"),
+                        row.get("confidence"),
+                        json.dumps(row, ensure_ascii=False),
+                    ),
+                )
+        return True
+    except Exception as e:
+        print(f"[decision-log] WARN: postgres insert failed (fail-open): {e}")
+        return False
+
+
+def _read_from_postgres(cutoff: datetime) -> Optional[List[Dict[str, Any]]]:
+    """SELECT por ventana. None = error (el caller cae a archivo)."""
+    try:
+        with _connection() as conn:
+            with conn.cursor() as cur:
+                cur.execute(
+                    "SELECT payload FROM hv_decision_log WHERE ts >= %s ORDER BY ts ASC",
+                    (cutoff,),
+                )
+                rows: List[Dict[str, Any]] = []
+                for (payload,) in cur.fetchall():
+                    rows.append(payload if isinstance(payload, dict) else json.loads(payload))
+                return rows
+    except Exception as e:
+        print(f"[decision-log] WARN: postgres read failed, falling back to file: {e}")
+        return None
+
+
 def log_rag_decision(entry: RagDecisionEntry, path: Optional[Path] = None) -> Optional[str]:
-    """Append una fila JSONL. Fail-open: nunca lanza al caller."""
+    """Append JSONL + INSERT best-effort a Postgres. Fail-open: nunca lanza al caller.
+
+    `path` explícito = modo archivo puro (tests/tooling operan sobre un log concreto).
+    """
     if not _logging_enabled():
         return None
+    row = entry.to_json()
     log_path = path or _default_log_path()
+    file_ok = False
     try:
         log_path.parent.mkdir(parents=True, exist_ok=True)
-        line = json.dumps(entry.to_json(), ensure_ascii=False)
+        line = json.dumps(row, ensure_ascii=False)
         with log_path.open("a", encoding="utf-8") as f:
             f.write(line + "\n")
-        return entry.entry_id
+        file_ok = True
     except OSError as e:
         print(f"[decision-log] warn: could not write {log_path}: {e}")
-        return None
+
+    pg_ok = False
+    if path is None and _pg_enabled():
+        pg_ok = _write_to_postgres(row)
+
+    return entry.entry_id if (file_ok or pg_ok) else None
 
 
 def read_decisions(
@@ -91,10 +181,17 @@ def read_decisions(
     days: int = 7,
     path: Optional[Path] = None,
 ) -> List[Dict[str, Any]]:
+    cutoff = datetime.now(timezone.utc) - timedelta(days=days)
+
+    # Postgres primero (SSOT cross-máquina); archivo como bootstrap/fallback.
+    if path is None and _pg_enabled():
+        rows = _read_from_postgres(cutoff)
+        if rows:
+            return rows
+
     log_path = path or _default_log_path()
     if not log_path.exists():
         return []
-    cutoff = datetime.now(timezone.utc) - timedelta(days=days)
     rows: List[Dict[str, Any]] = []
     with log_path.open(encoding="utf-8") as f:
         for line in f:
