@@ -7,8 +7,16 @@ import subprocess
 import sys
 import tempfile
 import unittest
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from unittest import mock
+
+# Timestamp reciente para entradas sintéticas: una fecha fija caduca cuando
+# sale de la ventana days=N del detector (pasó con 2026-06-07 + days=30).
+def _recent_ts(minutes_ago: int = 0) -> str:
+    return (
+        datetime.now(timezone.utc) - timedelta(days=1, minutes=minutes_ago)
+    ).isoformat()
 
 from decision_log import log_rag_decision, read_decisions, redact_for_preview, RagDecisionEntry
 from knowledge_gap_detector import detect_knowledge_gaps, is_gap_row
@@ -53,7 +61,7 @@ class TestGapDetector(unittest.TestCase):
             path = Path(tmp) / "log.jsonl"
             for q in ("precio bitcoin", "precio del bitcoin hoy"):
                 entry = {
-                    "timestamp": "2026-06-07T12:00:00+00:00",
+                    "timestamp": _recent_ts(),
                     "query": q,
                     "query_normalized": strip_command_words(q),
                     "gate_path": "escalate",
@@ -175,7 +183,7 @@ class TestExpandGoldenFromLog(unittest.TestCase):
             )
             entries = [
                 {
-                    "timestamp": "2026-06-07T12:00:00+00:00",
+                    "timestamp": _recent_ts(minutes_ago=1),
                     "query": "botox entrecejo precio",
                     "query_normalized": "botox entrecejo precio",
                     "kb_route": "servicios",
@@ -185,7 +193,7 @@ class TestExpandGoldenFromLog(unittest.TestCase):
                     "top_service": "Botox (Toxina Botulínica Tipo A)",
                 },
                 {
-                    "timestamp": "2026-06-07T12:01:00+00:00",
+                    "timestamp": _recent_ts(),
                     "query": "precio botox entrecejo",
                     "query_normalized": "botox entrecejo precio",
                     "kb_route": "servicios",
