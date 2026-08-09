@@ -260,6 +260,11 @@ Para bridge: usa topic del candidato; monografía según mapa HV; nivel E2 precl
     content = re.sub(r"^```(?:markdown)?\n?", "", content)
     content = re.sub(r"\n?```$", "", content)
     content = content.strip()
+    # CONTRATO, no prompt: el LLM omitía la tabla Editorial bridge (005-010
+    # salieron sin ella → bridge_export exportó 0 y el corpus se quedó sin
+    # Pulsos). Si falta, se anexa la versión determinística.
+    if not re.search(r"##\s*Editorial bridge", content, re.IGNORECASE):
+        content += "\n\n---\n\n" + build_bridge_table(picks) + "\n"
     if not content.startswith("---"):
         content = re.sub(r"^(yaml\n)?", "---\n", content, count=1)
     if not content.startswith("---"):
@@ -282,6 +287,33 @@ Para bridge: usa topic del candidato; monografía según mapa HV; nivel E2 precl
     return content.strip() + "\n"
 
 
+def build_bridge_table(picks: dict[str, dict]) -> str:
+    """Tabla Editorial bridge determinística — la puerta del corpus RAG.
+
+    bridge_export.py la parsea para exportar entradas tipo A a monografías;
+    un número sin tabla no aporta NADA al corpus. Por eso se construye en
+    código (la usa fallback_compose y el post-check de llm_compose)."""
+
+    def row(name: str, item: dict, block_key: str) -> str:
+        lvl = evidence_level(item, block_key)
+        bt = bridge_type(block_key, item, lvl)
+        mono = TOPIC_MONOGRAPHY.get(item["topic"], "")
+        ref = item.get("doi", "").split("/")[-1] if item.get("doi") else f"PMID {item['pmid']}"
+        return f"| {name} | {item['topic']} | {mono} | {ref} | {lvl} | {bt} |"
+
+    a, f, ai, c = picks["accionable"], picks["frontera"], picks["ai"], picks["contexto"]
+    return f"""## Editorial bridge (auto — verificar antes de merge)
+
+| bloque | topic_ssot | monografía | pmid / doi | nivel E | bridge |
+|--------|------------|------------|------------|---------|--------|
+{row("Accionable", a, "accionable")}
+{row("Frontera", f, "frontera")}
+{row("AI × Longevity", ai, "ai")}
+{row("Contexto / Voz", c, "contexto")}
+
+- **A** = patch a monografía SSOT · **C** = solo Pulso/redes"""
+
+
 def fallback_compose(picks: dict[str, dict], numero: str, fecha: str) -> str:
     a, f, ai, c = picks["accionable"], picks["frontera"], picks["ai"], picks["contexto"]
     subj = f"Pulso Vigente Nº{numero} — {a['title'][:55]}"
@@ -295,13 +327,6 @@ def fallback_compose(picks: dict[str, dict], numero: str, fecha: str) -> str:
             f"> **🔵 Lente Vigente:** {lente}\n"
             f"> *Fuente: {item['journal']} {item['date'][:4]}, PMID {item['pmid']}.*\n"
         )
-
-    def bridge_row(name: str, item: dict, block_key: str) -> str:
-        lvl = evidence_level(item, block_key)
-        bt = bridge_type(block_key, item, lvl)
-        mono = TOPIC_MONOGRAPHY.get(item["topic"], "")
-        ref = item.get("doi", "").split("/")[-1] if item.get("doi") else f"PMID {item['pmid']}"
-        return f"| {name} | {item['topic']} | {mono} | {ref} | {lvl} | {bt} |"
 
     body = f"""---
 numero: "{numero}"
@@ -334,16 +359,7 @@ compose: auto-fallback
 
 ---
 
-## Editorial bridge (auto — verificar antes de merge)
-
-| bloque | topic_ssot | monografía | pmid / doi | nivel E | bridge |
-|--------|------------|------------|------------|---------|--------|
-{bridge_row("Accionable", a, "accionable")}
-{bridge_row("Frontera", f, "frontera")}
-{bridge_row("AI × Longevity", ai, "ai")}
-{bridge_row("Contexto / Voz", c, "contexto")}
-
-- **A** = patch a monografía SSOT · **C** = solo Pulso/redes
+{build_bridge_table(picks)}
 
 ---
 
