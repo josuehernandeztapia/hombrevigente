@@ -1,0 +1,80 @@
+# Watchdog del pipeline Pulso — convierte fallas MUDAS en un correo al owner.
+# Nació del incidente 6-ago-2026: GitHub no asignó runner al draft del jueves
+# (Nº010 nunca se generó) y el Nº009 llevaba 9 días esperando aprobación — nadie
+# se enteró de ninguna de las dos cosas hasta revisar a mano semanas después.
+# Chequea diario: (a) ¿el último draft falló o no ha corrido en 8 días?
+# (b) ¿hay issues "Aprobar Pulso" abiertos >2 días? Si algo está mal → correo.
+# NO reintenta solo: workflow_dispatch vía GITHUB_TOKEN no dispara workflows
+# (regla anti-recursión de GitHub, ya la pagamos en newsletter-send) — avisa
+# con el link exacto para dar "Run workflow".
+name: Pulso watchdog
+
+on:
+  schedule:
+    - cron: '0 15 * * *'   # diario 15:00 UTC (9-10am CST)
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: read
+  actions: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Revisar pipeline y avisar si algo está atorado
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+          NEWSLETTER_FROM: ${{ vars.NEWSLETTER_FROM }}
+          NEWSLETTER_APPROVAL_TO: ${{ vars.NEWSLETTER_APPROVAL_TO }}
+          REPO: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          FLAGS=""
+
+          # (a) Último run del draft: ¿falló, o el último éxito es de hace >8 días?
+          LAST=$(gh run list --repo "$REPO" --workflow newsletter-draft.yml --limit 1 \
+                 --json conclusion,createdAt,databaseId \
+                 --jq '.[0] | "\(.conclusion)|\(.createdAt)|\(.databaseId)"')
+          CONCL="${LAST%%|*}"; REST="${LAST#*|}"; WHEN="${REST%%|*}"; RUNID="${LAST##*|}"
+          AGE_DAYS=$(( ( $(date -u +%s) - $(date -u -d "$WHEN" +%s) ) / 86400 ))
+          if [ "$CONCL" != "success" ]; then
+            FLAGS="${FLAGS}<li>El último draft semanal <b>falló</b> (${WHEN}). Reintenta con \"Run workflow\": <a href='https://github.com/${REPO}/actions/workflows/newsletter-draft.yml'>newsletter-draft</a> · <a href='https://github.com/${REPO}/actions/runs/${RUNID}'>ver run</a></li>"
+          elif [ "$AGE_DAYS" -gt 8 ]; then
+            FLAGS="${FLAGS}<li>El draft semanal <b>no corre desde hace ${AGE_DAYS} días</b> (cron jueves — ¿repo inactivo >60 días o workflow deshabilitado?). <a href='https://github.com/${REPO}/actions/workflows/newsletter-draft.yml'>Revisar</a></li>"
+          fi
+
+          # (b) Aprobaciones atoradas: issues "Aprobar Pulso" abiertos >2 días.
+          NOW=$(date -u +%s)
+          while IFS=$'\t' read -r NUM TITLE CREATED; do
+            [ -z "${NUM:-}" ] && continue
+            AGE=$(( ( NOW - $(date -u -d "$CREATED" +%s) ) / 86400 ))
+            if [ "$AGE" -ge 2 ]; then
+              FLAGS="${FLAGS}<li><b>${TITLE}</b> lleva <b>${AGE} días</b> esperando tu OK → <a href='https://github.com/${REPO}/issues/${NUM}'>responder al issue</a> (o botón del correo original)</li>"
+            fi
+          done < <(gh issue list --repo "$REPO" --state open --search '"Aprobar Pulso" in:title' \
+                   --json number,title,createdAt \
+                   --jq '.[] | [.number, .title, .createdAt] | @tsv')
+
+          if [ -z "$FLAGS" ]; then
+            echo "✅ Pipeline Pulso sano — sin avisos."
+            exit 0
+          fi
+
+          echo "⚠️ Flags detectados:"
+          echo "$FLAGS" | sed 's/<[^>]*>//g'
+
+          if [ -z "${RESEND_API_KEY:-}" ] || [ -z "${NEWSLETTER_APPROVAL_TO:-}" ]; then
+            echo "Sin RESEND_API_KEY/NEWSLETTER_APPROVAL_TO — aviso solo en log."
+            exit 0
+          fi
+
+          BODY="<p>El watchdog diario de Pulso Vigente encontró esto:</p><ul>${FLAGS}</ul><p style='color:#888'>Este aviso se repite a diario mientras el problema siga. — pulso-watchdog</p>"
+          PAYLOAD=$(python3 -c "import json,os,sys; print(json.dumps({'from': os.environ['NEWSLETTER_FROM'], 'to': [os.environ['NEWSLETTER_APPROVAL_TO']], 'subject': '⚠️ Pulso Vigente necesita tu atención', 'html': sys.argv[1]}))" "$BODY")
+          curl -fsS -X POST https://api.resend.com/emails \
+            -H "Authorization: Bearer ${RESEND_API_KEY}" \
+            -H "Content-Type: application/json" \
+            -d "$PAYLOAD" > /dev/null
+          echo "📧 Aviso enviado a ${NEWSLETTER_APPROVAL_TO}"
