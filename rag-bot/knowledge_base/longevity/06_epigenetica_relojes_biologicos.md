@@ -83,3 +83,11 @@ Lenguaje marketing. Preferir: "péptidos cortos estudiados por Khavinson para mo
 ## Actualización SSOT (2026-06-08)
 - Tabla compuestos GHK-Cu alineada a `10_ghk_cu.md`.
 - Cero huecos de citas pendientes en cuerpo del documento.
+
+### Evidencia reciente (Pulso Nº005 · 2026-07-02)
+- **AI × Longevidad — La senescencia no es solo villana: IA y biología mapean cuándo protege y cuándo mata** — *Cells, 2026-06-22. PMID 42346150. DOI 10.3390/cells15121123.*. cells15121123 · E3.
+  - Este trabajo reencuadra el debate "senescencia buena vs. mala" con mayor matiz. Para el hombre en optimización: la inflamación crónica de bajo grado (inflammaging) se asocia en la literatura con acumulación de carga senescente. Las palancas de bajo riesgo con señal en este eje incluyen ejercicio de resistencia, restricción calórica intermitente y —en investigación— quercetina + dasatinib (protocolo senolítico que está en ensayos clínicos, no en uso general). La IA no está diagnosticando tu senescencia hoy; está construyendo el mapa para que los fármacos del futuro sean más precisos.
+
+### Evidencia reciente (Pulso Nº010 · 2026-08-09)
+- **AI × Longevidad — IDEAL-Age: un reloj inmunológico que lee el envejecimiento célula por célula** — *Genome Biology, 2026-07-27. PMID 42503507. DOI 10.1186/s13059-026-04188-7*. s13059-026-04188-7 · E3.
+  - Los relojes de envejecimiento con IA aún no son herramientas clínicas validadas para decisiones individuales — son instrumentos de investigación de alta resolución. Pero la dirección es clara: el futuro del monitoreo de longevidad no será un número único de "edad biológica", sino un mapa de qué sistemas envejecen más rápido y por qué. El sistema inmune —medible hoy con un hemograma completo, ratio neutrófilos/linfocitos, y en contextos especializados con citometría de flujo— es uno de los primeros lugares donde mirar.
