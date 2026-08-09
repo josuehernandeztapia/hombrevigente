@@ -72,7 +72,7 @@ jobs:
           fi
 
           BODY="<p>El watchdog diario de Pulso Vigente encontró esto:</p><ul>${FLAGS}</ul><p style='color:#888'>Este aviso se repite a diario mientras el problema siga. — pulso-watchdog</p>"
-          PAYLOAD=$(python3 -c "import json,os,sys; print(json.dumps({'from': os.environ['NEWSLETTER_FROM'], 'to': [os.environ['NEWSLETTER_APPROVAL_TO']], 'subject': '⚠️ Pulso Vigente necesita tu atención', 'html': sys.argv[1]}))" "$BODY")
+          PAYLOAD=$(python3 -c "import json,os,sys; to=[t.strip() for t in os.environ['NEWSLETTER_APPROVAL_TO'].split(',') if t.strip()]; print(json.dumps({'from': os.environ['NEWSLETTER_FROM'], 'to': to, 'subject': '⚠️ Pulso Vigente necesita tu atención', 'html': sys.argv[1]}))" "$BODY")
           curl -fsS -X POST https://api.resend.com/emails \
             -H "Authorization: Bearer ${RESEND_API_KEY}" \
             -H "Content-Type: application/json" \

@@ -126,10 +126,15 @@ def send_preview(path: Path) -> None:
         headers={"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"},
         json={
             "from": sender,
-            "to": [to],
+            # NEWSLETTER_APPROVAL_TO acepta varios destinos separados por coma
+            # (ej. contacto@ + inbox personal) — un solo buzón resultó ser
+            # punto único de falla (previews del 009 perdidos, ago-2026).
+            "to": [t.strip() for t in to.split(",") if t.strip()],
             "subject": subject,
             "html": html,
-            "reply_to": os.environ.get("NEWSLETTER_APPROVAL_REPLY_TO", to),
+            "reply_to": os.environ.get(
+                "NEWSLETTER_APPROVAL_REPLY_TO", to.split(",")[0].strip()
+            ),
         },
         timeout=30,
     )
