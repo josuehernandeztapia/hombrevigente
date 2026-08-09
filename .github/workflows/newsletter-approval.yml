@@ -186,6 +186,18 @@ jobs:
             gh pr merge "$PR" --merge --delete-branch || gh pr merge "$PR" --merge --delete-branch
           fi
 
+      # El push del merge lo hace GITHUB_TOKEN y NO dispara el push-trigger del
+      # bridge (anti-recursión — los Pulsos 005-010 se quedaron fuera del corpus,
+      # ago-2026). workflow_dispatch SÍ es la excepción a esa regla → disparo directo.
+      - name: Actualizar corpus (bridge editorial Pulso → SSOT)
+        if: steps.parse.outputs.action == 'approve'
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh workflow run newsletter-editorial-bridge.yml \
+            -f issue="${{ steps.parse.outputs.issue_path }}"
+
       - name: Cerrar issue aprobación
         if: steps.parse.outputs.action == 'approve' && github.event_name == 'issue_comment'
         env:
