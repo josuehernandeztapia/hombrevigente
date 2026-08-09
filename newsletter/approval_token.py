@@ -15,7 +15,9 @@ def _secret() -> str:
     return s
 
 
-def make_token(issue_path: str, action: str, ttl_hours: int = 96) -> str:
+def make_token(issue_path: str, action: str, ttl_hours: int = 168) -> str:
+    # 168h = 1 semana: con TTL de 96h, un preview que pasa el fin de semana en
+    # spam llega con el botón muerto ("no se pudo aprobar", Nº009 ago-2026).
     exp = int(time.time()) + ttl_hours * 3600
     sig = hmac.new(
         _secret().encode(),
