@@ -242,3 +242,51 @@ def twiml_reply(text: str) -> str:
 
 def twiml_empty() -> str:
     return '<?xml version="1.0" encoding="UTF-8"?><Response></Response>'
+
+
+# ------------------------------------------------------------------
+# STOP humano — el bot promete "escribe 'humano'" desde el fallback; hasta
+# ago-2026 esa palabra no tenía rama y el beta quedaba atrapado con el bot.
+# Detección conservadora a propósito: un falso positivo cuesta que una persona
+# lea un mensaje; un falso negativo deja a alguien en crisis hablándole a un RAG.
+# ------------------------------------------------------------------
+
+# Match sobre el texto COMPLETO normalizado (no substring): evita que "el cuerpo
+# humano necesita proteína" escale.
+_HUMAN_EXACT = {
+    "humano", "humana", "human", "agente", "asesor", "operador",
+    "persona", "persona real", "gente", "equipo",
+    "ayuda", "auxilio", "socorro", "emergencia", "urgente", "urgencia",
+    "sos", "help", "stop", "alto",
+}
+
+# Intención de contacto: exige la preposición, así "cuerpo humano" no matchea
+# pero "quiero hablar con un humano" sí.
+_HUMAN_INTENT = re.compile(
+    r"\bcon\s+(?:un|una|el|la|los|las)?\s*"
+    r"(?:human[oa]|persona|asesor|agente|operador|equipo|doctor|doctora|"
+    r"medic[oa]|especialista|alguien|gente)\b"
+)
+
+
+def _normalize_text(raw: str) -> str:
+    """lower + sin acentos + sin puntuación + espacios colapsados."""
+    import unicodedata
+    s = unicodedata.normalize("NFD", (raw or "").strip().lower())
+    s = "".join(c for c in s if unicodedata.category(c) != "Mn")  # quita tildes
+    s = re.sub(r"[^\w\s]", " ", s)
+    return re.sub(r"\s+", " ", s).strip()
+
+
+def wants_human(raw: str) -> bool:
+    """True si el mensaje pide hablar con una persona (STOP del bot).
+
+    Dos caminos: el texto completo es una palabra de escalación, o contiene una
+    frase de intención de contacto ("hablar con alguien", "con un doctor").
+    """
+    text = _normalize_text(raw)
+    if not text:
+        return False
+    if text in _HUMAN_EXACT:
+        return True
+    return bool(_HUMAN_INTENT.search(text))

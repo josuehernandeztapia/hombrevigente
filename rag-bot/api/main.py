@@ -29,7 +29,9 @@ from knowledge_promote import load_pending, remove_pending, submit_promotion
 from newsletter_approval_dispatch import dispatch_pulso_approval
 from newsletter_approval_token import verify_token
 from rag_retrieval_local import rag_query_local  # noqa: E402
-from traces import get_trace_stats, read_traces  # noqa: E402
+from traces import (  # noqa: E402
+    build_turn_payload, get_trace_stats, persist_turn_trace, read_traces,
+)
 from signal_detector import BetaSignalDetector  # noqa: E402
 from action_handler import load_pending_actions, run_detect_and_act, get_proactive_health_trend  # noqa: E402
 from feature_flags import list_active_flags, is_enabled  # noqa: E402  # Guía Capa 5
@@ -259,6 +261,26 @@ def knowledge_promote(
         raise HTTPException(status_code=result.get("status_code", 400), detail=result.get("error"))
     status_code = result.pop("status_code", 201)
     return JSONResponse(content=result, status_code=status_code)
+
+
+@app.post("/admin/handoff/resolve")
+def handoff_resolve(
+    beta_id: str = Query(..., min_length=1, max_length=128),
+    by: str = Query("admin", max_length=64),
+    pin: str = Query(""),
+    x_admin_pin: Optional[str] = Header(None, alias="x-admin-pin"),
+):
+    """Libera el STOP humano: el bot vuelve a responderle a ese beta.
+
+    Solo un humano puede levantarlo — por eso vive detrás del PIN y no de una
+    palabra del beta (que podría reactivar el bot sin querer).
+    """
+    _require_admin_pin(pin, x_admin_pin)
+    from human_handoff import resolve as _resolve
+    out = _resolve(beta_id, by=by)
+    if out is None:
+        return {"ok": False, "beta_id": beta_id, "reason": "no había handoff activo"}
+    return {"ok": True, "beta_id": beta_id, "handoff": out}
 
 
 @app.get("/admin/knowledge/pending")
@@ -702,6 +724,39 @@ async def whatsapp_webhook(request: Request):
         _sm.record_turn(beta_id, channel="whatsapp")
     except Exception as e:
         print(f"[wa-webhook] WARN record_turn({beta_id}): {e}")
+
+    # STOP humano — PRIMERO, antes de labs/onboarding/RAG. El fallback promete
+    # "escribe 'humano'"; esta es la rama que lo cumple. Gana sobre todo lo demás:
+    # si alguien pide una persona (aunque adjunte un estudio), pide una persona.
+    # No llama LLM. El latch es persistente: solo un humano lo levanta vía
+    # POST /admin/handoff/resolve.
+    try:
+        from human_handoff import HANDOFF_REPLY, is_active, mark
+        from state_persistence import load_state as _load_state
+        from whatsapp_channel import wants_human
+
+        _hstate = _load_state(beta_id)
+        _already = is_active(_hstate)
+        if _already or (body and wants_human(body)):
+            if not _already:
+                mark(beta_id, body)
+            try:
+                persist_turn_trace(build_turn_payload(
+                    beta_id=beta_id,
+                    branch_taken="escalate_human",
+                    input_body="(redactado: el beta pidió hablar con una persona)",
+                    output_body=HANDOFF_REPLY,
+                    state_after={"human_handoff": "active"},
+                    success=True,
+                ))
+            except Exception as e:
+                print(f"[wa-webhook] WARN trace handoff {beta_id}: {e}")
+            return Response(content=twiml_reply(HANDOFF_REPLY),
+                            media_type="application/xml")
+    except Exception as e:
+        # Fail-open hacia el bot sería peor que fail-loud aquí, pero tampoco
+        # queremos tirar el webhook: log ruidoso y sigue el flujo normal.
+        print(f"[wa-webhook] ERROR handoff check {beta_id}: {e}")
 
     # Estudios (labs) por el hilo: si el beta adjunta un PDF/imagen, lo ingerimos
     # (parse → biomarcadores → slot labs_parseados). Gated por HV_FEATURE_WA_LABS.
