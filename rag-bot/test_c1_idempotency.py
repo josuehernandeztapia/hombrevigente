@@ -10,6 +10,7 @@ Run: python -m pytest rag-bot/test_c1_idempotency.py -q
 import os
 import tempfile
 import unittest
+from unittest import mock
 
 # Force file mode + isolated dirs BEFORE importing action_handler paths are resolved lazily,
 # but set here so each call resolves the temp dir.
@@ -89,6 +90,48 @@ class TestC1Idempotency(unittest.TestCase):
         self.assertIn("idemp_key", a1)
         self.assertTrue(a1["idemp_key"].startswith("bY:no_activity_72h:"))
         self.assertEqual(a1["idemp_key"], a2["idemp_key"], "idemp_key must be stable for same signal+hour")
+
+
+class TestExecuteEmitsTraces(unittest.TestCase):
+    """Candado del NameError silencioso (ago-2026).
+
+    execute_pending_action llama build_turn_payload/persist_turn_trace dentro de
+    `except Exception: pass`. Sin el import al tope del módulo eran NameError
+    tragado — el lazo proactivo corrió meses sin escribir un solo trace, y
+    /admin/traces mostraba un sistema "sano" porque no había nada que mostrar.
+    """
+
+    def setUp(self):
+        self._tmp = tempfile.TemporaryDirectory()
+        os.environ["HV_STATE_PERSISTENCE"] = "files"
+        os.environ["HV_PENDING_ACTIONS_DIR"] = self._tmp.name
+        os.environ["HV_TRACES_DIR"] = self._tmp.name
+        os.environ["HV_DECISION_LOG_ENABLED"] = "false"
+
+    def tearDown(self):
+        self._tmp.cleanup()
+        os.environ.pop("HV_FEATURE_PROACTIVE_EXECUTION", None)
+
+    def test_trace_helpers_are_module_level(self):
+        import action_handler
+        for name in ("build_turn_payload", "persist_turn_trace"):
+            self.assertTrue(
+                hasattr(action_handler, name),
+                f"{name} debe importarse al tope de action_handler: dentro de "
+                "except Exception:pass un NameError apaga los traces en silencio",
+            )
+
+    def test_blocked_by_flag_still_emits_trace(self):
+        import action_handler
+        os.environ["HV_FEATURE_PROACTIVE_EXECUTION"] = "false"
+        captured = []
+        with mock.patch.object(action_handler, "persist_turn_trace",
+                               side_effect=lambda p: captured.append(p)):
+            out = action_handler.execute_pending_action(_action("trace-blocked"))
+        self.assertEqual(out.get("status"), "blocked_by_feature_flag")
+        self.assertEqual(len(captured), 1, "el bloqueo por flag debe dejar traza")
+        self.assertEqual(captured[0].get("branch_taken"),
+                         "execute_blocked_by_feature_flag")
 
 
 if __name__ == "__main__":

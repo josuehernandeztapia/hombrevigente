@@ -29,6 +29,10 @@ from typing import Any, Dict, List, Optional
 from state_manager import state_manager as sm
 from signal_detector import BetaSignal, handle_signal as base_handle_signal  # reuse logging+trace if wanted
 from feature_flags import is_enabled  # Guía Capa 5: default ON, disable via HV_FEATURE_XXX=false for <5s rollback
+# execute_pending_action los usa dentro de `except Exception: pass`. Sin este
+# import eran NameError silencioso → los traces del lazo proactivo NUNCA se
+# escribieron (ni ejecución ni bloqueo por flag). Verificado ago-2026.
+from traces import build_turn_payload, persist_turn_trace
 
 
 def _pending_actions_path() -> Path:
