@@ -49,6 +49,23 @@ python scripts/execute_pending_actions.py          # real solo si is_healthy=tru
 - El script y el endpoint `/admin/pending_actions/execute?force=true` permiten override explícito (solo ops).
 - El nightly ya fuerza dry-run cuando no está healthy.
 
+**STOP humano (barrera clínica, por encima de `force`)**:
+- Si un beta escribe `humano` / `ayuda` / "hablar con una persona", el bot **se
+  calla para siempre con ese beta** hasta que un humano lo libere: sin RAG, sin
+  onboarding, sin LLM. El cron proactivo tampoco le escribe (`status=
+  blocked_by_human_handoff`) — y a diferencia del gate de salud, **`force=true`
+  NO lo salta**: un humano ya está en ese hilo.
+- **Esto significa que alguien tiene que contestar.** El latch no expira solo.
+
+```bash
+# ¿Quién está esperando a una persona?  (busca human_handoff sin resolved_at)
+curl -H "x-admin-pin: $HV_ADMIN_PIN" "https://hv-rag-api.fly.dev/admin/betas"
+
+# Tras atender al beta por WhatsApp, devolverle el bot:
+curl -X POST -H "x-admin-pin: $HV_ADMIN_PIN" \
+  "https://hv-rag-api.fly.dev/admin/handoff/resolve?beta_id=wa-52...&by=josue"
+```
+
 ## Fallas comunes y resolución
 
 ### 1. "ssot_postgres_recommended: true" o modo files en producción
