@@ -83,10 +83,6 @@ El Informe de Optimización puede decir:
 
 ---
 
-### Evidencia reciente (Pulso Nº006 · 2026-07-09)
-- **Vesículas extracelulares diseñadas: la nueva frontera de la terapia anti-envejecimiento** — *Aging Cell, 2026-07-01. PMID 42337937. DOI 10.1111/acel.70607*. acel.70607 · E3.
-  - Las EVs son uno de los vectores más prometedores en la biología de la comunicación intercelular del envejecimiento. El salto de "prometedor en ratón" a "útil en humano" es el que la IA está intentando acortar — con diseño racional, no con ensayo y error. Sigue este espacio: en 24 meses veremos los primeros datos de fase 1 en humanos con EVs diseñadas computacionalmente.
-
 ## 📖 FAQ
 
 **¿Los hallmarks permiten "medir tu edad biológica" con un solo biomarcador?**  
@@ -95,10 +91,18 @@ No de forma fiable. Los relojes epigenéticos integran señales (E3); un solo la
 **¿Intervenir un hallmark implica longevidad garantizada?**  
 No. El marco es heurístico para investigación y educación (E1).
 
+---
+
+## Evidencia reciente (Pulso Vigente)
+
+### Evidencia reciente (Pulso Nº006 · 2026-07-09)
+- **Vesículas extracelulares diseñadas: la nueva frontera de la terapia anti-envejecimiento** — *Aging Cell, 2026-07-01. PMID 42337937. DOI 10.1111/acel.70607* · E3.
+  - Las EVs son uno de los vectores más prometedores en la biología de la comunicación intercelular del envejecimiento. El salto de "prometedor en ratón" a "útil en humano" es el que el diseño computacional intenta acortar. A la fecha de esta entrada no hay datos de fase 1 en humanos con EVs diseñadas: es investigación preclínica, no una intervención disponible.
+
 ### Evidencia reciente (Pulso Nº007 · 2026-07-16)
-- **Una IA hace ciencia biomédica autónoma. Y lo publica en *Science*** — *Science, 2026-07-09. PMID 42424436. DOI 10.1126/science.adz4351.*. science.adz4351 · E3.
-  - Esto no es ciencia ficción ni hype de startup — es un paper revisado por pares en *Science*. El horizonte práctico: empresas como Insilico Medicine, Recursion y Isomorphic Labs ya integran IA en el pipeline de descubrimiento de fármacos. La pregunta que se vuelve urgente no es *si* la IA acelerará la biología del envejecimiento, sino **qué tan rápido llegarán los candidatos a ensayos en humanos** y con qué marcos regulatorios. Mantén este vector en el radar.
+- **Una IA hace ciencia biomédica autónoma. Y lo publica en *Science*** — *Science, 2026-07-09. PMID 42424436. DOI 10.1126/science.adz4351* · E3.
+  - Es un trabajo revisado por pares en *Science*, no una demo comercial. Varias farmacéuticas de descubrimiento ya integran IA en su pipeline. La consecuencia para longevidad es de ritmo, no de disponibilidad: acelera la generación de candidatos, pero cada uno sigue teniendo que pasar por ensayos en humanos y aprobación regulatoria antes de ser una opción clínica.
 
 ### Evidencia reciente (Pulso Nº009 · 2026-07-30)
-- **Veinte años de diseño de proteínas con IA: el mapa bibliométrico** — *Probiotics Antimicrob Proteins, 2026-07-18. PMID 42470596. DOI 10.1007/s12602-026-11131-6*. s12602-026-11131-6 · E3.
-  - El diseño de proteínas con IA no es solo un logro técnico; es la infraestructura que acelera el descubrimiento de moléculas relevantes para el envejecimiento —desde péptidos senolíticos hasta variantes de enzimas de reparación de ADN. **La velocidad de iteración que antes tomaba décadas ahora toma meses**. El impacto en la cadena de desarrollo de intervenciones de longevidad será estructural, no marginal. Seguimos de cerca los avances de Isomorphic Labs, Insilico Medicine y Recursion en este eje.
+- **Veinte años de diseño de proteínas con IA: el mapa bibliométrico** — *Probiotics Antimicrob Proteins, 2026-07-18. PMID 42470596. DOI 10.1007/s12602-026-11131-6* · E3.
+  - El diseño de proteínas con IA no es solo un logro técnico; es la infraestructura que acelera el descubrimiento de moléculas relevantes para el envejecimiento —desde péptidos senolíticos hasta variantes de enzimas de reparación de ADN. **La velocidad de iteración que antes tomaba décadas ahora toma meses**. Es un cambio en la etapa de *descubrimiento*: acorta el diseño de moléculas candidatas, no las fases de validación en humanos que determinan si algo llega a ser una intervención disponible.
