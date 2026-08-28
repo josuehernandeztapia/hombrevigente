@@ -24,11 +24,20 @@ class TestApiRag(unittest.TestCase):
         cls.client = TestClient(app)
 
     def test_health_beta_fixture(self):
+        # El health público adelgazó (ago-2026): la fixture row-0 y el resto del
+        # detalle operativo viven ahora en /admin/agent_status.runtime (PIN).
+        # La intención del test no cambia: la fixture debe estar disponible.
         r = self.client.get("/api/health")
         self.assertEqual(r.status_code, 200)
-        body = r.json()
-        self.assertTrue(body.get("beta_fixture_row_0"))
-        self.assertIn(body.get("status"), ("ok", "degraded"))
+        self.assertIn(r.json().get("status"), ("ok", "degraded"))
+
+        os.environ["HV_ADMIN_PIN"] = "pin-test"
+        try:
+            r = self.client.get("/admin/agent_status", headers={"x-admin-pin": "pin-test"})
+            self.assertEqual(r.status_code, 200)
+            self.assertTrue(r.json().get("runtime", {}).get("beta_fixture_row_0"))
+        finally:
+            os.environ.pop("HV_ADMIN_PIN", None)
 
     def test_post_rag_beta_id_frozen_gate(self):
         with tempfile.TemporaryDirectory() as tmp:

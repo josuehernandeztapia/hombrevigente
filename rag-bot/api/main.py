@@ -48,14 +48,21 @@ app = FastAPI(
     description="Motor RAG local con gates HV, confianza y rol concierge MVP-0",
 )
 
-_origins = os.getenv("CORS_ORIGINS", "*").split(",")
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=_origins,
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+# CORS fail-closed. El default era "*" CON allow_credentials=True — combinación
+# que la spec prohíbe (el navegador la rechaza), así que además de insegura no
+# servía. Hoy ningún front llama a este API: Twilio y los scripts son
+# server-to-server (sin CORS) y el admin va por curl con PIN. Si mañana un front
+# lo necesita, se listan sus orígenes en CORS_ORIGINS — no se vuelve a poner "*".
+_origins = [o.strip() for o in os.getenv("CORS_ORIGINS", "").split(",") if o.strip()]
+_allow_credentials = bool(_origins) and "*" not in _origins
+if _origins:
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=_origins,
+        allow_credentials=_allow_credentials,
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )
 
 
 class RagQueryRequest(BaseModel):
@@ -155,35 +162,59 @@ def health():
 
     ok = index_ok and beta_fixture_ok
 
-    # Fase 5: señal de si hay señales proactivas pendientes (best effort, no bloquea)
-    signal_count = 0
-    try:
-        detector = BetaSignalDetector()
-        signal_count = len(detector.scan())
-    except Exception:
-        pass
-
-    # Per Guía Agéntica: report strong opinion on SSOT
-    ssot_postgres = state_persistence == "postgres" and postgres_state_ok
-    ssot_status = "postgres" if ssot_postgres else state_persistence
-
+    # Health PÚBLICO = liveness, no telemetría. Lo operativo (paths internos,
+    # feature flags activos, backend de estado, señales/acciones pendientes) es
+    # mapa para quien mire desde fuera y vive en /admin/agent_status (PIN).
+    # Un uptime monitor solo necesita saber si el servicio sirve consultas.
     return {
         "status": "ok" if ok else "degraded",
         "index_loaded": index_ok,
         "openai_configured": bool(os.getenv("OPENAI_API_KEY")),
+    }
+
+
+def _runtime_status() -> Dict[str, Any]:
+    """Detalle operativo que ANTES colgaba del health público (ago-2026)."""
+    from frozen_context import resolve_intake
+
+    idx = Path(os.getenv("HV_EMBEDDINGS_INDEX",
+                         str(_ROOT / "knowledge_base" / "embeddings_local.json")))
+    if not idx.is_absolute():
+        idx = _ROOT / idx
+    states_dir = Path(os.getenv("HV_BETA_STATES_DIR", "data/beta_states"))
+    if not states_dir.is_absolute():
+        states_dir = _ROOT / states_dir
+
+    state_persistence = os.getenv("HV_STATE_PERSISTENCE", "files")
+    postgres_state_ok = False
+    try:
+        from state_persistence import _is_postgres_available
+        postgres_state_ok = _is_postgres_available()
+    except Exception:
+        pass
+
+    signal_count = 0
+    try:
+        signal_count = len(BetaSignalDetector().scan())
+    except Exception:
+        pass
+
+    intake, _ = resolve_intake(beta_id="row-0")
+    ssot_postgres = state_persistence == "postgres" and postgres_state_ok
+
+    return {
+        "index_loaded": idx.exists(),
         "beta_states_dir": str(states_dir),
-        "beta_states_writable": states_writable,
-        "beta_fixture_row_0": beta_fixture_ok,
+        "beta_states_writable": states_dir.exists() and os.access(states_dir, os.W_OK),
+        "beta_fixture_row_0": intake is not None,
         "retrieval_backend": os.getenv("HV_RETRIEVAL_BACKEND", "json"),
         "state_persistence": state_persistence,
         "postgres_state_configured": postgres_state_ok,
         "traces_enabled": os.getenv("HV_TRACES_ENABLED", "true"),
         "pending_signals": signal_count,
         "pending_actions": len(load_pending_actions(limit=1000)),
-        "ssot": ssot_status,
+        "ssot": "postgres" if ssot_postgres else state_persistence,
         "ssot_postgres_recommended": not ssot_postgres,
-        "agent_status_endpoint": "/admin/agent_status (PIN)",
-        "calibrate_endpoint": "/admin/calibrate (PIN, runs drift + baseline + health log)",
         "feature_flags": list_active_flags(),
         "feature_flags_note": "HV_FEATURE_XXX=false to disable (default ON). See feature_flags.py",
     }
@@ -538,6 +569,7 @@ def admin_agent_status(
 
     return {
         "generated_at": datetime.now(timezone.utc).isoformat(),
+        "runtime": _runtime_status(),  # lo que antes filtraba /api/health
         "traces_24h": trace_stats,
         "proactive": {
             "pending_actions": pending_count,
@@ -668,21 +700,40 @@ def _handle_inbound_media(beta_id: str, form: dict, num_media: int) -> Optional[
     import tempfile
     from whatsapp_channel import (
         download_twilio_media, is_supported_labs_media, ChannelSendError,
+        pii_scope, purge_expired_media,
     )
     from labs_ingest import ingest_labs_pdf
+
+    inbox_root = os.getenv("HV_LABS_INBOX_DIR", tempfile.gettempdir())
+    # Red de seguridad antes de escribir nada nuevo: si una ingesta anterior
+    # murió a medias, su archivo no se queda ahí para siempre.
+    try:
+        purge_expired_media(inbox_root, ttl_hours=float(os.getenv("HV_LABS_TTL_HOURS", "24")))
+    except Exception as e:
+        print(f"[wa-webhook] WARN purge labs: {e}")
 
     for i in range(num_media):
         url = form.get(f"MediaUrl{i}", "")
         ctype = form.get(f"MediaContentType{i}", "")
         if not url or not is_supported_labs_media(ctype):
             continue
+        path = None
         try:
-            dest_dir = os.path.join(
-                os.getenv("HV_LABS_INBOX_DIR", tempfile.gettempdir()), beta_id
-            )
+            # pii_scope, no beta_id: el beta_id de un lead ES su teléfono y no
+            # debe quedar escrito junto a sus estudios (LFPDPPP).
+            dest_dir = os.path.join(inbox_root, pii_scope(beta_id))
             path = download_twilio_media(url, dest_dir, content_type=ctype,
                                          filename_stem=f"lab_{i}")
             result = ingest_labs_pdf(beta_id, path)
+            # Parse OK: los biomarcadores ya viven en el state; el PDF crudo no
+            # vuelve a usarse. Se borra ya, no en 24h. (Si el parse FALLA el
+            # archivo se conserva a propósito para revisión humana — el TTL lo
+            # limpia igual.)
+            try:
+                os.remove(path)
+                path = None
+            except OSError as e:
+                print(f"[wa-webhook] WARN no pude borrar el estudio ya parseado: {e}")
             return result.get("summary_text") or "Recibí tu estudio, gracias."
         except ChannelSendError as e:
             print(f"[wa-webhook] WARN media download {beta_id}: {e}")
