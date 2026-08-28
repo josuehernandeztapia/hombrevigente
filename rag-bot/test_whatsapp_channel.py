@@ -22,9 +22,12 @@ from whatsapp_channel import (
     beta_id_for_phone,
     normalize_phone,
     phone_for_beta,
+    pii_scope,
+    purge_expired_media,
     send_whatsapp,
     twiml_reply,
     validate_twilio_signature,
+    wants_human,
 )
 
 
@@ -120,6 +123,181 @@ class TestWebhook(unittest.TestCase):
         finally:
             os.environ["HV_TWILIO_VALIDATE"] = "false"
             os.environ.pop("TWILIO_AUTH_TOKEN", None)
+
+
+class TestWantsHuman(unittest.TestCase):
+    """Detección del STOP. Conservadora: mejor un falso positivo (una persona
+    lee un mensaje de más) que un falso negativo (alguien en crisis atrapado)."""
+
+    def test_escala(self):
+        for txt in ("humano", "HUMANO", "  Humano.  ", "agente", "ayuda", "urgente",
+                    "quiero hablar con un humano", "necesito hablar con alguien",
+                    "me pueden comunicar con una persona", "hablar con el equipo",
+                    "prefiero hablar con un doctor", "SOS"):
+            self.assertTrue(wants_human(txt), f"debió escalar: {txt!r}")
+
+    def test_no_escala(self):
+        for txt in ("", "hola", "¿qué es HIFU?", "quiero saber de péptidos",
+                    "el cuerpo humano necesita proteína",
+                    "me interesa el enfoque humano de la clínica",
+                    "mi meta es sentirme mejor", "35", "sí"):
+            self.assertFalse(wants_human(txt), f"NO debió escalar: {txt!r}")
+
+
+class TestHumanHandoffWebhook(unittest.TestCase):
+    """El fallback promete 'escribe humano' — aquí se prueba que lo cumple."""
+
+    def setUp(self):
+        os.environ["HV_TWILIO_VALIDATE"] = "false"
+        self._tmp = tempfile.TemporaryDirectory()
+        os.environ["HV_BETA_STATES_DIR"] = self._tmp.name
+        os.environ["HV_INTAKE_DIR"] = self._tmp.name
+        os.environ["HV_STATE_PERSISTENCE"] = "files"
+        os.environ["HV_DECISION_LOG_ENABLED"] = "false"
+        os.environ["HV_TRACES_DIR"] = self._tmp.name
+        from fastapi.testclient import TestClient
+        from api.main import app
+        self.client = TestClient(app)
+        self.phone = "whatsapp:+525599988877"
+        self.beta = "wa-525599988877"
+
+    def tearDown(self):
+        self._tmp.cleanup()
+        for k in ("HV_TWILIO_VALIDATE", "HV_BETA_STATES_DIR", "HV_INTAKE_DIR",
+                  "HV_STATE_PERSISTENCE", "HV_TRACES_DIR"):
+            os.environ.pop(k, None)
+
+    def _post(self, body):
+        return self.client.post("/webhook/whatsapp",
+                                data={"From": self.phone, "Body": body})
+
+    def test_humano_responde_handoff_sin_llamar_al_rag(self):
+        from human_handoff import HANDOFF_REPLY
+        # Si el RAG se invoca, el test truena: el STOP no debe gastar LLM.
+        with patch("api.main._run_query",
+                   side_effect=AssertionError("STOP no debe llamar al RAG")):
+            r = self._post("humano")
+        self.assertEqual(r.status_code, 200)
+        self.assertIn(HANDOFF_REPLY.split("\n")[0][:40], r.text)
+        self.assertIn("911", r.text, "debe ofrecer la salida real de emergencia")
+
+    def test_latch_persiste_en_mensajes_siguientes(self):
+        self._post("quiero hablar con una persona")
+        # Un STOP que dura un solo turno no es un STOP.
+        with patch("api.main._run_query",
+                   side_effect=AssertionError("el latch debe seguir activo")):
+            r = self._post("¿y qué opinas del NAD+?")
+        self.assertEqual(r.status_code, 200)
+        self.assertIn("911", r.text)
+
+    def test_resolve_devuelve_el_bot(self):
+        from human_handoff import is_active, resolve
+        from state_persistence import load_state
+        self._post("humano")
+        self.assertTrue(is_active(load_state(self.beta)))
+        resolve(self.beta, by="test")
+        self.assertFalse(is_active(load_state(self.beta)))
+        # Ya liberado, el flujo normal vuelve. Apagamos el onboarding para aislar
+        # el camino RAG (si no, el guion determinístico conduce — es un lead sin
+        # intake — y eso ya lo cubre test_onboarding_flow).
+        os.environ["HV_FEATURE_WA_ONBOARDING"] = "false"
+        try:
+            with patch("api.main._run_query", return_value={"answer": "respuesta normal"}):
+                r = self._post("¿qué es HIFU?")
+        finally:
+            os.environ.pop("HV_FEATURE_WA_ONBOARDING", None)
+        self.assertIn("respuesta normal", r.text)
+        self.assertNotIn("911", r.text, "el handoff ya no debe estar activo")
+
+    def test_cron_no_escribe_a_beta_en_handoff(self):
+        from human_handoff import mark
+        import action_handler
+        mark(self.beta, "humano")
+        out = action_handler.execute_pending_action({
+            "beta_id": self.beta,
+            "action_id": "act-handoff-1",
+            "idemp_key": f"{self.beta}:no_activity_7d:followup:h0",
+            "signal": {"signal_type": "no_activity_7d"},
+            "action_type": "reengage",
+            "suggested_message": "Hola, retomemos.",
+            "status": "pending",
+        }, force=True)  # ni el override de ops atropella el STOP
+        self.assertEqual(out.get("status"), "blocked_by_human_handoff")
+
+
+class TestLabsPII(unittest.TestCase):
+    """El beta_id de un lead ES su teléfono; no debe quedar en disco junto a
+    sus estudios de salud (LFPDPPP), ni quedarse ahí para siempre."""
+
+    def test_scope_no_contiene_digitos_del_telefono(self):
+        beta = "wa-525511122233"
+        scope = pii_scope(beta)
+        self.assertNotIn("525511122233", scope)
+        self.assertNotIn(beta, scope)
+        self.assertFalse(any(c.isdigit() and c in "525511122233"[:6] for c in scope[:2]))
+        self.assertTrue(scope.startswith("b-"))
+
+    def test_scope_es_estable_y_distinto_por_beta(self):
+        self.assertEqual(pii_scope("wa-1"), pii_scope("wa-1"))
+        self.assertNotEqual(pii_scope("wa-1"), pii_scope("wa-2"))
+
+    def test_salt_cambia_el_scope(self):
+        os.environ["HV_PII_SALT"] = "salt-a"
+        a = pii_scope("wa-525511122233")
+        os.environ["HV_PII_SALT"] = "salt-b"
+        b = pii_scope("wa-525511122233")
+        os.environ.pop("HV_PII_SALT", None)
+        self.assertNotEqual(a, b, "el salt debe entrar al hash")
+
+    def test_purga_borra_viejos_y_conserva_recientes(self):
+        import time
+        with tempfile.TemporaryDirectory() as tmp:
+            old = Path(tmp) / "b-abc" / "lab_0.pdf"
+            old.parent.mkdir(parents=True)
+            old.write_bytes(b"%PDF-viejo")
+            os.utime(old, (time.time() - 90000, time.time() - 90000))  # ~25h
+            fresh = Path(tmp) / "b-def" / "lab_0.pdf"
+            fresh.parent.mkdir(parents=True)
+            fresh.write_bytes(b"%PDF-nuevo")
+
+            removed = purge_expired_media(tmp, ttl_hours=24)
+
+            self.assertEqual(removed, 1)
+            self.assertFalse(old.exists(), "el estudio > TTL debe desaparecer")
+            self.assertTrue(fresh.exists(), "el reciente se conserva")
+
+
+class TestPublicHealth(unittest.TestCase):
+    """El health público es liveness, no telemetría: no debe ser un mapa."""
+
+    def setUp(self):
+        from fastapi.testclient import TestClient
+        from api.main import app
+        self.client = TestClient(app)
+
+    def test_health_no_filtra_ops(self):
+        body = self.client.get("/api/health").json()
+        self.assertEqual(set(body), {"status", "index_loaded", "openai_configured"})
+        for leaked in ("pending_signals", "feature_flags", "beta_states_dir",
+                       "ssot", "state_persistence", "pending_actions"):
+            self.assertNotIn(leaked, body, f"/api/health no debe exponer {leaked}")
+
+    def test_detalle_operativo_sigue_disponible_con_pin(self):
+        os.environ["HV_ADMIN_PIN"] = "pin-test"
+        try:
+            r = self.client.get("/admin/agent_status", headers={"x-admin-pin": "pin-test"})
+            self.assertEqual(r.status_code, 200)
+            runtime = r.json().get("runtime", {})
+            self.assertIn("pending_signals", runtime)
+            self.assertIn("feature_flags", runtime)
+            self.assertIn("beta_fixture_row_0", runtime)
+        finally:
+            os.environ.pop("HV_ADMIN_PIN", None)
+
+    def test_health_sin_pin_sigue_siendo_publico(self):
+        r = self.client.get("/api/health")
+        self.assertEqual(r.status_code, 200)
+        self.assertIn(r.json()["status"], ("ok", "degraded"))
 
 
 class TestRealSender(unittest.TestCase):

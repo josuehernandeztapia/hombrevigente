@@ -17,7 +17,10 @@ from dataclasses import dataclass
 import requests
 
 DEFAULT_OPENAI_COMPOSE = "gpt-4o"
-DEFAULT_ANTHROPIC_COMPOSE = "claude-sonnet-4-6"  # 4-20250514 retirado → 404 (jun-2026)
+# claude-sonnet-5: mejor prosa que 4-6 y precio intro hasta 31-ago-2026.
+# OJO: Sonnet 5 RECHAZA temperature/top_p (400) — el payload Anthropic no
+# los manda. Historial: 4-20250514 retirado → 404 (jun-2026); 4-6 (jul-2026).
+DEFAULT_ANTHROPIC_COMPOSE = "claude-sonnet-5"
 
 
 @dataclass(frozen=True)
@@ -64,7 +67,9 @@ def chat_complete(
     user: str,
     llm: ComposeLLM | None = None,
     temperature: float = 0.4,
-    max_tokens: int = 8192,
+    # 16K: el tokenizer de Sonnet 5 usa ~30% más tokens y el thinking
+    # adaptivo comparte este tope con el texto — 8K quedaba justo.
+    max_tokens: int = 16000,
 ) -> str:
     cfg = llm or resolve_compose_llm()
     if not cfg:
@@ -82,11 +87,12 @@ def chat_complete(
                 "content-type": "application/json",
             },
             json={
+                # Sin temperature: Sonnet 5 rechaza params de sampling (400).
+                # El tono se controla por prompt (EDITORIAL.md), no por sampling.
                 "model": cfg.model,
                 "max_tokens": max_tokens,
                 "system": system,
                 "messages": [{"role": "user", "content": user}],
-                "temperature": temperature,
             },
             timeout=180,
         )

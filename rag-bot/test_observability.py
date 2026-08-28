@@ -148,26 +148,68 @@ class TestSimulateTraffic(unittest.TestCase):
 
 
 class TestGapsReportScript(unittest.TestCase):
-    def test_generate_local_report(self):
+    """Un reporte sin hallazgos va al log del workflow, no al repo.
+
+    Entre jul y ago-2026 este script generó 8 PRs idénticos ('Gaps detectados:
+    0') que nadie mergeó — el loop parecía aprender y solo estaba midiendo el
+    silencio de un canal sin tráfico.
+    """
+
+    def _run(self, out_dir, log_path):
+        env = {**os.environ,
+               "HV_DECISION_LOG_PATH": str(log_path),
+               "HV_DECISION_LOG_ENABLED": "true",
+               "HV_RAG_API_URL": "", "HV_ADMIN_PIN": ""}  # fuerza detector local
+        return subprocess.run(
+            [sys.executable, "scripts/generate_knowledge_gaps_report.py",
+             "--days", "30", "--out-dir", str(out_dir)],
+            cwd=Path(__file__).resolve().parent,
+            capture_output=True, text=True, env=env,
+        )
+
+    def test_sin_gaps_no_escribe_archivo(self):
         with tempfile.TemporaryDirectory() as tmp:
             out_dir = Path(tmp) / "qa"
-            r = subprocess.run(
-                [
-                    sys.executable,
-                    "scripts/generate_knowledge_gaps_report.py",
-                    "--days",
-                    "30",
-                    "--out-dir",
-                    str(out_dir),
-                ],
-                cwd=Path(__file__).resolve().parent,
-                capture_output=True,
-                text=True,
-            )
+            log = Path(tmp) / "vacio.jsonl"
+            log.write_text("", encoding="utf-8")
+
+            r = self._run(out_dir, log)
+
+            self.assertEqual(r.returncode, 0, r.stderr)
+            self.assertEqual(list(out_dir.glob("*.md")) if out_dir.exists() else [], [],
+                             "sin gaps no debe quedar archivo (= no se abre PR)")
+            self.assertIn("No se abre PR", r.stdout)
+
+    def test_con_gaps_si_escribe_archivo(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            out_dir = Path(tmp) / "qa"
+            log = Path(tmp) / "con_gaps.jsonl"
+            entries = []
+            for q in ("precio bitcoin", "precio del bitcoin hoy"):
+                entries.append({
+                    "timestamp": _recent_ts(), "query": q,
+                    "query_normalized": strip_command_words(q),
+                    "gate_path": "escalate", "top_score": 0.3,
+                    "chunks_used": 0, "kb_route": "all",
+                })
+            log.write_text("\n".join(json.dumps(e) for e in entries) + "\n",
+                           encoding="utf-8")
+
+            r = self._run(out_dir, log)
+
             self.assertEqual(r.returncode, 0, r.stderr)
             files = list(out_dir.glob("knowledge-gaps-*.md"))
-            self.assertEqual(len(files), 1)
+            self.assertEqual(len(files), 1, "con gaps sí debe generar el reporte")
             self.assertIn("Knowledge Gaps", files[0].read_text(encoding="utf-8"))
+
+    def test_reporte_distingue_silencio_de_salud(self):
+        from knowledge_gap_detector import render_gaps_report
+        sin_trafico = render_gaps_report([], days=7, threshold=0.55, analyzed=0)
+        con_trafico = render_gaps_report([], days=7, threshold=0.55, analyzed=300)
+        self.assertIn("no hubo tráfico", sin_trafico)
+        self.assertIn("300", con_trafico)
+        self.assertNotEqual(sin_trafico, con_trafico,
+                            "0 gaps sin tráfico y 0 gaps con tráfico son noticias opuestas")
 
 
 class TestExpandGoldenFromLog(unittest.TestCase):

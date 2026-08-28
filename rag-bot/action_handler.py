@@ -29,6 +29,10 @@ from typing import Any, Dict, List, Optional
 from state_manager import state_manager as sm
 from signal_detector import BetaSignal, handle_signal as base_handle_signal  # reuse logging+trace if wanted
 from feature_flags import is_enabled  # Guía Capa 5: default ON, disable via HV_FEATURE_XXX=false for <5s rollback
+# execute_pending_action los usa dentro de `except Exception: pass`. Sin este
+# import eran NameError silencioso → los traces del lazo proactivo NUNCA se
+# escribieron (ni ejecución ni bloqueo por flag). Verificado ago-2026.
+from traces import build_turn_payload, persist_turn_trace
 
 
 def _pending_actions_path() -> Path:
@@ -709,6 +713,35 @@ def execute_pending_action(action: Dict[str, Any], *, dry_run: bool = False, for
 
     beta_id = action["beta_id"]
     message = action.get("suggested_message", "")
+
+    # === STOP humano: si el beta pidió una persona, el cron NO le escribe ===
+    # Barrera clínica, no de salud del sistema: `force` (override de ops) tampoco
+    # la salta. Un humano ya está en ese hilo; un proactivo automático encima es
+    # exactamente lo que el beta pidió evitar. Se libera con /admin/handoff/resolve.
+    try:
+        from human_handoff import is_active as _handoff_active
+        from state_persistence import load_state as _load_state
+        if _handoff_active(_load_state(beta_id)):
+            action = dict(action)
+            action["status"] = "blocked_by_human_handoff"
+            action["blocked_at"] = _now()
+            action["block_reason"] = {"handoff": True}
+            try:
+                persist_turn_trace(build_turn_payload(
+                    beta_id=beta_id,
+                    branch_taken="execute_blocked_by_human_handoff",
+                    input_body=f"proactive action for {action.get('signal', {}).get('signal_type')}",
+                    output_body="",
+                    state_after={"block": action["block_reason"]},
+                    success=False,
+                    error_message="blocked_by_human_handoff",
+                ))
+            except Exception as e:
+                print(f"[execute] WARN trace handoff-block {beta_id}: {e}")
+            print(f"[execute][BLOCKED] beta={beta_id} en handoff humano — no se envía.")
+            return action
+    except Exception as e:
+        print(f"[execute] WARN handoff check {beta_id}: {e}")
 
     # === Execution gate (Guía "se corrige" + feature flags Capa 5) ===
     # Flags default ON. Disable with HV_FEATURE_HEALTH_GATE=false or HV_FEATURE_PROACTIVE_EXECUTION=false
