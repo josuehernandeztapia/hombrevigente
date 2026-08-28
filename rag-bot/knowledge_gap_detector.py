@@ -120,16 +120,37 @@ def detect_knowledge_gaps(
     return gaps[:max_gaps]
 
 
-def render_gaps_report(gaps: List[Dict[str, Any]], *, days: int, threshold: float) -> str:
+def count_decisions(days: int = 7, log_path: Optional[Path] = None) -> int:
+    """Cuántas decisiones RAG hubo en la ventana (denominador del reporte).
+
+    Sin esto, "0 gaps" es ambiguo: puede significar que el bot respondió bien
+    todo, o que nadie le preguntó nada. Son noticias opuestas.
+    """
+    return len(read_decisions(days=days, path=log_path))
+
+
+def render_gaps_report(gaps: List[Dict[str, Any]], *, days: int, threshold: float,
+                       analyzed: Optional[int] = None) -> str:
     lines = [
         f"# HV Knowledge Gaps — {_iso_week()}",
         "",
         f"Ventana: últimos **{days}** días · threshold score < **{threshold}**",
-        f"Gaps detectados: **{len(gaps)}**",
+        f"Gaps detectados: **{len(gaps)}** de **{analyzed if analyzed is not None else '?'}** consultas analizadas",
         "",
     ]
     if not gaps:
-        lines.append("_Sin gaps en la ventana._")
+        if analyzed:
+            lines.append(
+                f"_Sin gaps: las {analyzed} consultas de la ventana se resolvieron "
+                "por encima del umbral._"
+            )
+        else:
+            # El caso que confundió 8 PRs seguidos (jul–ago 2026): "0 gaps" no
+            # era salud, era silencio — el canal WhatsApp aún no tenía tráfico.
+            lines.append(
+                "_Sin consultas en la ventana: esto **no** dice nada sobre la "
+                "calidad del corpus, solo que no hubo tráfico que analizar._"
+            )
         return "\n".join(lines)
 
     for i, g in enumerate(gaps, 1):
