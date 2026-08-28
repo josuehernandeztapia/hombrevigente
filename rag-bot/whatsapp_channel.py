@@ -205,6 +205,66 @@ def is_supported_labs_media(content_type: str) -> bool:
     return (content_type or "").split(";")[0].strip().lower() in _LABS_CONTENT_EXT
 
 
+def pii_scope(beta_id: str) -> str:
+    """Nombre de carpeta NO identificable para archivos PII de un beta.
+
+    Por qué: el beta_id de un lead nuevo *es* su teléfono (`wa-525511122233`).
+    Usarlo como nombre de carpeta deja el número escrito en el disco, en los
+    listados, en los backups del volumen y en cualquier traza de error — junto
+    a sus estudios de salud. Correlacionar ambos es exactamente lo que la
+    LFPDPPP pide evitar.
+
+    SIN salt el hash es enumerable por fuerza bruta (el espacio de teléfonos
+    mexicanos es pequeño), así que se deriva del primer secreto disponible.
+    Preferir HV_PII_SALT explícito; la cadena de respaldo existe para que la
+    protección no dependa de recordar configurarlo. Rotar cualquiera de estos
+    secretos solo cambia los nombres de carpeta — inocuo, el TTL las limpia.
+    """
+    salt = (
+        os.getenv("HV_PII_SALT")
+        or os.getenv("TWILIO_AUTH_TOKEN")
+        or os.getenv("HV_ADMIN_PIN")
+        or os.getenv("NEWSLETTER_APPROVAL_SECRET")
+        or ""
+    )
+    if not salt and os.getenv("ENVIRONMENT", "development") == "production":
+        # Ruidoso a propósito: sin salt esto solo tapa el vistazo casual.
+        print("[labs-pii] WARN: sin HV_PII_SALT en producción — el scope es enumerable")
+    digest = hashlib.sha256(f"{salt}:{beta_id}".encode("utf-8")).hexdigest()
+    return f"b-{digest[:16]}"
+
+
+def purge_expired_media(root: str, ttl_hours: float = 24.0) -> int:
+    """Borra archivos PII más viejos que el TTL bajo `root`. Devuelve cuántos.
+
+    Red de seguridad: el camino feliz borra el estudio en cuanto se parsea, pero
+    si el proceso muere a media ingesta el archivo se queda. Nada debe vivir
+    indefinidamente en el volumen.
+    """
+    import time
+    base = Path(root)
+    if not base.exists():
+        return 0
+    cutoff = time.time() - (ttl_hours * 3600)
+    removed = 0
+    for p in base.rglob("*"):
+        try:
+            if p.is_file() and p.stat().st_mtime < cutoff:
+                p.unlink()
+                removed += 1
+        except OSError:
+            continue
+    for d in sorted(base.rglob("*"), key=lambda x: -len(str(x))):  # dirs vacíos
+        try:
+            if d.is_dir() and not any(d.iterdir()):
+                d.rmdir()
+        except OSError:
+            continue
+    if removed:
+        print(f"[labs-pii] purgados {removed} archivo(s) > {ttl_hours}h en {root}")
+    return removed
+
+
 def download_twilio_media(url: str, dest_dir: str, *, content_type: str = "",
                           filename_stem: str = "lab") -> str:
     """

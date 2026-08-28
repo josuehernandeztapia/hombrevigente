@@ -22,6 +22,8 @@ from whatsapp_channel import (
     beta_id_for_phone,
     normalize_phone,
     phone_for_beta,
+    pii_scope,
+    purge_expired_media,
     send_whatsapp,
     twiml_reply,
     validate_twilio_signature,
@@ -221,6 +223,81 @@ class TestHumanHandoffWebhook(unittest.TestCase):
             "status": "pending",
         }, force=True)  # ni el override de ops atropella el STOP
         self.assertEqual(out.get("status"), "blocked_by_human_handoff")
+
+
+class TestLabsPII(unittest.TestCase):
+    """El beta_id de un lead ES su teléfono; no debe quedar en disco junto a
+    sus estudios de salud (LFPDPPP), ni quedarse ahí para siempre."""
+
+    def test_scope_no_contiene_digitos_del_telefono(self):
+        beta = "wa-525511122233"
+        scope = pii_scope(beta)
+        self.assertNotIn("525511122233", scope)
+        self.assertNotIn(beta, scope)
+        self.assertFalse(any(c.isdigit() and c in "525511122233"[:6] for c in scope[:2]))
+        self.assertTrue(scope.startswith("b-"))
+
+    def test_scope_es_estable_y_distinto_por_beta(self):
+        self.assertEqual(pii_scope("wa-1"), pii_scope("wa-1"))
+        self.assertNotEqual(pii_scope("wa-1"), pii_scope("wa-2"))
+
+    def test_salt_cambia_el_scope(self):
+        os.environ["HV_PII_SALT"] = "salt-a"
+        a = pii_scope("wa-525511122233")
+        os.environ["HV_PII_SALT"] = "salt-b"
+        b = pii_scope("wa-525511122233")
+        os.environ.pop("HV_PII_SALT", None)
+        self.assertNotEqual(a, b, "el salt debe entrar al hash")
+
+    def test_purga_borra_viejos_y_conserva_recientes(self):
+        import time
+        with tempfile.TemporaryDirectory() as tmp:
+            old = Path(tmp) / "b-abc" / "lab_0.pdf"
+            old.parent.mkdir(parents=True)
+            old.write_bytes(b"%PDF-viejo")
+            os.utime(old, (time.time() - 90000, time.time() - 90000))  # ~25h
+            fresh = Path(tmp) / "b-def" / "lab_0.pdf"
+            fresh.parent.mkdir(parents=True)
+            fresh.write_bytes(b"%PDF-nuevo")
+
+            removed = purge_expired_media(tmp, ttl_hours=24)
+
+            self.assertEqual(removed, 1)
+            self.assertFalse(old.exists(), "el estudio > TTL debe desaparecer")
+            self.assertTrue(fresh.exists(), "el reciente se conserva")
+
+
+class TestPublicHealth(unittest.TestCase):
+    """El health público es liveness, no telemetría: no debe ser un mapa."""
+
+    def setUp(self):
+        from fastapi.testclient import TestClient
+        from api.main import app
+        self.client = TestClient(app)
+
+    def test_health_no_filtra_ops(self):
+        body = self.client.get("/api/health").json()
+        self.assertEqual(set(body), {"status", "index_loaded", "openai_configured"})
+        for leaked in ("pending_signals", "feature_flags", "beta_states_dir",
+                       "ssot", "state_persistence", "pending_actions"):
+            self.assertNotIn(leaked, body, f"/api/health no debe exponer {leaked}")
+
+    def test_detalle_operativo_sigue_disponible_con_pin(self):
+        os.environ["HV_ADMIN_PIN"] = "pin-test"
+        try:
+            r = self.client.get("/admin/agent_status", headers={"x-admin-pin": "pin-test"})
+            self.assertEqual(r.status_code, 200)
+            runtime = r.json().get("runtime", {})
+            self.assertIn("pending_signals", runtime)
+            self.assertIn("feature_flags", runtime)
+            self.assertIn("beta_fixture_row_0", runtime)
+        finally:
+            os.environ.pop("HV_ADMIN_PIN", None)
+
+    def test_health_sin_pin_sigue_siendo_publico(self):
+        r = self.client.get("/api/health")
+        self.assertEqual(r.status_code, 200)
+        self.assertIn(r.json()["status"], ("ok", "degraded"))
 
 
 class TestRealSender(unittest.TestCase):
