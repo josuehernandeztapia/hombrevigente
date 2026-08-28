@@ -37,6 +37,7 @@ def main() -> int:
 
     report = ""
     gap_count = 0
+    analyzed = None
     threshold = float(os.getenv("HV_COSINE_MIN", "0.55"))
 
     base_url = os.getenv("HV_RAG_API_URL", "").strip()
@@ -46,24 +47,42 @@ def main() -> int:
             data = _fetch_prod_gaps(base_url=base_url, pin=pin, days=args.days)
             gaps = data.get("gaps", [])
             gap_count = len(gaps)
+            analyzed = data.get("analyzed")
             threshold = float(data.get("threshold") or threshold)
             report = data.get("report_md") or render_gaps_report(
-                gaps, days=args.days, threshold=threshold
+                gaps, days=args.days, threshold=threshold, analyzed=analyzed
             )
-            print(f"Fetched {gap_count} gap(s) from prod")
+            print(f"Fetched {gap_count} gap(s) from prod (de {analyzed} consultas)")
         except (urllib.error.URLError, TimeoutError, json.JSONDecodeError) as e:
             print(f"WARN: prod fetch failed ({e}) — local detector", file=sys.stderr)
 
     if not report:
+        from knowledge_gap_detector import count_decisions
         gaps = detect_knowledge_gaps(days=args.days, gap_threshold=threshold)
         gap_count = len(gaps)
-        report = render_gaps_report(gaps, days=args.days, threshold=threshold)
-        print(f"Local detector: {gap_count} gap(s)")
+        analyzed = count_decisions(days=args.days)
+        report = render_gaps_report(gaps, days=args.days, threshold=threshold,
+                                    analyzed=analyzed)
+        print(f"Local detector: {gap_count} gap(s) de {analyzed} consultas")
+
+    # Sin gaps NO se escribe archivo → el workflow no abre PR.
+    # Entre jul y ago-2026 esto generó 8 PRs idénticos ("Gaps detectados: 0")
+    # que nadie mergeó: el loop parecía aprender y solo estaba midiendo el
+    # silencio de un canal sin tráfico. Un reporte sin hallazgos va al log del
+    # workflow, no al repo.
+    if gap_count == 0:
+        if analyzed:
+            print(f"Sin gaps: las {analyzed} consultas se resolvieron sobre el "
+                  f"umbral ({threshold}). No se abre PR.")
+        else:
+            print("Sin consultas en la ventana — no hay nada que analizar "
+                  "(¿el canal tiene tráfico?). No se abre PR.")
+        return 0
 
     out = args.out_dir / f"knowledge-gaps-{_iso_week()}.md"
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(report.rstrip() + "\n", encoding="utf-8")
-    print(f"Wrote {out}")
+    print(f"Wrote {out} ({gap_count} gap(s) de {analyzed} consultas)")
     return 0
 
 

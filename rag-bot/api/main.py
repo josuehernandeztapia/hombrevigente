@@ -260,15 +260,21 @@ def knowledge_gaps(
 ):
     _require_admin_pin(pin, x_admin_pin)
     gaps = detect_knowledge_gaps(days=days, gap_threshold=threshold)
+    # `analyzed` es el denominador: 0 gaps de 0 consultas es silencio, 0 gaps
+    # de 300 consultas es una buena noticia. Sin él no se distinguen.
+    from knowledge_gap_detector import count_decisions
+    analyzed = count_decisions(days=days)
     return {
         "days": days,
         "threshold": threshold,
         "count": len(gaps),
+        "analyzed": analyzed,
         "gaps": gaps,
         "report_md": render_gaps_report(
             gaps,
             days=days,
             threshold=threshold or float(os.getenv("HV_COSINE_MIN", "0.55")),
+            analyzed=analyzed,
         ),
     }
 
