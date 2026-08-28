@@ -47,8 +47,12 @@ def build_bullet(entry: dict) -> str:
     fuente = entry.get("fuente", "").strip()
 
     journal_year = fuente if fuente else "fuente verificada"
+    # `fuente` suele venir ya con "Journal, fecha. PMID nnn. DOI 10.x/yyy" desde
+    # el pie del bloque del Pulso; repetir pmid_doi producía la cita duplicada
+    # ("… DOI 10.1111/acel.70607*. acel.70607 · E3") que ensuciaba el corpus.
+    ref = "" if (pmid_doi and pmid_doi in journal_year) else f" {pmid_doi}"
     lines = [
-        f"- **{title}** — *{journal_year}*. {pmid_doi} · {level}.",
+        f"- **{title}** — *{journal_year.rstrip('. ')}*.{ref} · {level}.",
     ]
     if summary:
         lines.append(f"  - {summary}")
