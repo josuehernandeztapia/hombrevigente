@@ -8,7 +8,7 @@ import json
 import os
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Dict, Literal, Optional
+from typing import Any, Dict, Literal, Optional
 
 from dotenv import load_dotenv
 from fastapi import FastAPI, Header, HTTPException, Query, Request
@@ -859,6 +859,185 @@ async def whatsapp_webhook(request: Request):
         print(f"[wa-webhook] WARN rag failed for {beta_id}: {e}")
 
     return Response(content=twiml_reply(reply), media_type="application/xml")
+
+
+# ==================================================================
+# API de producto (PWA) — /api/v1/*
+# ==================================================================
+# Hasta ago-2026 todo lo que el producto expone salía por TwiML en
+# /webhook/whatsapp. La PWA embebida en el landing necesita JSON.
+#
+# Principio: WhatsApp y la PWA son DOS RENDERIZADOS DEL MISMO MOTOR, no dos
+# productos. Comparten beta_id, estado (SSOT Postgres), guion de onboarding,
+# gates clínicos y STOP humano. Un beta puede empezar en la app, atorarse, y
+# continuar por WhatsApp en el paso exacto donde iba.
+#
+# Lo que NO está aquí a propósito: checkout y agenda de teleconsulta. No tienen
+# motor detrás (0 módulos en el runtime); exponer un endpoint vacío sería
+# prometer lo que no existe — el mismo error que el landing.
+
+
+class SessionRequest(BaseModel):
+    phone: str = Field(..., min_length=8, max_length=24,
+                       description="E.164 del beta; identidad compartida con WhatsApp")
+
+
+class OnboardingStep(BaseModel):
+    message: str = Field(..., min_length=1, max_length=500)
+
+
+class ChatRequest(BaseModel):
+    message: str = Field(..., min_length=1, max_length=2000)
+
+
+def _beta_from_token(authorization: Optional[str]) -> str:
+    """Bearer → beta_id. 401 si falta o no verifica. Nunca degrada a anónimo."""
+    from api_session import verify_token
+    token = ""
+    if authorization and authorization.lower().startswith("bearer "):
+        token = authorization[7:].strip()
+    beta_id = verify_token(token)
+    if not beta_id:
+        raise HTTPException(status_code=401, detail="sesión inválida o expirada")
+    return beta_id
+
+
+@app.post("/api/v1/session")
+def api_session(
+    body: SessionRequest,
+    pin: str = Query(""),
+    x_admin_pin: Optional[str] = Header(None, alias="x-admin-pin"),
+):
+    """Emite sesión para la PWA.
+
+    Sin passwords: WhatsApp ya autentica al beta (Twilio firma el inbound y el
+    número mapea a beta_id), así que el token viaja por ese canal. Con Twilio
+    configurado se envía y NO se devuelve; sin Twilio, solo ops con PIN puede
+    obtenerlo (arranque/pruebas). Nunca se entrega un token a quien solo escribe
+    un número en un formulario.
+    """
+    from api_session import issue_token, session_configured
+    from whatsapp_channel import beta_id_for_phone, twilio_configured
+
+    if not session_configured():
+        raise HTTPException(status_code=503, detail="HV_APP_SESSION_SECRET no configurado")
+
+    beta_id = beta_id_for_phone(body.phone)
+    token = issue_token(beta_id)
+
+    if twilio_configured():
+        try:
+            from whatsapp_channel import send_whatsapp
+            base = os.getenv("HV_APP_BASE_URL", "https://hombrevigente.com/app")
+            send_whatsapp(body.phone,
+                          f"Tu acceso a Hombre Vigente: {base}?t={token}\n"
+                          "El enlace es personal; no lo compartas.")
+            return {"sent": True, "channel": "whatsapp"}
+        except Exception as e:
+            print(f"[api-session] WARN envío falló: {e}")
+            raise HTTPException(status_code=502, detail="no se pudo enviar el acceso")
+
+    # Sin Twilio, solo ops — y aquí el PIN es OBLIGATORIO de verdad.
+    # _require_admin_pin permite PIN vacío fuera de producción; para el resto de
+    # /admin eso es una molestia menor, pero este endpoint EMITE CREDENCIALES de
+    # acceso a datos de salud: un staging mal etiquetado se convertiría en
+    # "escribe un teléfono y toma la sesión de ese beta". No hereda el bypass.
+    configured = os.getenv("HV_ADMIN_PIN", "").strip()
+    provided = (x_admin_pin or pin or "").strip()
+    if not configured or not provided or provided != configured:
+        raise HTTPException(
+            status_code=401,
+            detail="emisión de sesión requiere HV_ADMIN_PIN configurado y correcto",
+        )
+    return {"sent": False, "token": token, "beta_id": beta_id,
+            "note": "Twilio no configurado — token entregado por vía ops"}
+
+
+@app.get("/api/v1/me")
+def api_me(authorization: Optional[str] = Header(None)):
+    """Estado del beta para la PWA. Solo lo que la app necesita pintar."""
+    from human_handoff import is_active as _handoff_active
+    from onboarding_flow import is_onboarding_active, should_start_onboarding
+    from state_persistence import load_state
+
+    beta_id = _beta_from_token(authorization)
+    state = load_state(beta_id) or {}
+    slots = state.get("slots") or {}
+    return {
+        "beta_id": beta_id,
+        "fase": state.get("phase"),
+        "onboarding": {
+            "activo": is_onboarding_active(state),
+            "pendiente": should_start_onboarding(state),
+            "status": (state.get("onboarding") or {}).get("status"),
+        },
+        "labs_parseados": bool(slots.get("labs_parseados")),
+        "intake_completo": bool(slots.get("tally_completo")),
+        "handoff_humano": _handoff_active(state),
+        "ultimo_contacto": state.get("last_active_at"),
+    }
+
+
+@app.post("/api/v1/onboarding")
+def api_onboarding(body: OnboardingStep, authorization: Optional[str] = Header(None)):
+    """Avanza el MISMO guion que WhatsApp. Devuelve `field` para renderizar.
+
+    El consentimiento LFPDPPP es el paso 0 aquí también — no hay atajo por venir
+    de la app.
+    """
+    from onboarding_flow import start_or_advance
+    beta_id = _beta_from_token(authorization)
+    out = start_or_advance(beta_id, body.message)
+    # `reply` se omite: es el render de WhatsApp. La PWA pinta `field`.
+    return {k: v for k, v in out.items() if k != "reply"}
+
+
+@app.post("/api/v1/chat")
+def api_chat(body: ChatRequest, authorization: Optional[str] = Header(None)):
+    """Concierge por la app — mismos gates y mismo STOP humano que WhatsApp."""
+    from human_handoff import HANDOFF_REPLY, is_active as _handoff_active, mark
+    from state_persistence import load_state
+    from whatsapp_channel import wants_human
+
+    beta_id = _beta_from_token(authorization)
+
+    # STOP humano: la app no puede ser la puerta trasera que esquiva el latch.
+    if _handoff_active(load_state(beta_id)) or wants_human(body.message):
+        mark(beta_id, body.message)
+        return {"tipo": "handoff_humano", "respuesta": HANDOFF_REPLY, "gate": None}
+
+    res = _run_query(body.message, role="concierge", use_llm=True,
+                     beta_id=beta_id, channel="app")
+    return {
+        "tipo": "respuesta",
+        "respuesta": (res or {}).get("answer", ""),
+        "gate": (res or {}).get("gate"),
+        "confianza": (res or {}).get("confidence"),
+        "fuentes": [
+            {"servicio": s.get("service"), "score": s.get("score")}
+            for s in ((res or {}).get("sources") or [])[:3]
+        ],
+    }
+
+
+@app.get("/api/v1/indice")
+def api_indice(authorization: Optional[str] = Header(None)):
+    """Índice Vigente del beta — SIEMPRE con su marco (framing-as-code).
+
+    Devuelve el envoltorio completo de compute_indice_longevidad: etiqueta,
+    disclaimer, es_diagnostico=False, ilustrativo=True y las derivaciones de
+    Ruta B. El número nunca sale desnudo, tampoco por esta vía.
+    """
+    from indice_vigente import compute_from_labs_result, compute_indice_longevidad
+    from state_persistence import load_state
+
+    beta_id = _beta_from_token(authorization)
+    labs_result = (load_state(beta_id) or {}).get("labs_result")
+    if labs_result:
+        return compute_from_labs_result(labs_result)
+    # Sin labs el motor devuelve el mismo envoltorio con score=None: la app
+    # muestra "aún no calculable", no un número inventado.
+    return compute_indice_longevidad()
 
 
 @app.get("/rag/query")

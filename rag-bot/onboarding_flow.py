@@ -152,11 +152,47 @@ def _prompt_for(step: Dict[str, Any]) -> str:
     return _phrase(base)
 
 
+def field_spec(step: Dict[str, Any]) -> Dict[str, Any]:
+    """El paso como DATO, no como texto — para que un front lo renderice.
+
+    El mismo guion debe correr por WhatsApp y por la PWA. Si el motor solo
+    devolviera `reply` (texto ya armado con las opciones concatenadas), el front
+    tendría que parsear strings para pintar un formulario, o habría que escribir
+    un segundo onboarding — dos guiones que divergen, con el consentimiento
+    LFPDPPP adentro. Un motor, dos renderizados: WhatsApp usa `reply`, la PWA
+    usa esto.
+    """
+    spec: Dict[str, Any] = {
+        "key": step["key"],
+        "kind": step["kind"],          # consent | text | int | number | enum
+        "prompt": step["prompt"],      # sin opciones concatenadas ni tono
+        "required": True,
+    }
+    if step["kind"] == "enum":
+        spec["options"] = [
+            {"value": value, "label": label, "input": num}
+            for num, value, label in step.get("options", [])
+        ]
+    if step["kind"] == "consent":
+        spec["accepts"] = ["sí", "no"]
+    return spec
+
+
+def _step_payload(step: Dict[str, Any], *, reply: str, status: str) -> Dict[str, Any]:
+    """Respuesta única del motor: texto para WhatsApp + estructura para la PWA."""
+    return {"reply": reply, "status": status, "step": step["key"],
+            "field": field_spec(step),
+            "progress": {"index": STEPS.index(step), "total": len(STEPS)}}
+
+
 def start_or_advance(beta_id: str, message: str) -> Dict[str, Any]:
     """
     Procesa un mensaje del beta dentro del onboarding. Devuelve
-    {"reply": str, "status": in_progress|completed|aborted, "step": key}.
-    El webhook envía `reply` como respuesta de WhatsApp.
+    {"reply": str, "status": in_progress|completed|aborted, "step": key,
+     "field": {...}, "progress": {...}}.
+    El webhook de WhatsApp envía `reply`; la PWA renderiza `field`. Ambos
+    avanzan el MISMO estado (SSOT Postgres), así que un beta puede empezar en
+    la app, atorarse, y continuar por WhatsApp en el paso donde iba.
     """
     state = load_state(beta_id) or {"beta_id": beta_id}
     ob = state.get("onboarding")
@@ -166,14 +202,14 @@ def start_or_advance(beta_id: str, message: str) -> Dict[str, Any]:
         ob = {"idx": 0, "raw": {}, "status": "in_progress", "started_at": _utc_now()}
         state["onboarding"] = ob
         _persist(beta_id, state)
-        return {"reply": _prompt_for(STEPS[0]), "status": "in_progress", "step": STEPS[0]["key"]}
+        return _step_payload(STEPS[0], reply=_prompt_for(STEPS[0]), status="in_progress")
 
     idx = ob["idx"]
     step = STEPS[idx]
     ok, result = _validate(step, message)
     if not ok:
-        return {"reply": _phrase(result + "\n\n" + _prompt_for(step)),
-                "status": "in_progress", "step": step["key"]}
+        return _step_payload(step, reply=_phrase(result + "\n\n" + _prompt_for(step)),
+                            status="in_progress")
 
     # Consentimiento rechazado → abortar sin capturar datos de salud.
     if step["kind"] == "consent" and result == "no":
@@ -192,8 +228,8 @@ def start_or_advance(beta_id: str, message: str) -> Dict[str, Any]:
         return _finalize(beta_id, state, ob)
 
     _persist(beta_id, state)
-    return {"reply": _prompt_for(STEPS[ob["idx"]]), "status": "in_progress",
-            "step": STEPS[ob["idx"]]["key"]}
+    return _step_payload(STEPS[ob["idx"]], reply=_prompt_for(STEPS[ob["idx"]]),
+                         status="in_progress")
 
 
 def _finalize(beta_id: str, state: Dict[str, Any], ob: Dict[str, Any]) -> Dict[str, Any]:
