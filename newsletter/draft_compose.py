@@ -353,7 +353,7 @@ compose: auto-fallback
 
 ---
 
-**🟢 Para ti, miembro Plus:** revisa qué marcador o hábito de esta semana encaja con tu Diagnóstico Vigente. ¿Lo agregamos a tu panel?
+**🟢 Para ti, miembro Plus:** revisa qué marcador o hábito de esta semana encaja con tu Índice Vigente. ¿Lo agregamos a tu panel?
 
 **Bottom line:** la frontera avanza; tu ventaja es medir y optimizar lo que ya tiene señal. Eso es estar Vigente.
 
