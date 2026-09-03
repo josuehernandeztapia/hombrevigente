@@ -16,12 +16,17 @@ import importlib.util
 import unittest
 from pathlib import Path
 
-_PUBLISH = Path(__file__).resolve().parent.parent / "newsletter" / "publish.py"
+_GUARD = Path(__file__).resolve().parent.parent / "newsletter" / "claim_guard.py"
 
 
 def _risky():
-    """Carga RISKY sin importar el módulo completo (evita deps de red)."""
-    spec = importlib.util.spec_from_file_location("_pub_guard", _PUBLISH)
+    """Carga la regla desde claim_guard.py — módulo SIN dependencias.
+
+    Antes esto ejecutaba publish.py entero y el test moría en CI con
+    'No module named yaml' (mi venv local lo tenía; el CI limpio no). Una regla
+    de compliance no debe necesitar yaml/requests para poder evaluarse.
+    """
+    spec = importlib.util.spec_from_file_location("_claim_guard", _GUARD)
     mod = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(mod)
     return mod.RISKY

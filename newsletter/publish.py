@@ -28,41 +28,9 @@ PLATFORM_MAP = {"x": "twitter", "twitter": "twitter", "instagram": "instagram",
                 "facebook": "facebook", "tiktok": "tiktok", "linkedin": "linkedin",
                 "youtube": "youtube"}
 
-# claim-guard: si aparece algo de esto, NO se autopublica (va a revisión humana).
-#
-# OJO con los sufijos (bug encontrado ago-2026): la versión anterior cerraba el
-# grupo con `\b`, así que `diagn[oó]stic\b` NUNCA matcheaba "diagnóstico" —
-# después de "stic" viene "o", que es carácter de palabra. Solo bloqueaba la
-# forma inglesa "diagnostic". El término más sensible para COFEPRIS, y
-# justamente el que motiva este guard, pasaba libre. Lo mismo con "tratamientos"
-# (plural), "curación", "prevención", "sanación".
-#
-# Regla: en español el claim vive en la raíz, no en la forma exacta. Preferimos
-# el falso positivo (va a revisión humana) sobre el falso negativo (se publica).
-RISKY = re.compile(
-    # Términos: raíz + sufijos españoles. Enumerados (no `\w*` abierto) para no
-    # marcar palabras legítimas — "curaduría de contenido" no es un claim.
-    r"\b(?:"
-    # Verbos donde TODA conjugación es claim → raíz abierta.
-    r"garantiz\w*|"                    # garantiza, garantizamos, garantizado…
-    r"diagn[oó]stic\w*|diagnostic\w*|"  # diagnóstico/a/os, diagnosticamos…
-    r"preven\w*|previen\w*|"           # prevenir/prevención/preventivo + previene/previenen
-    r"revert\w*|reviert\w*|reversi[oó]n\w*|"
-    r"milagro\w*|"
-    # Enumerados: la raíz abierta daría falsos positivos ("curaduría", "sangre").
-    # "curado/a" queda FUERA a propósito: en el copy de marca significa
-    # seleccionado ("arsenal de servicios curado", index.html) — es el
-    # anglicismo de *curated*, no una promesa de curación.
-    r"cura(?:r|n|s|mos|ci[oó]n|tiv[oa]s?)?|"
-    r"trata(?:r|mos|mient[oa]s?)?|"
-    r"sana(?:r|n|mos|ci[oó]n)?|"
-    r"elimina la enfermedad|adelgaza garantizado"
-    r")\b"
-    # Símbolos aparte: tras "%" no hay límite de palabra, así que "100 % efectivo"
-    # se fugaba del grupo anterior.
-    r"|100\s?%",
-    re.IGNORECASE,
-)
+# claim-guard: la regla vive en claim_guard.py (sin dependencias) para
+# poder testearla y correrla contra cualquier superficie.
+from claim_guard import RISKY  # noqa: E402
 
 
 def load(md: Path) -> dict:
