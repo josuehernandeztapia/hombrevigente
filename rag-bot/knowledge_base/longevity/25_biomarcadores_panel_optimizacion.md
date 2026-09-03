@@ -80,7 +80,7 @@ Parseo PDF labs → estructura → RAG. Validar valores con rangos de laboratori
 ## 📖 FAQ
 
 **¿Cuánto cobrar interpretación?**  
-Ver Blueprint: Diagnóstico Vigente $1,490–2,490 MXN.
+Ver Blueprint (referencia interna, verificar precio vigente antes de citarlo): Valoración Vigente $1,490–2,490 MXN.
 
 ---
 

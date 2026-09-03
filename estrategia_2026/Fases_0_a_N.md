@@ -55,7 +55,7 @@
 | Dimensión | Contenido |
 |-----------|-----------|
 | **Objetivo** | Producto digital que cobra sin cuello de botella del fundador |
-| **Oferta** | Escaneo gratis → **Diagnóstico Vigente** ($1,490–2,490 MXN) → Membresía Esencial/Plus + Stack oral |
+| **Oferta** | Escaneo gratis → **Valoración Vigente** ($1,490–2,490 MXN) → Membresía Esencial/Plus + Stack oral |
 | **Producto** | Informe de Optimización + recomendación justificada (RAG + SSOT) |
 | **Stack** | Framer/Next · Healthie o portal · 360dialog · Stripe/Conekta · Terra · Haut.AI · BloodGPT o build labs |
 | **IA** | ChatVigente + PersonaVigente v1 · `protocol_draft` auto · RGB (Haut.AI) · térmico captura MVP |

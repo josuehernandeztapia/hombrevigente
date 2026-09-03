@@ -76,7 +76,7 @@ Pipeline híbrido:
 - Alucina métricas sin calibración
 - No replica el gancho de conversión documentado en estética (uplift en recomendación de productos)
 
-**HV:** MVP-0 = observación manual. MVP-1 = Haut.AI o Perfect Corp. El **Diagnóstico Vigente™ térmico** es complemento RGB, no sustituto.
+**HV:** MVP-0 = observación manual. MVP-1 = Haut.AI o Perfect Corp. El **Valoración Vigente™ térmica** es complemento RGB, no sustituto.
 
 ---
 
