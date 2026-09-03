@@ -61,7 +61,8 @@ jobs:
             test_bridge_labs_indice.py \
             test_onboarding_flow.py \
             test_labs_ingest.py \
-            test_decision_log_pg.py
+            test_decision_log_pg.py \
+            test_claim_guard.py
 
       - name: Golden set (gates-only)
         run: python golden_runner.py --gates-only
