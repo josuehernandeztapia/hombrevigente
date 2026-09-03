@@ -32,6 +32,15 @@ TOPIC_QUERIES = {
     "senescencia_senoliticos": '(senolytic OR "cellular senescence") AND (aging OR lifespan)',
     "epigenetica_relojes_reprogramacion": '("epigenetic clock" OR "partial reprogramming" OR "epigenetic reprogramming") AND aging',
     "peptidos_bpc_tb500_ghk_tesamorelin": '("BPC-157" OR "thymosin beta 4" OR "GHK-Cu" OR tesamorelin)',
+    # Línea Khavinson (bioreguladores peptídicos órgano-específicos). Faltaba:
+    # el watchlist cubría solo los péptidos occidentales, así que la monografía
+    # 20 llevaba meses sin material que la alimentara (379 palabras). Términos
+    # anclados a los compuestos + contexto de envejecimiento — la variante con
+    # "short peptides"/geroprotect* traía ruido (valeriana, brucelosis).
+    "bioreguladores_peptidicos": (
+        '(Khavinson OR epitalon OR epithalamin OR thymalin OR "peptide bioregulator" '
+        'OR "peptide bioregulators") AND (aging OR longevity OR geroprotector)'
+    ),
     "glp1_metabolismo": '(semaglutide OR tirzepatide OR "GLP-1") AND (aging OR longevity OR metabolic)',
     "lipidos_apob": '(ApoB OR PCSK9 OR "LDL cholesterol") AND (cardiovascular OR atherosclerosis)',
     "sueno": '(sleep) AND (longevity OR healthspan OR inflammation)',
