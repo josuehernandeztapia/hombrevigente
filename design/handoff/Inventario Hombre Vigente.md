@@ -150,7 +150,7 @@
 - Eyebrow: `Activación · Av. 1`
 - Título: **"Tu protocolo"**
 - Sub: *"Diagnóstico hoy + tu Stack Vigente mensual. Cancela cuando quieras."*
-- Resumen: **Diagnóstico Vigente** `$1,490` (única vez) · "Labs interpretados + tu Índice" — **Stack Vigente** `$899/mes`
+- Resumen: **Valoración Vigente** `$1,490` (única vez) · "Labs interpretados + tu Índice" — **Stack Vigente** `$899/mes`
 - Métodos de pago: `Tarjeta` · `SPEI` · `OXXO` · `Kueski · MSI`
 - Opción: **Diferir el diagnóstico a 3 MSI (Kueski)**
 - CTA: **Pagar y activar · $2,389 hoy**

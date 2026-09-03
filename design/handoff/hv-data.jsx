@@ -89,11 +89,11 @@ const PROJECTION = {
 // ── Pricing ladder en MXN (de Market Research, Exhibit M) ───────────────────
 const PRICING = [
   { id:'entrada', name:'Membresía Vigente', price:'$990', unit:'MXN / mes',
-    blurb:'Diagnóstico + acompañamiento digital', tier:'Entrada' },
+    blurb:'Valoración + acompañamiento digital', tier:'Entrada' },
   { id:'core', name:'Protocolo Gestionado', price:'$2,990', unit:'MXN / mes',
     blurb:'Protocolo + insumo magistral con receta + seguimiento', tier:'Core', best:true },
   { id:'lounge', name:'Lounge Querétaro', price:'Fase 2', unit:'próximamente',
-    blurb:'Diagnóstico profundo presencial + aplicación', tier:'Premium', soon:true },
+    blurb:'Valoración profunda presencial + aplicación', tier:'Premium', soon:true },
 ];
 
 const RAILS = ['Tarjeta','SPEI','OXXO','Kueski · MSI'];
@@ -315,13 +315,13 @@ const STACK_VIGENTE = {
 // Programas (precios MXN ilustrativos, de la landing)
 const PROGRAMS = [
   { id:'scan', tier:'Gancho',            name:'Escaneo Vigente',           price:'Gratis',            note:'Ya lo completaste', done:true },
-  { id:'av1',  tier:'Av. 1 · sin receta', name:'Diagnóstico + Stack Vigente', price:'$1,490 + $899/mes', note:'Labs interpretados + protocolo + suplementos con COA', best:true },
+  { id:'av1',  tier:'Av. 1 · sin receta', name:'Valoración + Stack Vigente', price:'$1,490 + $899/mes', note:'Labs interpretados + protocolo + suplementos con COA', best:true },
   { id:'mem',  tier:'Recurrencia',        name:'Membresía Vigente',         price:'$899–2,499/mes',    note:'Seguimiento, ajustes trimestrales, labs incluidos (Plus)' },
   { id:'av2',  tier:'Av. 2 · médico',     name:'Protocolo Vigente Pro',     price:'Bajo prescripción', note:'Teleconsulta + receta + magistral. Solo si calificas.', medico:true },
 ];
 
 // Checkout Av.1
-const CHECKOUT = { diagLabel:'Diagnóstico Vigente', diagSub:'Labs interpretados + tu Índice', diagPrice:1490, stackPrice:899, todayTotal:'$2,389' };
+const CHECKOUT = { diagLabel:'Valoración Vigente', diagSub:'Labs interpretados + tu Índice', diagPrice:1490, stackPrice:899, todayTotal:'$2,389' };
 
 const CONFIRM_STEPS = [
   'Te escribimos por WhatsApp con tu protocolo en detalle.',
@@ -401,7 +401,7 @@ const STATES = [
   { id:'empty_results', kind:'empty', icon:'chart', title:'Aún no hay datos que mostrar',
     body:'Tu primer check-in genera tu gráfica de progreso. Toma 2 minutos y empezamos a ver tu avance real.',
     primary:'Hacer mi primer check-in', ghost:null },
-  { id:'pending', kind:'wait', icon:'refresh', title:'Tu diagnóstico está en proceso',
+  { id:'pending', kind:'wait', icon:'refresh', title:'Tu valoración está en proceso',
     body:'Nuestro equipo médico revisa tu caso. Te avisamos por WhatsApp en menos de 24 h con tu protocolo.',
     primary:'Entendido', ghost:'Escribir al equipo' },
   { id:'retest_due', kind:'nudge', icon:'spark', title:'Tu re-test trimestral está listo',

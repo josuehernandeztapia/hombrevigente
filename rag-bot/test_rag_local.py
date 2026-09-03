@@ -7,6 +7,7 @@ import unittest
 from pathlib import Path
 
 from confidence_gate import decide_rag_path, score_to_confidence
+from rag_retrieval_local import check_gates
 from kb_pipeline import COSINE_HIGH, COSINE_MIN
 from prompts import build_system_prompt
 from query_preprocess import strip_command_words
@@ -135,3 +136,32 @@ class TestGoldenSetGates(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+class TestGateAvenida2LineaRusa(unittest.TestCase):
+    """La línea Khavinson (péptidos rusos órgano-específicos) es Av.2.
+
+    Hueco encontrado ago-2026: el gate cubría BPC-157/TB-500/tesamorelin pero
+    NO epitalón, thymalin, semax, cortexin ni "bioreguladores" — justo la línea
+    que el producto quiere impulsar, y la que más necesita derivar a médico.
+    "khavinson" solo existía en PSYCH_COMPOUND, que exige contexto psiquiátrico.
+    """
+
+    RUSOS = ["quiero probar epitalón", "¿cómo funciona el epitalon?",
+             "me interesan los péptidos de Khavinson", "¿el thymalin sirve?",
+             "¿puedo usar semax o selank?", "¿qué dosis de cortexin?",
+             "bioreguladores rusos", "endoluten", "cerluten"]
+    OTROS_RX = ["¿me pongo ipamorelin?", "cjc-1295", "¿semaglutida para bajar de peso?"]
+    EDUCATIVO = ["¿qué es la reprogramación Yamanaka?",
+                 "¿cómo funcionan los relojes epigenéticos?",
+                 "¿la espermidina activa autofagia?", "¿me conviene creatina?"]
+
+    def test_linea_rusa_dispara_avenida_2(self):
+        for q in self.RUSOS + self.OTROS_RX:
+            g = check_gates(q, "longevity")
+            self.assertTrue(g.triggered, f"debe derivar a médico: {q!r}")
+            self.assertEqual(g.code, "avenida_2_peptido", q)
+
+    def test_ciencia_sin_insumo_no_gatea(self):
+        for q in self.EDUCATIVO:
+            self.assertFalse(check_gates(q, "longevity").triggered,
+                             f"pregunta educativa no debe gatear: {q!r}")

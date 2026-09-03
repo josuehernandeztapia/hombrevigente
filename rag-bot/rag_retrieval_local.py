@@ -74,8 +74,24 @@ LONGEVITY_HINTS = re.compile(
     re.I,
 )
 INJECTABLE_PEPTIDE = re.compile(
-    r"\b(bpc-?157|tb-?500|tβ-?4|thymosin|tesamorelin|peptid[oa]s?\s+inyect|"
-    r"inyectable|subcutáne|magistral)\b",
+    # Occidentales (los que ya cubría).
+    r"\b(bpc-?157|tb-?500|tβ-?4|thymosin|tesamorelin|"
+    # Bioreguladores de Khavinson / línea rusa órgano-específica. FALTABAN
+    # (detectado ago-2026): "quiero probar epitalón" pasaba SIN gate, mientras
+    # BPC-157 sí gateaba. Es la línea que el producto quiere impulsar, así que
+    # es justo la que más necesita derivar a médico. `khavinson` estaba solo en
+    # PSYCH_COMPOUND, que exige contexto psiquiátrico para disparar.
+    r"epital[oó]n|epithalamin|epitalamina|thymalin|timalina|thymogen|"
+    r"cortexin|cortagen|retinalamin|pinealon|livagen|vesugen|prostatilen|"
+    r"cerluten|endoluten|khavinson|biorregulador\w*|bioregulador\w*|"
+    r"semax|selank|cerebrolysin|"
+    # Secretagogos de GH y otros inyectables de uso frecuente en el nicho.
+    r"ipamorelin|cjc-?1295|sermorelin|hexarelin|ghrp-?[26]|aod-?9604|"
+    r"melanotan|pt-?141|follistatin|"
+    # GLP-1: son Rx, no suplemento.
+    r"semaglutid\w*|tirzepatid\w*|liraglutid\w*|"
+    # Genéricos de vía.
+    r"peptid[oa]s?\s+inyect|inyectable|subcutáne|magistral)\b",
     re.I,
 )
 PSYCH_GATE = re.compile(r"\b(litio|quetiapina|bipolar|psiquiatr)\b", re.I)
@@ -110,15 +126,12 @@ def check_gates(query: str, kb_route: str) -> GateResult:
     if kb_route != "longevity" and not INJECTABLE_PEPTIDE.search(query):
         return GateResult(False)
 
-    if INJECTABLE_PEPTIDE.search(query):
-        return GateResult(
-            True,
-            "avenida_2_peptido",
-            "Los péptidos inyectables y compuestos de Avenida 2 requieren médico responsable, "
-            "prescripción y farmacia autorizada. HV no entrega protocolos Rx por este canal. "
-            "Agenda valoración médica.",
-        )
-
+    # ORDEN: del gate MÁS específico al más general. Psiquiatría y oncología
+    # exigen dos condiciones (contexto clínico + compuesto) y su mensaje es más
+    # restrictivo — "decide tu psiquiatra", no "agenda valoración". Si Av.2 se
+    # evalúa primero, alguien con litio + cerluten recibe el mensaje genérico y
+    # se pierde la advertencia que importa. (Salió a la luz al ampliar Av.2 con
+    # la línea Khavinson, que incluye cerluten: rompió G-002.)
     if PSYCH_GATE.search(query) and (
         PSYCH_COMPOUND.search(query) or PSYCH_LIFESTYLE.search(query)
     ):
@@ -135,6 +148,17 @@ def check_gates(query: str, kb_route: str) -> GateResult:
             "gate_oncologia",
             "Antecedente oncológico + senolíticos/inmunomoduladores: requiere oncólogo/médico tratante "
             "antes de cualquier consideración educativa.",
+        )
+
+    # Av.2 al final: es el más general (basta nombrar el insumo), así que solo
+    # aplica cuando ningún gate clínico más específico se llevó la consulta.
+    if INJECTABLE_PEPTIDE.search(query):
+        return GateResult(
+            True,
+            "avenida_2_peptido",
+            "Los péptidos inyectables y compuestos de Avenida 2 requieren médico responsable, "
+            "prescripción y farmacia autorizada. HV no entrega protocolos Rx por este canal. "
+            "Agenda valoración médica.",
         )
 
     return GateResult(False)
