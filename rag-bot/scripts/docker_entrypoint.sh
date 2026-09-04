@@ -26,13 +26,25 @@ if [ -n "${HV_DATABASE_URL:-}" ]; then
 fi
 
 EMBEDDED_NEW=0
+EMBED_OK=0
 if [ -n "${OPENAI_API_KEY:-}" ]; then
   echo "[entrypoint] sync embeddings → ${INDEX_PATH}"
-  python embed_kb_local.py --source all --output "${INDEX_PATH}"
-  if [ -f "${INDEX_PATH}" ]; then
-    EMBEDDED_NEW=$(python -c "import json,sys; d=json.load(open(sys.argv[1])); print(d.get('stats',{}).get('embedded_new',0))" "${INDEX_PATH}")
+  # NO fatal. Con `set -e`, un fallo aquí mataba el contenedor antes de uvicorn:
+  # el 03-sep-2026 OpenAI devolvió 429 insufficient_quota (sin créditos) y la
+  # máquina entró en crash-loop hasta el máximo de reinicios — prod caída por
+  # un problema de facturación, con el índice anterior intacto en /data
+  # (embed_kb_local escribe el archivo solo al final, así que un crash no lo
+  # corrompe). Un sync fallido debe degradar (índice viejo, health lo reporta),
+  # nunca tumbar el API: onboarding, handoff, admin y /api/v1 no necesitan OpenAI.
+  if python embed_kb_local.py --source all --output "${INDEX_PATH}"; then
+    EMBED_OK=1
+  else
+    echo "[entrypoint] WARN: embeddings sync FAILED (¿OpenAI sin créditos/red?) — sirviendo el índice existente si lo hay"
   fi
-  if [ "${HV_RETRIEVAL_BACKEND:-json}" = "pgvector" ] && [ -n "${HV_DATABASE_URL:-}" ]; then
+  if [ -f "${INDEX_PATH}" ] && [ "${EMBED_OK}" = "1" ]; then
+    EMBEDDED_NEW=$(python -c "import json,sys; d=json.load(open(sys.argv[1])); print(d.get('stats',{}).get('embedded_new',0))" "${INDEX_PATH}" 2>/dev/null || echo 0)
+  fi
+  if [ "${EMBED_OK}" = "1" ] && [ "${HV_RETRIEVAL_BACKEND:-json}" = "pgvector" ] && [ -n "${HV_DATABASE_URL:-}" ]; then
     if [ "${HV_FORCE_PGVECTOR_SYNC:-0}" = "1" ] || [ "${EMBEDDED_NEW}" != "0" ]; then
       echo "[entrypoint] sync pgvector (embedded_new=${EMBEDDED_NEW})"
       python embed_kb_pgvector.py --from-json "${INDEX_PATH}" --trigger fly-entrypoint || \
