@@ -33,6 +33,7 @@ TOPIC_MONOGRAPHY: dict[str, str] = {
     "senescencia_senoliticos": "05_senescencia_senoliticos.md",
     "epigenetica_relojes_reprogramacion": "07_reprogramacion_celular.md",
     "peptidos_bpc_tb500_ghk_tesamorelin": "08_bpc157.md",
+    "bioreguladores_peptidicos": "20_khavinson_marco_biorreguladores.md",
     "glp1_metabolismo": "17_glp1_metabolismo_longevidad.md",
     "lipidos_apob": "25_biomarcadores_panel_optimizacion.md",
     "sueno": "26_lifestyle_pilares.md",

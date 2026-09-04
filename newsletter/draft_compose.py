@@ -42,7 +42,9 @@ TOPIC_MONOGRAPHY: dict[str, str] = {
     "sueno": "26_lifestyle_pilares.md",
     "termico_inflamacion": "28_termografia_inflammaging.md",
     "piel_optimizacion": "12_glow_limitless_blend.md",
-    "descubrimiento_farmacos_ia": "06_epigenetica_relojes_biologicos.md",
+    # Alineado a bridge_export (era 06_relojes aquí y 01_hallmarks allá: el
+    # número pedía actualizar una monografía y el bridge exportaba a otra).
+    "descubrimiento_farmacos_ia": "01_hallmarks_envejecimiento.md",
     "diseno_proteinas": "01_hallmarks_envejecimiento.md",
     "relojes_envejecimiento_ml": "06_epigenetica_relojes_biologicos.md",
     "modelos_fundacionales_biologia": "01_hallmarks_envejecimiento.md",
