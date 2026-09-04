@@ -5,11 +5,13 @@ on:
   pull_request:
     paths:
       - 'rag-bot/**'
+      - 'newsletter/**'   # claim_guard y coherencia de topics viven aquí y se testean desde rag-bot/
       - '.github/workflows/rag-bot-ci.yml'
   push:
     branches: [main]
     paths:
       - 'rag-bot/**'
+      - 'newsletter/**'   # claim_guard y coherencia de topics viven aquí y se testean desde rag-bot/
       - '.github/workflows/rag-bot-ci.yml'
 
 concurrency:
@@ -63,7 +65,8 @@ jobs:
             test_labs_ingest.py \
             test_decision_log_pg.py \
             test_claim_guard.py \
-            test_api_v1.py
+            test_api_v1.py \
+            test_newsletter_topics.py
 
       - name: Golden set (gates-only)
         run: python golden_runner.py --gates-only
