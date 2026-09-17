@@ -1,0 +1,15 @@
+<!-- REVISAR Y VERIFICAR FUENTES ANTES DE PUBLICAR. Sigue EDITORIAL.md. -->
+# LinkedIn — post (Nº015)
+
+Una píldora busca hacerle competencia a las inyecciones de PCSK9, la sangre revela cómo el envejecimiento celular conecta metabolismo e inflamación, la IA acelera el diagnóstico de enfermedades complejas, y el estrés laboral se formaliza como variable de longevidad. Lo que sí puedes mover hoy: tu **ApoB**.
+
+▸ La píldora que podría reemplazar la inyección de PCSK9. Un análisis farmacológico publicado en *Expert Opinion on Pharmacotherapy* evalúa **enlicitide decanoate**, candidato a convertirse en el primer inhibidor de PCSK9 en **formato oral** para adultos con hipercolesterolemia. Hasta ahora, esta clase de fármacos —de altísimo impacto en LDL— existe solo como inyección. El artículo revisa su perfil farmacológico y su posición frente a las terapias inyectables ya aprobadas, sin reportar aún resultados de eficacia en desenlaces duros a gran escala. (Fuente: Expert Opinion on Pharmacotherapy 2026, PMID 42709041.)
+▸ Tu sangre podría estar contando la historia del envejecimiento metabólico. Una revisión en *Cells* mapea cómo las **células senescentes circulantes en sangre** se asocian con tres fenómenos que suelen aparecer juntos con la edad: **síndrome metabólico, inflammaging (inflamación crónica de bajo grado) y enfermedad cardiometabólica**. La propuesta: la senescencia hematológica no sería solo un espectador del envejecimiento, sino un nodo que conecta el metabolismo desregulado con el riesgo cardiovascular a través de señales inflamatorias sostenidas. (Fuente: Cells 2026, PMID 42738908.)
+▸ La IA entra al diagnóstico de enfermedades que antes tardaban años. Un artículo en *Cells* integra fisiopatología molecular, diagnóstico de precisión e **inteligencia artificial** para la enfermedad de Fabry, un trastorno de depósito lisosomal poco común. El enfoque combina modelos de IA con datos moleculares para acelerar el diagnóstico y personalizar el manejo clínico —un patrón que la industria viene replicando en enfermedades raras antes de escalar a condiciones metabólicas más prevalentes. (Fuente: Cells 2026, PMID 42738907.)
+▸ Para ti, miembro Plus. Esta edición traza una línea consistente: **la sangre y el estrés cuentan la misma historia del envejecimiento metabólico desde ángulos distintos**. La revisión de senescencia en sangre y el marco de estrés laboral apuntan al mismo eje —inflamación crónica sostenida— como acelerador silencioso. Mientras la farmacología (PCSK9 oral) y la IA diagnóstica (Fabry) avanzan en sofisticación, ninguna reemplaza el trabajo de fondo: **medir tu ApoB, controlar tu inflamación y gestionar tu estrés crónico son las tres palancas con más evidencia acumulada hoy**, independientemente de qué tan prometedora sea la próxima molécula o el próximo modelo de IA.
+
+La innovación en píldoras e IA avanza rápido, pero el marcador que puedes mover esta semana sigue siendo el mismo: tu ApoB, tu inflamación y tu manejo del estrés.
+
+Suscríbete a Pulso Vigente → hombrevigente.com
+
+#longevidad #optimización #saludmasculina #biohacking #HombreVigente
