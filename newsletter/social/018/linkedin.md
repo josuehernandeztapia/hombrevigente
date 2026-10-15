@@ -1,0 +1,16 @@
+<!-- REVISAR Y VERIFICAR FUENTES ANTES DE PUBLICAR. Sigue EDITORIAL.md. -->
+# LinkedIn — post (Nº018)
+
+El reciclaje celular (autofagia) se remodela de forma distinta en hombres y mujeres conforme envejeces —y eso se nota en tu función física—, mientras la ciencia senolítica avanza a primates y la IA aprende a leer la edad celular en 3D.
+
+▸ La autofagia se descompone distinto en hombres y mujeres (y se nota en tu fuerza). Un estudio publicado en *Aging Cell* (octubre 2026) analizó el **flujo autofágico** —el proceso por el cual tus células reciclan y eliminan componentes dañados— en tejido humano a lo largo del envejecimiento. Los autores encontraron que este flujo **se remodela de forma específica según el sexo y el tipo celular**, y que esa remodelación **se asocia con una función física reducida en adultos mayores**. (Fuente: Aging Cell 2026, PMID 42802483, DOI 10.1111/acel.70734.)
+▸ Células T diseñadas que cazan células senescentes, ahora en primates. Investigadores diseñaron un **"T cell engager" dirigido a uPAR** (un marcador en la superficie de células senescentes) con efecto senolítico demostrado en **ratones y primates no humanos**. El equipo reporta que la actividad de aminotransferasas séricas funcionó como marcador de seguridad para monitorear la terapia durante el estudio. (Fuente: Aging Cell 2026, PMID 42806572, DOI 10.1111/acel.70742.)
+▸ La IA ya puede leer la edad de tus células madre en 3D. Un modelo de **deep learning** fue entrenado para predecir el envejecimiento de células madre hematopoyéticas (las que dan origen a tus células sanguíneas e inmunes) a partir de **imágenes tridimensionales de la cromatina** —la forma en que el ADN se organiza dentro del núcleo. Publicado en *Aging Cell*, el trabajo se suma a la ola de "relojes de envejecimiento" basados en inteligencia artificial que buscan capturar edad biológica más allá de marcadores sanguíneos tradicionales. (Fuente: Aging Cell 2026, PMID 42802377, DOI 10.1111/acel.70656.)
+▸ Mapeando dos décadas de investigación en cognición y envejecimiento. Un análisis bibliométrico publicado en *GeroScience* mapeó la evolución de los **paradigmas de doble tarea** (dual-task: hacer dos cosas a la vez, como caminar y hablar) usados para estudiar el envejecimiento cognitivo, identificando cómo ha cambiado el panorama de investigación y sus aplicaciones traslacionales a lo largo del tiempo. (Fuente: GeroScience 2026, PMID 42825889, DOI 10.1007/s11357-026-02556-6.)
+▸ Para ti, miembro Plus. ### Editorial bridge
+
+Esta edición confirma algo que venimos repitiendo en Hombre Vigente: la autofagia no es un interruptor único —se comporta distinto según tu biología individual— y las herramientas que tienes hoy (ayuno, ejercicio, posible espermidina en investigación) siguen siendo tu palanca más sólida mientras la ciencia senolítica y los relojes de IA maduran hacia la clínica. Nada de lo preclínico en esta edición está listo para uso humano; vigílalo como **radar**, no como protocolo.
+
+Suscríbete a Pulso Vigente → hombrevigente.com
+
+#longevidad #optimización #saludmasculina #biohacking #HombreVigente
