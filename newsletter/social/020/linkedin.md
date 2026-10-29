@@ -1,0 +1,16 @@
+<!-- REVISAR Y VERIFICAR FUENTES ANTES DE PUBLICAR. Sigue EDITORIAL.md. -->
+# LinkedIn — post (Nº020)
+
+Tu LDL-C normal puede esconder riesgo real, una vía de limpieza celular (autofagia mediada por chaperonas) se asocia a menos senescencia, un circuito de splicing redefine cómo se mapean blancos moleculares, y el envejecimiento vascular cerebral tiene un nuevo sospechoso. Lo que puedes mover hoy: **tu panel lipídico completo**, no solo el LDL.
+
+▸ Tu LDL-C puede estar "normal" y tu riesgo seguir alto. Un review basado en casos clínicos en *American Journal of the Medical Sciences* repasa escenarios de **dislipidemia compleja** donde el LDL-C convencional no refleja el riesgo cardiovascular real. El eje del artículo: marcadores como **ApoB** y **lipoproteína(a)** capturan partículas aterogénicas que el LDL-C por sí solo puede subestimar, especialmente en perfiles con triglicéridos elevados o patrones genéticos atípicos. (Fuente: Am J Med Sci 2026, PMID 42914050.)
+▸ Una vía de "limpieza celular" frena la senescencia en estudios recientes. En *Nature Aging*, un estudio de alto impacto describe cómo la **autofagia mediada por chaperonas (CMA)** —un mecanismo que degrada selectivamente proteínas dañadas dentro de la célula— se asocia a una contención del fenotipo senescente. Cuando esta vía funciona bien, las células acumulan menos "basura" proteica asociada al envejecimiento celular; cuando se degrada, el fenotipo senescente avanza. (Fuente: Nat Aging 2026, PMID 42897287.)
+▸ Un circuito de splicing redefine cómo se cazan blancos moleculares. En *Cell Discovery*, investigadores mapearon un circuito oncogénico donde la proteína **FAM50A** promueve progresión de carcinoma escamoso esofágico mediante un mecanismo dependiente de splicing: un ARN circular (**circSDK1**) y la fosfatasa **DUSP22** activan en conjunto las vías **MAPK/FAK**. No es un paper de inteligencia artificial, pero sí ilustra el tipo de problema —redes de regulación molecular multicapa, no lineales— que los modelos computacionales modernos de biología estructural y de splicing buscan predecir para acelerar el descubrimiento de dianas farmacológicas. (Fuente: Cell Discov 2026, PMID 42897138.)
+▸ El envejecimiento vascular cerebral tiene un nuevo sospechoso. En *GeroScience*, un análisis de alto impacto propone un **cruce mecanístico entre la vía Sonic Hedgehog (SHH) y las metaloproteinasas de matriz (MMP)** en el envejecimiento neurovascular, con implicaciones para el riesgo de ictus (stroke). La hipótesis: la alteración de esta señalización con la edad debilita la integridad de la barrera vascular cerebral, un terreno fértil para eventos isquémicos. (Fuente: Geroscience 2026, PMID 42945031.)
+▸ Para ti, miembro Plus. ### Editorial bridge
+
+Esta edición no trae un "milagro accionable" nuevo — trae refuerzo de fundamentos. Si tu chequeo anual solo mira LDL-C, estás viendo una foto incompleta; pide ApoB y Lp(a). La autofagia (vía espermidina dietética) sigue siendo el puente más práctico entre la ciencia de senescencia y tu rutina diaria. Los otros dos frentes —circuitos de splicing oncogénico y crosstalk vascular cerebral— son terreno de vigilancia, no de acción inmediata: anótalos, no los persigas todavía.
+
+Suscríbete a Pulso Vigente → hombrevigente.com
+
+#longevidad #optimización #saludmasculina #biohacking #HombreVigente
